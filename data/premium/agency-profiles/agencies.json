@@ -1790,9 +1790,9 @@
     "abbrev": "NIH / NITAAC",
     "name": "National Institutes of Health / NIH IT Acquisition and Assessment Center",
     "type": "HHS Research Agency + Acquisition Channel",
-    "lastUpdated": "2026-05-12",
-    "description": "NIH is the country's biomedical research agency. NITAAC is NIH's acquisition center and runs CIO-SP3 / CIO-SP4 (canceled) / CIO-CS — the NIH GWACs that anchor IT procurement across HHS. Treat NIH as both a research buyer and an acquisition channel for the rest of HHS.",
-    "mmtRead": "CIO-SP4 was canceled (SAM Amendment 0017 on RFP 75N98121R00001). CIO-SP3 is the active bridge through Apr 29 2027. CIO-CS is the IT commodities vehicle and a follow-on (`The Store`) is in pre-RFP at a reported $20B-$25B.",
+    "lastUpdated": "2026-09-10",
+    "description": "NIH is the country's biomedical research agency. NITAAC is NIH's acquisition center and ran CIO-SP3 / CIO-SP3 SB / CIO-CS, the NIH GWACs that anchored IT procurement across HHS until the June 2026 sunset notice. Treat NIH as both a research buyer and an acquisition channel for the rest of HHS.",
+    "mmtRead": "The NITAAC GWAC era is ending on a date. On June 9, 2026 NITAAC published notice that the HHS Senior Procurement Executive, under EO 14240 and OMB M-25-31, sunsets CIO-SP3, CIO-SP3 Small Business and CIO-CS on October 29, 2026, the last day to award new orders. Orders awarded on or after June 8, 2026 cannot run past December 31, 2028, when all NITAAC program functions cease. There is no successor: CIO-SP4 was cancelled in January 2026 and the reported CIO-CS follow-on ('The Store') is superseded by the notice. Future NIH and HHS IT requirements move to GSA vehicles (Alliant 3, Polaris, MAS). Treat CIO-SP3 seats as a countdown clock, not a bridge.",
     "officialSources": [
       {
         "label": "NIH About",
@@ -1807,25 +1807,28 @@
         "url": "https://nitaac.nih.gov/gwacs/cio-sp3"
       },
       {
+        "label": "NITAAC sunset notice (June 9, 2026)",
+        "url": "https://nitaac.nih.gov/resources/news/important-notice-nitaac-gwacs-cio-sp3-cio-sp3-sb-and-cio-cs"
+      },
+      {
         "label": "CIO-SP4 cancellation (SAM)",
         "url": "https://sam.gov/opp/40c9559870aa4e23b5e10e65e2f7cdc8/view"
       }
     ],
     "keyPrograms": [
       "NIH research IT",
-      "CIO-SP3 (active)",
-      "CIO-CS (commodities)",
-      "STRIDES (cloud program)",
-      "CIO-CS Follow-On / The Store (pre-RFP)"
+      "CIO-SP3 / CIO-SP3 SB (sunsetting Oct 29, 2026)",
+      "CIO-CS (sunsetting Oct 29, 2026)",
+      "STRIDES (cloud program)"
     ],
     "procurementSignals": [
-      "CIO-SP3 bridge through Apr 29 2027",
-      "CIO-CS Follow-On reported $20B-$25B",
+      "NITAAC GWAC sunset: last new order Oct 29, 2026; all functions cease Dec 31, 2028",
+      "No CIO-CS follow-on; commodity IT moves to GSA MAS and Polaris",
       "STRIDES cloud platform tracking"
     ],
     "openVehicles": [
-      "NITAAC CIO-SP3",
-      "NITAAC CIO-CS"
+      "NITAAC CIO-SP3 (orders through Oct 29, 2026 only)",
+      "NITAAC CIO-CS (orders through Oct 29, 2026 only)"
     ],
     "premiumLocked": true,
     "budget": {
@@ -1840,11 +1843,11 @@
         "Indirect cost rate caps"
       ]
     },
-    "current_read": "CIO-SP4 canceled. CIO-SP3 bridges through Apr 29 2027. CIO-CS follow-on in pre-RFP.",
+    "current_read": "NITAAC portfolio sunsets Oct 29, 2026 (last new order). No successor; CIO-SP4 cancelled. Work moves to GSA.",
     "key_vehicles": [
-      "NITAAC CIO-SP3",
-      "NITAAC CIO-CS",
-      "CIO-CS Follow-On"
+      "NITAAC CIO-SP3 (sunsetting)",
+      "NITAAC CIO-CS (sunsetting)",
+      "GSA Alliant 3 / Polaris / MAS (successor path)"
     ],
     "key_offices": [
       "NITAAC (NIH IT Acquisition Center)",
@@ -1852,8 +1855,9 @@
     ],
     "recent_awards": [],
     "upcoming_signals": [
-      "CIO-CS Follow-On RFP",
-      "CIO-SP3 task orders"
+      "Oct 29, 2026: last day to award new NITAAC orders",
+      "Dec 31, 2028: all NITAAC program functions cease",
+      "GSA vehicle positioning for former CIO-SP3 work"
     ],
     "related_tags": [
       "Research IT",
@@ -1861,47 +1865,54 @@
     ],
     "role": "Health IT GWAC channel",
     "premiumModules": [
-      "CIO-SP3 Status",
-      "CIO-SP4 Verify-Before-Publishing Watch",
+      "NITAAC Sunset Countdown",
       "Contractor Read",
       "Watch Next"
     ],
     "policyModule": {
-      "title": "NITAAC CIO-SP3 Status + Vehicle Watch",
+      "title": "NITAAC GWAC Sunset (official notice, June 9, 2026)",
       "confirmed_facts": [
-        "NITAAC CIO-SP3 is a Government-Wide Acquisition Contract (GWAC) operated by NIH NITAAC.",
-        "CIO-SP3 has been used extensively for health IT and broader IT services across federal agencies.",
-        "Vehicle ordering periods and extensions are managed by NITAAC and posted on the NITAAC GWAC page."
+        "HHS SPE, under EO 14240 and OMB M-25-31, sunsets all NITAAC GWACs (CIO-SP3, CIO-SP3 SB, CIO-CS) on October 29, 2026, the last day to award new orders.",
+        "Orders awarded on or after June 8, 2026 cannot run past December 31, 2028, when all NITAAC program functions cease.",
+        "Future requirements move to GSA vehicles. CIO-SP4 was cancelled in January 2026; no successor NITAAC vehicle exists."
       ],
       "vendor_watch": [
-        "Ordering-period status: verify current state directly on the NITAAC CIO-SP3 page before committing to a CIO-SP3 task-order strategy.",
-        "Extension caveat: if the ordering period has been extended, downstream agencies may still issue task orders; if it has closed, contractors need an alternative GWAC channel.",
-        "Verify-before-publishing: do NOT state CIO-SP4 cancellation as official without a primary-source citation. As of this update, the operator has not located a primary-source statement confirming cancellation."
+        "Task orders you want under CIO-SP3 pricing must be awarded by October 29, 2026 and delivered by December 31, 2028.",
+        "Move NIH and HHS customer conversations to which GSA vehicle you meet on next: Alliant 3, Polaris, or MAS.",
+        "The buyer relationships shift to GSA program offices, not NITAAC."
       ],
-      "source_id": "nitaac_cio_sp3"
+      "source_id": "nitaac_sunset_notice"
     },
-    "contractorRead": "NITAAC CIO-SP3 has been a primary federal health IT GWAC for years. The current capture move is to verify CIO-SP3 ordering-period status directly before relying on it, and to track NITAAC's posture on follow-on vehicles. Do not publish CIO-SP4 cancellation as official to clients without a primary-source citation; that is a trust-failure waiting to happen.",
+    "contractorRead": "NITAAC CIO-SP3 was a primary federal health IT GWAC for years. The capture move now is a countdown: get the orders you need awarded under CIO-SP3 or CIO-CS before October 29, 2026, and position on Alliant 3, Polaris, or GSA MAS for everything after. Do not build an NIH strategy around a NITAAC follow-on; the official notice says there is none.",
     "watchNext": [
       {
-        "signal": "CIO-SP3 ordering-period and extension status (verify on the NITAAC GWAC page)",
+        "signal": "CIO-SP3 / CIO-CS orders awarded before the Oct 29, 2026 cutoff",
         "buyer": "NITAAC + ordering agencies",
-        "window": "Continuous",
-        "source_id": "nitaac_cio_sp3"
+        "window": "Now through 2026-10-29",
+        "source_id": "nitaac_sunset_notice"
       },
       {
-        "signal": "CIO-SP4 status — verify-before-publishing watch; treat any cancellation claim as unverified until primary-source-confirmed",
-        "buyer": "NITAAC",
-        "window": "Verify before quoting",
-        "source_id": "nitaac_cio_sp3"
+        "signal": "GSA vehicle positioning for former NITAAC scope (Alliant 3, Polaris, MAS)",
+        "buyer": "GSA ASD program offices",
+        "window": "FY2027",
+        "source_id": "nitaac_sunset_notice"
       }
     ],
     "sources": [
       {
+        "label": "NITAAC sunset notice: CIO-SP3, CIO-SP3 SB and CIO-CS",
+        "url": "https://nitaac.nih.gov/resources/news/important-notice-nitaac-gwacs-cio-sp3-cio-sp3-sb-and-cio-cs",
+        "verified_at": "2026-08-25",
+        "confidence": "high",
+        "caveat": "Official NITAAC notice dated June 9, 2026; verified live 2026-08-25 for the NIH/NITAAC org chart.",
+        "id": "nitaac_sunset_notice"
+      },
+      {
         "label": "NITAAC CIO-SP3 GWAC",
         "url": "https://nitaac.nih.gov/gwacs/cio-sp3",
-        "verified_at": "2026-05-12",
-        "confidence": "medium",
-        "caveat": "Vehicle ordering-period and extension status change over time; verify directly on the NITAAC GWAC page before relying on a CIO-SP3 task-order strategy.",
+        "verified_at": "2026-08-25",
+        "confidence": "high",
+        "caveat": "Vehicle page; ordering ends Oct 29, 2026 per the sunset notice.",
         "id": "nitaac_cio_sp3"
       }
     ]

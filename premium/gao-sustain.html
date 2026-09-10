@@ -29,6 +29,11 @@
     .gao-body p { margin:0 0 12px; }
     .gao-body blockquote { border-left:3px solid var(--mmt-teal); padding:6px 14px; margin:10px 0; background:var(--mmt-surface); border-radius:0 8px 8px 0; color:var(--mmt-text-secondary); font-style:italic; }
     .gao-archive li { margin-bottom:6px; }
+    .fd-fresh { display:inline-block; font-size:12px; font-weight:700; padding:4px 10px; border-radius:14px; }
+    .fd-ok { background:rgba(27,122,75,0.1); color:#1B7A4B; }
+    .fd-stale { background:rgba(230,57,70,0.1); color:#E63946; }
+    .gao-body h3 { font-size:15px; font-weight:700; margin:16px 0 6px; }
+    .gao-body ul, .gao-body ol { margin:0 0 12px; padding-left:20px; }
     @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } }
   </style>
   <script>
@@ -85,32 +90,12 @@
 
         <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Protest Intelligence</p>
         <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">GAO Sustain Tracker</h1>
-        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 24px;">Monthly editorial digest of sustained GAO protests in federal health IT and adjacent IT services markets &mdash; with capture implications, not just decision summaries. Read the agency's source-selection mistake; reposition for the do-over.</p>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 10px;">Monthly editorial digest of sustained GAO protests in federal health IT and adjacent IT services markets &mdash; with capture implications, not just decision summaries. Read the agency's source-selection mistake; reposition for the do-over.</p>
+        <p style="margin:0 0 24px;"><!-- BUILD:GAO_SUSTAIN_FRESHNESS --></p>
 
         <!-- BUILD:GAO_SUSTAIN_LATEST -->
-        <div class="dash-card">
-          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-teal);margin:0 0 4px;">May 2026 &middot; Latest entry</p>
-          <h2 style="font-size:18px;font-weight:700;margin:0 0 4px;">GovCIO TIS recompete sustained &mdash; what it means for federal IT services protests</h2>
-          <div class="gao-meta">
-            <span class="gao-chip">GSA</span>
-            <span class="gao-chip">TIS</span>
-            <a href="https://www.washingtontechnology.com/contracts/2026/01/govcio-loses-gao-it-services-recompete-saic/410617/" target="_blank" rel="noopener" style="color:var(--mmt-teal);font-weight:600;">Reference &rarr;</a>
-          </div>
-          <div class="gao-body">
-            <p>The GovCIO loss on the GSA TIS recompete is the kind of outcome that should change how mid-market IT services primes structure their next federal pursuit. The teaching moment isn't the protest itself &mdash; it's that an incumbent with active performance still got displaced when the source-selection record didn't defend the agency's evaluation against a credible challenge. If your capture playbook assumes incumbency is a moat, this decision is the counter-evidence.</p>
-            <p>Two specific traps to watch for in your next IT services recompete: <strong>past-performance relevance gaps</strong> (citing prior work the agency can't link to the SOW's actual scope is a known sustain pathway), and <strong>thin source-selection rationale</strong> (when the SSEB consensus narrative doesn't show why the offeror's proposal beat the others on the stated factors, GAO will sustain even on a generally well-run procurement). Both are fixable in your proposal &mdash; but only if you've read enough sustained decisions to know what evaluators trip on.</p>
-            <p><strong>Why this matters for your capture timing:</strong> sustained protests at GAO are rare (historically ~10&ndash;15% of decisions). When an agency reopens an acquisition after a sustain, the do-over evaluation typically runs 60&ndash;120 days behind the original schedule, sometimes longer if the corrective action requires a re-solicit. That's your window. If you were originally a sub or a no-bid, a sustain is one of the few honest second chances the federal market gives you. Read the decision, map the agency's identified errors to your own past-performance citations, and have a revised proposal ready before the corrective-action announcement hits SAM.</p>
-          </div>
-        </div>
 
         <!-- BUILD:GAO_SUSTAIN_ARCHIVE -->
-        <div class="dash-card">
-          <h3 style="font-size:14px;font-weight:700;margin:0 0 10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--mmt-text-secondary);">Archive</h3>
-          <ul class="gao-archive" style="font-size:14px;color:var(--mmt-text-secondary);margin:0;padding-left:18px;">
-            <li>May 2026 &mdash; GovCIO TIS recompete (this entry)</li>
-          </ul>
-          <p style="font-size:12px;color:var(--mmt-text-secondary);margin:12px 0 0;">A new entry ships monthly. Browse <a href="https://www.gao.gov/legal/bid-protests/search" target="_blank" rel="noopener" style="color:var(--mmt-teal);font-weight:600;">GAO bid protest decisions</a> directly for the source decisions referenced.</p>
-        </div>
 
         <p style="font-size:12px;color:var(--mmt-text-secondary);margin:0;">Source markdown lives at <code>content/gao-sustain/*.md</code>. Each entry includes frontmatter (date, decision_url, agencies, vehicles) plus editorial commentary. New entries auto-appear at the top of this page on the next build.</p>
       </div>

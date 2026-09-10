@@ -1,5 +1,100 @@
 # Mission Meets Tech - Developer & Content Governance
 
+## Sprint 2026-09-10 (later) — Site-wide freshness sweep: NITAAC sunset contradiction, GAO Sustain, key people, aged datasets
+
+Mary: "fix all to ensure that the site is the best it can be." The Forecast
+Delta fix (above) was one instance of a family; this pass hunted the rest of
+it. The September Forecast Delta read and the all-agency pipeline are being
+written in a separate session and were NOT touched here
+(`content/forecast-delta/`, `data/forecast-pipeline.json`,
+`data/forecast-portals.json` untouched).
+
+**1. A subscriber-facing factual contradiction (fixed from an in-repo official
+source).** The NIH/NITAAC org chart (verified 2026-08-25 against the official
+notice at `nitaac.nih.gov/resources/news/important-notice-nitaac-gwacs-…`)
+says ALL NITAAC GWACs (CIO-SP3, CIO-SP3 SB, CIO-CS) sunset **2026-10-29** with
+no successor. Four other datasets still told subscribers the opposite:
+`contracts.json` `cio-cs-follow-on-the-store` was "upcoming / Pre-RFP" with a
+`last_verified` of 08-17 that claimed re-verification against award records;
+`data/idiq-vehicles.json` (via the CSV) said "CIO-SP3 bridge through Apr 29
+2027"; the `nih-nitaac` agency profile's `mmtRead` / `current_read` /
+`procurementSignals` / `watchNext` repeated the bridge and the follow-on;
+`capture-intelligence.json` signal s23 pitched the $20B to $25B follow-on.
+All four now carry the sunset with the notice as source. The tracker entry
+is `status: closed`, the two root-domain `https://sam.gov` source URLs are
+gone (the weekly report flags those), CIO-SP3 and CIO-CS were added to the
+IDIQ CSV as "Sunsetting" rows (33 → 35 vehicles; JSON regenerated with
+`scripts/csv-to-idiq-json.js`), and the profile passes both agency
+validators.
+
+**2. GAO Sustain had the Forecast Delta bug, plus a twist.** The page carried
+`<!-- BUILD:GAO_SUSTAIN_LATEST -->` / `_ARCHIVE` marker comments ABOVE a
+hardcoded May entry, and `build.js` had no injection for them: decorative
+markers over pasted content. `getForecastDeltaEntries()` is now a wrapper on
+a generic `getMonthlyContentEntries(dirName)`; GAO Sustain renders from
+`content/gao-sustain/YYYY-MM.md` through three real markers (latest, archive,
+freshness badge). The hardcoded block is gone.
+
+**3. Key People reconciled to the Aug 25 org charts** (the freshest official
+verification in the repo). VBA: Michael Frueh (May listing) replaced by
+**Margarita Devlin, Principal Deputy USB performing the duties**, per VA.gov
+Official Biographies. ARPA-H: added Keith Martin, Neil Wyant and **Benjamin
+Bryant (Deputy Director BID, Acting HCA)**; the four program-level names not
+on the Aug 25 leadership page keep their May date with a per-person
+`verification_note` the page now renders. VA-OIT bumped to 08-25 (chart
+confirms Lawrence + Schwartz). DHA untouched (Mary-vetted). OASD-HA / SG / USU
+stay at May and are honestly flagged as stale.
+
+**4. Pages now say how old their data is.** Key People turns an agency block
+red past 100 days; CR Exposure shows "Passed N days ago" / "N days out" on
+each deadline (the June 30 Q3 close was rendering as upcoming) and reddens
+the list's verified date past 45 days; About's "By the numbers" is entirely
+`BUILD:STAT_*` (episodes, contracts, IDIQ count, agency count were hand-typed
+and drifting); the Events page premium box no longer leads with a passed
+Aug 30 deadline and links the live 90-Day tracker.
+
+**5. The durable guard: one freshness registry.**
+`netlify/functions/lib/data-freshness.js` lists every hand-maintained dataset
+(key-people per agency, agency profiles per agency, cr-deadlines,
+budget-signals, idiq-vehicles, forecast-portals, capture-intelligence,
+pursuit-calendar-seed) with its date field and cadence, plus content dirs
+with their required page markers. `scripts/validate-data-freshness.js` (in
+the `netlify.toml` build command) hard-fails on a missing file/date, a
+missing marker, a raw marker in dist, or a bad entry; staleness is soft
+(`DATA_FRESHNESS_MAX_AGE_DAYS` enforces). `intel-quality-report.js` renders
+the same registry as a "Hand-maintained data freshness" section in the
+Friday email with the fix for each row, and `data_stale` in the ops_event.
+The bundled files are in `included_files`. 11 pinned-date tests.
+
+Left honestly stale (needs live official sources this session cannot reach):
+OASD-HA / Surgeons General / USU key-people blocks (May), 8 of 11 agency
+profiles (May), `cr-deadlines.json` (May; CRFB is egress-blocked; the page
+now labels passed dates client-side so the list is at least not misleading).
+The Friday email will keep listing them until re-verified.
+
+Hard rules (do not regress):
+- **One official fact, every dataset.** When an org-chart or tracker sprint
+  verifies a fact that changes a vehicle's status (a sunset, a cancellation,
+  an award), grep the repo for the vehicle name and fix EVERY dataset that
+  states it. The 08-25 sunset finding sat in one chart while four datasets
+  kept selling the follow-on for 16 days.
+- **A `last_verified` bump must survive a contradiction check.** The 08-17
+  re-verification stamped the CIO-CS entry current while an older in-repo
+  page already contradicted it. Re-verifying against award records is not
+  the same as re-verifying against the issuing office.
+- **Markers without an injection are decoration.** A `BUILD:` comment in a
+  page proves nothing; the validator asserts the marker AND the build proves
+  substitution by checking dist.
+- **Register every new hand-maintained file in `lib/data-freshness.js`** with
+  its date field and cadence. An unregistered file is the next Forecast
+  Delta.
+
+Verified 2026-09-10: unit suite 609/609 (+11); build exit 0;
+validate-dist / validate-routes / agency-parity / agency-profiles /
+contract-tracker / cso-aois / forecast-delta / data-freshness / scan-pii pass;
+dist GAO page renders the May entry from markdown with the red overdue badge
+and zero raw markers; About stats are build-derived.
+
 ## Sprint 2026-09-10 — Forecast Delta Tracker frozen since May: the page never read its own markdown
 
 Mary: "this hasn't been updated since May" (`/premium/forecast-delta`). Root

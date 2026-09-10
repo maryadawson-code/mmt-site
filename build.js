@@ -3474,6 +3474,9 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
     '<!-- BUILD:FORECAST_DELTA_LATEST -->': generateForecastDeltaLatestHtml(),
     '<!-- BUILD:FORECAST_DELTA_ARCHIVE -->': generateForecastDeltaArchiveHtml(),
     '<!-- BUILD:FORECAST_DELTA_FRESHNESS -->': generateForecastDeltaFreshnessHtml(),
+    '<!-- BUILD:GAO_SUSTAIN_LATEST -->': generateGaoSustainLatestHtml(),
+    '<!-- BUILD:GAO_SUSTAIN_ARCHIVE -->': generateGaoSustainArchiveHtml(),
+    '<!-- BUILD:GAO_SUSTAIN_FRESHNESS -->': generateGaoSustainFreshnessHtml(),
     '<!-- BUILD:CONTRACT_SUMMARY -->': generateContractSummaryHtml(contracts),
     '<!-- BUILD:EVENTS_LIST -->': generateEventsListHtml(),
     '<!-- BUILD:LATEST_ANALYSIS -->': generateLatestAnalysisHtml(articles || []),
@@ -3486,8 +3489,19 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
     // Dynamic stats
     '<!-- BUILD:STAT_ARTICLES -->': String(archive.length),
     '<!-- BUILD:STAT_CONTRACTS -->': String(contracts.length),
+    '<!-- BUILD:STAT_IDIQ -->': String((() => { try { const v = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'idiq-vehicles.json'), 'utf8')); return Array.isArray(v.vehicles) ? v.vehicles.length : 0; } catch (e) { console.warn('STAT_IDIQ: ' + e.message); return 0; } })()),
+    '<!-- BUILD:STAT_AGENCIES -->': String((() => { try { const a = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'premium', 'agency-profiles', 'agencies.json'), 'utf8')); return Array.isArray(a) ? a.length : 0; } catch (e) { console.warn('STAT_AGENCIES: ' + e.message); return 0; } })()),
     '<!-- BUILD:STAT_TERMS -->': String(fs.existsSync(path.join(__dirname, 'glossary')) ? fs.readdirSync(path.join(__dirname, 'glossary')).filter(f => f.endsWith('.html') && f !== 'index.html').length : 0),
-    '<!-- BUILD:STAT_EPISODES -->': String(feed && feed.items ? feed.items.filter(ep => !/^(Trailer|Introducing)/i.test(ep.title || '')).length : 0),
+    // Feed-derived when the RSS fetch worked; otherwise the committed
+    // transcripts are the repo's own record of published episodes. Printing
+    // 0 on a feed hiccup would be a false claim on the About page.
+    '<!-- BUILD:STAT_EPISODES -->': String((() => {
+      const fromFeed = feed && feed.items ? feed.items.filter(ep => !/^(Trailer|Introducing)/i.test(ep.title || '')).length : 0;
+      if (fromFeed > 0) return fromFeed;
+      const fromTranscripts = Object.keys(loadTranscripts()).length;
+      if (fromTranscripts > 0) console.warn(`STAT_EPISODES: podcast feed empty; using ${fromTranscripts} committed transcript(s)`);
+      return fromTranscripts;
+    })()),
     '<!-- BUILD:JSONLD_TOPICS -->': generateJsonLdTopics(archive),
     '<!-- BUILD:JSONLD_LATEST -->': generateJsonLdLatest(archive),
     '<!-- BUILD:JSONLD_NEWSLETTER -->': generateJsonLdNewsletter(archive),
@@ -5194,8 +5208,8 @@ function generateCaptureCornerArchiveHtml() {
 // =====================================================================
 const FORECAST_DELTA_WARN_DAYS = 45;
 
-function getForecastDeltaEntries() {
-  const dir = path.join(__dirname, 'content', 'forecast-delta');
+function getMonthlyContentEntries(dirName) {
+  const dir = path.join(__dirname, 'content', dirName);
   if (!fs.existsSync(dir)) return [];
   const _today = todayET();
   const entries = [];
@@ -5204,7 +5218,7 @@ function getForecastDeltaEntries() {
     if (!m) continue;
     let parsed;
     try { parsed = matter(fs.readFileSync(path.join(dir, f), 'utf8')); } catch (e) {
-      console.warn(`forecast-delta: skipping ${f} — ${e.message}`);
+      console.warn(`${dirName}: skipping ${f} — ${e.message}`);
       continue;
     }
     const { data, content } = parsed;
@@ -5212,7 +5226,7 @@ function getForecastDeltaEntries() {
       ? data.date.toISOString().slice(0, 10)
       : String(data.date || `${m[1]}-01`).slice(0, 10);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      console.warn(`forecast-delta: skipping ${f} — malformed date "${date}"`);
+      console.warn(`${dirName}: skipping ${f} — malformed date "${date}"`);
       continue;
     }
     if (date > _today) continue; // held until its date, like Capture Corner
@@ -5225,13 +5239,17 @@ function getForecastDeltaEntries() {
       date,
       monthLabel: d.toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' }),
       formatted: d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }),
-      title: String(data.title || `${m[1]} forecast read`).trim(),
+      title: String(data.title || `${m[1]} entry`).trim(),
       agencies: Array.isArray(data.agencies) ? data.agencies.map(String) : [],
+      vehicles: Array.isArray(data.vehicles) ? data.vehicles.map(String) : [],
+      decisionUrl: typeof data.decision_url === 'string' ? data.decision_url : '',
       html: marked(content),
     });
   }
   return entries.sort((a, b) => b.date.localeCompare(a.date));
 }
+
+function getForecastDeltaEntries() { return getMonthlyContentEntries('forecast-delta'); }
 
 function forecastDeltaAgeDays(entry) {
   if (!entry) return Infinity;
@@ -5274,6 +5292,52 @@ function generateForecastDeltaFreshnessHtml() {
     return `<span class="fd-fresh fd-ok">Updated ${escapeHtml(latest.formatted)} (${age}d ago)</span>`;
   }
   return `<span class="fd-fresh fd-stale">Last read ${escapeHtml(latest.formatted)} &middot; ${age} days old &middot; a new month is overdue</span>`;
+}
+
+// =====================================================================
+// GAO Sustain Tracker — content/gao-sustain/YYYY-MM.md
+// Same shape as Forecast Delta (2026-09-10): the page carried
+// BUILD:GAO_SUSTAIN_* marker comments above a HARDCODED May 2026 entry,
+// and no injection existed for them, so the markers were decoration and
+// the markdown was never read. Frontmatter: date, title, decision_url,
+// agencies[], vehicles[].
+// =====================================================================
+function getGaoSustainEntries() { return getMonthlyContentEntries('gao-sustain'); }
+
+function generateGaoSustainLatestHtml() {
+  const [latest] = getGaoSustainEntries();
+  if (!latest) {
+    return '<div class="dash-card"><p style="font-size:14px;color:var(--mmt-text-secondary);margin:0;">No sustain entry is published yet. Entries land at <code>content/gao-sustain/YYYY-MM.md</code>.</p></div>';
+  }
+  const chips = latest.agencies.concat(latest.vehicles).map((a) => `<span class="gao-chip">${escapeHtml(a)}</span>`).join('');
+  const decision = latest.decisionUrl ? `<a href="${escapeHtml(latest.decisionUrl)}" target="_blank" rel="noopener" style="color:var(--mmt-teal);font-weight:600;text-decoration:none;">Decision / coverage &rarr;</a>` : '';
+  return `<div class="dash-card">
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-teal);margin:0 0 4px;">${escapeHtml(latest.monthLabel)} &middot; Latest entry &middot; ${escapeHtml(latest.formatted)}</p>
+          <h2 style="font-size:18px;font-weight:700;margin:0 0 4px;">${escapeHtml(latest.title)}</h2>
+          <div class="gao-meta">${chips}${decision}</div>
+          <div class="gao-body">${latest.html}</div>
+        </div>`;
+}
+
+function generateGaoSustainArchiveHtml() {
+  const entries = getGaoSustainEntries();
+  const older = entries.slice(1);
+  const items = older.length
+    ? older.map((e) => `<li><strong>${escapeHtml(e.monthLabel)}</strong> &mdash; ${escapeHtml(e.title)}</li>`).join('')
+    : `<li>${entries[0] ? escapeHtml(entries[0].monthLabel) + ' &mdash; ' + escapeHtml(entries[0].title) + ' (this entry)' : 'No entries yet'}</li>`;
+  return `<div class="dash-card">
+          <h3 style="font-size:14px;font-weight:700;margin:0 0 10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--mmt-text-secondary);">Archive</h3>
+          <ul class="gao-archive" style="font-size:14px;color:var(--mmt-text-secondary);margin:0;padding-left:18px;">${items}</ul>
+          <p style="font-size:12px;color:var(--mmt-text-secondary);margin:12px 0 0;">A new entry ships monthly. Browse <a href="https://www.gao.gov/legal/bid-protests/search" target="_blank" rel="noopener" style="color:var(--mmt-teal);">GAO bid protest decisions</a> for the full docket.</p>
+        </div>`;
+}
+
+function generateGaoSustainFreshnessHtml() {
+  const [latest] = getGaoSustainEntries();
+  const age = forecastDeltaAgeDays(latest);
+  if (!latest || age === Infinity) return '<span class="fd-fresh fd-stale">No published entry</span>';
+  if (age <= FORECAST_DELTA_WARN_DAYS) return `<span class="fd-fresh fd-ok">Updated ${escapeHtml(latest.formatted)} (${age}d ago)</span>`;
+  return `<span class="fd-fresh fd-stale">Last entry ${escapeHtml(latest.formatted)} &middot; ${age} days old &middot; a new month is overdue</span>`;
 }
 
 // =====================================================================

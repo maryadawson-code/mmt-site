@@ -20,6 +20,7 @@ const { createClient } = require("@supabase/supabase-js");
 const { sendEmail } = require("./lib/send-email");
 const { isRootDomainUrl } = require("./lib/url-validator");
 const { logOpsEvent } = require("./lib/ops-ledger");
+const { evaluate: evaluateDataFreshness } = require("./lib/data-freshness");
 const { hasStaleNotes, strippedNotes } = require("./lib/intel-notes-sanitizer");
 const { getRefreshRoster } = require("./lib/refresh-roster");
 const { isFabricated, isClosed, dedupKey } = require("./lib/radar-hygiene");
@@ -365,17 +366,20 @@ exports.handler = async () => {
   let forecast = { latest_file: null, latest_date: null, entry_age_days: Infinity, pipeline_last_verified: null, pipeline_age_days: Infinity, pipeline_rows: 0, pipeline_past_rows: 0, covered: [], missing: [] };
   try { forecast = _forecastDeltaHealth(); } catch (e) { console.warn("forecast delta health scan failed:", e.message); }
   const forecastStale = forecast.entry_age_days > TRACKER_STALE_DAYS || forecast.pipeline_age_days > TRACKER_STALE_DAYS;
+  let freshness = { datasets: [], content: [], stale_datasets: [], stale_content: [], stale_count: 0, today: "" };
+  try { freshness = evaluateDataFreshness(); } catch (e) { console.warn("data freshness scan failed:", e.message); }
 
   const allGreen = stale.length === 0 && badUrls.length === 0 && staleNotes.length === 0
     && orphaned.length === 0 && trackerStale.stale_count === 0
     && aoiHealth.stale_count === 0 && aoiHealth.past_due_open.length === 0
     && !forecastStale
+    && freshness.stale_count === 0
     && radarFab.fabricated === 0 && radarFab.duplicates === 0
     && radar.age_hours <= 48 && vehicle.age_hours <= 168
     && Object.keys(failures).length === 0;
   const subject = allGreen
     ? "MMT intel quality — all green"
-    : `MMT intel quality — ${stale.length} stale, ${trackerStale.stale_count} listing-stale, ${aoiHealth.stale_count} AoI-stale${aoiHealth.past_due_open.length ? `, ${aoiHealth.past_due_open.length} AoI PAST-DUE-OPEN` : ""}${forecastStale ? `, forecast-delta ${forecast.entry_age_days === Infinity ? "none" : forecast.entry_age_days + "d"}/pipeline ${forecast.pipeline_age_days === Infinity ? "none" : forecast.pipeline_age_days + "d"}` : ""}, ${orphaned.length} orphaned, ${radarFab.fabricated} fabricated radar, ${badUrls.length} bad URL, ${staleNotes.length} note-leak, radar ${radar.age_hours}h`;
+    : `MMT intel quality — ${stale.length} stale, ${trackerStale.stale_count} listing-stale, ${aoiHealth.stale_count} AoI-stale${aoiHealth.past_due_open.length ? `, ${aoiHealth.past_due_open.length} AoI PAST-DUE-OPEN` : ""}${freshness.stale_count ? `, ${freshness.stale_count} dataset-stale` : ""}${forecastStale ? `, forecast-delta ${forecast.entry_age_days === Infinity ? "none" : forecast.entry_age_days + "d"}/pipeline ${forecast.pipeline_age_days === Infinity ? "none" : forecast.pipeline_age_days + "d"}` : ""}, ${orphaned.length} orphaned, ${radarFab.fabricated} fabricated radar, ${badUrls.length} bad URL, ${staleNotes.length} note-leak, radar ${radar.age_hours}h`;
 
   const html = `<!DOCTYPE html><html><body style="font-family:-apple-system,sans-serif;padding:24px;color:#0A192F;">
     <h2 style="margin:0 0 8px;">Intel quality report &middot; ${new Date().toISOString().slice(0,10)}</h2>
@@ -393,6 +397,9 @@ exports.handler = async () => {
     ${aoiHealth.past_due_open.length === 0 ? "<p>Past-due open: none.</p>" : `<p style="color:#E63946;font-weight:700;">Past-due open: ${aoiHealth.past_due_open.length} — FIX THESE.</p><ul>${aoiHealth.past_due_open.map((r) => `<li>${esc(r.label)} &mdash; due ${esc(r.response_due)}, ${r.daysPast}d past</li>`).join("")}</ul>`}
     ${aoiHealth.closing_soon.length === 0 ? "" : `<p style="font-weight:700;">Closing within 14 days: ${aoiHealth.closing_soon.length}</p><ul>${aoiHealth.closing_soon.map((r) => `<li>${esc(r.label)} &mdash; due ${esc(r.response_due)} (${r.daysLeft}d left)</li>`).join("")}</ul>`}
     ${aoiHealth.stale_count === 0 ? `<p>Freshness: all ${aoiHealth.total_csos} CSO(s) / ${aoiHealth.total_aois} AoI(s) re-verified within ${TRACKER_STALE_DAYS}d.</p>` : `<p>${aoiHealth.stale_count} entr${aoiHealth.stale_count === 1 ? "y" : "ies"} not re-verified in ${TRACKER_STALE_DAYS}d (oldest ${aoiHealth.worst}d).</p><ul>${aoiHealth.samples.map((r) => `<li>${esc(r.label)} &mdash; ${r.ageDays === Infinity ? "no/invalid date" : r.ageDays + "d"}</li>`).join("")}</ul>`}
+    <h3 style="font-size:14px;margin:16px 0 6px;">Hand-maintained data freshness (registry: lib/data-freshness.js)</h3>
+    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">Every dataset and content directory the site renders from a file nobody's cron touches, with the date that proves it was last verified. A row here means a subscriber-facing page is older than its stated cadence. Build-time scripts/validate-data-freshness.js prints the same list; DATA_FRESHNESS_MAX_AGE_DAYS makes it a hard build failure.</p>
+    ${freshness.stale_count === 0 ? `<p>All ${freshness.datasets.length} dataset rows and ${freshness.content.length} content dir(s) within cadence.</p>` : `<ul>${freshness.stale_datasets.map((r) => `<li><strong>${esc(r.label ? r.id + " (" + r.label + ")" : r.id)}</strong> &mdash; ${r.error ? esc(r.error) : `${esc(r.date)}, ${r.age_days}d old (warn ${r.warn_days}d, ${esc(r.cadence)})`}<br><span style="color:#5C6B7A;">${esc(r.fix)}</span></li>`).join("")}${freshness.stale_content.map((c) => `<li><strong>${esc(c.id)}</strong> &mdash; ${c.latest_file ? `newest entry ${esc(c.latest_file)}, ${c.age_days}d old (warn ${c.warn_days}d)` : "no published entry"}<br><span style="color:#5C6B7A;">${esc(c.fix)}</span></li>`).join("")}</ul>`}
     <h3 style="font-size:14px;margin:16px 0 6px;">Forecast Delta Tracker (/premium/forecast-delta)</h3>
     <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">The monthly read renders from content/forecast-delta/YYYY-MM.md and the pipeline table from data/forecast-pipeline.json. Both are hand-maintained; no cron writes them. A read older than ${TRACKER_STALE_DAYS}d means a month was skipped &mdash; write the next YYYY-MM.md. A pipeline older than ${TRACKER_STALE_DAYS}d means the agency forecasts have not been re-pulled; rows whose published solicitation date has passed are labeled on the page but want re-verification. Build-time scripts/validate-forecast-delta.js prints the same signal; FORECAST_DELTA_MAX_AGE_DAYS makes it a hard build failure.</p>
     <p>Latest read: ${forecast.latest_file ? `${esc(forecast.latest_file)} (${forecast.entry_age_days}d old)` : "<strong style=\"color:#E63946;\">none published</strong>"}${forecast.entry_age_days > TRACKER_STALE_DAYS ? ` &mdash; <strong style="color:#E63946;">OVERDUE</strong>` : ""}</p>
@@ -433,7 +440,7 @@ exports.handler = async () => {
       source_function: "intel-quality-report",
       severity: allGreen ? "info" : "warn",
       signature: "weekly_qa",
-      details: { stale: stale.length, tracker_listing_stale: trackerStale.stale_count, cso_aoi_stale: aoiHealth.stale_count, cso_aoi_past_due_open: aoiHealth.past_due_open.length, forecast_delta_age_d: forecast.entry_age_days === Infinity ? null : forecast.entry_age_days, forecast_pipeline_age_d: forecast.pipeline_age_days === Infinity ? null : forecast.pipeline_age_days, forecast_pipeline_missing: forecast.missing.length, orphaned: orphaned.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, radar_fabricated: radarFab.fabricated, radar_published_fabricated: radarFab.published_fabricated, radar_duplicates: radarFab.duplicates, url_archived_7d: urlSweep.archived_7d || 0, radar_age_h: radar.age_hours, vehicle_age_h: vehicle.age_hours, failure_keys: Object.keys(failures).length },
+      details: { stale: stale.length, tracker_listing_stale: trackerStale.stale_count, cso_aoi_stale: aoiHealth.stale_count, cso_aoi_past_due_open: aoiHealth.past_due_open.length, forecast_delta_age_d: forecast.entry_age_days === Infinity ? null : forecast.entry_age_days, forecast_pipeline_age_d: forecast.pipeline_age_days === Infinity ? null : forecast.pipeline_age_days, forecast_pipeline_missing: forecast.missing.length, data_stale: freshness.stale_count, orphaned: orphaned.length, bad_urls: badUrls.length, stale_notes: staleNotes.length, radar_fabricated: radarFab.fabricated, radar_published_fabricated: radarFab.published_fabricated, radar_duplicates: radarFab.duplicates, url_archived_7d: urlSweep.archived_7d || 0, radar_age_h: radar.age_hours, vehicle_age_h: vehicle.age_hours, failure_keys: Object.keys(failures).length },
     });
   } catch { /* non-blocking */ }
 

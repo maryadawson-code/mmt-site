@@ -29,6 +29,9 @@
     .deadline-card .date { font-size:14px; font-weight:800; color:var(--mmt-navy); }
     .deadline-card .label { font-size:11px; padding:2px 8px; border-radius:10px; background:rgba(69,123,157,0.1); color:var(--mmt-teal); font-weight:700; letter-spacing:0.04em; text-transform:uppercase; }
     .deadline-card.high-risk .label { background:rgba(230,57,70,0.1); color:#E63946; }
+    .deadline-card .label.passed { background:rgba(92,107,122,0.12); color:#5C6B7A; }
+    .deadline-card .label.soon { background:rgba(230,57,70,0.1); color:#E63946; }
+    .deadline-card.passed { opacity:0.72; border-left-color:#5C6B7A; background:var(--mmt-white); }
     .deadline-card h2 { font-size:16px; font-weight:700; margin:0 0 10px; line-height:1.4; }
     .deadline-card .impact { font-size:13px; color:var(--mmt-navy); line-height:1.6; margin:0 0 10px; }
     .deadline-card .capture { font-size:13px; color:var(--mmt-navy); line-height:1.6; padding:10px 14px; background:var(--mmt-surface); border-radius:6px; border-left:2px solid var(--mmt-teal); margin:10px 0; }
@@ -149,6 +152,9 @@
 
     (function(){
       var esc = function(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g, function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); };
+      var todayMs = Date.parse(new Date().toISOString().slice(0,10)+'T00:00:00Z');
+      var ageDays = function(iso){ var t=Date.parse(String(iso||'').slice(0,10)+'T00:00:00Z'); return isNaN(t)?Infinity:Math.floor((todayMs-t)/86400000); };
+      var daysUntil = function(iso){ var t=Date.parse(String(iso||'').slice(0,10)+'T00:00:00Z'); return isNaN(t)?null:Math.round((t-todayMs)/86400000); };
       fetch('/data/cr-deadlines.json').then(function(r){return r.json();}).then(function(d){
         // Status band
         var sb = document.getElementById('statusBand');
@@ -158,9 +164,21 @@
           '<p><strong>FY27 status:</strong> ' + esc(ap.fy27_status||'') + '</p>' +
           (ap.cr_history_note ? '<p style="margin-top:6px;color:var(--mmt-text-secondary);font-size:12px;">' + esc(ap.cr_history_note) + '</p>' : '');
 
-        // Deadlines
+        // Freshness of the curated deadline list itself. This file is hand-
+        // maintained against CRFB; past 45 days say so in red.
+        var lv = (d._schema && d._schema.last_verified) || '';
+        var lvAge = ageDays(lv);
+        sb.innerHTML += '<p style="margin-top:8px;font-size:12px;' + (lvAge > 45 ? 'color:#E63946;font-weight:700;' : 'color:var(--mmt-text-secondary);') + '">Deadline list verified ' + esc(lv || 'never') + (lvAge === Infinity ? '' : ' (' + lvAge + 'd ago)') + (lvAge > 45 ? ' &middot; re-verification against CRFB is due' : '') + '</p>';
+
+        // Deadlines. Each card says where it stands against today: a passed
+        // date is labeled instead of reading as upcoming, and a live one
+        // shows the countdown.
         var html = (d.deadlines||[]).map(function(item){
           var isHighRisk = (item.label||'').toLowerCase().includes('fiscal year end') || (item.label||'').toLowerCase().includes('cr');
+          var left = daysUntil(item.date);
+          var timing = left === null ? '' : (left < 0
+            ? '<span class="label passed">Passed ' + (-left) + 'd ago</span>'
+            : (left === 0 ? '<span class="label soon">Today</span>' : '<span class="label' + (left <= 30 ? ' soon' : '') + '">' + left + ' days out</span>'));
           var agencies = (item.agencies_affected||[]).map(function(a){ return '<span class="chip">'+esc(a)+'</span>'; }).join('');
           var related = '';
           if (item.related_expirations && item.related_expirations.length) {
@@ -168,10 +186,10 @@
               item.related_expirations.map(function(r){ return '<li>'+esc(r)+'</li>'; }).join('') +
               '</ul></div>';
           }
-          return '<div class="deadline-card' + (isHighRisk ? ' high-risk' : '') + '">' +
+          return '<div class="deadline-card' + (isHighRisk ? ' high-risk' : '') + (left !== null && left < 0 ? ' passed' : '') + '">' +
             '<div class="date-row">' +
               '<span class="date">'+esc(item.date)+'</span>' +
-              '<span class="label">'+esc(item.label)+'</span>' +
+              '<span class="label">'+esc(item.label)+'</span>' + timing +
             '</div>' +
             '<h2>'+esc(item.headline)+'</h2>' +
             '<p class="impact">'+esc(item.fy_impact)+'</p>' +
