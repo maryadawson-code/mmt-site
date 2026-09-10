@@ -3467,6 +3467,13 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
     '<!-- BUILD:BRIEF_ARCHIVE -->': generateBriefArchiveHtml(),
     '<!-- BUILD:BRIEF_LATEST -->': generateBriefLatestHtml(),
     '<!-- BUILD:CAPTURE_CORNER_ARCHIVE -->': generateCaptureCornerArchiveHtml(),
+    // Forecast Delta Tracker (premium/forecast-delta.html) — the editorial read
+    // renders from content/forecast-delta/YYYY-MM.md at build time. Until
+    // 2026-09-10 the May entry was hardcoded in the page and the markdown was
+    // never read, so nothing could update it; these markers are the pipeline.
+    '<!-- BUILD:FORECAST_DELTA_LATEST -->': generateForecastDeltaLatestHtml(),
+    '<!-- BUILD:FORECAST_DELTA_ARCHIVE -->': generateForecastDeltaArchiveHtml(),
+    '<!-- BUILD:FORECAST_DELTA_FRESHNESS -->': generateForecastDeltaFreshnessHtml(),
     '<!-- BUILD:CONTRACT_SUMMARY -->': generateContractSummaryHtml(contracts),
     '<!-- BUILD:EVENTS_LIST -->': generateEventsListHtml(),
     '<!-- BUILD:LATEST_ANALYSIS -->': generateLatestAnalysisHtml(articles || []),
@@ -5171,6 +5178,102 @@ function generateCaptureCornerArchiveHtml() {
         <div style="font-size:13px;font-weight:600;color:var(--mmt-teal);white-space:nowrap;flex-shrink:0;padding-top:2px;">Read &rarr;</div>
       </a>`
   ).join('\n      ');
+}
+
+// =====================================================================
+// Forecast Delta Tracker — content/forecast-delta/YYYY-MM.md
+// Powers <!-- BUILD:FORECAST_DELTA_LATEST -->, _ARCHIVE and _FRESHNESS on
+// premium/forecast-delta.html. Frontmatter: date (YYYY-MM-DD), title,
+// agencies[]. Future-dated entries are held until their date (ET), same
+// rule as Capture Corner. Newest entry is the "Latest read"; older ones
+// list in the archive. The freshness badge is the subscriber-facing
+// tripwire: a stale entry says so on the page instead of masquerading as
+// current, which is exactly how the May 2026 entry sat unnoticed for four
+// months. scripts/validate-forecast-delta.js checks the same files at
+// build time and intel-quality-report.js surfaces them in the Friday email.
+// =====================================================================
+const FORECAST_DELTA_WARN_DAYS = 45;
+
+function getForecastDeltaEntries() {
+  const dir = path.join(__dirname, 'content', 'forecast-delta');
+  if (!fs.existsSync(dir)) return [];
+  const _today = todayET();
+  const entries = [];
+  for (const f of fs.readdirSync(dir)) {
+    const m = f.match(/^(\d{4}-\d{2})\.md$/);
+    if (!m) continue;
+    let parsed;
+    try { parsed = matter(fs.readFileSync(path.join(dir, f), 'utf8')); } catch (e) {
+      console.warn(`forecast-delta: skipping ${f} — ${e.message}`);
+      continue;
+    }
+    const { data, content } = parsed;
+    const date = data.date instanceof Date
+      ? data.date.toISOString().slice(0, 10)
+      : String(data.date || `${m[1]}-01`).slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      console.warn(`forecast-delta: skipping ${f} — malformed date "${date}"`);
+      continue;
+    }
+    if (date > _today) continue; // held until its date, like Capture Corner
+    if (!content.trim()) continue;
+    const parts = date.split('-');
+    const d = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+    entries.push({
+      file: f,
+      month: m[1],
+      date,
+      monthLabel: d.toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' }),
+      formatted: d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }),
+      title: String(data.title || `${m[1]} forecast read`).trim(),
+      agencies: Array.isArray(data.agencies) ? data.agencies.map(String) : [],
+      html: marked(content),
+    });
+  }
+  return entries.sort((a, b) => b.date.localeCompare(a.date));
+}
+
+function forecastDeltaAgeDays(entry) {
+  if (!entry) return Infinity;
+  const t = Date.parse(entry.date + 'T00:00:00Z');
+  const now = Date.parse(todayET() + 'T00:00:00Z');
+  return Number.isNaN(t) ? Infinity : Math.floor((now - t) / 86400000);
+}
+
+function generateForecastDeltaLatestHtml() {
+  const [latest] = getForecastDeltaEntries();
+  if (!latest) {
+    return '<p style="font-size:14px;color:var(--mmt-text-secondary);margin:0;">No forecast read is published yet. Entries land at <code>content/forecast-delta/YYYY-MM.md</code>.</p>';
+  }
+  const chips = latest.agencies.map((a) => `<span class="fd-chip">${escapeHtml(a)}</span>`).join('');
+  return `<p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-teal);margin:0 0 4px;">${escapeHtml(latest.monthLabel)} &middot; Latest read &middot; ${escapeHtml(latest.formatted)}</p>
+          <h2 style="font-size:18px;font-weight:700;margin:0 0 12px;">${escapeHtml(latest.title)}</h2>
+          ${chips ? `<p class="fd-chips">${chips}</p>` : ''}
+          ${latest.html}`;
+}
+
+function generateForecastDeltaArchiveHtml() {
+  const entries = getForecastDeltaEntries();
+  const older = entries.slice(1);
+  if (entries.length === 0) return '';
+  if (older.length === 0) {
+    return '<p style="font-size:13px;color:var(--mmt-text-secondary);margin:0;">Earlier reads will list here as new months publish.</p>';
+  }
+  return `<ul class="fd-archive">${older.map((e) =>
+    `<li><strong>${escapeHtml(e.monthLabel)}</strong> &mdash; ${escapeHtml(e.title)}${e.agencies.length ? ` <span style="color:var(--mmt-text-secondary);">(${escapeHtml(e.agencies.join(', '))})</span>` : ''}</li>`
+  ).join('')}</ul>`;
+}
+
+function generateForecastDeltaFreshnessHtml() {
+  const [latest] = getForecastDeltaEntries();
+  const age = forecastDeltaAgeDays(latest);
+  if (!latest || age === Infinity) {
+    return '<span class="fd-fresh fd-stale">No published read</span>';
+  }
+  if (age <= FORECAST_DELTA_WARN_DAYS) {
+    return `<span class="fd-fresh fd-ok">Updated ${escapeHtml(latest.formatted)} (${age}d ago)</span>`;
+  }
+  return `<span class="fd-fresh fd-stale">Last read ${escapeHtml(latest.formatted)} &middot; ${age} days old &middot; a new month is overdue</span>`;
 }
 
 // =====================================================================

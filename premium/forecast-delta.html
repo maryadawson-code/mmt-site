@@ -50,6 +50,19 @@
     .fp-src { color:var(--mmt-teal); text-decoration:none; font-weight:600; font-size:12px; white-space:nowrap; }
     .fp-src:hover { text-decoration:underline; }
     .fp-count { font-size:12px; color:var(--mmt-text-secondary); margin-left:auto; }
+    .fd-fresh { display:inline-block; font-size:12px; font-weight:700; padding:4px 10px; border-radius:14px; }
+    .fd-ok { background:rgba(27,122,75,0.1); color:#1B7A4B; }
+    .fd-stale { background:rgba(230,57,70,0.1); color:#E63946; }
+    .fd-chips { margin:0 0 12px; display:flex; flex-wrap:wrap; gap:6px; }
+    .fd-chip { font-size:11px; font-weight:700; padding:2px 8px; border-radius:10px; background:rgba(69,123,157,0.1); color:var(--mmt-teal); }
+    .editorial h3 { font-size:15px; font-weight:700; margin:16px 0 6px; color:var(--mmt-navy); }
+    .editorial ul, .editorial ol { font-size:14px; line-height:1.7; color:var(--mmt-navy); margin:0 0 12px; padding-left:20px; }
+    .fd-archive { font-size:14px; color:var(--mmt-navy); margin:0; padding-left:18px; }
+    .fd-archive li { margin-bottom:6px; }
+    .fp-passed { font-size:10px; font-weight:700; padding:1px 6px; border-radius:8px; background:rgba(92,107,122,0.12); color:#5C6B7A; margin-left:6px; white-space:nowrap; vertical-align:middle; }
+    .fp-coverage { font-size:12px; color:var(--mmt-text-secondary); margin:0 0 12px; }
+    .fp-coverage .missing { color:#B45309; font-weight:600; }
+    .fp-verified-stale { color:#E63946; font-weight:700; }
     @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } table.fp-table { font-size:12px; } table.fp-table th, table.fp-table td { padding:8px 9px; } }
   </style>
   <script>
@@ -105,20 +118,22 @@
 
         <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Procurement Signal</p>
         <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Forecast Delta Tracker</h1>
-        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 24px;">Monthly editorial diff of federal agency procurement forecasts &mdash; what was added, what slipped, what was removed. VA, DHA, HHS, ARPA-H, GSA. Plus a vetted portal of the official sources we monitor.</p>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 10px;">Monthly editorial diff of federal agency procurement forecasts &mdash; what was added, what slipped, what was removed. VA, DHA, HHS, ARPA-H, GSA. Plus a vetted portal of the official sources we monitor.</p>
+        <p style="margin:0 0 24px;"><!-- BUILD:FORECAST_DELTA_FRESHNESS --></p>
 
         <div class="dash-card editorial">
-          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-teal);margin:0 0 4px;">May 2026 &middot; Latest read</p>
-          <h2 style="font-size:18px;font-weight:700;margin:0 0 12px;">VA Enterprise Imaging surfaces, DHA reorg ripples, ARPA-H Resilient Systems pipeline</h2>
-          <p>The May Capture Intelligence Sheet led with <strong>VA Enterprise Imaging</strong> because that's the procurement signal flashing brightest right now in the VA forecast. It's worth restating in this format: VA OIT's quarterly forecast refresh added the Enterprise Imaging line item ahead of a draft RFP that we expect inside the next two quarters. If you're not already engaged with VA OIT on imaging infrastructure or PACS modernization, the window to position is narrowing.</p>
-          <p><strong>DHA forecast ripples from the April 2026 reorg.</strong> The DHA reorg restructured assistant-director portfolios, which means the official DHA forecast as published is structurally aligned to the OLD org chart. PEOs roll up differently in the new structure, which now stands up three Portfolio Acquisition Executives &mdash; Medical Products, Medical Services, and (at FOC) Medical Digital Solutions; map any DHA forecast line to the PAE that will own it. Until the next forecast refresh catches up, cross-reference the forecast directly with the new IOC/FOC PMO map (covered in the April 29 Capture Corner). Forecast addenda posted between full refreshes are the place to watch.</p>
-          <p><strong>ARPA-H Resilient Systems pipeline thickening.</strong> The ARPA-H people directory shows seven program managers in Resilient Systems, several of whom have moved into program-launch posture. ARPA-H doesn't post a traditional forecast &mdash; its program announcements drop on <a href="https://arpa-h.gov/research-funding" target="_blank" rel="noopener">arpa-h.gov/research-funding</a> without the long-runway notice agencies like VA give you. If your capture pipeline includes ARPA-H, set up a recurring check on the program announcements page rather than relying on the procurement-forecast hub.</p>
-          <p><strong>The methodology note for subscribers:</strong> federal procurement forecasts are not a single source of truth. They're per-agency snapshots, updated on their own cadence, in formats that range from a downloadable Excel sheet (VA, GSA) to a search interface (HHS via mySBCX) to plain HTML (DHA-via-DoD). The MMT Forecast Delta Tracker layers editorial commentary on top of the official sources below &mdash; because the diff matters more than the snapshot, and nobody else is publishing it month-over-month.</p>
+          <!-- BUILD:FORECAST_DELTA_LATEST -->
+        </div>
+
+        <div class="dash-card">
+          <h2 style="font-size:18px;font-weight:700;margin:0 0 10px;">Earlier reads</h2>
+          <!-- BUILD:FORECAST_DELTA_ARCHIVE -->
         </div>
 
         <div class="dash-card" id="forecast-pipeline" style="scroll-margin-top:80px;">
           <h2 style="font-size:18px;font-weight:700;margin:0 0 4px;">Forecast Pipeline &mdash; what agencies say is coming</h2>
-          <p style="font-size:13px;color:var(--mmt-text-secondary);margin:0 0 14px;">Named opportunities pulled straight from the official agency forecasts &mdash; the CMS Forecast of Contracting Opportunities and the DHA Long Range Acquisition Forecast &mdash; each with the anticipated solicitation and award dates the agency published. Recompetes are where an incumbent is defending; sort by solicitation date to see what fires first. This is the agency&rsquo;s own forecast, not a market rumor.</p>
+          <p style="font-size:13px;color:var(--mmt-text-secondary);margin:0 0 14px;">Named opportunities pulled straight from the official agency forecasts, each with the anticipated solicitation and award dates the agency published. Recompetes are where an incumbent is defending; sort by solicitation date to see what fires first. This is the agency&rsquo;s own forecast, not a market rumor.</p>
+          <p class="fp-coverage" id="fpCoverage"></p>
           <div class="fp-controls">
             <div id="fpFilters" style="display:flex;gap:8px;"></div>
             <input type="text" id="fpSearch" class="fp-search" placeholder="Search program or office...">
@@ -159,13 +174,25 @@
       });
 
       // Forecast Pipeline table (data/forecast-pipeline.json)
+      var todayIso = new Date().toISOString().slice(0,10);
+      var ageDays = function(iso){ var t=Date.parse(String(iso||'').slice(0,10)+'T00:00:00Z'); return isNaN(t)?Infinity:Math.floor((Date.now()-t)/86400000); };
+      // Dates are what the agency published. When a published date is already
+      // behind us we keep the row (it is still the agency's own forecast) but
+      // say so, instead of letting a FY25 line read as "coming".
       var fmtDate = function(d){
         if(!d) return '<span style="color:var(--mmt-text-secondary);">TBD</span>';
-        var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d);
+        var m = /(\d{4})-(\d{2})-(\d{2})/.exec(d);
         if(!m) return esc(d);
         var mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(m[2],10)-1];
-        return mo+' '+parseInt(m[3],10)+', '+m[1];
+        var iso = m[1]+'-'+m[2]+'-'+m[3];
+        var label = mo+' '+parseInt(m[3],10)+', '+m[1];
+        if(/^n\.a\./i.test(String(d))) label = 'n.a. (start '+label+')';
+        return esc(label) + (iso < todayIso ? '<span class="fp-passed">passed</span>' : '');
       };
+      // The agencies the tracker is meant to cover — the 11 agency profiles.
+      // Anything missing from the pipeline data is named on the page so a
+      // coverage gap is visible to subscribers instead of silently absent.
+      var TARGET_AGENCIES = ['DHA','VA','HHS','ONC','ARPA-H','CMS','IHS','CDC','FDA','NIH','GSA'];
       var sortKey = function(d){ var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(d||''); return m?d.slice(0,10):'9999'; };
       var recompeteBadge = function(t){
         if(!t) return '';
@@ -216,7 +243,15 @@
         var si=document.getElementById('fpSearch');
         if(si) si.addEventListener('input', function(){ term=this.value.trim().toLowerCase(); render(); });
         var verified=(d._schema&&d._schema.last_verified)||'';
-        document.getElementById('fpNote').innerHTML = esc(items.length)+' official forecast items (CMS + DHA). Dates are the agency&rsquo;s anticipated solicitation/award, subject to change. Verified '+esc(verified)+'. Cross-reference with the <a href="/contract-tracker.html" style="color:var(--mmt-teal);">Contract Tracker</a> and <a href="/premium/cr-exposure.html" style="color:var(--mmt-teal);">Budget Signals</a>.';
+        var covered = agencies.slice(1);
+        var missing = TARGET_AGENCIES.filter(function(a){ return covered.indexOf(a)<0; });
+        document.getElementById('fpCoverage').innerHTML = 'Agencies in the pipeline: <strong>'+esc(covered.join(', ')||'none')+'</strong>.' +
+          (missing.length ? ' <span class="missing">Not yet covered: '+esc(missing.join(', '))+'</span> &mdash; their official forecasts are linked in the portal below until their rows land here.' : ' All tracked agencies covered.');
+        var vAge = ageDays(verified);
+        var verifiedHtml = vAge > 45
+          ? '<span class="fp-verified-stale">Verified '+esc(verified)+' ('+vAge+' days ago &mdash; overdue for re-verification against the agency forecasts)</span>'
+          : 'Verified '+esc(verified)+'.';
+        document.getElementById('fpNote').innerHTML = esc(items.length)+' official forecast items ('+esc(covered.join(' + '))+'). Dates are the agency&rsquo;s anticipated solicitation/award, subject to change. '+verifiedHtml+' Cross-reference with the <a href="/contract-tracker.html" style="color:var(--mmt-teal);">Contract Tracker</a> and <a href="/premium/cr-exposure.html" style="color:var(--mmt-teal);">Budget Signals</a>.';
         render();
       }).catch(function(){
         document.getElementById('fpTableWrap').innerHTML = '<p style="color:var(--mmt-text-secondary);">Could not load forecast pipeline data.</p>';

@@ -356,7 +356,7 @@
         "/forecasts"
       ],
       "member_url": "/premium/forecast-delta.html",
-      "backing_function": "static page reading data/forecast-portals.json + content/forecast-delta/*.md (Sprint 5 wave2)",
+      "backing_function": "build.js renders content/forecast-delta/YYYY-MM.md into BUILD:FORECAST_DELTA_* markers (latest read + archive + freshness badge); page fetches data/forecast-portals.json + data/forecast-pipeline.json client-side. Guarded by scripts/validate-forecast-delta.js (build) and intel-quality-report.js (Friday email).",
       "entitlement_required": "premium|founding|institutional|admin",
       "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
       "expected_data_source": "Editorial monthly entries + curated portal of agency forecast URLs (acquisition.gov hub)",
