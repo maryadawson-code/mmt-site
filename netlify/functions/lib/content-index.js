@@ -86,7 +86,10 @@ function extractAcronyms(text) {
  * Score a single corpus item against a query's tokens.
  * Title matches weigh 3x, description 2x, tags 2x, excerpt 1x.
  */
-const AGENCY_ACRONYMS = new Set(["dha", "va", "vha", "vba", "hhs", "cms", "nih", "ihs", "dod", "gsa", "onc", "fda", "cdc", "mhs"]);
+// From the one agency registry, so a scope acronym for ANY tracked agency
+// (not the fourteen that used to be listed here) is weighed below a topic
+// acronym like HCDS or T4NG2.
+const { AGENCY_ACRONYM_SET: AGENCY_ACRONYMS } = require("./federal-agencies");
 
 function scoreItem(item, queryTokens, acronyms, phrase) {
   const titleText = (item.title || "").toLowerCase();

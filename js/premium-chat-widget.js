@@ -253,7 +253,9 @@
         if (meta && meta.agency) {
           var tag = document.createElement('div');
           tag.style.cssText = 'margin-top:8px;font-size:11px;color:' + C.text2 + ';letter-spacing:0.04em;text-transform:uppercase;';
-          tag.textContent = 'Scope: ' + meta.agency + (meta.hasData === false ? ' · limited API data' : '');
+          // Full office name when the server resolved one: "Defense Health
+          // Agency" reads better than "DHA" for anyone outside the acronym.
+          tag.textContent = 'Scope: ' + (meta.agencyName || meta.agency) + (meta.hasData === false ? ' · limited API data' : '');
           bubble.appendChild(tag);
         }
         if (meta && meta.sources && meta.sources.length) {
@@ -374,7 +376,7 @@
 
     function handleAnswer(question, r) {
       var data = r.data;
-      var meta = { agency: data.agency, hasData: data.hasData, sources: data.sources || [], unavailable: data.unavailable || [] };
+      var meta = { agency: data.agency, agencyName: data.agencyName, hasData: data.hasData, sources: data.sources || [], unavailable: data.unavailable || [] };
       var out = addBubble('assistant', data.answer, meta);
       setMeter(data);
       var history = loadHistory();

@@ -1,5 +1,102 @@
 # Mission Meets Tech - Developer & Content Governance
 
+## Sprint 2026-09-10 (night) — Ask MMT search generalized: one agency registry, any question
+
+Mary, on the evening fix: "make sure that the search works no matter what the
+question or agency is not just to this specific question." She was right that
+the fix was narrow. The DHA data-governance bug was one instance of a class,
+and the class was **seven disagreeing hardcoded agency tables**:
+
+| Table | Lived in | Covered |
+|---|---|---|
+| `agencyToToptierName` | federal-data-apis | VA, DHA, DoD, HHS, CMS, NIH, IHS, GSA |
+| `USASPENDING_SUBTIER` | federal-data-apis | DHA, CMS, NIH, IHS |
+| `SAM_DEPT_NAMES` | federal-data-apis | DHA, DoD, VA, HHS, GSA |
+| `agencySlugMap` (Federal Register) | federal-data-apis | VA, DHA, HHS, CMS, NIH, IHS |
+| `agencyCodeMap` (spending totals) | federal-data-apis | VA, DHA, HHS, DoD |
+| `agencyMap` (spending by NAICS) | federal-data-apis | VA, DHA, HHS, DoD |
+| `AGENCY_HINTS` | premium-assistant | 8 substrings |
+| `AGENCY_TOKENS` | query-terms | 14 tokens |
+| `AGENCY_ACRONYMS` | content-index | 14 tokens |
+
+So a question about **FDA, CDC, HRSA, SAMHSA, AHRQ, ARPA-H, ONC, ASPR, VHA,
+VBA, the Army, the Navy, the Air Force, DLA, DISA, USU, NASA (SEWP), DHS or
+SSA** detected no agency at all and every downstream filter ran unscoped, or
+detected one and then filtered to the wrong parent department.
+
+Shipped:
+- **`lib/federal-agencies.js`** — ONE registry, **27 agencies**, each with
+  `aliases`, `acronyms`, `hints`, `usaspending {toptier, subtier}`, `samDept`,
+  `federalRegister[]` and `cgac`. All nine tables above now read it. Adding an
+  agency is one row. Three rules that make detection behave:
+  - **Longest wording wins**, so "Department of the Air Force" is the Air
+    Force and "Veterans Health Administration" is VHA, never their parent.
+  - **First-mention order**, so "a VA and DHA program" leads with VA and
+    `agency` (codes[0]) is what the subscriber led with. Ties go to the
+    longer match.
+  - **Only an agency's OWN code acronym is stripped** from the keyword.
+    Every other acronym in its row (MHS, SEWP, NITAAC, BARDA, CDER, OPTN,
+    ASTP) names a program, vehicle or office the subscriber is asking about,
+    so it sets the agency AND stays in the keyword. Stripping SEWP out of
+    "What has NASA SEWP awarded?" searched NASA for nothing in particular.
+- **`keywordLadder()`** — progressively shorter keywords, most specific term
+  retained longest (identifiers and acronyms beat domain terms beat ordinary
+  words). `enrichWithFederalData` walks it: the subscriber's own wording
+  first, then one relaxed rung if that returned zero rows. **Bounded at two
+  attempts** because the whole federal fan-out sits under an 8s timeout in
+  premium-assistant. An ERROR is never retried: it is not a miss, and
+  retrying would multiply the failure and corrupt the not-reached list.
+  SAM.gov reuses its existing secondary call for the relaxed rung, so SAM
+  stays at two requests per question against its small shared daily quota.
+- **Empty phrase is a real answer.** "What awards has CDC made?" leaves no
+  specific term. It now runs an agency-filtered search with NO keyword, which
+  is the correct query. `searchPhrase()` never falls back to the raw sentence
+  and never sends the leftover generic noun ("awards"), which would only
+  exclude rows.
+- Question verbs that were leaking into keywords (won, made, holds, held,
+  use, run, take, bring) added to the stopword list; `wordRe()` makes
+  matching safe for terms ending in punctuation (`\boasis\+\b` never
+  matched "OASIS+ on-ramp"; a negative lookahead does).
+- The answer's scope label now carries the resolved office name, so a reader
+  outside the acronym sees "Scope: Defense Health Agency".
+
+**Tests (+51, 752 total).** `tests/unit/query-generalization.test.js` is a
+36-row matrix of question shapes across 20 agencies asserting PROPERTIES, not
+hand-checked answers: the named agency is detected, no scaffolding or
+stopword reaches the keyword (ALL-CAPS acronyms exempt, so "IT" in "organ
+transplant IT" survives while the pronoun does not), the meaning-carrying
+terms survive, the agency code never doubles as a keyword, and a scaffolded
+question always comes out strictly shorter. Plus registry integrity (every
+agency filters every API, every alias resolves to itself, every sub-agency
+rolls up to a registered department) and ladder invariants (monotonic, no
+repeat rungs, always ends agency-only). `federal-search-wire.test.js` gains
+three cases: the ladder relaxes and reports which rung answered, an API error
+does not multiply, and FDA gets its own subtier, department, Federal Register
+slug and CGAC end to end.
+
+**Still not verifiable here:** this session is a cloud container whose gateway
+answers 403 to CONNECT for every .gov/.mil host and Perplexity, so no live
+call was made. The wire tests prove what is sent. Two values are best-effort
+and marked in the registry for the live pass: the ARPA-H and ASPR/ONC
+USASpending subtier names (widening protects them), and the
+`spending_by_category` `toptier_code` filter shape.
+
+Hard rules (do not regress):
+- **Agency mappings live in `lib/federal-agencies.js`. Never add a seventh
+  table.** Any new API client reads the registry; any new agency is one row.
+- **An agency filter must never be the only thing standing between a question
+  and an answer.** Sub-agency filters widen to the department on an error or
+  an empty result; an unverified mapping can cost a call, never an answer.
+- **The keyword relaxes, it does not disappear.** Zero rows on the full
+  phrase means try the most specific term, then the agency alone. Zero rows
+  on an ERROR means stop and report the system as not reached.
+- **Only an agency's own code is stripped from the keyword.** Program and
+  vehicle acronyms are the most searchable thing in the question.
+
+Verified 2026-09-10: unit suite **752/752** (60 files, +51); build exit 0 (688
+pages); validate-dist, validate-routes (36), validate-ask-mmt-coverage,
+validate-contract-tracker (64), validate-data-freshness, scan-pii pass.
+
 ## Sprint 2026-09-10 (evening) — Ask MMT sent the whole sentence to the APIs
 
 Mary asked the live tool "Tell me all about data governence awards in the

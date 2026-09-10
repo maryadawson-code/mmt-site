@@ -48,7 +48,10 @@ beforeEach(() => { calls = []; });
 describe("deriveKeywords", () => {
   it("never sends the sentence", () => {
     expect(api.deriveKeywords(QUESTION)).toBe("data governance");
-    expect(api.deriveKeywords("MHS GENESIS")).toBe("genesis");
+    // MHS stays: it is the program prefix the question is about, and
+    // "genesis" alone is a poor keyword (the registry strips only an
+    // agency's own code acronym).
+    expect(api.deriveKeywords("MHS GENESIS")).toBe("mhs genesis");
     expect(api.deriveKeywords("Community Care Network")).toBe("community care network");
     expect(api.deriveKeywords("")).toBe("");
   });
@@ -89,6 +92,77 @@ describe("enrichWithFederalData on the wire", () => {
     expect(tiers).toEqual(["subtier", "toptier"]);
     expect(out.awards[0].piid).toBe("DOD-9");
     expect(out.error).toBeUndefined();
+  });
+
+  it("relaxes the keyword when the full phrase returns nothing, and says which rung answered", async () => {
+    // "remote patient monitoring outcomes" finds nothing; the ladder drops to
+    // the most specific term rather than reporting no records.
+    const question = "What does the published research say about remote patient monitoring outcomes in VA?";
+    // Ask the module which rung is second rather than guessing it, so the
+    // test proves relaxation happened without pinning the ranking heuristic.
+    const { keywordLadder } = await import("../../netlify/functions/lib/query-terms.js");
+    const ladder = keywordLadder(question);
+    expect(ladder.length).toBeGreaterThan(1);
+    const seen = [];
+    globalThis.fetch = async (url, opts = {}) => {
+      const u = String(url);
+      if (u.includes("spending_by_award")) {
+        const kw = (JSON.parse(opts.body).filters.keywords || [""])[0];
+        seen.push(kw);
+        if (kw === ladder[1]) {
+          return jsonRes({ results: [{ "Award ID": "VA-77", "Recipient Name": "R", "Award Amount": 3, "Description": "remote monitoring" }] });
+        }
+        return jsonRes({ results: [] });
+      }
+      if (u.includes("api.sam.gov")) return jsonRes({ opportunitiesData: [], totalRecords: 0 });
+      return jsonRes({ results: [], count: 0 });
+    };
+    const out = await api.enrichWithFederalData({ topic: question, agency: "VA" });
+    expect(seen[0]).toBe(ladder[0]);
+    expect(seen).toContain(ladder[1]);
+    expect(seen[0].split(" ").length).toBeGreaterThan(ladder[1].split(" ").length);
+    expect(out.usaspending_awards.awards[0].piid).toBe("VA-77");
+    expect(out.usaspending_awards.relaxed_keyword).toBe(ladder[1]);
+    expect(out.usaspending_awards.original_keyword).toBe(ladder[0]);
+    // bounded: never more than two keyword attempts, so the 8s fan-out
+    // timeout in premium-assistant still holds
+    expect(new Set(seen).size).toBeLessThanOrEqual(2);
+  });
+
+  it("an API error is not a miss: the ladder does not multiply a failure", async () => {
+    const seen = [];
+    globalThis.fetch = async (url, opts = {}) => {
+      const u = String(url);
+      if (u.includes("spending_by_award")) {
+        seen.push(JSON.parse(opts.body).filters.keywords);
+        return jsonRes({ detail: "upstream down" }, 503);
+      }
+      if (u.includes("api.sam.gov")) return jsonRes({ opportunitiesData: [] });
+      return jsonRes({ results: [], count: 0 });
+    };
+    const out = await api.enrichWithFederalData({ topic: "telehealth scheduling backlog", agency: "VA" });
+    expect(seen.length).toBe(1);
+    expect(out.usaspending_awards.error).toMatch(/503/);
+  });
+
+  it("scopes ANY agency, not just the hardcoded few: FDA gets its own subtier, department and Federal Register slug", async () => {
+    globalThis.fetch = makeFetch({ subtierResults: [{ "Award ID": "FDA-1", "Recipient Name": "Q", "Award Amount": 9, "Description": "device software" }] });
+    await api.enrichWithFederalData({ topic: "What FDA contracts are out for medical device software?", agency: "FDA" });
+
+    const usa = calls.find((c) => c.url.includes("spending_by_award")).body.filters;
+    expect(usa.agencies).toEqual([{ type: "funding", tier: "subtier", name: "Food and Drug Administration" }]);
+    expect(usa.keywords).toEqual(["medical device software"]);
+
+    const sam = new URL(calls.find((c) => c.url.includes("api.sam.gov")).url).searchParams;
+    expect(sam.get("deptname")).toBe("HEALTH AND HUMAN SERVICES, DEPARTMENT OF");
+    expect(sam.get("q")).toBe("medical device software");
+
+    const fr = new URL(calls.find((c) => c.url.includes("federalregister.gov")).url).searchParams;
+    expect(fr.getAll("conditions[agencies][]")).toContain("food-and-drug-administration");
+
+    // agency spending totals use the registry CGAC, not a five-entry map
+    const totals = calls.find((c) => c.url.includes("agency/075"));
+    expect(totals, "FDA spending totals should resolve to the HHS CGAC 075").toBeTruthy();
   });
 
   it("agencies without a subtier mapping go straight to toptier", async () => {
