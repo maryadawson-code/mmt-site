@@ -13,7 +13,8 @@
 // question time; "index" means the MMT archive index rebuilt on every site
 // build; "conditional" means the client exists but returns nothing until a
 // credential or input it needs is present (say so on the page rather than
-// listing a source the answer will never cite).
+// listing a source the answer will never cite); "fallback" means a
+// last-resort search that runs only when the structured sources are silent.
 // ============================================================
 
 const SOURCE_CATALOG = [
@@ -92,11 +93,16 @@ const SOURCE_CATALOG = [
     note: "Queried only when a question names a public company. Most federal health IT questions do not.",
     provides: "Public-company filings",
     use: "What a public competitor has told its investors about a contract" },
+  { id: "web_federal", name: "Web search of federal sites", url: "https://missionmeetstech.com/ask/sources#fallback", mode: "fallback",
+    note: "Runs only when USASpending, SAM.gov Opportunities and the contract-award client all return nothing for the question. Restricted to .gov and .mil domains (sam.gov, usaspending.gov, health.mil, va.gov, hhs.gov, cms.gov, gsa.gov, gao.gov, congress.gov, govinfo.gov, federalregister.gov, nih.gov, arpa-h.gov, healthit.gov, defense.gov).",
+    provides: "Pages on federal sites the structured APIs did not surface",
+    use: "A lead when the structured sources are silent, labeled as a web-search lead in the answer, never a primary citation" },
 ];
 
 const CATALOG_BY_ID = Object.fromEntries(SOURCE_CATALOG.map((s) => [s.id, s]));
 
 const LINK_KEYS = /^(url|uilink|link|permalink|source_url|href|pdf_url|study_url)$/i;
+const LIST_LINK_KEYS = /^(citations|links|urls)$/i;
 const MAX_LINKS_PER_SYSTEM = 4;
 
 /**
@@ -113,6 +119,11 @@ function extractLinks(value, depth = 0, out = new Set()) {
     for (const [k, v] of Object.entries(value)) {
       if (LINK_KEYS.test(k) && typeof v === "string" && /^https?:\/\//i.test(v)) {
         if (out.size < MAX_LINKS_PER_SYSTEM) out.add(v.trim());
+      } else if (LIST_LINK_KEYS.test(k) && Array.isArray(v)) {
+        // e.g. the web search's `citations: [url, url]`
+        for (const item of v) {
+          if (typeof item === "string" && /^https?:\/\//i.test(item) && out.size < MAX_LINKS_PER_SYSTEM) out.add(item.trim());
+        }
       } else if (typeof v === "object") {
         extractLinks(v, depth + 1, out);
       }

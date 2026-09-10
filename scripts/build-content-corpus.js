@@ -205,7 +205,11 @@ function buildContracts() {
         date: c.last_verified || "",
         description: (c.description || "").substring(0, 240),
         tags: [c.agency || "", c.status || "", c.naics || ""].filter(Boolean),
-        url: c.link || "/contract-tracker.html",
+        // The MMT contract page, not the entry's external source link: an
+        // answer's Sources list is where a subscriber clicks, and it used to
+        // land on a bare https://sam.gov (2026-09-10).
+        url: `/contracts/${(c.name || "untitled").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "untitled"}/`,
+        source_url: c.link || null,
         excerpt: body.substring(0, EXCERPT_CHARS),
         premium: false,
       };
