@@ -17,10 +17,26 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "..", "..");
 const VALIDATOR = join(REPO, "scripts", "validate-forecast-delta.js");
 
-// Latest committed entry is 2026-05.md dated 2026-05-07. Pin "today" so the
-// fresh/stale branches are deterministic regardless of when the suite runs.
-const FRESH_TODAY = "2026-05-20";   // 13d after the May entry
-const STALE_TODAY = "2026-09-10";   // the day Mary noticed
+// Pin "today" RELATIVE TO THE NEWEST COMMITTED ENTRY so the fresh/stale
+// branches stay deterministic as monthly reads land. (The first version of
+// this file hardcoded dates chosen when 2026-05.md was newest; the September
+// read made the "stale" pin fresh and both staleness tests went red.)
+function newestEntry() {
+  const dir = join(REPO, "content", "forecast-delta");
+  let best = null;
+  for (const f of readdirSync(dir)) {
+    const m = f.match(/^(\d{4}-\d{2})\.md$/);
+    if (!m) continue;
+    const fm = readFileSync(join(dir, f), "utf8").match(/^date:\s*["']?(\d{4}-\d{2}-\d{2})/m);
+    if (fm && (!best || fm[1] > best.date)) best = { file: f, date: fm[1] };
+  }
+  if (!best) throw new Error("no committed forecast-delta entry found");
+  return best;
+}
+const NEWEST = newestEntry();
+const addDays = (iso, n) => new Date(Date.parse(iso + "T00:00:00Z") + n * 86400000).toISOString().slice(0, 10);
+const FRESH_TODAY = addDays(NEWEST.date, 13);    // inside the 45d warn window
+const STALE_TODAY = addDays(NEWEST.date, 126);   // the gap Mary hit on 2026-09-10
 
 function makeRepo(mutate) {
   const dir = mkdtempSync(join(tmpdir(), "forecast-delta-"));
@@ -70,11 +86,11 @@ describe("validate-forecast-delta: happy path", () => {
 
   it("holds a future-dated entry: it is not the newest published read", () => {
     const r = run(makeRepo((dir) => {
-      writeFileSync(join(dir, "content", "forecast-delta", "2026-12.md"),
-        "---\ndate: 2026-12-01\ntitle: December read\n---\n\nSomething sourced.\n");
+      writeFileSync(join(dir, "content", "forecast-delta", "2099-12.md"),
+        "---\ndate: 2099-12-01\ntitle: December read\n---\n\nSomething sourced.\n");
     }));
     expect(r.code, r.out).toBe(0);
-    expect(r.out).toMatch(/latest read 2026-05\.md/);
+    expect(r.out).toMatch(new RegExp(`latest read ${NEWEST.file.replace(".", "\\.")}`));
   });
 });
 

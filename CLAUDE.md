@@ -392,6 +392,85 @@ contract-tracker / cso-aois / forecast-delta / data-freshness / scan-pii pass;
 dist GAO page renders the May entry from markdown with the red overdue badge
 and zero raw markers; About stats are build-derived.
 
+## Sprint 2026-09-10 — Forecast Delta Tracker: September read + 11-agency pipeline from the official forecasts
+
+Follow-on to PR #182 (which made the tracker render from markdown and added the
+freshness guards, but left the May read and a 78-row CMS/DHA-only pipeline).
+This pass fetched every one of the 11 agencies' OWN forecasts live, in a real
+browser where a script could not, and rebuilt `data/forecast-pipeline.json`
+(78 → 201 rows, 8 agencies with rows) plus `content/forecast-delta/2026-09.md`
+and `data/forecast-portals.json`. **Nothing in the table comes from trade
+press, aggregators or memory; CDC, ONC and ARPA-H have no rows because their
+official forecasts carry nothing forward-looking in health IT, and the read
+says so per agency.**
+
+Where the forecasts actually live now (every May-era URL had moved):
+- **VA**: `va.gov/osdbu/acquisition/` returns 403 even in a browser. VA's own
+  FCO query tool (`vendorportal.ecms.va.gov/eVP/FCO/fco.aspx`) is FY2026-only,
+  interactive, reviewed 05/07/2026. VA publishes into the **governmentwide FCO
+  tool on acquisitiongateway.gov** (688 VA rows, 607 from TAC, touched
+  2026-09-04). That is the citable VA forecast.
+- **GSA**: `forecast.gsa.gov` no longer resolves; the Forecast Tool is
+  `acquisitiongateway.gov/forecast`. JSON: `ag-dashboard.acquisitiongateway.gov
+  /api/v3.0/export/forecast?field_result_id_target_id=<tid>&range=3000`
+  (tid 8 = VA, 2 = GSA, 15 = HHS which has ZERO rows there). **Trap:** the
+  `resources/forecast` listing endpoint IGNORES the agency filter on pages 0
+  and 1 (cached) and honors it from page 2; the `export/forecast` endpoint with
+  a large `range` is filtered correctly. Verify `field_result_id` per row.
+- **HHS OpDivs**: mysbcx.hhs.gov redirects to `osdbu.hhs.gov`; the forecast is
+  `/industry/opportunity-forecast` (SPA, 404 to curl, fine in a browser).
+  Export: `osdbu.hhs.gov/api/sbcxopportunities/?filter=` → 5,375 rows
+  (IHS 3,928 / CDC 562 / FDA 517 / CMS 80 / NIH 34). **It carries POC names,
+  emails and phones; strip them.** CDC rows are all FY24/25 with no
+  solicitation dates (stale); NIH has 3 forward rows, none IT; ASA/PSC (where
+  ONC buys) is all FY25; ARPA-H has no rows at all.
+- **CMS**: the monthly workbook moved to Work With Us > Business Resources >
+  Contract Opportunities; the dated file URL changes monthly (Aug → Sep 2026
+  redirected). Cite the dated file. 59 → 51 rows (19 dropped, 11 added).
+- **DHA**: dha.mil sits behind an F5/TSPD bot challenge (curl gets a JS
+  challenge page even for the .xlsx). In-browser the "Long Range Acquisition
+  Forecast" link still serves the **FY2025** workbook (modified 2025-05-22).
+  No FY26/FY27 forecast exists; the 19 rows are carried forward and labeled.
+- **ARPA-H**: `arpa-h.gov/research-funding` 404s; open solicitations are at
+  `/explore-funding/open-funding-opportunities`. None open is health IT.
+- **acquisition.gov/procurement-forecasts** links four agency HOME pages and
+  nothing else. It is an index in name only.
+
+Hard rules (do not regress):
+- **A forecast row must trace to the agency's own published forecast, and an
+  agency with no forward health-IT rows gets NO rows plus a sentence in the
+  read.** Padding a gap with trade press or a plausible line is the
+  `aspr-npivs` failure mode again.
+- **Never carry POC PII from a forecast export.** SBCX and the FCO export both
+  include names/emails/phones; the builder asserts no `@` and no phone
+  pattern in any field, and scan-pii runs in the build.
+- **Date precision follows the source and is documented in `_schema.note`.**
+  SBCX publishes month+year (rows carry the 1st); the FCO tool publishes award
+  as a fiscal quarter (carried as `TBD (award est. FY27 Q1 per FCO)`, which the
+  validator accepts). Do not invent a day the agency did not publish.
+- **The FCO listing endpoint's first two pages ignore filters.** Use the
+  export endpoint with `range`, and check the agency field on every row.
+- **Every portal URL in `forecast-portals.json` must be fetched live before
+  it is cited**, with the file/page date noted. Five of the six May URLs had
+  moved or died within four months.
+- **Frontmatter titles with a colon must be quoted.** gray-matter (build.js)
+  rejects `title: September read: ...` and silently SKIPS the entry, while the
+  validator's minimal reader accepts it, so the validator said OK and dist
+  still showed May. Caught only by grepping dist for the new title.
+- **`tests/unit/forecast-delta.test.js` pins FRESH/STALE "today" relative to
+  the newest committed entry**, not to hardcoded dates. The first version
+  hardcoded 2026-05-20 / 2026-09-10 and went red the moment a newer read
+  landed (date-pinned fixtures rule, 08-25, applied the other way round).
+
+Verified 2026-09-10: `validate-forecast-delta` OK (latest read 2026-09.md, 0d;
+pipeline 201 rows, verified 0d; the only warning is the 67 rows whose
+published solicitation date has already passed, which the page labels);
+voice sweep on the read 0 banned words / 0 em dashes / 0 exclamation points;
+`node build.js` exit 0; validate-dist OK; validate-routes ✓; scan-pii OK;
+`npx vitest run tests/unit` green; dist page renders the September read with
+the green freshness badge and the pipeline coverage line lists all 11 agencies
+(8 with rows, 3 named as gaps).
+
 ## Sprint 2026-09-10 — Forecast Delta Tracker frozen since May: the page never read its own markdown
 
 Mary: "this hasn't been updated since May" (`/premium/forecast-delta`). Root
