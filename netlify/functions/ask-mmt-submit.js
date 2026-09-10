@@ -14,6 +14,7 @@ const { createClient } = require("@supabase/supabase-js");
 const { sendEmail } = require("./lib/send-email");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { answerQuestion } = require("./lib/premium-assistant");
+const { verifySubscriberToken } = require("./lib/subscriber-token");
 const { loadEntitlement, blockMessageFor, logEntitlementMismatch } = require("./lib/entitlement");
 
 // Escape user-supplied strings before dropping them into HTML templates.
@@ -58,7 +59,7 @@ exports.handler = async (event) => {
     return { statusCode: 204, headers: CORS_HEADERS, body: "" };
   }
 
-  if (event.httpMethod !== "POST") {
+  if (event.httpMethod !== "POST" && event.httpMethod !== "GET") {
     return { statusCode: 405, headers: CORS_HEADERS, body: JSON.stringify({ error: "Method not allowed" }) };
   }
 
@@ -66,6 +67,37 @@ exports.handler = async (event) => {
   const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
   if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
     return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ error: "Service not configured" }) };
+  }
+
+  // GET ?token=<mmt_subscriber_token>: the dashboard's Analyst Q&A counter.
+  // Returns { used, limit, remaining, tier } for the TOKEN's email (never an
+  // email from the query string), so the dashboard total is the tier cap the
+  // server enforces instead of a hardcoded number (2026-09-10).
+  if (event.httpMethod === "GET") {
+    const qs = event.queryStringParameters || {};
+    const v = verifySubscriberToken(qs.token || "");
+    if (!v.ok) {
+      return { statusCode: 401, headers: CORS_HEADERS, body: JSON.stringify({ error: "Sign in to see your allowance.", reason_code: "TOKEN_" + String(v.reason || "invalid").toUpperCase() }) };
+    }
+    const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+    const ent = await loadEntitlement(sb, v.email);
+    if (!ent.ok) {
+      return { statusCode: 403, headers: CORS_HEADERS, body: JSON.stringify({ error: blockMessageFor(ent).message, reason_code: blockMessageFor(ent).reason_code, tier: ent.tier }) };
+    }
+    const limit = ent.askMmtMonthlyCap || LIMIT_PREMIUM;
+    const nowG = new Date();
+    const monthStartG = new Date(Date.UTC(nowG.getUTCFullYear(), nowG.getUTCMonth(), 1)).toISOString();
+    const { count: usedCount, error: usedErr } = await sb
+      .from("ops_events")
+      .select("*", { count: "exact", head: true })
+      .eq("event_type", "ask_mmt_question")
+      .eq("details->>email", v.email)
+      .gte("created_at", monthStartG);
+    if (usedErr) {
+      return { statusCode: 500, headers: CORS_HEADERS, body: JSON.stringify({ error: "Could not check quota" }) };
+    }
+    const usedG = usedCount || 0;
+    return { statusCode: 200, headers: CORS_HEADERS, body: JSON.stringify({ used: usedG, limit, remaining: Math.max(limit - usedG, 0), tier: ent.tier }) };
   }
 
   let body;

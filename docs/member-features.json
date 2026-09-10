@@ -20,6 +20,22 @@
     {
       "feature_name": "Ask MMT",
       "public_marketing_urls": [
+        "/ask",
+        "/ask/sources"
+      ],
+      "member_url": "/ask.html",
+      "backing_function": "netlify/functions/premium-chat.js",
+      "entitlement_required": "none (free: 3/month per email; member caps from lib/ask-mmt-access.js CHAT_CAPS, token-verified)",
+      "public_locked_preview_behavior": "public widget answers; sources held until an email unlocks them (free tier); members send mmt_subscriber_token for their allowance",
+      "expected_data_source": "premium-assistant enrichment stack (20 live federal APIs + MMT corpus); quota via ops_events premium_chat_turn / ask_mmt_free_turn",
+      "freshness_sla_hours": null,
+      "title_signature": "Research with receipts",
+      "smoke_test_url": "/ask",
+      "noindex": false
+    },
+    {
+      "feature_name": "Analyst Q&A with Mary",
+      "public_marketing_urls": [
         "/ask-mmt",
         "/askmtt",
         "/ask-mtt"
@@ -28,10 +44,11 @@
       "backing_function": "netlify/functions/ask-mmt-submit.js",
       "entitlement_required": "premium|founding|institutional|admin",
       "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate); /pricing.html upsell",
-      "expected_data_source": "Supabase ops_events ask_mmt_question + premium-assistant",
+      "expected_data_source": "Supabase ops_events ask_mmt_question + premium-assistant (human channel; formerly named Ask MMT)",
       "freshness_sla_hours": null,
       "smoke_test_url": "/premium/ask-mmt.html",
-      "noindex": true
+      "noindex": true,
+      "title_signature": "Analyst Q&amp;A with Mary"
     },
     {
       "feature_name": "Pursuit Score",
@@ -186,7 +203,7 @@
       "backing_function": "MissionPulse backend (cross-repo); mmt-site is a marketing + handoff page only until public access wires up",
       "entitlement_required": "private_beta (pilot list); future: premium|founding|institutional|admin",
       "public_locked_preview_behavior": "honest landing page explaining private-beta status and pilot signup; no scoring is run on this domain",
-      "expected_data_source": "MissionPulse RFP Shredder service \u2014 see docs/rfp-shredder-cross-repo-handoff.md",
+      "expected_data_source": "MissionPulse RFP Shredder service — see docs/rfp-shredder-cross-repo-handoff.md",
       "freshness_sla_hours": null,
       "smoke_test_url": "/rfp-shredder",
       "noindex": false,
@@ -316,7 +333,7 @@
       "backing_function": "netlify/functions/refresh-single-bidder.js",
       "entitlement_required": "premium|founding|institutional|admin",
       "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
-      "expected_data_source": "USASpending.gov v2 (no auth) \u2014 extent_competed_codes [B,C,E,G] across VA / DoD-DHA / HHS subcomponents (ARPA-H, CMS, ONC, NIH, CDC, FDA, IHS), 365-day window, $250K+ floor",
+      "expected_data_source": "USASpending.gov v2 (no auth) — extent_competed_codes [B,C,E,G] across VA / DoD-DHA / HHS subcomponents (ARPA-H, CMS, ONC, NIH, CDC, FDA, IHS), 365-day window, $250K+ floor",
       "freshness_sla_hours": 720,
       "smoke_test_url": "/premium/single-bidder.html",
       "noindex": true
@@ -389,7 +406,7 @@
       "backing_function": "netlify/functions/agency-intel.js (premium fetch); build.js generateAgencyProfilePage + generateAgenciesLandingHtml (public shells)",
       "entitlement_required": "premium|founding|institutional|admin",
       "public_locked_preview_behavior": "public shell shows name + role + MMT Read teaser + Official Sources + Premium Module pills + upgrade CTA; premium body fetched after entitlement",
-      "expected_data_source": "data/premium/agency-profiles/agencies.json (11 agencies \u2014 DHA, VA, HHS, ASTP/ONC, ARPA-H, CMS, IHS, CDC, FDA, NIH/NITAAC, GSA)",
+      "expected_data_source": "data/premium/agency-profiles/agencies.json (11 agencies — DHA, VA, HHS, ASTP/ONC, ARPA-H, CMS, IHS, CDC, FDA, NIH/NITAAC, GSA)",
       "freshness_sla_hours": null,
       "smoke_test_url": "/agencies/",
       "noindex": false
@@ -470,7 +487,7 @@
         "/updates/2026-05-18-hhs-omas"
       ],
       "member_url": "/premium/updates/2026-05-18-hhs-omas.html",
-      "backing_function": "static page (HHS sprint 2026-05-18) \u2014 paid-subscriber email landing",
+      "backing_function": "static page (HHS sprint 2026-05-18) — paid-subscriber email landing",
       "entitlement_required": "premium|founding|institutional|admin",
       "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
       "expected_data_source": "data/changelog/2026-05-18-hhs-omas.json",

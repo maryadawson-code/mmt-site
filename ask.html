@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ask MMT: research with receipts | Mission Meets Tech</title>
+  <meta name="description" content="Ask any federal health IT question. Ask MMT answers from SAM.gov, USASpending, Congress.gov, PubMed, and the MMT article archive, and every answer shows its sources. Three free questions a month.">
+  <link rel="canonical" href="https://missionmeetstech.com/ask">
+  <meta property="og:title" content="Ask MMT: research with receipts">
+  <meta property="og:description" content="Sourced answers to federal health IT questions in seconds. Three free a month.">
+  <meta property="og:url" content="https://missionmeetstech.com/ask">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://missionmeetstech.com/mmt-logo.png">
+  <meta property="og:site_name" content="Mission Meets Tech">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-v3.png">
+  <link rel="preconnect" href="https://plausible.io" crossorigin>
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="stylesheet" href="/styles/tokens.css">
+  <style>
+    .ask-grid { display:grid; grid-template-columns: 1.1fr 0.9fr; gap:32px; align-items:start; }
+    @media (max-width: 860px) { .ask-grid { grid-template-columns: 1fr; } }
+    .ask-q { display:flex; gap:12px; align-items:flex-start; padding:12px 14px; border:1px solid var(--mmt-border,#E5E7EB); border-radius:10px; background:var(--mmt-white,#fff); text-decoration:none; color:inherit; }
+    .ask-q:hover { border-color: var(--mmt-teal,#457B9D); }
+    .ask-q strong { font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:var(--mmt-teal,#457B9D); white-space:nowrap; margin-top:3px; }
+    .ask-q span { font-size:14px; line-height:1.45; }
+    .ask-table { width:100%; border-collapse:collapse; font-size:14px; }
+    .ask-table th, .ask-table td { text-align:left; padding:10px 10px; border-top:1px solid var(--mmt-border,#E5E7EB); vertical-align:top; }
+    .ask-table th { font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--mmt-text-secondary,#6B7280); border-top:none; }
+    .ask-step { display:flex; gap:14px; align-items:flex-start; }
+    .ask-step .n { width:28px; height:28px; border-radius:50%; background:var(--mmt-navy,#0A192F); color:#fff; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    details.ask-faq { background:var(--mmt-soft,#F3F4F6); border-radius:12px; padding:16px 20px; margin-bottom:10px; }
+    details.ask-faq summary { cursor:pointer; font-weight:700; color:var(--mmt-navy,#0A192F); font-size:15px; list-style:none; }
+    details.ask-faq p { margin-top:10px; font-size:14px; line-height:1.55; }
+  </style>
+</head>
+<body>
+  <!-- Nav (build.js will inject the canonical nav before </nav>) -->
+  <nav class="site-nav"></nav>
+
+  <main class="max-w-5xl mx-auto px-4 py-12">
+    <div class="ask-grid" style="margin-bottom:48px;">
+      <div>
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-teal,#457B9D);margin-bottom:10px;">Ask MMT</p>
+        <h1 style="font-size:40px;font-weight:800;letter-spacing:-0.02em;line-height:1.05;margin:0 0 14px;">Research with receipts.</h1>
+        <p style="font-size:17px;color:var(--mmt-text-secondary,#6B7280);line-height:1.55;margin:0 0 20px;">Ask any federal health IT question. Ask MMT answers from SAM.gov, USASpending, Congress.gov, PubMed, and the MMT article archive. Every answer shows its sources.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+          <a href="#ask" class="btn-primary no-underline" onclick="var t=document.getElementById('mmt-premium-chat-input');if(t){t.focus();}">Ask your first question (<!-- BUILD:ASK_MMT_CAP_FREE --> free a month)</a>
+          <a href="/pricing?utm_source=askmmt&amp;utm_medium=landing&amp;utm_campaign=ask-mmt-2026&amp;utm_content=hero" class="btn-secondary no-underline" onclick="if(typeof plausible!=='undefined')plausible('ask_premium_click',{props:{from:'hero'}})">See what's in Premium</a>
+        </div>
+        <p style="font-size:13px;color:var(--mmt-text-secondary,#6B7280);margin:0 0 28px;">No sponsors. Not used to train models. Sources on every answer.</p>
+
+        <h2 style="font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary,#6B7280);margin:0 0 12px;">What people ask it</h2>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <a class="ask-q" href="/ask?q=What%27s%20the%20status%20of%20CCN%20Next%20Gen%3F"><strong>Contracts</strong><span>What's the status of CCN Next Gen?</span></a>
+          <a class="ask-q" href="/ask?q=Who%20are%20the%20incumbents%20on%20T4NG2%3F"><strong>Vehicles</strong><span>Who are the incumbents on T4NG2?</span></a>
+          <a class="ask-q" href="/ask?q=What%27s%20moving%20in%20DHA%27s%20FY2027%20IT%20budget%3F"><strong>Budgets</strong><span>What's moving in DHA's FY2027 IT budget?</span></a>
+          <a class="ask-q" href="/ask?q=What%20did%20the%20FY2027%20NDAA%20change%20for%20federal%20EHR%20programs%3F"><strong>Policy</strong><span>What did the FY2027 NDAA change for federal EHR programs?</span></a>
+          <a class="ask-q" href="/ask?q=What%20does%20the%20published%20research%20say%20about%20remote%20patient%20monitoring%20outcomes%20in%20VA%3F"><strong>Evidence</strong><span>What does the published research say about remote patient monitoring outcomes in VA?</span></a>
+          <a class="ask-q" href="/ask?q=How%20much%20has%20VA%20obligated%20to%20Oracle%20since%20FY2024%3F"><strong>Spend</strong><span>How much has VA obligated to Oracle since FY2024?</span></a>
+        </div>
+      </div>
+      <div id="ask">
+        <div id="mmt-ask-embed" aria-live="polite" style="min-height:600px;border:1px solid var(--mmt-border,#E5E7EB);border-radius:16px;background:var(--mmt-soft,#F3F4F6);display:flex;align-items:center;justify-content:center;color:var(--mmt-text-secondary,#6B7280);font-size:14px;">Loading Ask MMT&hellip;</div>
+      </div>
+    </div>
+
+    <section style="margin-bottom:48px;">
+      <h2 style="font-size:24px;font-weight:800;letter-spacing:-0.01em;margin:0 0 18px;">How it works</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="ask-step"><div class="n">1</div><div><strong>Ask.</strong><p style="margin:4px 0 0;font-size:14px;color:var(--mmt-text-secondary,#6B7280);line-height:1.5;">Type the question the way you would ask a colleague.</p></div></div>
+        <div class="ask-step"><div class="n">2</div><div><strong>It reads.</strong><p style="margin:4px 0 0;font-size:14px;color:var(--mmt-text-secondary,#6B7280);line-height:1.5;">Ask MMT queries the federal sources on this page and the MMT archive.</p></div></div>
+        <div class="ask-step"><div class="n">3</div><div><strong>You check.</strong><p style="margin:4px 0 0;font-size:14px;color:var(--mmt-text-secondary,#6B7280);line-height:1.5;">Every answer lists the sources it used. Open them. Then put the answer in the slide.</p></div></div>
+      </div>
+    </section>
+
+    <section style="margin-bottom:48px;">
+      <h2 style="font-size:24px;font-weight:800;letter-spacing:-0.01em;margin:0 0 6px;">What it reads</h2>
+      <p style="font-size:14px;color:var(--mmt-text-secondary,#6B7280);margin:0 0 14px;">The systems Ask MMT queries when you ask, listed from the same file the code runs. <a href="/ask/sources" style="color:var(--mmt-teal,#457B9D);font-weight:600;">Full list, with what each one provides &rarr;</a></p>
+      <div class="card" style="padding:0 16px;overflow-x:auto;">
+        <table class="ask-table">
+          <thead><tr><th>Source</th><th>How</th><th>What it provides</th></tr></thead>
+          <tbody>
+            <!-- BUILD:ASK_MMT_SOURCES_SHORT -->
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:13px;color:var(--mmt-text-secondary,#6B7280);margin:12px 0 0;">Ask MMT pulls federal data by agency. When the APIs return thin results for a question, the answer is labeled "limited API data" so you know to go to the primary source yourself.</p>
+    </section>
+
+    <section style="margin-bottom:48px;">
+      <h2 style="font-size:24px;font-weight:800;letter-spacing:-0.01em;margin:0 0 14px;">What it is not</h2>
+      <ul style="margin:0;padding-left:20px;font-size:15px;line-height:1.7;">
+        <li>A bid decision. It is research. Check the sources it hands you.</li>
+        <li>Legal, contractual, or pricing advice.</li>
+        <li>A replacement for the Friday analysis. That still comes from a human.</li>
+      </ul>
+    </section>
+
+    <section style="margin-bottom:48px;">
+      <h2 style="font-size:24px;font-weight:800;letter-spacing:-0.01em;margin:0 0 14px;">Free and Premium</h2>
+      <div class="card" style="padding:0 16px;overflow-x:auto;">
+        <table class="ask-table">
+          <thead><tr><th></th><th>Free</th><th>Premium</th><th>Institutional</th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:600;">Ask MMT questions</td><td><!-- BUILD:ASK_MMT_CAP_FREE --> a month</td><td><!-- BUILD:ASK_MMT_CAP_PREMIUM --> a month</td><td><!-- BUILD:ASK_MMT_CAP_INSTITUTIONAL --> pooled, up to 5 seats</td></tr>
+            <tr><td style="font-weight:600;">Sources on every answer</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+            <tr><td style="font-weight:600;">Analyst Q&amp;A with Mary</td><td>No</td><td>1 a month (2 on Founding, with priority review)</td><td>3 a month, 2-business-day SLA</td></tr>
+            <tr><td style="font-weight:600;">Everything else in Premium</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+            <tr><td style="font-weight:600;">Price</td><td>$0</td><td>$29.99/month, $249/year, Founding $199/year while spots last</td><td>$2,500 to $5,000/year</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:14px;"><a href="/pricing?utm_source=askmmt&amp;utm_medium=landing&amp;utm_campaign=ask-mmt-2026&amp;utm_content=table" class="btn-primary no-underline" onclick="if(typeof plausible!=='undefined')plausible('ask_premium_click',{props:{from:'table'}})">See Premium pricing &rarr;</a></div>
+    </section>
+
+    <section style="margin-bottom:24px;">
+      <h2 style="font-size:24px;font-weight:800;letter-spacing:-0.01em;margin:0 0 14px;">Questions</h2>
+      <details class="ask-faq"><summary>Is this ChatGPT with a logo?</summary><p>No. It answers from named federal sources and the MMT archive, and it shows the sources. Ask both the same question about a vehicle and compare where the numbers came from.</p></details>
+      <details class="ask-faq"><summary>Can I use it for a bid decision?</summary><p>Use it for the research behind the decision. Check the sources it gives you. That is why they are there.</p></details>
+      <details class="ask-faq"><summary>Does it train on my questions?</summary><p>No. Same policy as ProposalPulse and MarketPulse. Your question and the answer are kept in your own browser and in MMT's usage log for quota counting; the AI provider does not train on them. Details at <a href="/security" style="color:var(--mmt-teal,#457B9D);">missionmeetstech.com/security</a>.</p></details>
+      <details class="ask-faq"><summary>How many questions do I get?</summary><p><!-- BUILD:ASK_MMT_CAP_FREE --> a month free. <!-- BUILD:ASK_MMT_CAP_PREMIUM --> a month on Premium. <!-- BUILD:ASK_MMT_CAP_INSTITUTIONAL --> pooled on Institutional. Counts reset on the 1st.</p></details>
+      <details class="ask-faq"><summary>What if it does not know?</summary><p>It says so. It does not guess. If the answer is not in the sources it reads, you get "I don't have a source for that" and a suggestion for where to look.</p></details>
+      <details class="ask-faq"><summary>What is Analyst Q&amp;A?</summary><p>The human channel. Premium members can send Mary a question a month (two on Founding). The best answers run in the monthly Q&amp;A issue.</p></details>
+    </section>
+  </main>
+
+  <footer></footer>
+</body>
+</html>

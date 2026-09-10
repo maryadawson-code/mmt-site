@@ -111,7 +111,7 @@
       <p class="lede">Mission Meets Tech covers the gap between policy, procurement, and what actually ships across DHA, VA, HHS, and federal health IT &mdash; then turns that intelligence into tools teams can use.</p>
       <div class="flex flex-wrap gap-3" style="margin-bottom:14px;">
         <a href="/tools" class="btn-primary no-underline">Choose a Tool</a>
-        <a href="/fy2027-forecast.html" class="no-underline" style="font-size:14px;font-weight:600;color:var(--mmt-teal);padding:12px 8px;" onclick="if(typeof plausible!=='undefined')plausible('Lead Magnet CTA Click')">Get the FY2027 Forecast &rarr;</a>
+        <a href="/ask" class="no-underline" style="font-size:14px;font-weight:600;color:var(--mmt-teal);padding:12px 8px;" onclick="if(typeof plausible!=='undefined')plausible('Homepage Ask MMT CTA Click')">Ask MMT free &rarr;</a>
       </div>
       <!-- Subscriber count — verified 2026-08-08 (Mary). Update from Buttondown total when refreshing. -->
       <div class="pill" style="margin-bottom:18px;font-size:12px;">
@@ -135,7 +135,12 @@
     <div style="margin-bottom:18px;">
       <div class="section-label">Choose what you need now</div>
     </div>
-    <div class="grid-3" style="gap:18px;">
+    <div class="grid-3" style="gap:18px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
+      <a href="/ask" class="card no-underline" style="padding:24px;display:flex;flex-direction:column;gap:8px;border-top:2px solid var(--mmt-teal);">
+        <strong style="font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mmt-teal);">I need an answer now</strong>
+        <h3 style="font-size:18px;line-height:1.2;">Ask MMT &rarr;</h3>
+        <p style="font-size:14px;line-height:1.55;color:var(--mmt-text-secondary);margin:0;">Ask a federal health IT question. Sourced answer in seconds. 3 free a month.</p>
+      </a>
       <a href="proposal-pulse.html" class="card no-underline" style="padding:24px;display:flex;flex-direction:column;gap:8px;border-top:2px solid var(--mmt-navy);">
         <strong style="font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mmt-teal);">I need to strengthen a bid</strong>
         <h3 style="font-size:18px;line-height:1.2;">ProposalPulse &rarr;</h3>
@@ -303,6 +308,10 @@
           <span style="color:var(--mmt-teal);font-weight:800;flex-shrink:0;margin-top:1px;">&#10003;</span>
           What it means operationally, with the context missing from the headlines
         </li>
+        <li style="display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--mmt-text-secondary);line-height:1.55;">
+          <span style="color:var(--mmt-teal);font-weight:800;flex-shrink:0;margin-top:1px;">&#10003;</span>
+          3 free Ask MMT questions a month, sources on every answer. Plus the <a href="/fy2027-forecast.html" style="color:var(--mmt-teal);">FY2027 Forecast</a>.
+        </li>
       </ul>
       <form action="https://buttondown.com/api/emails/embed-subscribe/missionmeetstech" method="post" target="_blank" style="display:flex;gap:8px;max-width:460px;">
         <label for="homepage-email" class="sr-only">Email address</label>
@@ -337,7 +346,8 @@
       <div class="ladder-eyebrow">How it works together</div>
       <ol class="ladder-steps">
         <li class="ladder-step"><span class="step-label">Start free</span><span class="step-name">Intelligence Newsletter</span><span class="step-desc">Federal health IT analysis every Tuesday and Friday. No charge.</span></li>
-        <li class="ladder-step"><span class="step-label">Go deeper</span><span class="step-name">MMT Premium</span><span class="step-desc">Full Capture Intelligence, contract tracking, and member Q&amp;A.</span></li>
+        <li class="ladder-step"><span class="step-label">Ask a question</span><span class="step-name">Ask MMT</span><span class="step-desc">Three free questions a month, sources on every answer.</span></li>
+        <li class="ladder-step"><span class="step-label">Go deeper</span><span class="step-name">MMT Premium</span><span class="step-desc">Full Capture Intelligence, contract tracking, 100 Ask MMT questions a month, and Analyst Q&amp;A with Mary.</span></li>
         <li class="ladder-step"><span class="step-label">Score your proposal</span><span class="step-name">ProposalPulse</span><span class="step-desc">First assessment free. Evaluator-style scoring on any proposal document.</span></li>
         <li class="ladder-step"><span class="step-label">Research a market</span><span class="step-name">MarketPulse</span><span class="step-desc">First brief free. Source-cited market intelligence in 24 hours.</span></li>
         <li class="ladder-step"><span class="step-label">Scale the team</span><span class="step-name">Team &amp; Institutional</span><span class="step-desc">Repeated use, team access, and white-glove onboarding.</span></li>

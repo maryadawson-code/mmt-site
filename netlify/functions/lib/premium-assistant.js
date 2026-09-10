@@ -34,6 +34,10 @@ const { enrichWithWageDeterminations, formatWageDeterminationsContext } = requir
 const { enrichWithEDGAR, formatEDGARContext } = require("./sec-edgar-api");
 const { searchCorpus, formatCorpusContext } = require("./content-index");
 const { detectVehicles, formatVehiclesContext, expandedSearchTerms } = require("./known-vehicles");
+// 2026-09-10: per-answer `sources` array. The catalog in ask-mmt-sources.js is
+// the same list build.js renders on /ask/sources, so the page and the code
+// cannot drift.
+const { buildSources, splitFederalData } = require("./ask-mmt-sources");
 // Sprint 6 Phase 2 2026-05-15: optional circuit breakers + metrics.
 // Both gates default OFF — code paths byte-identical to Sprint 5 unless
 // ASK_MMT_CIRCUITS_ENABLED=true and/or ASK_MMT_METRICS_ENABLED=true are
@@ -157,7 +161,7 @@ HARD RULES:
 - If ANY of the three evidence classes above is present in the block, answer from it. Do NOT say "I don't have verified facts" when MMT articles or vehicle baselines are in the block — they ARE verified facts.
 - If the block contains MMT articles relevant to the question, lead with what Mary wrote. Quote a specific excerpt when it sharpens the answer. Link to the URL.
 - Do not invent contract numbers, dollar amounts, deadlines, hiring counts, or citations that aren't in the block.
-- If the block is genuinely empty on the question, say so plainly and recommend what to check next. Never fabricate to fill a gap. (Empty means zero MMT articles AND zero API results — not just "the API returned nothing for this specific keyword.")
+- If the block is genuinely empty on the question, say so plainly and recommend what to check next. Never fabricate to fill a gap. (Empty means zero MMT articles AND zero API results, not just "the API returned nothing for this specific keyword.") Use this exact shape for the bottom line in that case: "I don't have a source for that in the systems I read. Where I'd look: <the one or two primary sources most likely to hold it>. If you want it researched properly, MarketPulse delivers a source-cited brief in 24 hours (https://missionmeetstech.com/marketpulse)." Do not pad an empty answer with general knowledge dressed up as fact.
 - Quote sources inline. Examples: "(Mission Meets Tech, Mar 24 2026)", "(USASpending: PIID xxx)", "(SAM.gov notice xxx)", "(Congress.gov HR xxx)", "(PubMed PMID xxx)".
 - Prefer specific numbers over generalities. If the verified facts give a dollar figure or date, use it.
 - Be concise — 3-6 short paragraphs. Use bullets for lists of contracts, bills, or hearings.
@@ -254,30 +258,44 @@ async function runEnrichment(question) {
     instrument("sec_edgar",               () => enrichWithEDGAR({ competitors: [] }),                                            metricsSb),
   ]);
 
+  // One entry per fan-out system: the formatted context the model will see
+  // plus the raw data (for link extraction). `used` = that system actually
+  // contributed text to the prompt, which is the honest definition of
+  // "this answer drew on X".
+  const federalText = formatFederalDataContext(federalData);
+  const systemBlocks = [
+    // federal-data-apis fans out to several systems; split so the answer
+    // cites USASpending and SAM.gov separately.
+    ...splitFederalData(federalData).map((part) => ({ id: part.id, text: "", data: part.data, used: federalText.length > 0 })),
+    { id: "congress",                text: formatCongressContext(congressData),            data: congressData },
+    { id: "govinfo",                 text: formatGovInfoContext(govinfoData),              data: govinfoData },
+    { id: "pubmed",                  text: formatPubMedContext(pubmedData),                data: pubmedData },
+    { id: "grants",                  text: formatGrantsContext(grantsData),                data: grantsData },
+    { id: "sam_assistance",          text: formatAssistanceContext(assistanceData),        data: assistanceData },
+    { id: "usajobs",                 text: formatUSAJobsContext(usajobsData),              data: usajobsData },
+    { id: "it_dashboard",            text: formatITDashboardContext(itDashboardData),      data: itDashboardData },
+    { id: "cms",                     text: formatCMSContext(cmsData),                      data: cmsData },
+    { id: "clinicaltrials",          text: formatClinicalTrialsContext(ctgovData),         data: ctgovData },
+    { id: "onc_healthit",            text: formatONCHealthITContext(oncHealthITData),      data: oncHealthITData },
+    { id: "hhs_open",                text: formatHHSOpenDataContext(hhsOpenData),          data: hhsOpenData },
+    { id: "calc",                    text: formatCALCContext(calcData),                    data: calcData },
+    { id: "ecfr",                    text: formatECFRContext(ecfrData),                    data: ecfrData },
+    { id: "regulations_gov",         text: formatRegulationsGovContext(regsGovData),       data: regsGovData },
+    { id: "bls",                     text: formatBLSContext(blsData || {}),                data: blsData },
+    { id: "onc_chpl",                text: formatCHPLContext(chplData),                    data: chplData },
+    { id: "sam_contract_awards",     text: formatContractAwardsContext(contractAwardsData), data: contractAwardsData },
+    { id: "sam_wage_determinations", text: formatWageDeterminationsContext(wageDetData),   data: wageDetData },
+    { id: "sec_edgar",               text: formatEDGARContext(edgarData),                  data: edgarData },
+  ].map((b) => ({ ...b, text: b.text || "", used: b.used !== undefined ? b.used : (b.text || "").length > 0 }));
+
   const context = [
     formatVehiclesContext(matchedVehicles),
     formatCorpusContext(corpusMatches),
-    formatFederalDataContext(federalData),
-    formatCongressContext(congressData),
-    formatGovInfoContext(govinfoData),
-    formatPubMedContext(pubmedData),
-    formatGrantsContext(grantsData),
-    formatAssistanceContext(assistanceData),
-    formatUSAJobsContext(usajobsData),
-    formatITDashboardContext(itDashboardData),
-    formatCMSContext(cmsData),
-    formatClinicalTrialsContext(ctgovData),
-    formatONCHealthITContext(oncHealthITData),
-    formatHHSOpenDataContext(hhsOpenData),
-    formatCALCContext(calcData),
-    formatECFRContext(ecfrData),
-    formatRegulationsGovContext(regsGovData),
-    formatBLSContext(blsData || {}),
-    formatCHPLContext(chplData),
-    formatContractAwardsContext(contractAwardsData),
-    formatWageDeterminationsContext(wageDetData),
-    formatEDGARContext(edgarData),
+    federalText,
+    ...systemBlocks.map((b) => b.text),
   ].filter(Boolean).join("");
+
+  const sources = buildSources({ systems: systemBlocks, corpusMatches });
 
   return {
     agency,
@@ -285,15 +303,22 @@ async function runEnrichment(question) {
     hasAnyData: context.length > 0,
     corpusMatches: corpusMatches.length,
     vehiclesDetected: matchedVehicles.map((v) => v.canonical),
+    sources,
   };
 }
 
-async function callClaude({ question, context, model = DEFAULT_MODEL, maxTokens = 1500 }) {
+function formatHistory(history) {
+  if (!Array.isArray(history) || history.length === 0) return "";
+  const turns = history.map((t, i) => `Turn ${i + 1}\nQ: ${t.question}\nA: ${t.answer}`).join("\n\n");
+  return `\nPRIOR TURNS IN THIS CONVERSATION (for follow-up context only; re-verify any fact against the block below before repeating it):\n${turns}\n`;
+}
+
+async function callClaude({ question, context, history = [], model = DEFAULT_MODEL, maxTokens = 1500 }) {
   if (!ANTHROPIC_API_KEY) {
     throw new Error("ANTHROPIC_API_KEY not configured");
   }
   const userPrompt = `Subscriber question: "${question}"
-
+${formatHistory(history)}
 VERIFIED FACTS AVAILABLE (cite any of these — the block may contain MMT articles, MMT federal-vehicle baselines, MMT contract intel, MMT capture-intel signals, MMT IDIQ-vehicle analyst notes, and live federal API results. All are first-class evidence. Treat "MMT ORIGINAL CONTENT" entries and IDIQ vehicle excerpts as things Mary has already published — answer from them and cite the URL):
 ${context || "(Nothing matched on either the MMT corpus or the live federal APIs. Answer honestly — say what you can from general knowledge and recommend what the subscriber should check next. Do NOT invent facts.)"}
 
@@ -333,27 +358,29 @@ Answer the subscriber now, following the voice and format rules in the system pr
 
 /**
  * Main entry point: given a question, return a grounded answer + sources.
- * @returns {Promise<{answer: string, agency: string|null, hasData: boolean, model: string, error?: string}>}
+ * @returns {Promise<{answer: string, agency: string|null, hasData: boolean, model: string, sources: Array, error?: string}>}
  */
-async function answerQuestion({ question, maxTokens = 1500 }) {
+async function answerQuestion({ question, history = [], maxTokens = 1500 }) {
   if (!question || question.trim().length < 3) {
-    return { answer: "", error: "question too short", agency: null, hasData: false };
+    return { answer: "", error: "question too short", agency: null, hasData: false, sources: [] };
   }
   try {
-    const { agency, context, hasAnyData } = await runEnrichment(question);
-    const { answer, model, usage } = await callClaude({ question, context, maxTokens });
+    const { agency, context, hasAnyData, sources } = await runEnrichment(question);
+    const { answer, model, usage } = await callClaude({ question, context, history, maxTokens });
     return {
       answer,
       agency,
       hasData: hasAnyData,
       model,
       usage,
+      sources,
     };
   } catch (err) {
     return {
       answer: "",
       agency: null,
       hasData: false,
+      sources: [],
       error: err.message,
     };
   }

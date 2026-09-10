@@ -46,6 +46,7 @@
     "static/lead-magnets/**",
     "data/agent-access-launch/**",
     "data/linkedin-campaign/**",
+    "data/ask-mmt-campaign/**",
     "data/jul9-dha-cae-release/**",
   ]
 
@@ -578,6 +579,14 @@
 # See CLAUDE.md sprint 2026-07-01.
 [functions."linkedin-autopost"]
   schedule = "30 13 * * *"
+
+# ask-mmt-campaign-emails — Ask MMT campaign email automation (CLAUDE.md sprint
+# 2026-09-10). Daily 13:15 UTC: the 9/14 Premium soft-launch note (once), the
+# welcome sequence for ask_mmt_free_signup addresses (one step per address per
+# run, idempotent per step), and the monthly reset note on the 1st. Copy lives
+# in data/ask-mmt-campaign/emails.json. Kill switch: ASK_MMT_CAMPAIGN_EMAILS_DISABLED.
+[functions."ask-mmt-campaign-emails"]
+  schedule = "15 13 * * *"
 
 # Sentry Netlify build plugin REMOVED — archived package was failing deploys
 # during onPostBuild (API timeout). Runtime @sentry/node monitoring in Netlify
@@ -1259,6 +1268,18 @@
 [[redirects]]
   from = "/ask-mmt"
   to = "/premium/ask-mmt.html"
+  status = 200
+
+# Ask MMT (the AI research assistant, public landing + sources page).
+# /ask-mmt above stays the Analyst Q&A portal for members.
+[[redirects]]
+  from = "/ask"
+  to = "/ask.html"
+  status = 200
+
+[[redirects]]
+  from = "/ask/sources"
+  to = "/ask-sources.html"
   status = 200
 
 # [Sprint B 2026-05-13] Removed the duplicate /compliance-check redirect
