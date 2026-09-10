@@ -9,20 +9,26 @@
   <link rel="stylesheet" href="/styles/tailwind.css">
   <link rel="icon" href="/favicon-v3.png" type="image/png">
   <style>
-    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; --dash-sidebar:220px; }
+    /* ------------------------------------------------------------------
+       Forecast Delta content styles only.
+
+       The page layout shell (sidebar + mobile bottom nav + main padding)
+       is injected at build time by build.js injectDashShell(), the same
+       canonical shell every premium page uses. This file intentionally
+       ships NO dash-shell / dash-nav / dash-header / dash-main /
+       dash-mobile-nav markup or CSS, so there is exactly one shell in the
+       built page (no nested-shell collision). See
+       docs/dashboard-mobile-spec.md and the 2026-05-28 sprint in CLAUDE.md.
+       ------------------------------------------------------------------ */
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#6B7280; --mmt-border:#E5E7EB; }
     body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-surface); margin:0; }
-    .dash-shell { display:grid; grid-template-columns:var(--dash-sidebar) 1fr; min-height:100vh; }
-    .dash-nav { background:var(--mmt-navy); padding:24px 0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
-    .dash-nav-brand { padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
-    .dash-nav-brand a { color:#fff; text-decoration:none; font-weight:800; font-size:14px; }
-    .dash-nav-brand small { display:block; font-size:11px; color:rgba(255,255,255,0.5); font-weight:400; margin-top:2px; }
-    .dash-nav-link { display:flex; align-items:center; gap:10px; padding:10px 20px; color:rgba(255,255,255,0.6); text-decoration:none; font-size:13px; font-weight:500; transition:all 0.15s; }
-    .dash-nav-link:hover { color:#fff; background:rgba(255,255,255,0.05); }
-    .dash-nav-link.active { color:#fff; background:rgba(69,123,157,0.3); border-left:3px solid var(--mmt-teal); }
-    .dash-nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); padding:16px 20px 6px; }
-    .dash-header { background:var(--mmt-white); padding:16px 32px; border-bottom:1px solid var(--mmt-border); display:flex; align-items:center; justify-content:space-between; }
-    .dash-main { padding:32px; max-width:980px; }
     .dash-card { background:var(--mmt-white); border-radius:12px; padding:24px; margin-bottom:16px; border:1px solid var(--mmt-border); }
+    .fd-page { max-width:980px; }
+    /* Slim content-level header (email + sign out). Not class "dash-header"
+       so the build shell-stripper leaves it intact. */
+    .dash-content-header { display:flex; align-items:center; justify-content:space-between; gap:12px 16px; flex-wrap:wrap; margin-bottom:24px; }
+    .dash-content-header .dch-title { font-size:14px; font-weight:700; }
+    .dash-content-header .dch-meta { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
     .editorial p { font-size:14px; line-height:1.7; color:var(--mmt-navy); margin:0 0 12px; }
     .editorial p strong { font-weight:700; }
     .editorial a { color:var(--mmt-teal); text-decoration:none; font-weight:600; }
@@ -63,7 +69,7 @@
     .fp-coverage { font-size:12px; color:var(--mmt-text-secondary); margin:0 0 12px; }
     .fp-coverage .missing { color:#B45309; font-weight:600; }
     .fp-verified-stale { color:#E63946; font-weight:700; }
-    @media (max-width:768px) { .dash-shell { grid-template-columns:1fr; } .dash-nav { display:none; } .dash-main { padding:16px; padding-bottom:80px; } table.fp-table { font-size:12px; } table.fp-table th, table.fp-table td { padding:8px 9px; } }
+    @media (max-width:768px) { table.fp-table { font-size:12px; } table.fp-table th, table.fp-table td { padding:8px 9px; } .dash-content-header { align-items:flex-start; } }
   </style>
   <script>
     (function() {
@@ -75,83 +81,53 @@
   </script>
 </head>
 <body>
-  <div class="dash-shell">
-    <nav class="dash-nav">
-      <div class="dash-nav-brand"><a href="/premium/dashboard.html">★ MMT Premium<small>Intelligence Dashboard</small></a></div>
-      <div class="dash-nav-section">Intelligence</div>
-      <a href="/premium/dashboard.html" class="dash-nav-link">Dashboard</a>
-      <a href="/intel/capture-intelligence-this-issue/" class="dash-nav-link">Capture Intelligence</a>
-      <a href="/capture-corner.html" class="dash-nav-link">Capture Corner</a>
-      <a href="/premium/briefings.html" class="dash-nav-link">Friday Brief</a>
-      <a href="/premium/gao-sustain.html" class="dash-nav-link">GAO Sustains</a>
-      <a href="/premium/key-people.html" class="dash-nav-link">Key People</a>
-      <a href="/premium/forecast-delta.html" class="dash-nav-link active">Forecast Delta</a>
-      <div class="dash-nav-section">Tools</div>
-      <a href="/premium/pursuit-score.html" class="dash-nav-link">Pursuit Score</a>
-      <a href="/premium/compliance-check.html" class="dash-nav-link">Compliance Check</a>
-      <a href="/premium/signal-chain.html" class="dash-nav-link">Signal Chain</a>
-      <a href="/proposal-pulse.html" class="dash-nav-link">ProposalPulse ($14.99)</a>
-      <a href="/marketpulse.html" class="dash-nav-link">MarketPulse ($35)</a>
-      <div class="dash-nav-section">Resources</div>
-      <a href="/latest.html" class="dash-nav-link">Article Archive</a>
-      <a href="/contract-tracker.html" class="dash-nav-link">Contract Tracker</a>
-      <a href="/idiq-tracker.html" class="dash-nav-link">IDIQ Tracker</a>
-      <a href="/premium/single-bidder.html" class="dash-nav-link">Sole-Source Watch</a>
-      <a href="/premium/fpds-migration.html" class="dash-nav-link">FPDS Sunset</a>
-      <a href="/glossary.html" class="dash-nav-link">Glossary</a>
-      <a href="/premium/calendar.html" class="dash-nav-link">Pursuit Calendar</a>
-      <a href="/premium/ask-mmt.html" class="dash-nav-link">Ask MMT</a>
-      <div class="dash-nav-section">Account</div>
-      <a href="/premium/settings.html" class="dash-nav-link">Settings</a>
-      <a href="/" class="dash-nav-link" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">&larr; Back to site</a>
-    </nav>
-    <div>
-      <div class="dash-header">
-        <span style="font-size:14px; font-weight:700;">★ Premium Dashboard</span>
-        <div style="display:flex; align-items:center; gap:16px;">
-          <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
-          <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
-          <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';document.cookie='mmt_email=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
-        </div>
-      </div>
-      <div class="dash-main">
+  <nav class="nav-editorial"></nav>
 
-        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Procurement Signal</p>
-        <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Forecast Delta Tracker</h1>
-        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 10px;">Monthly editorial diff of federal agency procurement forecasts &mdash; what was added, what slipped, what was removed. VA, DHA, HHS, ARPA-H, GSA. Plus a vetted portal of the official sources we monitor.</p>
-        <p style="margin:0 0 24px;"><!-- BUILD:FORECAST_DELTA_FRESHNESS --></p>
-
-        <div class="dash-card editorial">
-          <!-- BUILD:FORECAST_DELTA_LATEST -->
-        </div>
-
-        <div class="dash-card">
-          <h2 style="font-size:18px;font-weight:700;margin:0 0 10px;">Earlier reads</h2>
-          <!-- BUILD:FORECAST_DELTA_ARCHIVE -->
-        </div>
-
-        <div class="dash-card" id="forecast-pipeline" style="scroll-margin-top:80px;">
-          <h2 style="font-size:18px;font-weight:700;margin:0 0 4px;">Forecast Pipeline &mdash; what agencies say is coming</h2>
-          <p style="font-size:13px;color:var(--mmt-text-secondary);margin:0 0 14px;">Named opportunities pulled straight from the official agency forecasts, each with the anticipated solicitation and award dates the agency published. Recompetes are where an incumbent is defending; sort by solicitation date to see what fires first. This is the agency&rsquo;s own forecast, not a market rumor.</p>
-          <p class="fp-coverage" id="fpCoverage"></p>
-          <div class="fp-controls">
-            <div id="fpFilters" style="display:flex;gap:8px;"></div>
-            <input type="text" id="fpSearch" class="fp-search" placeholder="Search program or office...">
-            <span class="fp-count" id="fpCount"></span>
-          </div>
-          <div id="fpTableWrap" style="overflow-x:auto;"></div>
-          <p style="font-size:12px;color:var(--mmt-text-secondary);margin:12px 0 0;" id="fpNote"></p>
-        </div>
-
-        <div class="dash-card">
-          <h2 style="font-size:18px;font-weight:700;margin:0 0 4px;">Forecast Portals &mdash; the official sources we monitor</h2>
-          <p style="font-size:13px;color:var(--mmt-text-secondary);margin:0 0 16px;">Direct links to each agency's procurement forecast page, with our read on data accessibility and refresh cadence. Click through to verify the source for any signal we surface.</p>
-          <div id="portalGrid" class="portal-grid"></div>
-        </div>
-
-        <p style="font-size:12px;color:var(--mmt-text-secondary);margin:8px 0 0;">Refresh cadence: monthly editorial entries land at <code>content/forecast-delta/YYYY-MM.md</code>. Portal inventory is verified on each entry. Source: <a href="https://www.acquisition.gov/procurement-forecasts" target="_blank" rel="noopener" style="color:var(--mmt-teal);">acquisition.gov/procurement-forecasts</a>.</p>
-      </div>
+  <div class="fd-page">
+  <!-- Slim content header: email + sign out (the build shell has no header) -->
+  <div class="dash-content-header">
+    <span class="dch-title">&#9733; Premium Dashboard</span>
+    <div class="dch-meta">
+      <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
+      <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
+      <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';document.cookie='mmt_email=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
     </div>
+  </div>
+
+  <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Procurement Signal</p>
+  <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">Forecast Delta Tracker</h1>
+  <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 10px;">Monthly editorial diff of federal agency procurement forecasts &mdash; what was added, what slipped, what was removed. VA, DHA, HHS, ARPA-H, GSA. Plus a vetted portal of the official sources we monitor.</p>
+  <p style="margin:0 0 24px;"><!-- BUILD:FORECAST_DELTA_FRESHNESS --></p>
+
+  <div class="dash-card editorial">
+    <!-- BUILD:FORECAST_DELTA_LATEST -->
+  </div>
+
+  <div class="dash-card">
+    <h2 style="font-size:18px;font-weight:700;margin:0 0 10px;">Earlier reads</h2>
+    <!-- BUILD:FORECAST_DELTA_ARCHIVE -->
+  </div>
+
+  <div class="dash-card" id="forecast-pipeline" style="scroll-margin-top:80px;">
+    <h2 style="font-size:18px;font-weight:700;margin:0 0 4px;">Forecast Pipeline &mdash; what agencies say is coming</h2>
+    <p style="font-size:13px;color:var(--mmt-text-secondary);margin:0 0 14px;">Named opportunities pulled straight from the official agency forecasts, each with the anticipated solicitation and award dates the agency published. Recompetes are where an incumbent is defending; sort by solicitation date to see what fires first. This is the agency&rsquo;s own forecast, not a market rumor.</p>
+    <p class="fp-coverage" id="fpCoverage"></p>
+    <div class="fp-controls">
+      <div id="fpFilters" style="display:flex;gap:8px;"></div>
+      <input type="text" id="fpSearch" class="fp-search" placeholder="Search program or office...">
+      <span class="fp-count" id="fpCount"></span>
+    </div>
+    <div id="fpTableWrap" style="overflow-x:auto;"></div>
+    <p style="font-size:12px;color:var(--mmt-text-secondary);margin:12px 0 0;" id="fpNote"></p>
+  </div>
+
+  <div class="dash-card">
+    <h2 style="font-size:18px;font-weight:700;margin:0 0 4px;">Forecast Portals &mdash; the official sources we monitor</h2>
+    <p style="font-size:13px;color:var(--mmt-text-secondary);margin:0 0 16px;">Direct links to each agency's procurement forecast page, with our read on data accessibility and refresh cadence. Click through to verify the source for any signal we surface.</p>
+    <div id="portalGrid" class="portal-grid"></div>
+  </div>
+
+  <p style="font-size:12px;color:var(--mmt-text-secondary);margin:8px 0 0;">Refresh cadence: monthly editorial entries land at <code>content/forecast-delta/YYYY-MM.md</code>. Portal inventory is verified on each entry. Source: <a href="https://www.acquisition.gov/procurement-forecasts" target="_blank" rel="noopener" style="color:var(--mmt-teal);">acquisition.gov/procurement-forecasts</a>.</p>
   </div>
   <script>
     var email=localStorage.getItem('mmt_email');var __de=document.getElementById('dash-email');if(__de&&email)__de.textContent=email;
