@@ -216,24 +216,42 @@ Return the RFQs found as JSON. source_url must be the ebuy.gsa.gov RFQ URL when 
 
   let upsertCount = 0;
   let errorCount = 0;
+  // 2026-09-11: the run used to record only an error COUNT. When
+  // EBUY_SCAN_FAILED surfaced in the Friday intel-quality email there was
+  // nothing queryable to say why — the reason lived in a console.error inside
+  // Netlify function logs, which is not where anyone is looking a week later.
+  // Keep the first failure (message + PostgREST code) on the event itself so
+  // the next occurrence is diagnosable from ops_events alone. A missing column
+  // (the 2026-08-20 opportunity_radar.status outage shape) and a transient
+  // network blip look identical at count 1; the code tells them apart.
+  let firstError = null;
+  const noteError = (where, error) => {
+    errorCount++;
+    console.error(`${where}:`, error && error.message);
+    if (!firstError) {
+      firstError = {
+        where,
+        message: String((error && error.message) || "unknown").slice(0, 300),
+        code: (error && error.code) || null,
+      };
+    }
+  };
   for (const opp of filtered) {
     try {
       if (opp.solicitation_number) {
         const { error } = await supabase
           .from("opportunity_radar")
           .upsert(opp, { onConflict: "solicitation_number" });
-        if (error) { console.error("Upsert error:", error.message); errorCount++; } else { upsertCount++; }
+        if (error) noteError("Upsert error", error); else upsertCount++;
       } else {
         const { error } = await supabase.from("opportunity_radar").insert(opp);
         if (error) {
           if (error.code === "23505") continue;
-          console.error("Insert error:", error.message);
-          errorCount++;
+          noteError("Insert error", error);
         } else { upsertCount++; }
       }
     } catch (err) {
-      console.error("DB error:", err.message);
-      errorCount++;
+      noteError("DB error", err);
     }
   }
 
@@ -243,9 +261,20 @@ Return the RFQs found as JSON. source_url must be the ebuy.gsa.gov RFQ URL when 
     await logOpsEvent(supabase, {
       event_type: upsertCount > 0 ? "EBUY_SCAN_OK" : (errorCount > 0 ? "EBUY_SCAN_FAILED" : "EBUY_SCAN_EMPTY"),
       source_function: "ebuy-open-radar-background",
-      severity: upsertCount === 0 && errorCount > 0 ? "error" : (upsertCount === 0 ? "warn" : "info"),
+      // A run that upserts some rows and errors on others used to log
+      // severity "info" — a partial failure rendered as a clean run, the same
+      // shape as the returned-5xx false green fixed on 2026-08-20. Partial
+      // now warns; total failure still errors.
+      severity: errorCount === 0 ? (upsertCount === 0 ? "warn" : "info") : (upsertCount === 0 ? "error" : "warn"),
       signature: "ebuy_scan_complete",
-      details: { scanned: allOpportunities.length, filtered: filtered.length, upserted: upsertCount, errors: errorCount },
+      details: {
+        scanned: allOpportunities.length,
+        filtered: filtered.length,
+        upserted: upsertCount,
+        errors: errorCount,
+        partial: upsertCount > 0 && errorCount > 0,
+        first_error: firstError,
+      },
     });
   } catch (logErr) {
     console.error("ops_ledger heartbeat failed:", logErr.message);

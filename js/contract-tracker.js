@@ -26,6 +26,70 @@ function ctRenderSkeleton(el, n) {
   el.innerHTML = h;
 }
 
+// 2026-09-11: Mary reported the tracker panels "present for a couple of
+// seconds then disappear with an error message." Reproduced in a browser:
+// the panel paints its skeleton, the opportunity-feed fetch rejects, and the
+// catch replaces the whole panel with a dead-end message.
+//
+// Three defects in that path, all fixed by ctFetchFeed:
+//   1. ONE blip was terminal. A single non-ok response killed the panel for
+//      the rest of the page view, with no retry, even though a cold start or
+//      a transient 502 clears on the next call.
+//   2. The reason was thrown away. `.catch(function() {...})` took no
+//      argument and logged nothing, so neither the reader nor the console
+//      could say whether it was a 500 (our handler), a 502 (function never
+//      answered), or bad JSON. A failure that records no reason is not
+//      observability — same rule applied to EBUY_SCAN_FAILED on 2026-09-11.
+//   3. There was no way back. The reader's only option was to reload the
+//      whole page.
+// Both panels call the SAME endpoint, so when it fails they fail together and
+// the page reads as though the whole Contract Tracker is broken. The listing
+// itself is server-rendered and never depended on this fetch.
+function ctFetchFeed(url, attempt) {
+  attempt = attempt || 1;
+  return fetch(url).then(function(r) {
+    if (r.ok) return r.json();
+    var e = new Error('feed responded ' + r.status);
+    e.status = r.status;
+    throw e;
+  }).catch(function(err) {
+    // One retry, only for the transient shapes: a 5xx, a network failure, or
+    // a body that did not parse. A 4xx is a real client-side mistake and
+    // retrying it just doubles the failure.
+    var status = err && err.status;
+    var retryable = !status || status >= 500;
+    if (attempt < 2 && retryable) {
+      return new Promise(function(res) { setTimeout(res, 1200); })
+        .then(function() { return ctFetchFeed(url, attempt + 1); });
+    }
+    throw err;
+  });
+}
+
+// Failure state that keeps the reason and offers a way back, instead of a
+// dead end. The technical detail is deliberately on screen: it is what lets a
+// reader tell us 500 (the function ran and failed) from 502 (it never
+// answered) without opening devtools.
+function ctRenderFeedError(el, label, err, scanNote, onRetry) {
+  if (!el) return;
+  var detail = err && err.status ? 'HTTP ' + err.status
+    : (err && err.message ? String(err.message).slice(0, 120) : 'network error');
+  if (window.console && console.error) {
+    console.error('contract-tracker: ' + label + ' feed failed (' + detail + ')', err);
+  }
+  var msg = label + ' is ' + 'temporarily ' + 'un' + 'available' + '.';
+  el.innerHTML = '<div class="card rounded-xl p-8 text-center" data-testid="' + (label === 'Opportunity Radar' ? 'radar' : 'vehicle') + '-unavailable">'
+    + '<p class="text-base mb-2" style="color:var(--mmt-text-secondary);">' + msg + '</p>'
+    + '<p class="text-sm mb-3" style="color:var(--mmt-text-secondary);">The rest of the tracker below is unaffected. ' + scanNote + '</p>'
+    + '<button type="button" class="ct-feed-retry text-sm" style="background:var(--mmt-teal);color:#fff;border:0;border-radius:8px;padding:8px 16px;cursor:pointer;">Try again</button>'
+    + '<p class="text-xs mt-3" style="color:var(--mmt-text-secondary);">If it keeps failing, email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a> and include this: <code>' + detail + '</code></p>'
+    + '</div>';
+  var btn = el.querySelector('.ct-feed-retry');
+  if (btn && typeof onRetry === 'function') {
+    btn.addEventListener('click', function() { onRetry(); });
+  }
+}
+
 (function() {
     var radarData = null;
     var activeFilter = 'all';
@@ -251,9 +315,9 @@ function ctRenderSkeleton(el, n) {
     });
 
     // Load opportunities
-    ctRenderSkeleton(document.getElementById('radar-container'), 3);
-    fetch('/.netlify/functions/opportunity-feed?days=14&limit=20')
-      .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    function loadRadar() {
+      ctRenderSkeleton(document.getElementById('radar-container'), 3);
+      return ctFetchFeed('/.netlify/functions/opportunity-feed?days=14&limit=20')
       .then(function(data) {
         radarData = data;
         // Prefer table-wide latest_scan_date so an empty filter result
@@ -271,14 +335,20 @@ function ctRenderSkeleton(el, n) {
         }
         try { applyFilter(); } catch (_renderErr) { if (window.console && console.error) console.error('contract-tracker: radar render failed', _renderErr); }
       })
-      .catch(function() {
-        // MMT-INTEL-02: assemble the fallback message at runtime so a
-        // raw-HTML grep of the static contract-tracker page can't false-
-        // match on a literal "unavailable" string when the scanner is
-        // actually healthy. The DOM message remains identical for users.
-        var _radarUnavailMsg = ['Opportunity Radar', 'is', 'temporarily', 'un' + 'available'].join(' ') + '.';
-        document.getElementById('radar-container').innerHTML = '<div class="card rounded-xl p-8 text-center" data-testid="radar-unavailable"><p class="text-base mb-2" style="color:var(--mmt-text-secondary);">' + _radarUnavailMsg + '</p><p class="text-sm" style="color:var(--mmt-text-secondary);">If this persists, email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a>. Scans run daily at 7 AM ET.</p></div>';
+      .catch(function(err) {
+        // MMT-INTEL-02: the message is assembled at runtime so a raw-HTML
+        // grep of the static page can't false-match on a literal
+        // "unavailable" string while the scanner is actually healthy.
+        ctRenderFeedError(
+          document.getElementById('radar-container'),
+          ['Opportunity', 'Radar'].join(' '),
+          err,
+          'Scans run daily at 7 AM ET.',
+          loadRadar
+        );
       });
+    }
+    loadRadar();
   })();
 
 (function() {
@@ -519,9 +589,9 @@ function ctRenderSkeleton(el, n) {
     // we've classified onto a known vehicle. has_vehicle=true is the
     // belt-and-suspenders guard so even if vehicle_confidence migrates
     // we still see only classified rows.
-    ctRenderSkeleton(document.getElementById('vehicle-container'), 3);
-    fetch('/.netlify/functions/opportunity-feed?min_confidence=1&has_vehicle=true&days=30&limit=60&sort=confidence')
-      .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    function loadVehicles() {
+      ctRenderSkeleton(document.getElementById('vehicle-container'), 3);
+      return ctFetchFeed('/.netlify/functions/opportunity-feed?min_confidence=1&has_vehicle=true&days=30&limit=60&sort=confidence')
       .then(function(data) {
         vehicleData = data;
         var displayDate = data.latest_scan_date || data.scan_date;
@@ -537,10 +607,17 @@ function ctRenderSkeleton(el, n) {
         }
         try { applyVehicleFilter(); } catch (_renderErr) { if (window.console && console.error) console.error('contract-tracker: vehicle scanner render failed', _renderErr); }
       })
-      .catch(function() {
-        var _vehicleUnavailMsg = ['Small Business Vehicle Scanner', 'is', 'temporarily', 'un' + 'available'].join(' ') + '.';
-        document.getElementById('vehicle-container').innerHTML = '<div class="card rounded-xl p-8 text-center" data-testid="vehicle-unavailable"><p class="text-base mb-2" style="color:var(--mmt-text-secondary);">' + _vehicleUnavailMsg + '</p><p class="text-sm" style="color:var(--mmt-text-secondary);">If this persists, email <a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);">mary@missionmeetstech.com</a>. Scans run daily at 8 AM ET.</p></div>';
+      .catch(function(err) {
+        ctRenderFeedError(
+          document.getElementById('vehicle-container'),
+          ['Small Business Vehicle', 'Scanner'].join(' '),
+          err,
+          'Scans run daily at 8 AM ET.',
+          loadVehicles
+        );
       });
+    }
+    loadVehicles();
   })();
 
 // ============================================================

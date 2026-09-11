@@ -32,6 +32,26 @@
         "label": "ARPA-H Open Funding Opportunities (no traditional forecast; checked, no health-IT solicitation open)",
         "url": "https://arpa-h.gov/explore-funding/open-funding-opportunities"
       }
+    ],
+    "checked_no_rows": [
+      {
+        "agency": "CDC",
+        "checked": "2026-09-10",
+        "source_url": "https://osdbu.hhs.gov/industry/opportunity-forecast",
+        "note": "562 CDC rows in the HHS OSDBU SBCX export, every one carrying an FY24 or FY25 award date with no solicitation date, and zero rows in an IT NAICS. cdc.gov/contracts has no forecast page of its own. CDC's forecast has not refreshed, so CDC has no forward health-IT rows."
+      },
+      {
+        "agency": "ONC",
+        "checked": "2026-09-10",
+        "source_url": "https://osdbu.hhs.gov/industry/opportunity-forecast",
+        "note": "ONC buys through the Program Support Center under ASA. The PSC rows are all FY24 and FY25 dates, and the only 2026 entries under ASA are ACF and refugee-program buys. No ONC line exists anywhere in the export."
+      },
+      {
+        "agency": "ARPA-H",
+        "checked": "2026-09-10",
+        "source_url": "https://arpa-h.gov/explore-funding/open-funding-opportunities",
+        "note": "No rows in SBCX and no traditional forecast. The May research-funding URL now 404s; open solicitations live under Explore Funding, and none of what is open in September is a health-IT buy. DIGIHEALS, UPGRADE and the Biomedical Data Fabric Toolbox sit in the portfolio without an open solicitation."
+      }
     ]
   },
   "items": [
