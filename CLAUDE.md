@@ -1,5 +1,185 @@
 # Mission Meets Tech - Developer & Content Governance
 
+## Sprint 2026-09-10 (night) — Ask MMT search generalized: one agency registry, any question
+
+Mary, on the evening fix: "make sure that the search works no matter what the
+question or agency is not just to this specific question." She was right that
+the fix was narrow. The DHA data-governance bug was one instance of a class,
+and the class was **seven disagreeing hardcoded agency tables**:
+
+| Table | Lived in | Covered |
+|---|---|---|
+| `agencyToToptierName` | federal-data-apis | VA, DHA, DoD, HHS, CMS, NIH, IHS, GSA |
+| `USASPENDING_SUBTIER` | federal-data-apis | DHA, CMS, NIH, IHS |
+| `SAM_DEPT_NAMES` | federal-data-apis | DHA, DoD, VA, HHS, GSA |
+| `agencySlugMap` (Federal Register) | federal-data-apis | VA, DHA, HHS, CMS, NIH, IHS |
+| `agencyCodeMap` (spending totals) | federal-data-apis | VA, DHA, HHS, DoD |
+| `agencyMap` (spending by NAICS) | federal-data-apis | VA, DHA, HHS, DoD |
+| `AGENCY_HINTS` | premium-assistant | 8 substrings |
+| `AGENCY_TOKENS` | query-terms | 14 tokens |
+| `AGENCY_ACRONYMS` | content-index | 14 tokens |
+
+So a question about **FDA, CDC, HRSA, SAMHSA, AHRQ, ARPA-H, ONC, ASPR, VHA,
+VBA, the Army, the Navy, the Air Force, DLA, DISA, USU, NASA (SEWP), DHS or
+SSA** detected no agency at all and every downstream filter ran unscoped, or
+detected one and then filtered to the wrong parent department.
+
+Shipped:
+- **`lib/federal-agencies.js`** — ONE registry, **27 agencies**, each with
+  `aliases`, `acronyms`, `hints`, `usaspending {toptier, subtier}`, `samDept`,
+  `federalRegister[]` and `cgac`. All nine tables above now read it. Adding an
+  agency is one row. Three rules that make detection behave:
+  - **Longest wording wins**, so "Department of the Air Force" is the Air
+    Force and "Veterans Health Administration" is VHA, never their parent.
+  - **First-mention order**, so "a VA and DHA program" leads with VA and
+    `agency` (codes[0]) is what the subscriber led with. Ties go to the
+    longer match.
+  - **Only an agency's OWN code acronym is stripped** from the keyword.
+    Every other acronym in its row (MHS, SEWP, NITAAC, BARDA, CDER, OPTN,
+    ASTP) names a program, vehicle or office the subscriber is asking about,
+    so it sets the agency AND stays in the keyword. Stripping SEWP out of
+    "What has NASA SEWP awarded?" searched NASA for nothing in particular.
+- **`keywordLadder()`** — progressively shorter keywords, most specific term
+  retained longest (identifiers and acronyms beat domain terms beat ordinary
+  words). `enrichWithFederalData` walks it: the subscriber's own wording
+  first, then one relaxed rung if that returned zero rows. **Bounded at two
+  attempts** because the whole federal fan-out sits under an 8s timeout in
+  premium-assistant. An ERROR is never retried: it is not a miss, and
+  retrying would multiply the failure and corrupt the not-reached list.
+  SAM.gov reuses its existing secondary call for the relaxed rung, so SAM
+  stays at two requests per question against its small shared daily quota.
+- **Empty phrase is a real answer.** "What awards has CDC made?" leaves no
+  specific term. It now runs an agency-filtered search with NO keyword, which
+  is the correct query. `searchPhrase()` never falls back to the raw sentence
+  and never sends the leftover generic noun ("awards"), which would only
+  exclude rows.
+- Question verbs that were leaking into keywords (won, made, holds, held,
+  use, run, take, bring) added to the stopword list; `wordRe()` makes
+  matching safe for terms ending in punctuation (`\boasis\+\b` never
+  matched "OASIS+ on-ramp"; a negative lookahead does).
+- The answer's scope label now carries the resolved office name, so a reader
+  outside the acronym sees "Scope: Defense Health Agency".
+
+**Tests (+51, 752 total).** `tests/unit/query-generalization.test.js` is a
+36-row matrix of question shapes across 20 agencies asserting PROPERTIES, not
+hand-checked answers: the named agency is detected, no scaffolding or
+stopword reaches the keyword (ALL-CAPS acronyms exempt, so "IT" in "organ
+transplant IT" survives while the pronoun does not), the meaning-carrying
+terms survive, the agency code never doubles as a keyword, and a scaffolded
+question always comes out strictly shorter. Plus registry integrity (every
+agency filters every API, every alias resolves to itself, every sub-agency
+rolls up to a registered department) and ladder invariants (monotonic, no
+repeat rungs, always ends agency-only). `federal-search-wire.test.js` gains
+three cases: the ladder relaxes and reports which rung answered, an API error
+does not multiply, and FDA gets its own subtier, department, Federal Register
+slug and CGAC end to end.
+
+**Still not verifiable here:** this session is a cloud container whose gateway
+answers 403 to CONNECT for every .gov/.mil host and Perplexity, so no live
+call was made. The wire tests prove what is sent. Two values are best-effort
+and marked in the registry for the live pass: the ARPA-H and ASPR/ONC
+USASpending subtier names (widening protects them), and the
+`spending_by_category` `toptier_code` filter shape.
+
+Hard rules (do not regress):
+- **Agency mappings live in `lib/federal-agencies.js`. Never add a seventh
+  table.** Any new API client reads the registry; any new agency is one row.
+- **An agency filter must never be the only thing standing between a question
+  and an answer.** Sub-agency filters widen to the department on an error or
+  an empty result; an unverified mapping can cost a call, never an answer.
+- **The keyword relaxes, it does not disappear.** Zero rows on the full
+  phrase means try the most specific term, then the agency alone. Zero rows
+  on an ERROR means stop and report the system as not reached.
+- **Only an agency's own code is stripped from the keyword.** Program and
+  vehicle acronyms are the most searchable thing in the question.
+
+Verified 2026-09-10: unit suite **752/752** (60 files, +51); build exit 0 (688
+pages); validate-dist, validate-routes (36), validate-ask-mmt-coverage,
+validate-contract-tracker (64), validate-data-freshness, scan-pii pass.
+
+## Sprint 2026-09-10 (evening) — Ask MMT sent the whole sentence to the APIs
+
+Mary asked the live tool "Tell me all about data governence awards in the
+DHA" and got "I don't have a source for that", with SAM.gov absent from the
+sources list, while `contracts.json` holds a **DHA Data Governance (WOSB
+Set-Aside)** entry. Four defects, all in the question-to-query step:
+
+1. **The sentence was the keyword.** `enrichWithFederalData` split the
+   topic on spaces, kept words longer than three letters and took five, so
+   USASpending received `keywords: ["Tell about data governence awards"]`
+   and SAM.gov `q=` the same string. Every topic enricher (PubMed, CMS,
+   eCFR...) got the raw question too. New `lib/query-terms.js`
+   `extractSearchTerms()` strips question scaffolding, agency wording and
+   generic procurement nouns, keeps acronyms, and corrects unambiguous
+   domain misspellings (edit distance 2 against a vocabulary; six-letter
+   minimum; never acronyms). The failing question becomes `data governance`
+   + agency DHA. `federal-data-apis.deriveKeywords()` and the assistant's
+   `topicQuery` both use it.
+2. **SAM.gov was never scoped to the agency.** `enrichWithFederalData`
+   called `searchSAMOpportunities` without `agency`, so `deptname` was
+   never set. Fixed.
+3. **DHA meant all of DoD on USASpending.** Added `USASPENDING_SUBTIER`
+   (DHA, CMS, NIH, IHS) so the agencies filter is `tier: subtier`; a 4xx or
+   an empty subtier result retries at toptier (`widened_from_subtier`), so
+   a misnamed subtier can never blank an answer.
+4. **The corpus ranked scope over topic.** `content-index.js` weighted every
+   acronym 5x, so "DHA" alone outranked the entry whose title IS the
+   question. Agency acronyms now weigh 2x and `searchCorpus(q, n, phrase)`
+   adds an exact-phrase bonus (title +25, description/tags +12, excerpt +8).
+   The DHA Data Governance entry now ranks first for the exact question.
+   Contract items in the corpus link to the MMT page
+   (`/contracts/<slug>/`, `source_url` kept separately) instead of the
+   entry's bare `https://sam.gov` link that used to ship as a "source".
+
+Two additions so silence is never mistaken for absence:
+- **`unavailable`**: `collectUnavailable()` lists every system that was
+  queried and did not answer (timeout, HTTP error, SAM quota, missing key)
+  with a plain reason. It goes into the prompt as SYSTEMS NOT REACHED THIS
+  TURN with a rule that the model must say so rather than imply "no such
+  record", into the response, the widget ("Not reached this turn: ..."),
+  and the ops_event.
+- **Federal-sites web fallback** (`lib/web-federal-search.js`, Perplexity
+  `sonar`, `search_domain_filter` = 15 .gov/.mil domains, 20s timeout):
+  runs ONLY when USASpending awards, SAM opportunities and the
+  contract-award client all returned nothing (`shouldWebFallback`). Results
+  enter the context as LEADS, are cited as "web search, verify on the
+  page", and any sam.gov `/opp/` citation that is not 32-hex is dropped
+  first (08-05 rule). Catalog row `web_federal`, mode `fallback`, rendered
+  on `/ask/sources`. Off without `PERPLEXITY_API_KEY`; kill switch
+  `ASK_MMT_WEB_FALLBACK_DISABLED`.
+
+Tests (23 new, 701 total): `query-terms.test.js` (the verbatim failing
+question), `federal-search-wire.test.js` (stubbed fetch; asserts the exact
+USASpending body and SAM query string the APIs receive, subtier widening
+and the 4xx retry), `ask-mmt-enrichment.test.js` (full `runEnrichment` with
+every upstream down: the archive still cites the DHA Data Governance page
+and the silent systems are named; with USASpending up it is a cited source;
+the fallback fires once and only when the award sources were silent),
+`web-federal-search.test.js`.
+
+**Not verifiable from this session:** every .gov/.mil host and Perplexity
+are egress-blocked here, so the live answer was not re-run. The wire tests
+prove what is sent; the accuracy pass (campaign checklist item 1) is the
+live proof and is queued as a local task.
+
+Hard rules (do not regress):
+- **A question is not a keyword.** Anything that reaches an API `keywords`,
+  `q` or `query` parameter goes through `extractSearchTerms()` first. The
+  wire test asserts the request body for the failing question.
+- **Scope the sub-agency, then widen.** DHA/CMS/NIH/IHS questions filter at
+  subtier and fall back to the department; never the reverse.
+- **Silence from a system is reported, not interpreted.** Every enrichment
+  result with `error`/`configured:false`/`rateLimited` is listed as NOT
+  REACHED in the prompt, the response and the widget.
+- **Web search is a fallback of last resort, federal domains only, labeled
+  as leads.** It never runs when the structured award sources answered,
+  and a malformed SAM permalink from it never reaches the model.
+
+Verified 2026-09-10: unit suite 701/701 (59 files); build exit 0 (688
+pages, zero raw markers); validate-dist, validate-routes (36),
+validate-ask-mmt-coverage, validate-data-freshness, scan-pii pass; corpus
+rebuilt (`scripts/build-content-corpus.js`).
+
 ## Sprint 2026-09-10 (later) — Ask MMT campaign: one product name, token auth, free tier, sources on every answer, autonomous campaign
 
 Mary handed over the "Ask MMT Campaign Package" (research with receipts,
@@ -211,6 +391,85 @@ validate-dist / validate-routes / agency-parity / agency-profiles /
 contract-tracker / cso-aois / forecast-delta / data-freshness / scan-pii pass;
 dist GAO page renders the May entry from markdown with the red overdue badge
 and zero raw markers; About stats are build-derived.
+
+## Sprint 2026-09-10 — Forecast Delta Tracker: September read + 11-agency pipeline from the official forecasts
+
+Follow-on to PR #182 (which made the tracker render from markdown and added the
+freshness guards, but left the May read and a 78-row CMS/DHA-only pipeline).
+This pass fetched every one of the 11 agencies' OWN forecasts live, in a real
+browser where a script could not, and rebuilt `data/forecast-pipeline.json`
+(78 → 201 rows, 8 agencies with rows) plus `content/forecast-delta/2026-09.md`
+and `data/forecast-portals.json`. **Nothing in the table comes from trade
+press, aggregators or memory; CDC, ONC and ARPA-H have no rows because their
+official forecasts carry nothing forward-looking in health IT, and the read
+says so per agency.**
+
+Where the forecasts actually live now (every May-era URL had moved):
+- **VA**: `va.gov/osdbu/acquisition/` returns 403 even in a browser. VA's own
+  FCO query tool (`vendorportal.ecms.va.gov/eVP/FCO/fco.aspx`) is FY2026-only,
+  interactive, reviewed 05/07/2026. VA publishes into the **governmentwide FCO
+  tool on acquisitiongateway.gov** (688 VA rows, 607 from TAC, touched
+  2026-09-04). That is the citable VA forecast.
+- **GSA**: `forecast.gsa.gov` no longer resolves; the Forecast Tool is
+  `acquisitiongateway.gov/forecast`. JSON: `ag-dashboard.acquisitiongateway.gov
+  /api/v3.0/export/forecast?field_result_id_target_id=<tid>&range=3000`
+  (tid 8 = VA, 2 = GSA, 15 = HHS which has ZERO rows there). **Trap:** the
+  `resources/forecast` listing endpoint IGNORES the agency filter on pages 0
+  and 1 (cached) and honors it from page 2; the `export/forecast` endpoint with
+  a large `range` is filtered correctly. Verify `field_result_id` per row.
+- **HHS OpDivs**: mysbcx.hhs.gov redirects to `osdbu.hhs.gov`; the forecast is
+  `/industry/opportunity-forecast` (SPA, 404 to curl, fine in a browser).
+  Export: `osdbu.hhs.gov/api/sbcxopportunities/?filter=` → 5,375 rows
+  (IHS 3,928 / CDC 562 / FDA 517 / CMS 80 / NIH 34). **It carries POC names,
+  emails and phones; strip them.** CDC rows are all FY24/25 with no
+  solicitation dates (stale); NIH has 3 forward rows, none IT; ASA/PSC (where
+  ONC buys) is all FY25; ARPA-H has no rows at all.
+- **CMS**: the monthly workbook moved to Work With Us > Business Resources >
+  Contract Opportunities; the dated file URL changes monthly (Aug → Sep 2026
+  redirected). Cite the dated file. 59 → 51 rows (19 dropped, 11 added).
+- **DHA**: dha.mil sits behind an F5/TSPD bot challenge (curl gets a JS
+  challenge page even for the .xlsx). In-browser the "Long Range Acquisition
+  Forecast" link still serves the **FY2025** workbook (modified 2025-05-22).
+  No FY26/FY27 forecast exists; the 19 rows are carried forward and labeled.
+- **ARPA-H**: `arpa-h.gov/research-funding` 404s; open solicitations are at
+  `/explore-funding/open-funding-opportunities`. None open is health IT.
+- **acquisition.gov/procurement-forecasts** links four agency HOME pages and
+  nothing else. It is an index in name only.
+
+Hard rules (do not regress):
+- **A forecast row must trace to the agency's own published forecast, and an
+  agency with no forward health-IT rows gets NO rows plus a sentence in the
+  read.** Padding a gap with trade press or a plausible line is the
+  `aspr-npivs` failure mode again.
+- **Never carry POC PII from a forecast export.** SBCX and the FCO export both
+  include names/emails/phones; the builder asserts no `@` and no phone
+  pattern in any field, and scan-pii runs in the build.
+- **Date precision follows the source and is documented in `_schema.note`.**
+  SBCX publishes month+year (rows carry the 1st); the FCO tool publishes award
+  as a fiscal quarter (carried as `TBD (award est. FY27 Q1 per FCO)`, which the
+  validator accepts). Do not invent a day the agency did not publish.
+- **The FCO listing endpoint's first two pages ignore filters.** Use the
+  export endpoint with `range`, and check the agency field on every row.
+- **Every portal URL in `forecast-portals.json` must be fetched live before
+  it is cited**, with the file/page date noted. Five of the six May URLs had
+  moved or died within four months.
+- **Frontmatter titles with a colon must be quoted.** gray-matter (build.js)
+  rejects `title: September read: ...` and silently SKIPS the entry, while the
+  validator's minimal reader accepts it, so the validator said OK and dist
+  still showed May. Caught only by grepping dist for the new title.
+- **`tests/unit/forecast-delta.test.js` pins FRESH/STALE "today" relative to
+  the newest committed entry**, not to hardcoded dates. The first version
+  hardcoded 2026-05-20 / 2026-09-10 and went red the moment a newer read
+  landed (date-pinned fixtures rule, 08-25, applied the other way round).
+
+Verified 2026-09-10: `validate-forecast-delta` OK (latest read 2026-09.md, 0d;
+pipeline 201 rows, verified 0d; the only warning is the 67 rows whose
+published solicitation date has already passed, which the page labels);
+voice sweep on the read 0 banned words / 0 em dashes / 0 exclamation points;
+`node build.js` exit 0; validate-dist OK; validate-routes ✓; scan-pii OK;
+`npx vitest run tests/unit` green; dist page renders the September read with
+the green freshness badge and the pipeline coverage line lists all 11 agencies
+(8 with rows, 3 named as gaps).
 
 ## Sprint 2026-09-10 — Forecast Delta Tracker frozen since May: the page never read its own markdown
 

@@ -390,9 +390,9 @@ const searchOverlayHtml = `
 // so the public "what it reads" list is the list the assistant actually queries.
 function generateAskMmtSourcesRows(catalog, full) {
   const esc = (v) => String(v || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  const modeLabel = { live: 'Live query', index: 'Index', conditional: 'Conditional' };
+  const modeLabel = { live: 'Live query', index: 'Index', conditional: 'Conditional', fallback: 'Fallback' };
   const rows = (catalog || []).filter((src) => full || src.mode !== 'conditional').map((src) => {
-    const mode = `<span class="src-mode ${esc(src.mode)}" style="display:inline-block;font-size:10px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;padding:2px 8px;border-radius:999px;white-space:nowrap;${src.mode === 'live' ? 'background:rgba(69,123,157,0.12);color:#457B9D;' : src.mode === 'index' ? 'background:rgba(10,25,47,0.08);color:#0A192F;' : 'background:#FEF3C7;color:#92400E;'}">${esc(modeLabel[src.mode] || src.mode)}</span>`;
+    const mode = `<span class="src-mode ${esc(src.mode)}" style="display:inline-block;font-size:10px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;padding:2px 8px;border-radius:999px;white-space:nowrap;${src.mode === 'live' ? 'background:rgba(69,123,157,0.12);color:#457B9D;' : src.mode === 'index' ? 'background:rgba(10,25,47,0.08);color:#0A192F;' : src.mode === 'fallback' ? 'background:#FEE2E2;color:#991B1B;' : 'background:#FEF3C7;color:#92400E;'}">${esc(modeLabel[src.mode] || src.mode)}</span>`;
     const note = src.note ? `<span class="src-note" style="display:block;margin-top:4px;font-size:12px;color:#6B7280;">${esc(src.note)}</span>` : '';
     const name = `<a href="${esc(src.url)}" target="_blank" rel="noopener" style="color:#0A192F;font-weight:600;">${esc(src.name)}</a>`;
     return full

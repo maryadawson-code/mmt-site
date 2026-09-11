@@ -106,6 +106,7 @@
       }).join(' · ');
       return '<li style="margin:0 0 4px;"><a href="' + escapeHtml(src.url) + '" target="_blank" rel="noopener" style="color:' + C.navy + ';font-weight:600;">' + escapeHtml(src.name) + '</a>' +
         (src.mode === 'live' ? ' <span style="color:' + C.text2 + ';">live query</span>' : '') +
+        (src.mode === 'fallback' ? ' <span style="color:#92400E;">web search, verify on the page</span>' : '') +
         (links ? ' <span style="color:' + C.text2 + ';">·</span> ' + links : '') + '</li>';
     }).join('');
     return '<div style="margin-top:10px;padding-top:8px;border-top:1px solid ' + C.border + ';">' +
@@ -252,13 +253,23 @@
         if (meta && meta.agency) {
           var tag = document.createElement('div');
           tag.style.cssText = 'margin-top:8px;font-size:11px;color:' + C.text2 + ';letter-spacing:0.04em;text-transform:uppercase;';
-          tag.textContent = 'Scope: ' + meta.agency + (meta.hasData === false ? ' · limited API data' : '');
+          // Full office name when the server resolved one: "Defense Health
+          // Agency" reads better than "DHA" for anyone outside the acronym.
+          tag.textContent = 'Scope: ' + (meta.agencyName || meta.agency) + (meta.hasData === false ? ' · limited API data' : '');
           bubble.appendChild(tag);
         }
         if (meta && meta.sources && meta.sources.length) {
           var src = document.createElement('div');
           src.innerHTML = sourcesHtml(meta.sources);
           bubble.appendChild(src);
+        }
+        if (meta && meta.unavailable && meta.unavailable.length) {
+          var un = document.createElement('div');
+          un.style.cssText = 'margin-top:8px;font-size:11px;line-height:1.4;color:' + C.text2 + ';';
+          un.innerHTML = '<strong style="color:' + C.red + ';">Not reached this turn:</strong> ' +
+            meta.unavailable.map(function (u) { return escapeHtml(u.name || u.id) + (u.reason ? ' (' + escapeHtml(u.reason) + ')' : ''); }).join(' · ') +
+            '. Their silence is not a "no". Check them directly if the answer depends on them.';
+          bubble.appendChild(un);
         }
       } else {
         bubble.textContent = content;
@@ -365,7 +376,7 @@
 
     function handleAnswer(question, r) {
       var data = r.data;
-      var meta = { agency: data.agency, hasData: data.hasData, sources: data.sources || [] };
+      var meta = { agency: data.agency, agencyName: data.agencyName, hasData: data.hasData, sources: data.sources || [], unavailable: data.unavailable || [] };
       var out = addBubble('assistant', data.answer, meta);
       setMeter(data);
       var history = loadHistory();

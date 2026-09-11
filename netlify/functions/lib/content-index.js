@@ -86,13 +86,25 @@ function extractAcronyms(text) {
  * Score a single corpus item against a query's tokens.
  * Title matches weigh 3x, description 2x, tags 2x, excerpt 1x.
  */
-function scoreItem(item, queryTokens, acronyms) {
+// From the one agency registry, so a scope acronym for ANY tracked agency
+// (not the fourteen that used to be listed here) is weighed below a topic
+// acronym like HCDS or T4NG2.
+const { AGENCY_ACRONYM_SET: AGENCY_ACRONYMS } = require("./federal-agencies");
+
+function scoreItem(item, queryTokens, acronyms, phrase) {
   const titleText = (item.title || "").toLowerCase();
   const descText = (item.description || "").toLowerCase();
   const tagText = (item.tags || []).join(" ").toLowerCase();
   const bodyText = (item.excerpt || "").toLowerCase();
 
   let score = 0;
+  // Exact topic phrase ("data governance", "community care network"): the
+  // strongest on-topic signal there is, so it outweighs a pile of scope hits.
+  if (phrase && phrase.includes(" ")) {
+    if (titleText.includes(phrase)) score += 25;
+    else if (descText.includes(phrase) || tagText.includes(phrase)) score += 12;
+    else if (bodyText.includes(phrase)) score += 8;
+  }
   let acronymHit = false;
   const isAcronym = (t) => acronyms && acronyms.has(t);
 
@@ -101,7 +113,12 @@ function scoreItem(item, queryTokens, acronyms) {
     // load-bearing part of the question. Weight them 5x so a single
     // HCDS/DHMSM/OASIS hit dominates a dozen matches on "about" or
     // "written" or "tell".
-    const weight = isAcronym(tok) ? 5 : 1;
+    // Agency acronyms (DHA, VA, HHS...) are a scope, not the topic: at 5x
+    // they let "DHA" alone outrank the item that actually matches the
+    // question ("DHA data governance" used to rank the DHA CSO above the
+    // DHA Data Governance tracker entry, 2026-09-10). Topic acronyms
+    // (HCDS, T4NG2, OASIS) keep the full weight.
+    const weight = isAcronym(tok) ? (AGENCY_ACRONYMS.has(tok) ? 2 : 5) : 1;
     if (titleText.includes(tok)) { score += 3 * weight; if (isAcronym(tok)) acronymHit = true; }
     if (descText.includes(tok))  { score += 2 * weight; if (isAcronym(tok)) acronymHit = true; }
     if (tagText.includes(tok))   { score += 2 * weight; if (isAcronym(tok)) acronymHit = true; }
@@ -136,14 +153,14 @@ function scoreItem(item, queryTokens, acronyms) {
  * @param {number} [limit] - max items to return (default 5)
  * @returns {Array} sorted by score desc
  */
-function searchCorpus(query, limit = 5) {
+function searchCorpus(query, limit = 5, phrase = "") {
   const corpus = loadCorpus();
   if (!corpus.items || corpus.items.length === 0) return [];
   const tokens = tokenize(query);
   if (tokens.length === 0) return [];
   const acronyms = extractAcronyms(query);
   const scored = corpus.items
-    .map((item) => ({ item, score: scoreItem(item, tokens, acronyms) }))
+    .map((item) => ({ item, score: scoreItem(item, tokens, acronyms, String(phrase || "").toLowerCase().trim()) }))
     .filter((s) => s.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
