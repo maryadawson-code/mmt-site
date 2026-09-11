@@ -9,7 +9,9 @@
 //   2. Every entry has required structural fields:
 //      slug, name (title), agency, status, description, source_urls,
 //      last_verified.
-//   3. Every source_url is syntactically `http://` or `https://`.
+//   3. Every source_url is syntactically `http://` or `https://`, and is a
+//      REAL source: not a root-domain link (https://sam.gov) and not a
+//      malformed SAM permalink (sam.gov/opp/<solicitation-number>).
 //   4. Every content_gap=true record has a visible content_gap_note.
 //   5. Every expected slug has a built /contracts/<slug>/index.html.
 //   6. /contract-tracker.html exists.
@@ -109,6 +111,46 @@ function fail(scope, msg) { failures.push(`  [${scope}] ${msg}`); }
 function nonEmptyString(s) { return typeof s === "string" && s.trim().length > 0; }
 function isHttpUrl(s) { return typeof s === "string" && /^https?:\/\//i.test(s); }
 
+// Source-URL integrity for the HAND-MAINTAINED listing (2026-09-11).
+// url-validator.js has gated contract_intel URLs since MMT-INTEL-02, and the
+// weekly intel-quality-report has a "Contracts with root-domain source URLs"
+// section — but that section only ever queried the Supabase contract_intel
+// table, so it reported "None" every Friday while 24 of 64 contracts.json
+// entries carried a bare https://sam.gov link and 3 carried a malformed
+// sam.gov/opp/<solicitation-number> permalink. Those fields are not cosmetic:
+// build.js renders "View on Source" from `link || source`, and
+// contract-fields.js serves both to the premium detail page, so a paying
+// subscriber clicking "source" landed on the SAM.gov homepage. That is the
+// 2026-05-26 complaint pattern the validator was written for, one file over.
+//
+// Root-domain and malformed-SAM URLs are HARD failures here: a root-domain
+// link is not a source (it is how a source-less entry passed the non-empty
+// source_urls requirement), and a malformed SAM permalink is the 2026-08-05
+// fabrication signal. An entry with no verified primary source declares
+// `source_pending: { reason }` instead, which keeps the gap visible in the
+// data, the validator output and the Friday email rather than laundering it
+// behind a link that resolves to a search page.
+const { isRootDomainUrl, isMalformedSamPermalink } = require("../netlify/functions/lib/url-validator");
+
+function badSourceReason(u) {
+  if (isRootDomainUrl(u)) return "root-domain link, not a source";
+  if (isMalformedSamPermalink(u)) return "malformed SAM permalink (id is not 32-hex)";
+  return null;
+}
+
+function checkSourceUrls(c, scope) {
+  for (const field of ["link", "source"]) {
+    const u = c[field];
+    if (!u || typeof u !== "string") continue;
+    const why = badSourceReason(u);
+    if (why) fail(scope, `${field} is a ${why}: ${u}`);
+  }
+  (c.source_urls || []).forEach((u, i) => {
+    const why = badSourceReason(u);
+    if (why) fail(scope, `source_urls[${i}] is a ${why}: ${u}`);
+  });
+}
+
 function validateContractsJson() {
   if (!fs.existsSync(DATA)) { fail("contracts.json", "missing file"); return null; }
   const data = JSON.parse(fs.readFileSync(DATA, "utf8"));
@@ -126,7 +168,14 @@ function validateContractsJson() {
     const scope = `contract:${c.slug || c.name || "?"}`;
     for (const f of REQUIRED_FIELDS) {
       if (f === "source_urls") {
-        if (!Array.isArray(c[f]) || c[f].length === 0) fail(scope, `missing required field: ${f} (non-empty array)`);
+        const hasSources = Array.isArray(c[f]) && c[f].length > 0;
+        const pending = c.source_pending && nonEmptyString(c.source_pending.reason);
+        if (!hasSources && !pending) {
+          fail(scope, `missing required field: ${f} (non-empty array, or source_pending with a reason)`);
+        }
+        if (hasSources && pending) {
+          fail(scope, "source_pending is set but source_urls is non-empty — remove one");
+        }
       } else if (!nonEmptyString(c[f])) {
         fail(scope, `missing required field: ${f}`);
       }
@@ -134,6 +183,7 @@ function validateContractsJson() {
     (c.source_urls || []).forEach((u, i) => {
       if (!isHttpUrl(u)) fail(scope, `source_urls[${i}] not a valid http(s) URL: ${u}`);
     });
+    checkSourceUrls(c, scope);
     if (c.content_gap === true && !nonEmptyString(c.content_gap_note)) {
       fail(scope, "content_gap=true but content_gap_note is missing");
     }

@@ -150,7 +150,35 @@ function checkPipeline() {
     const sol = it && ISO_DAY.test(String(it.anticipated_solicitation || "")) ? String(it.anticipated_solicitation) : null;
     if (sol && sol < TODAY) past += 1;
   });
-  return { last_verified: lv, past, total: d.items.length };
+
+  // checked_no_rows: the agencies that WERE pulled and published nothing
+  // forward-looking in health IT (2026-09-11). Without this, coverage is
+  // derived from row presence alone and an agency that answered "nothing this
+  // month" is indistinguishable from one nobody pulled — the weekly email
+  // called CDC, ONC and ARPA-H "not yet covered" for a month after the
+  // September pull checked all three. A declaration is only worth trusting if
+  // it names the date and the source that was read, and it must not coexist
+  // with rows for the same agency.
+  const covered = new Set(d.items.map((it) => String((it && it.agency) || "")).filter(Boolean));
+  const declared = d._schema && d._schema.checked_no_rows;
+  const checkedEmpty = [];
+  if (declared != null) {
+    if (!Array.isArray(declared)) {
+      fail("pipeline", "_schema.checked_no_rows must be an array");
+    } else {
+      declared.forEach((c, i) => {
+        const scope = `checked_no_rows[${i}]`;
+        if (!c || !c.agency) { fail(scope, "missing agency"); return; }
+        const agency = String(c.agency);
+        if (!ISO_DAY.test(String(c.checked || ""))) fail(scope, `${agency}: checked "${c.checked || ""}" is not YYYY-MM-DD — an undated "we looked" is not evidence`);
+        if (!/^https?:\/\//.test(String(c.source_url || ""))) fail(scope, `${agency}: source_url is not http(s) — name the forecast that was read`);
+        if (!String(c.note || "").trim()) fail(scope, `${agency}: note is empty — say what the agency published instead`);
+        if (covered.has(agency)) fail(scope, `${agency} is declared as having no rows but ${d.items.filter((it) => String(it.agency) === agency).length} rows carry that agency — one of the two is wrong`);
+        else checkedEmpty.push(agency);
+      });
+    }
+  }
+  return { last_verified: lv, past, total: d.items.length, covered: [...covered], checked_empty: checkedEmpty };
 }
 
 function main() {
