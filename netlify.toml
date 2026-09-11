@@ -6,6 +6,12 @@
   # Netlify will refuse to deploy.
   command = "node scripts/sync-newsletters.js; node scripts/sync-linkedin-newsletter.js; node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js && node scripts/newsletter-inventory.js && node scripts/capture-corner-inventory.js && node scripts/qa-contrast-scan.js && node scripts/validate-agency-parity.js && node scripts/validate-agency-profiles.js && node scripts/validate-contract-tracker.js && node scripts/validate-cso-aois.js && node scripts/validate-forecast-delta.js && node scripts/validate-data-freshness.js && node scripts/scan-pii.js && node scripts/validate-no-scrubbed-stubs.js && node scripts/validate-ask-mmt-coverage.js"
 
+[build.environment]
+  # Pin the build + functions runtime. Netlify's functions runtime follows
+  # the build's Node version; production has been on 22 via the image default.
+  # Explicit so a default change upstream (or a CI pin drift) cannot move it.
+  NODE_VERSION = "22"
+
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
