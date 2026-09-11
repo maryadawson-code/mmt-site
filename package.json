@@ -2,6 +2,9 @@
   "name": "mission-meets-tech",
   "version": "1.0.0",
   "description": "Mission Meets Tech website with auto-updating podcast episodes",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "build": "node scripts/sync-newsletters.js; node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js && node scripts/newsletter-inventory.js && node scripts/capture-corner-inventory.js",
     "build:no-validate": "node scripts/sync-newsletters.js; node build.js",
@@ -27,7 +30,7 @@
   },
   "dependencies": {
     "@sentry/node": "^10.65.0",
-    "@supabase/supabase-js": "^2.105.1",
+    "@supabase/supabase-js": "^2.116.0",
     "bcryptjs": "^3.0.3",
     "gray-matter": "^4.0.3",
     "mammoth": "^1.8.0",
