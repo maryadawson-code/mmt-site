@@ -244,9 +244,29 @@
         if(si) si.addEventListener('input', function(){ term=this.value.trim().toLowerCase(); render(); });
         var verified=(d._schema&&d._schema.last_verified)||'';
         var covered = agencies.slice(1);
-        var missing = TARGET_AGENCIES.filter(function(a){ return covered.indexOf(a)<0; });
-        document.getElementById('fpCoverage').innerHTML = 'Agencies in the pipeline: <strong>'+esc(covered.join(', ')||'none')+'</strong>.' +
-          (missing.length ? ' <span class="missing">No rows this month: '+esc(missing.join(', '))+'</span> &mdash; the latest read above says why (a forecast that has not refreshed, or nothing health-IT in it); their official forecasts are linked in the portal below.' : ' All tracked agencies covered.');
+        // An agency with no rows is one of two different things, and the page
+        // used to show them as one. _schema.checked_no_rows names the agencies
+        // whose own forecast WAS read and carried nothing forward-looking in
+        // health IT — that is the agency's answer. Anything left over is a
+        // forecast nobody pulled this cycle, which is the only real gap.
+        var declared = (d._schema && d._schema.checked_no_rows) || [];
+        var checkedEmpty = declared.filter(function(c){ return c && c.agency && covered.indexOf(c.agency)<0; });
+        var checkedNames = checkedEmpty.map(function(c){ return c.agency; });
+        var missing = TARGET_AGENCIES.filter(function(a){ return covered.indexOf(a)<0 && checkedNames.indexOf(a)<0; });
+        var coverageHtml = 'Agencies in the pipeline: <strong>'+esc(covered.join(', ')||'none')+'</strong>.';
+        if (checkedEmpty.length) {
+          coverageHtml += ' Checked and publishing nothing forward-looking in health IT: <strong>'+esc(checkedNames.join(', '))+'</strong> &mdash; '+
+            checkedEmpty.map(function(c){
+              return '<a href="'+esc(c.source_url)+'" target="_blank" rel="noopener" style="color:var(--mmt-teal);">'+esc(c.agency)+'</a> ('+esc(c.checked||'undated')+')';
+            }).join(', ')+
+            '. That is the agency&rsquo;s answer, not a hole in this table. The latest read above says what each one did publish.';
+        }
+        if (missing.length) {
+          coverageHtml += ' <span class="missing">Not pulled this cycle: '+esc(missing.join(', '))+'</span> &mdash; their official forecasts are linked in the portal below.';
+        } else if (!checkedEmpty.length) {
+          coverageHtml += ' All tracked agencies covered.';
+        }
+        document.getElementById('fpCoverage').innerHTML = coverageHtml;
         var vAge = ageDays(verified);
         var verifiedHtml = vAge > 45
           ? '<span class="fp-verified-stale">Verified '+esc(verified)+' ('+vAge+' days ago &mdash; overdue for re-verification against the agency forecasts)</span>'

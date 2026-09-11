@@ -1,5 +1,118 @@
 # Mission Meets Tech - Developer & Content Governance
 
+## Sprint 2026-09-11 — Intel quality report: the section that said "None" was reading the wrong file
+
+Worked the Friday 2026-09-11 intel-quality-report. The headline finding was not
+on the report, it was **in** it: the section titled "Contracts with root-domain
+source URLs" printed **None** every week while `contracts.json` held **24 of 64
+entries with a bare `https://sam.gov` link** and 3 with a malformed
+`sam.gov/opp/<solicitation-number>` permalink.
+
+`_badUrls()` queries the Supabase `contract_intel` table, which backs the DETAIL
+page intel. The hand-maintained listing file it appears to describe was never
+scanned. Those fields are not decorative: `build.js` renders "View on Source"
+from `link || source`, and `contract-fields.js` serves both to the premium
+detail page, so a paying subscriber clicking "source" landed on the SAM.gov
+homepage. That is the 2026-05-26 Danielle Applegate / CGI complaint pattern,
+one file over from where the guard was pointed. The 2026-08-25 note in this
+file ("the weekly report flags those") was a belief the code never supported.
+
+`va-edge` proves the shape twice: the 2026-08-17 pass replaced its malformed
+permalink in `source_urls` and left the same bad URL in `link` and `source`,
+which are the two fields the page actually links. Nobody noticed for 25 days
+because nothing looked.
+
+Shipped:
+- **Data.** All 27 bad URLs removed. `link`/`source` repoint to the best
+  remaining real source (preferring a genuine 32-hex SAM permalink), so
+  `va-edge` now links its real notice. 22 entries kept a specific source.
+- **`source_pending`.** Two entries (`va-enterprise-imaging-...`,
+  `cdm-defend-health-data-cybersecurity`) had `https://sam.gov` as their ONLY
+  source, which is how a source-less entry passed the non-empty `source_urls`
+  requirement. They now carry `source_pending: { reason, flagged }` naming what
+  to fetch. The gap is visible in the data, the validator and the Friday email
+  instead of laundered behind a link that resolves to a search page.
+- **`validate-contract-tracker.js`** hard-fails on a root-domain or malformed
+  SAM URL in `link`, `source` or any `source_urls` entry, and requires either a
+  non-empty `source_urls` or a `source_pending` with a reason, never both.
+- **`intel-quality-report.js`** gains `_trackerSourceUrls()` (bundled file read,
+  no Supabase, same pattern as `_trackerListingStale`), a section naming the
+  offending FIELD per entry, the `source_pending` list, `tracker_bad_urls` in
+  the ops_event, and the count in the subject. The old contract_intel section
+  stays, retitled so the two datasets can no longer be confused.
+
+**Second false alarm, opposite direction: "not yet covered" for agencies that
+were covered.** The report and `/premium/forecast-delta` derived forecast
+coverage from row presence alone, so CDC, ONC and ARPA-H read as outstanding
+work one day after the September pull checked all three and found nothing
+forward-looking in health IT in their own forecasts. That fact lived only in
+`_schema.note` prose. It is now `_schema.checked_no_rows` (agency, checked date,
+source URL read, note), and the report, the page and the validator distinguish
+three states: has rows, checked and empty, not pulled. Only the third is a gap.
+The validator hard-fails an undated or unsourced declaration and an agency
+declared empty while carrying rows.
+
+**A tracker entry our own briefs contradicted.** `dha-data-governance-wosb-set-aside`
+rendered as **Upcoming** (pre-solicitation) with `last_verified` 2026-03-31,
+while MMT's published Friday Briefs record proposals closing 2026-01-09, GAO
+protest B-424295.1 (BDR Solutions) dismissed 2026-03-30, and a live unawarded
+RFP as of the 2026-04-14 issue. Status corrected to `active` with a dated update
+line. `last_verified` deliberately NOT bumped: no award has been verified
+against a live source from this session, so the freshness tripwire keeps
+flagging it. This is the entry behind the 2026-09-10 Ask MMT bug, so the answer
+Mary got pointed at a card whose status was eight months wrong.
+
+**`EBUY_SCAN_FAILED` was undiagnosable by design.** The run recorded an error
+COUNT and nothing else; the reason lived in a `console.error` inside Netlify
+function logs. The ops_event now carries `first_error` (message + PostgREST
+code), which is what tells a missing column apart from a transient blip, and a
+partial run (some rows upserted, some errored) logs severity `warn` instead of
+`info` rather than rendering as clean.
+
+Hard rules (do not regress):
+- **A detector names the dataset it actually reads.** A section headed
+  "Contracts" that queries `contract_intel` is a false green with a plausible
+  title. Before trusting any "None", confirm which file or table the query
+  touches.
+- **`https://sam.gov` is not a source.** A root-domain link satisfies a
+  non-empty `source_urls` check while carrying zero information, and it ships a
+  dead end to a paying subscriber. An entry with no verified primary source
+  declares `source_pending` and stays visible as a gap.
+- **Fix a bad URL in every field that carries it.** `source_urls` is the
+  audit list; `link` and `source` are what the page renders and what the
+  premium payload serves. The 08-17 va-edge fix changed one of the three.
+- **"No rows" and "never pulled" are different facts, and only one is a gap.**
+  An agency that publishes nothing is answering. Record the answer with the
+  date and the source that was read, or the next pass will close the gap by
+  padding the table from trade press, which is the `aspr-npivs` failure mode.
+- **MMT's own published briefs are an in-repo source.** When the tracker says
+  upcoming and a Friday Brief says proposals closed in January, the tracker is
+  wrong and can be corrected without egress. Correct the status; do not bump
+  `last_verified` on the strength of it.
+- **An ops_event that records a failure COUNT and no reason is not
+  observability.** Any handler that swallows per-row errors keeps the first one
+  on the event.
+
+**Needs Mary (cannot be done from this session):** every `.gov`/`.mil` host and
+Perplexity answer 403 to CONNECT here, so nothing was re-verified live. Still
+open: the 7 stale tracker listings (the DHA one now has the right status but
+still needs its award confirmed), the two `source_pending` entries, the 11
+quarterly key-people and agency-profile blocks, `cr-deadlines` (CRFB blocked),
+the September Capture Intelligence sheet, the overdue GAO Sustain read, and the
+72 past-deadline radar rows, which need `scripts/cleanup-opportunity-radar.js`
+run with prod creds. The read guard already hides those 72 from the feed, so
+this is table hygiene, not a subscriber-facing defect.
+
+Verified 2026-09-11: unit suite **775/775** (61 files, +23 in
+`tests/unit/tracker-source-urls.test.js` and `forecast-delta.test.js`, each
+mutation-tested against the real validators); build exit 0 (688 pages);
+validate-dist (688), validate-routes (36), validate-contract-tracker (64),
+validate-cso-aois, validate-forecast-delta, validate-data-freshness,
+validate-ask-mmt-coverage, scan-pii all pass; dist shows zero
+`href="https://sam.gov"` on contract pages and the DHA entry rendering under
+Active.
+
+
 ## Sprint 2026-09-10 (night) — Ask MMT search generalized: one agency registry, any question
 
 Mary, on the evening fix: "make sure that the search works no matter what the

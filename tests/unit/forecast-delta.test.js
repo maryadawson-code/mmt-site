@@ -173,3 +173,106 @@ describe("validate-forecast-delta: hard failures", () => {
     expect(r.out).toMatch(/raw <!-- BUILD:FORECAST_DELTA_LATEST --> shipped to dist/);
   });
 });
+
+// --- Coverage: an answer is not a gap (2026-09-11) -------------------------
+//
+// Coverage used to be derived from row presence alone, so an agency whose own
+// forecast was pulled and carried nothing forward-looking in health IT read
+// exactly like an agency nobody pulled. The 2026-09-11 Friday email therefore
+// listed CDC, ONC and ARPA-H as "not yet covered" a day after the September
+// pull checked all three — an open invitation to close the "gap" by padding
+// the table from trade press, which is the aspr-npivs failure mode.
+// _schema.checked_no_rows records the answer, with the date and the source
+// that was read, and only an undeclared agency counts as missing.
+describe("forecast pipeline coverage declarations", () => {
+  const pipeline = JSON.parse(readFileSync(join(REPO, "data", "forecast-pipeline.json"), "utf8"));
+  const declared = pipeline._schema.checked_no_rows || [];
+  const withRows = new Set(pipeline.items.map((it) => it.agency));
+
+  it("declares every checked-but-empty agency with a date, a source and a note", () => {
+    expect(declared.length).toBeGreaterThan(0);
+    for (const c of declared) {
+      expect(c.agency, "agency").toBeTruthy();
+      expect(c.checked).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(c.source_url).toMatch(/^https?:\/\//);
+      expect(String(c.note).trim().length).toBeGreaterThan(0);
+    }
+  });
+
+  it("never declares an agency empty while carrying rows for it", () => {
+    for (const c of declared) expect(withRows.has(c.agency), `${c.agency} has rows`).toBe(false);
+  });
+
+  it("accounts for every target agency as either rows or a dated declaration", () => {
+    const accounted = new Set([...withRows, ...declared.map((c) => c.agency)]);
+    const targets = ["DHA", "VA", "HHS", "ONC", "ARPA-H", "CMS", "IHS", "CDC", "FDA", "NIH", "GSA"];
+    expect(targets.filter((a) => !accounted.has(a))).toEqual([]);
+  });
+});
+
+describe("intel-quality-report coverage buckets", () => {
+  it("separates rows, checked-and-empty, and not-pulled — and reports no false gap", async () => {
+    const { createRequire } = await import("node:module");
+    const require_ = createRequire(import.meta.url);
+    const { _forecastDeltaHealth } = require_(join(REPO, "netlify", "functions", "intel-quality-report.js"));
+    const f = _forecastDeltaHealth();
+    expect(f.covered.length).toBeGreaterThan(0);
+    expect(f.checked_empty.map((c) => c.agency).sort()).toEqual(["ARPA-H", "CDC", "ONC"]);
+    for (const c of f.checked_empty) expect(c.checked).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    // The whole point: nothing is reported as an outstanding gap.
+    expect(f.missing).toEqual([]);
+    // A covered agency is never double-counted as checked-empty.
+    for (const c of f.checked_empty) expect(f.covered).not.toContain(c.agency);
+  });
+});
+
+describe("validate-forecast-delta: checked_no_rows guard has teeth", () => {
+  it("fails when an agency is declared empty but carries rows", () => {
+    const r = run(makeRepo((dir) => {
+      const d = readPipeline(dir);
+      d._schema.checked_no_rows.push({ agency: d.items[0].agency, checked: "2026-09-10", source_url: "https://example.gov/forecast", note: "contradiction" });
+      writePipeline(dir, d);
+    }));
+    expect(r.code).toBe(1);
+    expect(r.out).toMatch(/declared as having no rows but \d+ rows carry that agency/);
+  });
+
+  it("fails an undated declaration — 'we looked' is not evidence", () => {
+    const r = run(makeRepo((dir) => {
+      const d = readPipeline(dir);
+      d._schema.checked_no_rows[0].checked = "";
+      writePipeline(dir, d);
+    }));
+    expect(r.code).toBe(1);
+    expect(r.out).toMatch(/is not YYYY-MM-DD/);
+  });
+
+  it("fails a declaration with no source URL", () => {
+    const r = run(makeRepo((dir) => {
+      const d = readPipeline(dir);
+      d._schema.checked_no_rows[0].source_url = "the forecast page";
+      writePipeline(dir, d);
+    }));
+    expect(r.code).toBe(1);
+    expect(r.out).toMatch(/source_url is not http\(s\)/);
+  });
+
+  it("fails a declaration with an empty note", () => {
+    const r = run(makeRepo((dir) => {
+      const d = readPipeline(dir);
+      d._schema.checked_no_rows[0].note = "   ";
+      writePipeline(dir, d);
+    }));
+    expect(r.code).toBe(1);
+    expect(r.out).toMatch(/note is empty/);
+  });
+
+  it("still passes with no declarations at all (the field is optional)", () => {
+    const r = run(makeRepo((dir) => {
+      const d = readPipeline(dir);
+      delete d._schema.checked_no_rows;
+      writePipeline(dir, d);
+    }));
+    expect(r.code).toBe(0);
+  });
+});
