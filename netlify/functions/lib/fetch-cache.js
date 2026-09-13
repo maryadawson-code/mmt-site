@@ -48,6 +48,30 @@ function getStore() {
   return store;
 }
 
+/**
+ * Lambda-compatible functions (the `exports.handler = async (event)` style
+ * every function in this repo uses) do not get the Blobs context from the
+ * environment; the runtime puts it on the event (`event.blobs`, base64) and
+ * the handler must hand it to the library once per invocation. Without this
+ * call the store is silently unavailable and the cache is per-instance
+ * memory only (found 2026-09-13: two live questions, empty store). Safe to
+ * call with any event; returns whether a context was found.
+ */
+function connectEvent(event) {
+  try {
+    if (!event || !event.blobs) return false;
+    const { connectLambda } = require("@netlify/blobs");
+    connectLambda(event);
+    // re-resolve the store now that the context exists
+    storeTried = false;
+    store = null;
+    return true;
+  } catch (e) {
+    warnOnce(`connectLambda failed (${e && e.message})`);
+    return false;
+  }
+}
+
 /** Stable, bounded key: `<namespace>/<sha1 of the rest>`. */
 function cacheKey(namespace, ...parts) {
   const raw = parts.map((p) => (typeof p === "string" ? p : JSON.stringify(p))).join("|");
@@ -110,4 +134,4 @@ function _resetForTests() {
   memory.clear();
 }
 
-module.exports = { cacheKey, cacheGet, cacheSet, cached, _setStoreForTests, _resetForTests, STORE_NAME };
+module.exports = { cacheKey, cacheGet, cacheSet, cached, connectEvent, _setStoreForTests, _resetForTests, STORE_NAME };

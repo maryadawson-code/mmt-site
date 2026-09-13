@@ -731,7 +731,10 @@ async function readAnyPriorCache(supabase, topic, agency) {
 // ------------------------------------------------------------
 // Main handler
 // ------------------------------------------------------------
+const { connectEvent: connectBlobs } = require("./lib/fetch-cache");
+
 exports.handler = async (event) => {
+  connectBlobs(event); // Netlify Blobs context rides on the event in Lambda-compatible functions
   if (event.httpMethod === "OPTIONS") {
     return { statusCode: 204, headers: CORS_HEADERS, body: "" };
   }

@@ -166,9 +166,12 @@ const DEFAULT_DEPS = {
   now: () => new Date(),
 };
 
+const { connectEvent: connectBlobs } = require("./lib/fetch-cache");
+
 function makeHandler(overrides = {}) {
   const deps = { ...DEFAULT_DEPS, ...overrides };
   return async (event) => {
+    connectBlobs(event); // Netlify Blobs context rides on the event in Lambda-compatible functions
   if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers: CORS_HEADERS, body: "" };
   if (event.httpMethod !== "POST") return reply(405, { error: "Method not allowed" });
 
