@@ -40,7 +40,12 @@ function getStore() {
   storeTried = true;
   try {
     const { getStore: netlifyGetStore } = require("@netlify/blobs");
-    store = netlifyGetStore({ name: STORE_NAME, consistency: "strong" });
+    // Eventual consistency on purpose: strong consistency needs an
+    // 'uncachedEdgeURL' the Lambda-compatible context does not carry, and
+    // every read then fails ("[fetch-cache] read failed ... uncachedEdgeURL",
+    // production log 2026-09-13). A cache and a best-effort daily ledger do
+    // not need read-after-write guarantees.
+    store = netlifyGetStore({ name: STORE_NAME });
   } catch (e) {
     store = null;
     warnOnce(`Netlify Blobs unavailable (${e && e.message})`);
