@@ -52,6 +52,7 @@ run runs running put puts take takes taken bring brings due out there per via su
 bought buy buys buying purchase purchased purchases purchasing spent pays pay paid paying received receive
 receives receiving gave given released posted signed sold sell sells move moved moves ordered picked selected chose chosen
 interested regardless tied go goes went gone got matter matters whoever whichever whether
+long often usually typically quickly fast slow soon early late
 `.trim().split(/\s+/));
 
 // Nouns that describe the KIND of record being asked for. The award and
