@@ -123,10 +123,11 @@ esbuild bundle of premium-chat resolves `@netlify/blobs`.
 2. A free USAJOBS developer key (developer.usajobs.gov): set
    `USAJOBS_API_KEY` and `USAJOBS_USER_EMAIL` (~60 bytes; env headroom is
    about 790 bytes).
-3. Merge the PR (code PRs are not auto-merged) before the 9/14 13:15 UTC
-   soft-launch email if the fixes should be live for the Premium testers.
-4. Ask the live bot a few more questions after deploy and check "Not
-   reached" is empty or names only SAM.gov's quota.
+3. (Done: #195 merged 2026-09-13 21:26 UTC on Mary's "make sure the tool
+   works as expected"; production deploy live 21:32 UTC; the GetWell
+   question and its follow-up verified against the deployed function.)
+4. Ask the live bot a few more questions and check "Not reached" is empty
+   or names only SAM.gov's quota.
 
 **Same day, second pass: vendor and product questions, follow-ups, links.**
 Mary's live test asked "tell me about all GetWell awards", then "the product
@@ -178,6 +179,13 @@ Hard rules (do not regress):
   `-L` before deciding it is dead; four of the six here had moved, not died.
 - **Blobs, not env vars, not migrations, for caches and ledgers.** The env is
   byte-budgeted (07-01) and migrations are gated.
+- **Every `exports.handler` function that touches Blobs calls
+  `connectEvent(event)` (lib/fetch-cache.js) first.** Lambda-compatible
+  handlers get the Blobs context on the event, not the environment; without
+  the call the store is silently unavailable and the cache degrades to
+  per-instance memory. Found after #195 deployed with an empty store; fixed
+  in #196 for premium-chat, signal-chain, compliance-check,
+  pursuit-calendar-refresh and loop-opportunity-discovery.
 
 ## Sprint 2026-09-11 — Intel quality report: the section that said "None" was reading the wrong file
 

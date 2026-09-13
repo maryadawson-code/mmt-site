@@ -1,8 +1,8 @@
 // lib/fetch-cache.js: a TTL cache that can never take an answer down.
 // Storage errors are misses; an upstream error is never remembered.
 
-import { describe, it, expect, beforeEach } from "vitest";
-import { cacheKey, cacheGet, cacheSet, cached, _setStoreForTests } from "../../netlify/functions/lib/fetch-cache.js";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { cacheKey, cacheGet, cacheSet, cached, connectEvent, _setStoreForTests } from "../../netlify/functions/lib/fetch-cache.js";
 
 function fakeStore(initial = {}) {
   const data = { ...initial };
@@ -54,5 +54,21 @@ describe("fetch-cache", () => {
     await expect(cacheSet("k4", 1, 1000)).resolves.toBeUndefined();
     // the memory layer still answers inside the same instance
     expect(await cacheGet("k4")).toBe(1);
+  });
+});
+
+describe("connectEvent (Lambda-compatible functions)", () => {
+  afterEach(() => { delete process.env.NETLIFY_BLOBS_CONTEXT; delete globalThis.netlifyBlobsContext; _setStoreForTests(fakeStore()); });
+
+  it("hands the event's Blobs context to the library and reports it", () => {
+    const blobs = Buffer.from(JSON.stringify({ url: "https://blobs.example.test", token: "t" })).toString("base64");
+    expect(connectEvent({ blobs, headers: { "x-nf-site-id": "site-1" } })).toBe(true);
+    expect(process.env.NETLIFY_BLOBS_CONTEXT || globalThis.netlifyBlobsContext).toBeTruthy();
+  });
+
+  it("is a no-op, not a throw, when the event carries no context (local dev, tests, scheduled runs without it)", () => {
+    expect(connectEvent(undefined)).toBe(false);
+    expect(connectEvent({ headers: {} })).toBe(false);
+    expect(connectEvent({ blobs: "%%%not-base64-json%%%", headers: {} })).toBe(false);
   });
 });

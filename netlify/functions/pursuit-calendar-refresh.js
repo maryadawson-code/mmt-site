@@ -35,6 +35,7 @@ const { withOpsLogging } = require("./lib/scheduled-fn-wrapper");
 const { scoreRelevance } = require("./lib/pursuit-relevance");
 const { handleSamSearchOpportunities } = require("./lib/sam-gov-opportunities");
 const { reserveSam, quotaReason } = require("./lib/sam-quota");
+const { connectEvent: connectBlobs } = require("./lib/fetch-cache");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -256,7 +257,8 @@ async function runSamPath(supabase) {
   return { queries_checked: SAM_QUERIES.length, items_seen: itemsSeen, count_added: countAdded, count_skipped: countSkipped, errors };
 }
 
-async function _handler() {
+async function _handler(event) {
+  connectBlobs(event); // shared SAM.gov ledger lives in Netlify Blobs
   if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
     return { statusCode: 500, body: JSON.stringify({ error: "supabase_not_configured" }) };
   }

@@ -11,10 +11,12 @@
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const { connectEvent: connectBlobs } = require("./lib/fetch-cache");
 const { withOpsLogging } = require("./lib/scheduled-fn-wrapper");
 const { runLoop } = require("./lib/loops/runner");
 
-async function _handler() {
+async function _handler(event) {
+  connectBlobs(event); // shared SAM.gov ledger lives in Netlify Blobs
   // Feature flag: stays off until Mary has applied the gated loop_infra
   // migration and set LOOPS_ENABLED=true. Prevents this cron from erroring
   // (and emailing failure alerts) on every run before the tables exist.
