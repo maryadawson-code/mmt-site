@@ -1,81 +1,71 @@
 // ============================================================
-// hhs-open-data.js — opendata.hhs.gov
+// hhs-open-data.js — HHS datasets via healthdata.gov's catalog API
 //
-// Released February 2026. 227M+ rows of Medicaid provider-level
-// spending claims (Jan 2018–Dec 2024) by HCPCS code. For
-// MarketPulse: background spend data behind CMS/HHS opportunities
-// and vendor ecosystems. Pairs with USASpending for a fuller view
-// of what the federal health system actually spends on.
-//
-// CKAN-style API, no auth.
-// Base: https://opendata.hhs.gov/api/1
+// Rewritten 2026-09-13. The old client called opendata.hhs.gov/api/1
+// (a DKAN-style path) and got the site's HTML shell back, which surfaced
+// in every Ask MMT answer as 'HHS open data (Unexpected token "<")'.
+// opendata.hhs.gov is a JavaScript app with no JSON API a function can
+// call. healthdata.gov, HHS's open-data catalog, runs on Socrata and its
+// catalog endpoint answers in about 200 ms with no key:
+//   https://healthdata.gov/api/catalog/v1?q=<terms>&limit=<n>&only=datasets
+// Results link to datahub.hhs.gov dataset pages.
 // ============================================================
 
-const API_BASE = "https://opendata.hhs.gov/api/1";
+const { filterRelevant } = require("./relevance");
 
-/**
- * Search datasets matching a keyword.
- */
-async function searchDatasets({ keyword, limit = 10 }) {
+const CATALOG = "https://healthdata.gov/api/catalog/v1";
+const TIMEOUT_MS = 8000;
+
+async function searchDatasets({ keyword, limit = 10, fetchImpl = fetch } = {}) {
+  const q = String(keyword || "").trim();
+  if (q.length < 3) return { datasets: [] };
+  const params = new URLSearchParams({ q, limit: String(limit), only: "datasets" });
+  const ac = new AbortController();
+  const timer = setTimeout(() => ac.abort(), TIMEOUT_MS);
   try {
-    const res = await fetch(`${API_BASE}/metastore/schemas/dataset/items?q=${encodeURIComponent(keyword || "")}`, {
-      headers: { Accept: "application/json" },
-    });
-    if (!res.ok) return { datasets: [], error: `HHS Open Data ${res.status}` };
+    const res = await fetchImpl(`${CATALOG}?${params}`, { signal: ac.signal, headers: { Accept: "application/json" } });
+    if (!res.ok) return { datasets: [], error: `healthdata.gov catalog ${res.status}` };
     const data = await res.json();
-    const list = Array.isArray(data) ? data : (data.results || []);
+    const results = Array.isArray(data.results) ? data.results : [];
     return {
-      datasets: list.slice(0, limit).map((d) => ({
-        id: d.identifier || d.id || "",
-        title: d.title || "",
-        description: (d.description || "").substring(0, 300),
-        publisher: d.publisher?.name || d.publisher || "",
-        modified: d.modified || "",
-        distribution_count: (d.distribution || []).length,
-        url: `https://opendata.hhs.gov/dataset/${d.identifier || d.id}`,
-      })),
+      datasets: results.map((r) => {
+        const res0 = r.resource || {};
+        return {
+          id: res0.id || "",
+          title: res0.name || "",
+          description: String(res0.description || "").replace(/\s+/g, " ").trim().substring(0, 300),
+          publisher: res0.attribution || (r.metadata && r.metadata.domain) || "HHS",
+          modified: String(res0.data_updated_at || res0.updatedAt || "").slice(0, 10),
+          url: r.permalink || r.link || "",
+        };
+      }).filter((d) => d.title && d.url),
+      total: data.resultSetSize || results.length,
     };
   } catch (err) {
-    return { datasets: [], error: err.message };
+    return { datasets: [], error: err && err.name === "AbortError" ? `timeout-${TIMEOUT_MS / 1000}s` : (err && err.message) || String(err) };
+  } finally {
+    clearTimeout(timer);
   }
 }
 
-/**
- * Query the Medicaid HCPCS spending dataset by HCPCS code.
- * The dataset ID may be versioned — adjust here if it rotates.
- */
-async function queryMedicaidHCPCS({ hcpcs_code, state, year, limit = 20 }) {
-  const qs = new URLSearchParams({ limit: String(limit) });
-  if (hcpcs_code) qs.set("hcpcs_code", hcpcs_code);
-  if (state) qs.set("state", state);
-  if (year) qs.set("year", String(year));
-  try {
-    const res = await fetch(`${API_BASE}/datastore/query?${qs}`, {
-      headers: { Accept: "application/json" },
-    });
-    if (!res.ok) return { rows: [], error: `HHS Open Data ${res.status}` };
-    const data = await res.json();
-    return { rows: data.results || data || [] };
-  } catch (err) {
-    return { rows: [], error: err.message };
-  }
-}
-
-async function enrichWithHHSOpenData({ topic }) {
-  return await searchDatasets({ keyword: topic, limit: 5 });
+async function enrichWithHHSOpenData({ topic, fetchImpl }) {
+  const out = await searchDatasets({ keyword: topic, limit: 8, fetchImpl });
+  if (out.error) return out;
+  // Socrata's search is loose; a dataset is shown only when its name or
+  // description carries the question's terms.
+  return { ...out, datasets: filterRelevant(out.datasets, topic || "", ["title", "description"]).slice(0, 5) };
 }
 
 function formatHHSOpenDataContext(data) {
   if (!data || !data.datasets || data.datasets.length === 0) return "";
   const rows = data.datasets.map((d) =>
-    `- ${d.title} (${d.publisher}): ${d.description} | Modified ${d.modified} | ${d.url}`
+    `- ${d.title} (${d.publisher}): ${d.description} | Updated ${d.modified || "n/a"} | ${d.url}`
   ).join("\n");
-  return `\n\nHHS OPEN DATA DATASETS:\n${rows}`;
+  return `\n\nHHS OPEN DATA DATASETS (healthdata.gov catalog):\n${rows}`;
 }
 
 module.exports = {
   searchDatasets,
-  queryMedicaidHCPCS,
   enrichWithHHSOpenData,
   formatHHSOpenDataContext,
 };

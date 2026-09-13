@@ -34,6 +34,7 @@ const { createClient } = require("@supabase/supabase-js");
 const { withOpsLogging } = require("./lib/scheduled-fn-wrapper");
 const { scoreRelevance } = require("./lib/pursuit-relevance");
 const { handleSamSearchOpportunities } = require("./lib/sam-gov-opportunities");
+const { reserveSam, quotaReason } = require("./lib/sam-quota");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -169,6 +170,21 @@ async function runSamPath(supabase) {
     };
   }
 
+  // DAILY-LEDGER GATE (2026-09-13). The five queries are reserved as one
+  // batch against lib/sam-quota.js. With the 10-a-day personal key this
+  // is refused (the slice kept for subscriber questions is larger than what
+  // is left), and the RSS path carries the calendar; once the key holds a
+  // SAM.gov role and SAM_DAILY_QUOTA is raised, the SAM path resumes with
+  // no code change.
+  const gate = await reserveSam(SAM_QUERIES.length, { priority: "scheduled" });
+  if (!gate.ok) {
+    return {
+      queries_checked: 0, items_seen: 0, count_added: 0, count_skipped: 0, errors: [],
+      note: `SAM path skipped: ${quotaReason(gate)}. Raise SAM_DAILY_QUOTA once the key holds a SAM.gov role. RSS path still ran.`,
+      quota_gate: gate.reason,
+    };
+  }
+
   const today = new Date().toISOString().slice(0, 10);
   const ninetyOut = new Date(Date.now() + 90 * 86400000).toISOString().slice(0, 10);
 
@@ -183,6 +199,7 @@ async function runSamPath(supabase) {
         naics: q.naics || undefined,
         limit: 25,
         posted_from_days_ago: 90,
+        reserved: true, // batch reserved above
       }).then((res) => ({ query: q, items: res.data?.items || [] }))
     )
   );

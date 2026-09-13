@@ -14,6 +14,7 @@
 // ============================================================
 
 const { sam_search_opportunities } = require("../../sam-gov-opportunities");
+const { reserveSam, quotaReason } = require("../../sam-quota");
 
 async function run(ctx, config) {
   const queries = Array.isArray(config.queries) ? config.queries : [];
@@ -22,6 +23,18 @@ async function run(ctx, config) {
 
   const items = [];
   const errors = [];
+
+  // Daily-ledger gate (lib/sam-quota.js, 2026-09-13): the whole batch is
+  // reserved up front at "scheduled" priority so this loop can never spend
+  // the requests kept for subscriber questions. With the 10-a-day personal
+  // key the batch is refused and the run records why; raise SAM_DAILY_QUOTA
+  // once the key holds a SAM.gov role.
+  const gate = await reserveSam(queries.length, { priority: "scheduled" });
+  if (!gate.ok) {
+    const reason = `SAM.gov skipped: ${quotaReason(gate)}`;
+    ctx.log?.warn?.(`L1 sam_gov: ${reason}`);
+    return { items, errors: [{ query: "*", error: reason }], queriedAt: new Date().toISOString(), windowDays, quota_gate: gate.reason };
+  }
 
   for (const q of queries) {
     try {
@@ -32,6 +45,7 @@ async function run(ctx, config) {
         set_aside: q.set_aside,
         posted_from_days_ago: windowDays,
         limit,
+        reserved: true, // batch reserved above
       });
       for (const it of data.items || []) {
         items.push({

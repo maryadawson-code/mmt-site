@@ -400,16 +400,16 @@
       "campaign": "ask-mmt-2026",
       "publish_date": "2026-09-21",
       "publish_time": "09:30",
-      "format": "video",
+      "format": "text",
       "link_target": null,
-      "utm_content": "launch-video",
+      "utm_content": "launch",
       "link_in_body": true,
-      "approved": false,
-      "needs_asset": true,
+      "approved": true,
+      "needs_asset": false,
       "first_comment": "Ask MMT. Three free questions a month: https://missionmeetstech.com/ask\nPremium members get 100 a month plus the full capture toolkit: https://missionmeetstech.com/pricing",
-      "body": "Most AI tools will hand you a confident contract value they made up.\n\nI built one that hands you the SAM.gov notice instead.\n\nAsk MMT is live. Ask it about any federal health IT contract, vehicle, agency, budget line, or trend. It answers from SAM.gov, USASpending, Congress.gov, PubMed, and every MMT article, and it shows its sources.\n\nHere's what it said when I asked about [VERIFIED QUESTION].\n\nYou get three questions a month, free. Link in the first comment.\n\n#FederalHealthIT #GovCon #DefenseHealth",
-      "approval_note": "Fill [VERIFIED QUESTION] from the accuracy pass (package checklist item 1) and attach the 30-second demo (package section 11). Then set approved=true. The cron alerts Mary on the day either way.",
-      "asset_notes": "30-second portrait screen recording, 1080x1350, both questions from the verified set, no voiceover."
+      "body": "Most AI tools will hand you a confident contract value they made up.\n\nI built one that hands you the source instead.\n\nAsk MMT is live. Ask it about any federal health IT contract, vehicle, agency, budget line, or trend. It reads SAM.gov, USASpending, Congress.gov, PubMed, and every MMT article, and it shows its sources under every answer.\n\nHere's what it did when I asked about the DHA data governance set-aside. It pulled the January 9 proposal close, the GAO protest from BDR Solutions that was dismissed in March, and the two April briefs where I tracked it. Then it said plainly which live system it could not reach on that turn, instead of guessing.\n\nYou get three questions a month, free. Link in the first comment.\n\n#FederalHealthIT #GovCon #DefenseHealth",
+      "asset_notes": "30-second portrait screen recording, 1080x1350, both questions from the verified set, no voiceover.",
+      "note": "Filled 2026-09-13 from the accuracy pass (the DHA data governance question). Text so the autopilot publishes it; the 30-second demo (package section 11, asset_notes) is optional and can be posted by hand the same day."
     },
     {
       "id": "askmmt-002",
@@ -420,11 +420,11 @@
       "link_target": null,
       "utm_content": "five-questions-one-miss",
       "link_in_body": true,
-      "approved": false,
+      "approved": true,
       "needs_asset": false,
       "first_comment": "https://missionmeetstech.com/ask",
-      "body": "I asked Ask MMT five questions on launch day. It nailed four.\n\nThe fifth one it got wrong, and that's the part worth talking about.\n\n[ONE SENTENCE ON THE MISS: what it said, what the primary source actually says.]\n\nHere's why I'm telling you. Every answer comes with its sources. So when it missed, I could see exactly where it went sideways in about ten seconds. Try doing that with a general chatbot.\n\nThat's the bar for AI in capture work: can I check it fast enough to trust it in a meeting?\n\nWhat question would you throw at it first?\n\nLink in comments → Ask it yourself. Three free questions a month.\n#FederalHealthIT #GovCon",
-      "approval_note": "Moved from Wed 9/23 (mmt-031 FY-End post already holds that day; the autopilot publishes one post a day). Fill the miss sentence from the accuracy pass, or use the five-for-five variant: 'I asked Ask MMT five questions on launch day. Here's the one that surprised me.' Then set approved=true."
+      "body": "Before launch I asked Ask MMT about a DHA data governance contract.\n\nIt got the proposal close right, the protest right, and the timeline right. Then it got one thing wrong, and that's the part worth talking about.\n\nIt read \"FOC\" in one of my briefs and called it a \"Field of Competition\" date. FOC is Full Operational Capability, the July 19 date when DHA's two PEOs fold into the new PAE structure. The date was right. The words were invented.\n\nHere's why I'm telling you. Every answer comes with its sources. So when it missed, I could see exactly where it went sideways in about ten seconds. Try doing that with a general chatbot.\n\nI fixed it that day. It now expands an acronym only when a source or the MMT glossary spells it out. Anything else stays exactly as written.\n\nThat's the bar for AI in capture work: can I check it fast enough to trust it in a meeting?\n\nWhat question would you throw at it first?\n\nLink in comments. Three free questions a month.\n#FederalHealthIT #GovCon",
+      "note": "Filled 2026-09-13 from the accuracy pass: the miss was the FOC expansion; the fix is the acronym reference in lib/acronyms.js."
     },
     {
       "id": "askmmt-003",
