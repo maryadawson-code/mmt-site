@@ -154,6 +154,7 @@ function splitFederalData(data) {
   if (!data || typeof data !== "object") return parts;
   const usa = [];
   if (data.usaspending_awards && Array.isArray(data.usaspending_awards.awards) && data.usaspending_awards.awards.length) usa.push(data.usaspending_awards);
+  if (data.usaspending_recipient_awards && Array.isArray(data.usaspending_recipient_awards.awards) && data.usaspending_recipient_awards.awards.length) usa.push(data.usaspending_recipient_awards);
   if (data.spending_categories && Array.isArray(data.spending_categories.categories) && data.spending_categories.categories.length) usa.push(data.spending_categories);
   if (data.agency_spending && data.agency_spending.spending) usa.push(data.agency_spending);
   if (usa.length) parts.push({ id: "usaspending", data: usa });

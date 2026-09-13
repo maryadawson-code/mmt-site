@@ -66,6 +66,80 @@ function deriveKeywords(topic) {
 // the whole federal fan-out sits under an 8s timeout in premium-assistant.
 const MAX_KEYWORD_ATTEMPTS = 2;
 
+// Fields every award search asks for, and the one mapping every award row
+// goes through, so the keyword search and the recipient search cannot
+// drift (description + real award link matter to the model: 2026-09-13).
+const AWARD_FIELDS = [
+  "Award ID", "Recipient Name", "Award Amount",
+  "Total Obligated Amount", "Description", "Start Date",
+  "End Date", "Awarding Agency", "Awarding Sub Agency",
+  "Contract Award Type", "NAICS Code", "NAICS Description",
+  "Type of Set Aside", "generated_internal_id",
+];
+
+function mapAward(r) {
+  return {
+    piid: r["Award ID"] || "unknown",
+    recipient: r["Recipient Name"] || "",
+    award_amount: r["Award Amount"] || 0,
+    obligated: r["Total Obligated Amount"] || 0,
+    description: (r["Description"] || "").substring(0, 200),
+    start_date: r["Start Date"] || "",
+    end_date: r["End Date"] || "",
+    agency: r["Awarding Agency"] || "",
+    sub_agency: r["Awarding Sub Agency"] || "",
+    award_type: r["Contract Award Type"] || "",
+    naics: r["NAICS Code"] || "",
+    naics_desc: r["NAICS Description"] || "",
+    set_aside: r["Type of Set Aside"] || "",
+    // usaspending.gov/award/<PIID> is a dead link (404 on the API and the
+    // page); the award page wants the generated id. Fall back to the
+    // keyword search page, which resolves for any PIID.
+    source_url: r.generated_internal_id
+      ? `https://www.usaspending.gov/award/${encodeURIComponent(r.generated_internal_id)}`
+      : `https://www.usaspending.gov/keyword_search/${encodeURIComponent(r["Award ID"] || "")}`,
+  };
+}
+
+/**
+ * Awards where the RECIPIENT's name matches (the vendor as prime). The
+ * keyword search matches descriptions, which is how a product bought
+ * through resellers shows up ("NASA SEWP ORDER FOR GETWELL NETWORK" to
+ * Thundercat); this finds the vendor's own awards ("GETWELLNETWORK INC").
+ * Both together answer "all awards tied to the product regardless of who
+ * got them". USASpending has no quota, so this is a free extra call.
+ */
+async function searchUSASpendingRecipients({ name, agency, limit = 15, startDate = "2022-10-01" }) {
+  const q = String(name || "").trim().slice(0, 60);
+  if (q.length < 3) return { awards: [], total: 0, skipped: "no name" };
+  const filters = {
+    recipient_search_text: [q],
+    award_type_codes: ["A", "B", "C", "D"],
+    time_period: [{ start_date: startDate, end_date: new Date().toISOString().slice(0, 10) }],
+  };
+  if (agency) {
+    const f = usaspendingAgencyFilter(agency, { tier: "toptier" });
+    if (f) filters.agencies = [f];
+  }
+  try {
+    const res = await fetch("https://api.usaspending.gov/api/v2/search/spending_by_award/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ filters, fields: AWARD_FIELDS, limit, page: 1, sort: "Award Amount", order: "desc", subawards: false }),
+    });
+    if (!res.ok) {
+      let detail = "";
+      try { detail = (await res.text()).slice(0, 200); } catch { /* ignore */ }
+      return { awards: [], total: 0, name: q, error: `USASpending API ${res.status}${detail ? `: ${detail}` : ""}` };
+    }
+    const data = await res.json();
+    const awards = (data.results || []).map(mapAward);
+    return { awards, total: data.page_metadata?.total || awards.length, name: q };
+  } catch (err) {
+    return { awards: [], total: 0, name: q, error: err.message };
+  }
+}
+
 async function searchUSASpending({ keyword, agency, naics, startDate, endDate, limit = 20, _tier }) {
   // USASpending Contract Award mappings: `filters.keyword` (singular) is
   // deprecated and silently rejected; `keywords` (plural array) is the
@@ -111,13 +185,7 @@ async function searchUSASpending({ keyword, agency, naics, startDate, endDate, l
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         filters,
-        fields: [
-          "Award ID", "Recipient Name", "Award Amount",
-          "Total Obligated Amount", "Description", "Start Date",
-          "End Date", "Awarding Agency", "Awarding Sub Agency",
-          "Contract Award Type", "NAICS Code", "NAICS Description",
-          "Type of Set Aside", "generated_internal_id",
-        ],
+        fields: AWARD_FIELDS,
         limit,
         page: 1,
         // "Award Amount" is the valid sort key in the Contract Award
@@ -157,27 +225,7 @@ async function searchUSASpending({ keyword, agency, naics, startDate, endDate, l
       const wider = await retryToptier();
       return { ...wider, widened_from_subtier: true };
     }
-    const awards = (data.results || []).map((r) => ({
-      piid: r["Award ID"] || "unknown",
-      recipient: r["Recipient Name"] || "",
-      award_amount: r["Award Amount"] || 0,
-      obligated: r["Total Obligated Amount"] || 0,
-      description: (r["Description"] || "").substring(0, 200),
-      start_date: r["Start Date"] || "",
-      end_date: r["End Date"] || "",
-      agency: r["Awarding Agency"] || "",
-      sub_agency: r["Awarding Sub Agency"] || "",
-      award_type: r["Contract Award Type"] || "",
-      naics: r["NAICS Code"] || "",
-      naics_desc: r["NAICS Description"] || "",
-      set_aside: r["Type of Set Aside"] || "",
-      // usaspending.gov/award/<PIID> is a dead link (404 on the API and the
-      // page); the award page wants the generated id. Fall back to the
-      // keyword search page, which resolves for any PIID.
-      source_url: r.generated_internal_id
-        ? `https://www.usaspending.gov/award/${encodeURIComponent(r.generated_internal_id)}`
-        : `https://www.usaspending.gov/keyword_search/${encodeURIComponent(r["Award ID"] || "")}`,
-    }));
+    const awards = (data.results || []).map(mapAward);
 
     return { awards, total: data.page_metadata?.total || awards.length };
   } catch (err) {
@@ -620,7 +668,7 @@ async function getAgencySpendingTotals({ agency_code, fiscal_year, agency_name }
  * @param {string[]} [params.naics] - NAICS codes
  * @returns {Promise<Object>} Combined API results
  */
-async function enrichWithFederalData({ topic, agency, naics }) {
+async function enrichWithFederalData({ topic, agency, naics, recipientName }) {
   const terms = extractSearchTerms(topic);
   const ladder = keywordLadder(terms);
   const keywords = deriveKeywords(topic);
@@ -629,7 +677,7 @@ async function enrichWithFederalData({ topic, agency, naics }) {
   console.log(`[FEDERAL-API] Enriching: "${keywords}" agency=${agency || "all"} naics=${(naics || []).join(",")}`);
 
   // Run all queries in parallel — comprehensive federal data gathering
-  const [awards, categories, samOpps, fedRegRaw, gaoReports, agencySpending] = await Promise.all([
+  const [awards, categories, samOpps, fedRegRaw, gaoReports, agencySpending, recipientAwards] = await Promise.all([
     // Walk the keyword ladder: the subscriber's own wording first, then the
     // most specific term, so a wordy or unusual question relaxes into a hit
     // instead of returning zero. An ERROR is never retried (it is not a
@@ -637,6 +685,12 @@ async function enrichWithFederalData({ topic, agency, naics }) {
     (async () => {
       let last = null;
       for (let i = 0; i < Math.min(ladder.length, MAX_KEYWORD_ATTEMPTS); i++) {
+        // The empty rung is "everything the agency awarded", a real query
+        // only when there IS an agency or NAICS to scope it. Unscoped, it
+        // is the twenty largest awards in government (Northrop, Lockheed,
+        // Pfizer), which the 2026-09-13 GetWell question got back as
+        // "20 awards found, none to GetWell".
+        if (!ladder[i] && !agency && !(naics && naics.length)) break;
         const res = await searchUSASpending({
           keyword: ladder[i],
           agency: agency || undefined,
@@ -677,6 +731,9 @@ async function enrichWithFederalData({ topic, agency, naics }) {
     agency && agencyCgac(agency)
       ? getAgencySpendingTotals({ agency_code: agencyCgac(agency), fiscal_year: 2026, agency_name: (usaspendingAgencyFilter(agency, { tier: "toptier" }) || {}).name || null })
       : Promise.resolve({ spending: null }),
+    recipientName
+      ? searchUSASpendingRecipients({ name: recipientName, agency: agency || undefined, limit: 15 })
+      : Promise.resolve({ awards: [], total: 0, skipped: "no candidate name" }),
   ]);
 
   // The Federal Register search is full text: "data governance" returned the
@@ -691,6 +748,9 @@ async function enrichWithFederalData({ topic, agency, naics }) {
   const summary = [];
   if (awards.total > 0) {
     summary.push(`USASpending: ${awards.total} awards found, top ${awards.awards.length} returned`);
+  }
+  if (recipientAwards && recipientAwards.awards && recipientAwards.awards.length > 0) {
+    summary.push(`USASpending: ${recipientAwards.total} awards to recipients matching "${recipientAwards.name}"`);
   }
   if (categories.categories && categories.categories.length > 0) {
     const totalSpend = categories.categories.reduce((s, c) => s + c.amount, 0);
@@ -713,6 +773,7 @@ async function enrichWithFederalData({ topic, agency, naics }) {
 
   return {
     usaspending_awards: awards,
+    usaspending_recipient_awards: recipientAwards,
     spending_categories: categories,
     sam_opportunities: samOpps,
     federal_register: fedRegDocs,
@@ -739,7 +800,17 @@ function formatFederalDataContext(data) {
     const rows = data.usaspending_awards.awards.slice(0, 10).map((a) =>
       `- ${a.piid}: ${a.recipient} | "${(a.description || "no description").replace(/\s+/g, " ").trim()}" | award ${money(a.award_amount)} (obligated to date ${money(a.obligated)}) | ${a.sub_agency || a.agency} | NAICS ${a.naics || "n/a"} | Set-aside: ${a.set_aside || "none"} | ${a.start_date} to ${a.end_date} | ${a.source_url}`
     ).join("\n");
-    sections.push(`USASPENDING.GOV VERIFIED AWARDS (${data.usaspending_awards.total} total):\n${rows}`);
+    sections.push(`USASPENDING.GOV VERIFIED AWARDS, keyword matched in the description or recipient (${data.usaspending_awards.total} total). A product named in a reseller's or integrator's award description is an award tied to that product; a keyword that only matches a street address or an unrelated word is not:\n${rows}`);
+  }
+
+  // Awards where the recipient's own name matched (the vendor as prime).
+  if (data.usaspending_recipient_awards && Array.isArray(data.usaspending_recipient_awards.awards) && data.usaspending_recipient_awards.awards.length > 0) {
+    const ra = data.usaspending_recipient_awards;
+    const money = (n) => `$${((Number(n) || 0) / 1e6).toFixed(2)}M`;
+    const rows = ra.awards.slice(0, 10).map((a) =>
+      `- ${a.piid}: ${a.recipient} | "${(a.description || "no description").replace(/\s+/g, " ").trim()}" | award ${money(a.award_amount)} | ${a.sub_agency || a.agency} | ${a.start_date} to ${a.end_date} | ${a.source_url}`
+    ).join("\n");
+    sections.push(`USASPENDING.GOV AWARDS TO RECIPIENTS NAMED LIKE "${ra.name}" (${ra.total} total; these are the vendor's own awards as prime):\n${rows}`);
   }
 
   // Spending categories
@@ -880,6 +951,8 @@ function deriveAcquisitionState(opp, { now = Date.now(), staleDays = 120 } = {})
 }
 
 module.exports = {
+  searchUSASpendingRecipients,
+  mapAward,
   deriveKeywords,
   searchUSASpending,
   getSpendingByCategory,

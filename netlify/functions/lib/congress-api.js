@@ -20,6 +20,36 @@ const API_KEY = process.env.CONGRESS_API_KEY || "";
 const { cached, cacheKey } = require("./fetch-cache");
 const LIST_TTL_MS = 6 * 60 * 60 * 1000;
 
+// The API's own `url` fields point at api.congress.gov JSON. Ask MMT showed
+// those to subscribers as "record 1" links (2026-09-13). Every link the
+// model sees is the congress.gov page a person can open.
+const BILL_TYPE_PATH = {
+  hr: "house-bill", s: "senate-bill", hres: "house-resolution", sres: "senate-resolution",
+  hjres: "house-joint-resolution", sjres: "senate-joint-resolution",
+  hconres: "house-concurrent-resolution", sconres: "senate-concurrent-resolution",
+};
+function ordinal(n) {
+  const x = Number(n) || 0;
+  const s = ["th", "st", "nd", "rd"], v = x % 100;
+  return `${x}${s[(v - 20) % 10] || s[v] || s[0]}`;
+}
+function billPageUrl(congress, type, number) {
+  const t = String(type || "").toLowerCase().replace(/[^a-z]/g, "");
+  const path = BILL_TYPE_PATH[t] || `${t}-bill`;
+  return `https://www.congress.gov/bill/${ordinal(congress)}-congress/${path}/${number}`;
+}
+function crsPageUrl(id) {
+  return `https://www.congress.gov/crs-product/${encodeURIComponent(String(id || ""))}`;
+}
+function committeeReportPageUrl(congress, chamber, number) {
+  const c = String(chamber || "").toLowerCase() === "senate" ? "senate" : "house";
+  return `https://www.congress.gov/congressional-report/${ordinal(congress)}-congress/${c}-report/${number}`;
+}
+function hearingSearchUrl(title) {
+  const q = JSON.stringify({ source: "hearings", search: String(title || "").slice(0, 120) });
+  return `https://www.congress.gov/search?q=${encodeURIComponent(q)}`;
+}
+
 async function callCongress(path, params = {}) {
   if (!API_KEY) {
     return { error: "CONGRESS_API_KEY not configured" };
@@ -72,7 +102,7 @@ async function searchBills({ keyword, congress = 119, limit = 250, daysBack = 18
       latest_action: b.latestAction?.text || "",
       latest_action_date: b.latestAction?.actionDate || "",
       update_date: b.updateDate || "",
-      url: b.url || `https://www.congress.gov/bill/${b.congress}th-congress/${(b.type || "").toLowerCase()}-bill/${b.number}`,
+      url: billPageUrl(b.congress, b.type, b.number),
     })),
   };
 }
@@ -108,7 +138,7 @@ async function searchBillSummaries({ congress = 119, limit = 250, daysBack = 180
       text: String(s.text || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
       action_date: s.actionDate || "",
       update_date: s.updateDate || "",
-      url: s.bill?.url || "",
+      url: s.bill ? billPageUrl(s.bill.congress || congress, s.bill.type, s.bill.number) : "",
     })),
   };
 }
@@ -134,7 +164,7 @@ async function searchHearings({ keyword, congress = 119, chamber, limit = 250 })
       title: h.title || "",
       date: h.dates?.[0]?.date || "",
       jacket_number: h.jacketNumber || "",
-      url: h.url || "",
+      url: hearingSearchUrl(h.title),
     })),
   };
 }
@@ -158,7 +188,7 @@ async function searchCRSReports({ keyword, limit = 10 }) {
       publish_date: r.publishDate || "",
       update_date: r.updateDate || "",
       version: r.version || "",
-      url: r.url || "",
+      url: crsPageUrl(r.id),
     })),
   };
 }
@@ -182,7 +212,7 @@ async function searchCommitteeReports({ keyword, congress = 119, limit = 250 }) 
       citation: r.citation || "",
       type: r.type || "",
       title: r.title || "",
-      url: r.url || "",
+      url: committeeReportPageUrl(r.congress, r.chamber, r.number),
     })),
   };
 }
@@ -276,6 +306,10 @@ function formatCongressContext(data) {
 }
 
 module.exports = {
+  billPageUrl,
+  crsPageUrl,
+  committeeReportPageUrl,
+  hearingSearchUrl,
   searchBills,
   searchBillSummaries,
   searchHearings,

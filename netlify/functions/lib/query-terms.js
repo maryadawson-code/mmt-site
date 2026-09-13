@@ -51,6 +51,7 @@ won win wins winner hold holds held holding make makes made made use used using 
 run runs running put puts take takes taken bring brings due out there per via such other others
 bought buy buys buying purchase purchased purchases purchasing spent pays pay paid paying received receive
 receives receiving gave given released posted signed sold sell sells move moved moves ordered picked selected chose chosen
+interested regardless tied go goes went gone got matter matters whoever whichever whether
 `.trim().split(/\s+/));
 
 // Nouns that describe the KIND of record being asked for. The award and
@@ -61,6 +62,9 @@ const GENERIC = new Set([
   "solicitation", "solicitations", "procurement", "procurements", "spend", "spending", "obligation",
   "obligations", "obligated", "vendor", "vendors", "incumbent", "incumbents", "bid", "bids", "bidding",
   "pipeline", "forecast", "forecasts", "activity", "work", "efforts", "effort", "initiative", "initiatives",
+  // "the product is GetWell" / "which tool did VA buy": the noun names the
+  // KIND of thing, the name beside it is the search term.
+  "product", "products", "tool", "tools",
 ]);
 
 // Domain vocabulary. Two jobs: typo correction (a token of six or more

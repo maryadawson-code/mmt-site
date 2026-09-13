@@ -194,6 +194,8 @@ HARD RULES:
 - LIVE RECORDS: every live federal record in the block that matches the question's agency and topic (an award, a notice, a docket, a report) must appear in the answer with its citation, or be set aside in one clause that says why it is not the thing asked about (for example, a related award under a different vehicle). Never tell the subscriber to go check a system whose matching record is already in the block.
 - DATES: MMT sources carry their dates. When the block's MMT ARCHIVE RECENCY line says the newest MMT source is more than 60 days old, say when MMT last covered the question and that anything since would show only in the live systems. Do not present an old status as current.
 - The MarketPulse sentence belongs only in the empty-block shape above. Do not add product pitches to an answer that has evidence.
+- PRODUCT AND VENDOR QUESTIONS: an award whose description names the product is an award tied to that product even when the recipient is a reseller or integrator (a NASA SEWP order to Thundercat "for GetWell Network" is a GetWell award); report the recipient, the buying office, the amount, the dates and the description. Awards under "RECIPIENTS NAMED LIKE" are the vendor's own primes. A keyword that only matches a street address or an unrelated word (an IRS facility on Getwell Road) is not a match; say you set it aside. Never report "no awards" while the block holds an award whose description names the product.
+- FOLLOW-UPS: when the question only makes sense with the previous turn ("the product is X", "regardless of who got them", "what about VA?"), answer it as a continuation using the block. Do not ask the subscriber to repeat what the prior turn already said.
 - WEB SEARCH OF FEDERAL SITES results are leads, not verified facts: attribute them to the page URL, say they came from a web search, and tell the subscriber to verify on the page.
 - Quote sources inline. Examples: "(Mission Meets Tech, Mar 24 2026)", "(USASpending: PIID xxx)", "(SAM.gov notice xxx)", "(Congress.gov HR xxx)", "(PubMed PMID xxx)".
 - Prefer specific numbers over generalities. If the verified facts give a dollar figure or date, use it.
@@ -232,6 +234,12 @@ async function runEnrichment(question) {
     : topicQuery;
   const primaryNaics = matchedVehicles.length > 0 && matchedVehicles[0].naics.length > 0
     ? matchedVehicles[0].naics
+    : undefined;
+  // A short phrase with no known vehicle may be a vendor or product name
+  // ("GetWell", "Oracle Health"); the recipient search costs nothing and
+  // returns nothing when no recipient carries the name.
+  const recipientName = matchedVehicles.length === 0 && terms.phraseTokens.length >= 1 && terms.phraseTokens.length <= 3
+    ? terms.phrase
     : undefined;
 
   // Sprint 5 2026-05-15: 8s per-enrichment timeout. Sprint 6 2026-05-15
@@ -276,7 +284,7 @@ async function runEnrichment(question) {
     wageDetData,
     edgarData,
   ] = await Promise.all([
-    instrument("usaspending",             () => enrichWithFederalData({ topic: primaryQuery, agency: agency || undefined, naics: primaryNaics }), metricsSb),
+    instrument("usaspending",             () => enrichWithFederalData({ topic: primaryQuery, agency: agency || undefined, naics: primaryNaics, recipientName }), metricsSb),
     instrument("congress",                () => enrichWithCongress({ topic: primaryQuery, relevanceTokens: vehicleSearchTerms.length > 0 ? undefined : terms.tokens }), metricsSb),
     instrument("govinfo",                 () => enrichWithGovInfo({ topic: primaryQuery }),                                      metricsSb),
     optional("pubmed",                    () => enrichWithPubMed({ topic: topicQuery, yearsBack: 5 })),
@@ -484,6 +492,37 @@ Answer the subscriber now, following the voice and format rules in the system pr
 }
 
 /**
+ * Pure: a follow-up that carries no search terms of its own ("regardless of
+ * who got them"), or leans on a pronoun with almost none ("the product is
+ * GetWell"), is retrieved as a continuation of the previous question. The
+ * model still sees the subscriber's actual wording; only the retrieval
+ * query is widened. 2026-09-13: "I'm interested in all awards tied to the
+ * product regardless of who got them" was retrieved as "interested tied
+ * product regardless go" and the bot asked for the product name it had
+ * been given one turn earlier.
+ */
+const FOLLOW_UP_RE = /\b(it|its|that|this|those|these|them|the product|the same|same one|regardless|as well|instead|too|also|what about|how about)\b/i;
+function resolveFollowUp(question, history = []) {
+  const q = String(question || "");
+  const prior = Array.isArray(history) && history.length ? String(history[history.length - 1].question || "").trim() : "";
+  if (!prior) return { question: q, carried: false };
+  const t = extractSearchTerms(q);
+  const own = Array.isArray(t.phraseTokens) ? t.phraseTokens.length : 0;
+  const carry = own === 0 || (own <= 2 && FOLLOW_UP_RE.test(q));
+  if (!carry) return { question: q, carried: false };
+  return { question: `${prior} ${q}`, carried: true, prior };
+}
+
+/** Pure: the voice rule bans em dashes; the model still emits them. */
+function stripEmDashes(text) {
+  return String(text || "")
+    .replace(/\s*—\s*/g, ", ")
+    .replace(/\s+--\s+/g, ", ")
+    .replace(/,\s*,/g, ", ")
+    .replace(/([.!?:;])\s*,\s*/g, "$1 ");
+}
+
+/**
  * Main entry point: given a question, return a grounded answer + sources.
  * @returns {Promise<{answer: string, agency: string|null, hasData: boolean, model: string, sources: Array, error?: string}>}
  */
@@ -492,10 +531,11 @@ async function answerQuestion({ question, history = [], maxTokens = 1500 }) {
     return { answer: "", error: "question too short", agency: null, hasData: false, sources: [], unavailable: [] };
   }
   try {
-    const { agency, agencyName: scopeName, context, hasAnyData, sources, unavailable, searchPhrase, corrections } = await runEnrichment(question);
+    const followUp = resolveFollowUp(question, history);
+    const { agency, agencyName: scopeName, context, hasAnyData, sources, unavailable, searchPhrase, corrections, shapes, routed } = await runEnrichment(followUp.question);
     const { answer, model, usage } = await callClaude({ question, context, history, maxTokens });
     return {
-      answer,
+      answer: stripEmDashes(answer),
       agency,
       agencyName: scopeName,
       hasData: hasAnyData,
@@ -505,6 +545,9 @@ async function answerQuestion({ question, history = [], maxTokens = 1500 }) {
       unavailable,
       searchPhrase,
       corrections,
+      shapes,
+      routed,
+      carried: followUp.carried,
     };
   } catch (err) {
     return {
@@ -524,5 +567,7 @@ module.exports = {
   answerQuestion,
   collectUnavailable,
   archiveRecencyNote,
+  resolveFollowUp,
+  stripEmDashes,
   ARCHIVE_STALE_DAYS,
 };

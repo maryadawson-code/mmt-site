@@ -128,6 +128,36 @@ esbuild bundle of premium-chat resolves `@netlify/blobs`.
 4. Ask the live bot a few more questions after deploy and check "Not
    reached" is empty or names only SAM.gov's quota.
 
+**Same day, second pass: vendor and product questions, follow-ups, links.**
+Mary's live test asked "tell me about all GetWell awards", then "the product
+is GetWell", then "all awards tied to the product regardless of who got
+them". The bot answered "no awards to GetWell" three times. USASpending
+had the answer the whole time: Thundercat's NASA SEWP orders "FOR GETWELL
+NETWORK" at VA (VISN 21, VISN 8) and GetWellNetwork Inc's own prime award at
+DHA. Four general causes, all fixed:
+- The model never saw award descriptions (fixed above), so a reseller's
+  award for the product looked like an award to a stranger.
+- Nothing searched by recipient. `searchUSASpendingRecipients()` now runs
+  on any short phrase with no known vehicle (`recipient_search_text`;
+  free, returns nothing when no recipient carries the name) and lands in
+  the block as "RECIPIENTS NAMED LIKE". The prompt says a product named in
+  a reseller's description is an award tied to the product, and a street
+  address match (an IRS facility on Getwell Road) is not.
+- The keyword ladder's empty rung ran UNSCOPED when the question named no
+  agency, returning the twenty largest awards in government (Northrop,
+  Lockheed, Pfizer) as "20 awards found". The empty rung now runs only with
+  an agency or NAICS to scope it.
+- A follow-up with no terms of its own ("regardless of who got them") was
+  retrieved as `interested tied product regardless go`. `resolveFollowUp()`
+  retrieves a no-term or pronoun-led follow-up as a continuation of the
+  previous question (the model still sees the subscriber's wording), and
+  those scaffolding words are stopwords. "product/products/tool/tools" are
+  generic kind-nouns, never keywords.
+Also: every Congress.gov link is now the congress.gov page (bills, CRS
+products, committee reports, a hearing search), not the api.congress.gov
+JSON the widget was rendering as "record 1"; and `stripEmDashes()` enforces
+the voice rule on the model's answer, which kept emitting them.
+
 Hard rules (do not regress):
 - **Every SAM.gov call goes through `lib/sam-quota.js`.** Scheduled
   consumers reserve at "scheduled" priority; a 429 marks the day exhausted.

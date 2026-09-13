@@ -255,3 +255,54 @@ describe("SAM.gov daily quota and cache on the wire", () => {
     expect(out.federal_register.filtered_out).toBe(1);
   });
 });
+
+describe("vendor and product questions on the wire", () => {
+  const usaCalls = () => calls.filter((c) => c.url.includes("spending_by_award")).map((c) => c.body.filters);
+
+  it("an unscoped question never sends an empty keyword (the twenty largest awards in government are not an answer)", async () => {
+    globalThis.fetch = makeFetch({ toptierResults: [] });
+    const out = await api.enrichWithFederalData({ topic: "tell me about all GetWell awards" });
+    const filters = usaCalls();
+    expect(filters.length).toBe(1);
+    expect(filters[0].keywords).toEqual(["getwell"]);
+    expect(filters.some((f) => !f.keywords && !f.agencies)).toBe(false);
+    expect(out.usaspending_awards.awards).toEqual([]);
+  });
+
+  it("with an agency the empty rung still runs, scoped (\"what has CDC awarded\" is a real query)", async () => {
+    globalThis.fetch = makeFetch({ subtierResults: [] , toptierResults: [] });
+    await api.enrichWithFederalData({ topic: "Show me CDC awards", agency: "CDC" });
+    const filters = usaCalls();
+    expect(filters.every((f) => Array.isArray(f.agencies) && f.agencies.length === 1)).toBe(true);
+  });
+
+  it("a candidate vendor name also runs a recipient search, and both kinds of award reach the model with their descriptions", async () => {
+    globalThis.fetch = async (url, opts = {}) => {
+      const u = String(url);
+      calls.push({ url: u, body: opts.body ? JSON.parse(opts.body) : null });
+      if (u.includes("spending_by_award")) {
+        const f = JSON.parse(opts.body).filters;
+        if (f.recipient_search_text) {
+          return jsonRes({ results: [{ "Award ID": "HT001425PE009", "Recipient Name": "GETWELLNETWORK INC", "Award Amount": 181540, "Description": "GETWELL NETWORK SOFTWARE FOR ATAMMC", "Awarding Sub Agency": "Defense Health Agency", generated_internal_id: "CONT_AWD_HT001425PE009_9700_-NONE-_-NONE-" }], page_metadata: { total: 1 } });
+        }
+        return jsonRes({ results: [
+          { "Award ID": "36C10B23F0309", "Recipient Name": "THUNDERCAT TECHNOLOGY, LLC", "Award Amount": 12952798, "Description": "NASA SEWP ORDER FOR GETWELL NETWORK HARDWARE UPGRADE AND EXPANSION", "Awarding Sub Agency": "Department of Veterans Affairs", generated_internal_id: "CONT_AWD_36C10B23F0309_3600_NNG15SC03B_8000" },
+          { "Award ID": "2043FY20C00001", "Recipient Name": "ALUTIIQ C&W SERVICES, LLC", "Award Amount": 20866412, "Description": "O&M SERVICES 5333 GETWELL MEMPHIS TN", "Awarding Sub Agency": "Internal Revenue Service", generated_internal_id: "CONT_AWD_2043FY20C00001_2050_-NONE-_-NONE-" },
+        ], page_metadata: { total: 2 } });
+      }
+      if (u.includes("api.sam.gov")) return jsonRes({ opportunitiesData: [], totalRecords: 0 });
+      if (u.includes("gao.gov")) return { ok: true, status: 200, text: async () => "<rss><channel></channel></rss>" };
+      return jsonRes({ results: [], count: 0, page_metadata: { total: 0 } });
+    };
+    const out = await api.enrichWithFederalData({ topic: "tell me about all GetWell awards", recipientName: "getwell" });
+    const filters = usaCalls();
+    expect(filters.find((f) => f.recipient_search_text)).toMatchObject({ recipient_search_text: ["getwell"] });
+    expect(out.usaspending_recipient_awards.awards[0].recipient).toBe("GETWELLNETWORK INC");
+    const ctx = api.formatFederalDataContext(out);
+    expect(ctx).toContain("RECIPIENTS NAMED LIKE \"getwell\"");
+    expect(ctx).toContain("NASA SEWP ORDER FOR GETWELL NETWORK");
+    expect(ctx).toContain("5333 GETWELL MEMPHIS");
+    expect(ctx).toContain("a keyword that only matches a street address");
+    expect(ctx).toContain("https://www.usaspending.gov/award/CONT_AWD_HT001425PE009_9700_-NONE-_-NONE-");
+  });
+});

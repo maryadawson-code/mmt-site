@@ -217,3 +217,46 @@ describe("archiveRecencyNote", () => {
     expect(assistant.archiveRecencyNote([{ date: "" }, { date: "not a date" }], now)).toBe("");
   });
 });
+
+describe("vendor and product questions, and follow-ups", () => {
+  it("a product name runs both the description search and the recipient search; USASpending is the cited source with award-page links", async () => {
+    const filters = [];
+    globalThis.fetch = async (url, opts = {}) => {
+      const u = String(url);
+      if (u.includes("spending_by_award")) {
+        const f = JSON.parse(opts.body).filters;
+        filters.push(f);
+        if (f.recipient_search_text) return jsonRes({ results: [{ "Award ID": "HT001425PE009", "Recipient Name": "GETWELLNETWORK INC", "Award Amount": 181540, "Description": "GETWELL NETWORK SOFTWARE FOR ATAMMC", "Awarding Sub Agency": "Defense Health Agency", generated_internal_id: "CONT_AWD_HT001425PE009_9700_-NONE-_-NONE-" }], page_metadata: { total: 1 } });
+        return jsonRes({ results: [{ "Award ID": "36C10B23F0309", "Recipient Name": "THUNDERCAT TECHNOLOGY, LLC", "Award Amount": 12952798, "Description": "NASA SEWP ORDER FOR GETWELL NETWORK HARDWARE UPGRADE AND EXPANSION", "Awarding Sub Agency": "Department of Veterans Affairs", generated_internal_id: "CONT_AWD_36C10B23F0309_3600_NNG15SC03B_8000" }], page_metadata: { total: 1 } });
+      }
+      throw new Error("egress blocked");
+    };
+    const r = await assistant.runEnrichment("tell me about all GetWell awards");
+    expect(r.searchPhrase).toBe("getwell");
+    expect(r.shapes).toEqual(["procurement"]);
+    expect(filters.some((f) => f.recipient_search_text && f.recipient_search_text[0] === "getwell")).toBe(true);
+    expect(filters.some((f) => !f.keywords && !f.recipient_search_text)).toBe(false); // never the unscoped empty rung
+    expect(r.context).toContain("NASA SEWP ORDER FOR GETWELL NETWORK");
+    expect(r.context).toContain("GETWELLNETWORK INC");
+    const usa = r.sources.find((s) => s.id === "usaspending");
+    expect(usa.links).toEqual(expect.arrayContaining([
+      "https://www.usaspending.gov/award/CONT_AWD_36C10B23F0309_3600_NNG15SC03B_8000",
+      "https://www.usaspending.gov/award/CONT_AWD_HT001425PE009_9700_-NONE-_-NONE-",
+    ]));
+  }, 30000);
+
+  it("a follow-up with no terms of its own is retrieved as a continuation of the prior question", () => {
+    const history = [{ question: "tell me about all GetWell awards", answer: "..." }];
+    expect(assistant.resolveFollowUp("I'm interested in all awards tied to the product regardless of who got them", history)).toMatchObject({ carried: true, question: "tell me about all GetWell awards I'm interested in all awards tied to the product regardless of who got them" });
+    expect(assistant.resolveFollowUp("the product is GetWell", history)).toMatchObject({ carried: true });
+    expect(assistant.resolveFollowUp("what about VA?", history)).toMatchObject({ carried: true });
+    expect(assistant.resolveFollowUp("Which HRSA grants fund transplant IT?", history)).toMatchObject({ carried: false });
+    expect(assistant.resolveFollowUp("what about VA?", [])).toMatchObject({ carried: false });
+  });
+
+  it("em dashes never reach the subscriber", () => {
+    expect(assistant.stripEmDashes("Source selection as of August 2026 — VA closed proposals in March — and no award yet.")).toBe("Source selection as of August 2026, VA closed proposals in March, and no award yet.");
+    expect(assistant.stripEmDashes("FY2024–FY2026 stays a range.")).toBe("FY2024–FY2026 stays a range.");
+    expect(assistant.stripEmDashes("")).toBe("");
+  });
+});
