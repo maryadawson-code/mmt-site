@@ -14,6 +14,7 @@ const { monthsToExpiry: voteMonthsToExpiry } = require('./netlify/functions/lib/
 // /ask, /pricing and /help come from the same modules the server runs.
 const { SOURCE_CATALOG: askMmtSourceCatalog } = require('./netlify/functions/lib/ask-mmt-sources');
 const { CHAT_CAPS: askMmtChatCaps, FREE_CAP: askMmtFreeCap } = require('./netlify/functions/lib/ask-mmt-access');
+const { isFutureDated } = require('./scripts/lib/publish-gate');
 
 // Autonomous feature-vote system: which vote features are live this build.
 // Populated once at build start from the Supabase `feature_flags` table
@@ -162,23 +163,22 @@ function loadArticles() {
     };
   });
 
-  // Future-date gating: hold articles with publish_date > today.
-  // The Netlify rebuild-trigger cron runs every 4 hours; once the
-  // article's publish date arrives (in UTC), the next build picks it
-  // up and it appears in /latest, /sitemap.xml, and the article page
-  // is generated. This is how Mary stages issues for "automatic
-  // release based on the schedule" without anyone having to merge a
-  // PR on publish day.
-  const now = Date.now();
+  // Future-date gating: hold articles with publish_date > today in
+  // America/New_York, the SAME clock as the Capture Corner brief gate in
+  // the premium/briefs copy loop. The Netlify rebuild-trigger cron runs
+  // every 4 hours; the first build after midnight ET on the publish date
+  // picks the article up and it appears in /latest, /sitemap.xml, and the
+  // article page is generated. This is how Mary stages issues for
+  // "automatic release based on the schedule" without anyone having to
+  // merge a PR on publish day. (Until 2026-09-13 this compared against UTC
+  // midnight, so a staged issue released its public article at 8 PM ET the
+  // evening before while the companion brief stayed held until ET midnight
+  // and /capture-corner/latest 302'd to a 404 for four hours.)
+  const _articleTodayET = todayET();
   const articles = articlesAll.filter((a) => {
-    if (!a.date) return true;
-    const t = new Date(a.date).getTime();
-    if (Number.isNaN(t)) return true;
-    if (t > now) {
-      console.log(`  ⏳ HOLDING (future-dated): ${a.file} (publish_date ${a.date})`);
-      return false;
-    }
-    return true;
+    if (!isFutureDated(a.isoDate, _articleTodayET)) return true;
+    console.log(`  ⏳ HOLDING (future-dated): ${a.file} (publish_date ${a.isoDate})`);
+    return false;
   });
   const heldCount = articlesAll.length - articles.length;
   if (heldCount > 0) {
