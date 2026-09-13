@@ -252,35 +252,51 @@ function buildCaptureIntel() {
 }
 
 function buildGlossary() {
-  if (!fs.existsSync(GLOSSARY_FILE)) return [];
+  // The glossary lives in glossary.html; scripts/lib/glossary-extract.js
+  // reads its term-entry blocks. A glossary.json at the root is still
+  // honored (same item shape) if one ever exists.
+  let terms = [];
   try {
-    const raw = fs.readFileSync(GLOSSARY_FILE, "utf8");
-    const data = JSON.parse(raw);
-    const terms = Array.isArray(data) ? data : (data.terms || []);
-    return terms.map((t, i) => {
-      const body = [
-        t.term ? `Term: ${t.term}` : "",
-        t.definition || t.description || "",
-        t.contractor_note || t.note || "",
-        t.context || "",
-      ].filter(Boolean).join("\n");
-      return {
-        id: `glossary-${(t.term || `term-${i}`).toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 50)}`,
-        type: "glossary",
-        title: t.term || `Term ${i}`,
-        slug: (t.term || "").toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-        date: "",
-        description: (t.definition || t.description || "").substring(0, 240),
-        tags: ["glossary", ...(t.tags || [])].filter(Boolean),
-        url: `/glossary.html#${(t.slug || t.term || "").toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
-        excerpt: body.substring(0, EXCERPT_CHARS),
-        premium: false,
-      };
-    });
+    const { extractGlossaryFile } = require("./lib/glossary-extract");
+    terms = extractGlossaryFile(path.join(ROOT, "glossary.html"));
   } catch (err) {
-    console.warn(`[corpus] glossary skip: ${err.message}`);
-    return [];
+    console.warn(`[corpus] glossary.html skip: ${err.message}`);
   }
+  if (!terms.length && fs.existsSync(GLOSSARY_FILE)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(GLOSSARY_FILE, "utf8"));
+      terms = Array.isArray(data) ? data : (data.terms || []);
+    } catch (err) {
+      console.warn(`[corpus] glossary.json skip: ${err.message}`);
+    }
+  }
+  return terms.map((t, i) => {
+    const term = t.term || `Term ${i}`;
+    const expansion = t.expansion || "";
+    const definition = t.definition || t.description || "";
+    const note = t.contractor_note || t.note || "";
+    const body = [
+      `Term: ${term}`,
+      expansion ? `Stands for: ${expansion}` : "",
+      definition,
+      note ? `Contractor note: ${note}` : "",
+      t.context || "",
+    ].filter(Boolean).join("\n");
+    const slug = (t.slug || term).toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    return {
+      id: `glossary-${slug.slice(0, 50)}`,
+      type: "glossary",
+      title: term,
+      expansion,
+      slug,
+      date: "",
+      description: `${expansion ? `${expansion}. ` : ""}${definition}`.substring(0, 240),
+      tags: ["glossary", ...(t.tags || [])].filter(Boolean),
+      url: t.url || `/glossary.html#term-${slug}`,
+      excerpt: body.substring(0, EXCERPT_CHARS),
+      premium: false,
+    };
+  });
 }
 
 function buildIdiqVehicles() {

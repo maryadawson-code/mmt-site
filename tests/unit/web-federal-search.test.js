@@ -15,12 +15,24 @@ beforeEach(() => { delete process.env.PERPLEXITY_API_KEY; delete process.env.ASK
 afterEach(() => { delete process.env.PERPLEXITY_API_KEY; delete process.env.ASK_MMT_WEB_FALLBACK_DISABLED; });
 
 describe("shouldWebFallback", () => {
-  it("is true only when USASpending awards, SAM opportunities and contract awards are all empty", () => {
+  it("is true when USASpending awards, SAM opportunities and contract awards are all empty", () => {
     expect(shouldWebFallback({ federalData: {}, contractAwardsData: null })).toBe(true);
     expect(shouldWebFallback({ federalData: { usaspending_awards: { awards: [{ piid: "x" }] } } })).toBe(false);
     expect(shouldWebFallback({ federalData: { sam_opportunities: { opportunities: [{ notice_id: "a" }] } } })).toBe(false);
     expect(shouldWebFallback({ federalData: {}, contractAwardsData: { awards: { awards: [{ id: 1 }] } } })).toBe(false);
     expect(shouldWebFallback({ federalData: { error: "timeout-8s" } })).toBe(true);
+  });
+
+  it("is true when SAM.gov or USASpending could not be reached on a contract, vehicle or budget question, even if the other answered", () => {
+    const oneAward = { awards: [{ piid: "x" }] };
+    const samQuota = { opportunities: [], error: "SAM.gov daily quota exhausted", rateLimited: true };
+    expect(shouldWebFallback({ federalData: { usaspending_awards: oneAward, sam_opportunities: samQuota }, shapes: ["procurement"] })).toBe(true);
+    expect(shouldWebFallback({ federalData: { usaspending_awards: oneAward, sam_opportunities: samQuota }, shapes: ["general"] })).toBe(true);
+    expect(shouldWebFallback({ federalData: { usaspending_awards: { awards: [], error: "USASpending API 503" }, sam_opportunities: { opportunities: [{ notice_id: "a" }] } }, shapes: ["budget"] })).toBe(true);
+    // a research question with one award and SAM out of quota does not need the award fallback
+    expect(shouldWebFallback({ federalData: { usaspending_awards: oneAward, sam_opportunities: samQuota }, shapes: ["research"] })).toBe(false);
+    // both answered: no fallback
+    expect(shouldWebFallback({ federalData: { usaspending_awards: oneAward, sam_opportunities: { opportunities: [{ notice_id: "a" }] } }, shapes: ["procurement"] })).toBe(false);
   });
 });
 

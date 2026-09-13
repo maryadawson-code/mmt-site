@@ -32,7 +32,11 @@ const { enrichWithCHPL, formatCHPLContext } = require("./onc-chpl-api");
 const { enrichWithContractAwards, formatContractAwardsContext } = require("./sam-contract-awards");
 const { enrichWithWageDeterminations, formatWageDeterminationsContext } = require("./sam-wage-determinations");
 const { enrichWithEDGAR, formatEDGARContext } = require("./sec-edgar-api");
-const { searchCorpus, formatCorpusContext } = require("./content-index");
+const { searchCorpus, formatCorpusContext, loadCorpus } = require("./content-index");
+// 2026-09-13: optional systems run only when the question calls for them,
+// and the model gets a verified acronym reference built from the context.
+const { classifyQuestion, systemsFor } = require("./question-shape");
+const { acronymReference, setGlossaryLoader } = require("./acronyms");
 const { detectVehicles, formatVehiclesContext, expandedSearchTerms } = require("./known-vehicles");
 // 2026-09-10: per-answer `sources` array. The catalog in ask-mmt-sources.js is
 // the same list build.js renders on /ask/sources, so the page and the code
@@ -136,6 +140,34 @@ async function instrument(circuitName, fn, supabase) {
 // the model's job is to synthesize already-verified facts.
 const DEFAULT_MODEL = "claude-haiku-4-5-20251001";
 
+// MMT's glossary (corpus items of type "glossary") is the first place an
+// acronym expansion comes from; the curated table in lib/acronyms.js is
+// second; anything else the model must write as-is.
+setGlossaryLoader(() => {
+  const corpus = loadCorpus();
+  const m = new Map();
+  for (const it of (corpus && corpus.items) || []) {
+    if (it && it.type === "glossary" && it.title && it.expansion) m.set(String(it.title), String(it.expansion));
+  }
+  return m;
+});
+
+// Past this age the model is told when MMT last covered the question, so a
+// March status is not read back as today's.
+const ARCHIVE_STALE_DAYS = 60;
+
+/** Pure: the MMT ARCHIVE RECENCY line, or "" when the newest match is fresh. */
+function archiveRecencyNote(corpusMatches, now = new Date()) {
+  const dates = (corpusMatches || [])
+    .map((m) => (m && m.date ? new Date(m.date) : null))
+    .filter((d) => d && !Number.isNaN(d.getTime()));
+  if (!dates.length) return "";
+  const newest = new Date(Math.max(...dates.map((d) => d.getTime())));
+  const ageDays = Math.floor((now.getTime() - newest.getTime()) / 86400000);
+  if (ageDays <= ARCHIVE_STALE_DAYS) return "";
+  return `\n\nMMT ARCHIVE RECENCY: the newest MMT source matched on this question is dated ${newest.toISOString().slice(0, 10)} (${ageDays} days ago). Anything since then is only in the live systems in this block; say when MMT last covered it rather than presenting that status as current.`;
+}
+
 // Agency detection is the registry's job (lib/federal-agencies.js, 27
 // agencies). It used to be an eight-entry substring map here, so a question
 // about FDA, CDC, HRSA, ARPA-H, ONC or the Army detected no agency at all
@@ -158,6 +190,10 @@ HARD RULES:
 - Do not invent contract numbers, dollar amounts, deadlines, hiring counts, or citations that aren't in the block.
 - If the block is genuinely empty on the question, say so plainly and recommend what to check next. Never fabricate to fill a gap. (Empty means zero MMT articles AND zero API results, not just "the API returned nothing for this specific keyword.") Use this exact shape for the bottom line in that case: "I don't have a source for that in the systems I read. Where I'd look: <the one or two primary sources most likely to hold it>. If you want it researched properly, MarketPulse delivers a source-cited brief in 24 hours (https://missionmeetstech.com/marketpulse)." Do not pad an empty answer with general knowledge dressed up as fact.
 - If a system listed under SYSTEMS NOT REACHED would normally hold the answer (SAM.gov for solicitations, USASpending for awards), say that it could not be checked this turn and name it. Never imply "no such record exists" because a system was silent.
+- ACRONYMS: expand an acronym only with the expansion given in the ACRONYM REFERENCE block or spelled out in a source excerpt. If neither gives it, write the acronym exactly as it appears in the source. Never guess what letters stand for.
+- LIVE RECORDS: every live federal record in the block that matches the question's agency and topic (an award, a notice, a docket, a report) must appear in the answer with its citation, or be set aside in one clause that says why it is not the thing asked about (for example, a related award under a different vehicle). Never tell the subscriber to go check a system whose matching record is already in the block.
+- DATES: MMT sources carry their dates. When the block's MMT ARCHIVE RECENCY line says the newest MMT source is more than 60 days old, say when MMT last covered the question and that anything since would show only in the live systems. Do not present an old status as current.
+- The MarketPulse sentence belongs only in the empty-block shape above. Do not add product pitches to an answer that has evidence.
 - WEB SEARCH OF FEDERAL SITES results are leads, not verified facts: attribute them to the page URL, say they came from a web search, and tell the subscriber to verify on the page.
 - Quote sources inline. Examples: "(Mission Meets Tech, Mar 24 2026)", "(USASpending: PIID xxx)", "(SAM.gov notice xxx)", "(Congress.gov HR xxx)", "(PubMed PMID xxx)".
 - Prefer specific numbers over generalities. If the verified facts give a dollar figure or date, use it.
@@ -211,6 +247,13 @@ async function runEnrichment(question) {
   // nuance the vehicle dictionary doesn't know about.
   const corpusMatches = searchCorpus(terms.corrected || question, 5, terms.phrase);
 
+  // Which optional systems this question calls for (lib/question-shape.js).
+  // A system that is not routed is not queried, is not "not reached", and
+  // cannot become a source.
+  const { shapes } = classifyQuestion(question);
+  const routed = systemsFor(shapes);
+  const optional = (id, fn) => (routed.has(id) ? instrument(id, fn, metricsSb) : Promise.resolve({ skipped: "not_relevant" }));
+
   const [
     federalData,
     congressData,
@@ -236,19 +279,19 @@ async function runEnrichment(question) {
     instrument("usaspending",             () => enrichWithFederalData({ topic: primaryQuery, agency: agency || undefined, naics: primaryNaics }), metricsSb),
     instrument("congress",                () => enrichWithCongress({ topic: primaryQuery, relevanceTokens: vehicleSearchTerms.length > 0 ? undefined : terms.tokens }), metricsSb),
     instrument("govinfo",                 () => enrichWithGovInfo({ topic: primaryQuery }),                                      metricsSb),
-    instrument("pubmed",                  () => enrichWithPubMed({ topic: topicQuery, yearsBack: 5 }),                             metricsSb),
-    instrument("grants",                  () => enrichWithGrants({ topic: primaryQuery }),                                       metricsSb),
-    instrument("sam_assistance",          () => enrichWithAssistance({ topic: primaryQuery, agency }),                           metricsSb),
-    instrument("usajobs",                 () => enrichWithUSAJobs({ topic: primaryQuery }),                                      metricsSb),
+    optional("pubmed",                    () => enrichWithPubMed({ topic: topicQuery, yearsBack: 5 })),
+    optional("grants",                    () => enrichWithGrants({ topic: primaryQuery })),
+    optional("sam_assistance",            () => enrichWithAssistance({ topic: primaryQuery, agency })),
+    optional("usajobs",                   () => enrichWithUSAJobs({ topic: primaryQuery })),
     instrument("it_dashboard",            () => enrichWithITDashboard({ topic: primaryQuery, agencyCode }),                      metricsSb),
     instrument("cms",                     () => enrichWithCMSProviderData({ topic: topicQuery }),                                  metricsSb),
-    instrument("clinicaltrials",          () => enrichWithClinicalTrials({ topic: topicQuery }),                                   metricsSb),
-    instrument("onc_healthit",            () => enrichWithONCHealthIT({ topic: topicQuery }),                                      metricsSb),
-    instrument("hhs_open",                () => enrichWithHHSOpenData({ topic: topicQuery }),                                      metricsSb),
+    optional("clinicaltrials",            () => enrichWithClinicalTrials({ topic: topicQuery })),
+    optional("onc_healthit",              () => enrichWithONCHealthIT({ topic: topicQuery })),
+    optional("hhs_open",                  () => enrichWithHHSOpenData({ topic: topicQuery })),
     // CALC has no circuit per Sprint 6 mapping (GSA, low traffic). safe() = withTimeout().
     safe(enrichWithCALC({ topic: topicQuery })),
-    instrument("ecfr",                    () => enrichWithECFR({ topic: topicQuery }),                                             metricsSb),
-    instrument("regulations_gov",         () => enrichWithRegulationsGov({ topic: topicQuery }),                                   metricsSb),
+    optional("ecfr",                      () => enrichWithECFR({ topic: topicQuery })),
+    optional("regulations_gov",           () => enrichWithRegulationsGov({ topic: topicQuery, agency })),
     instrument("bls",                     () => enrichWithBLS({ topic: topicQuery }),                                              metricsSb),
     instrument("onc_chpl",                () => enrichWithCHPL({ topic: topicQuery }),                                             metricsSb),
     instrument("sam_contract_awards",     () => enrichWithContractAwards({ topic: primaryQuery, agency }),                       metricsSb),
@@ -265,7 +308,7 @@ async function runEnrichment(question) {
   // Fallback web search of federal sites, only when the structured
   // award/opportunity sources returned nothing (never throws).
   let webData = { skipped: "not_needed" };
-  if (shouldWebFallback({ federalData, contractAwardsData })) {
+  if (shouldWebFallback({ federalData, contractAwardsData, shapes })) {
     webData = await webFederalSearch({ query: primaryQuery, agency, question });
   }
 
@@ -304,13 +347,20 @@ async function runEnrichment(question) {
     ? `\n\nSYSTEMS NOT REACHED THIS TURN (queried but no answer; do not treat as "no records exist"; if the question depends on one of these, say it could not be checked):\n${unavailable.map((u) => `- ${u.name}: ${u.reason}`).join("\n")}`
     : "";
 
-  const context = [
+  const recencyText = archiveRecencyNote(corpusMatches);
+  const baseContext = [
     formatVehiclesContext(matchedVehicles),
     formatCorpusContext(corpusMatches),
+    recencyText,
     federalText,
     ...systemBlocks.map((b) => b.text),
     unavailableText,
   ].filter(Boolean).join("");
+
+  // The only acronym expansions the model may use, built from the acronyms
+  // that actually appear in the question and the retrieved context.
+  const acronyms = acronymReference({ question, context: baseContext });
+  const context = baseContext + (acronyms.block || "");
 
   const sources = buildSources({ systems: systemBlocks, corpusMatches });
 
@@ -318,13 +368,16 @@ async function runEnrichment(question) {
     agency,
     agencyName: agency ? agencyName(agency) : null,
     context,
-    hasAnyData: context.length > unavailableText.length,
+    hasAnyData: baseContext.length > unavailableText.length + recencyText.length,
     corpusMatches: corpusMatches.length,
     vehiclesDetected: matchedVehicles.map((v) => v.canonical),
     sources,
     unavailable,
     searchPhrase: primaryQuery,
     corrections: terms.corrections,
+    shapes,
+    routed: [...routed],
+    acronyms: { known: acronyms.known.map(([t]) => t), unknown: acronyms.unknown },
   };
 }
 
@@ -338,6 +391,17 @@ function shortReason(err) {
  * federal-data-apis resolves with per-system {error} fields; the other
  * clients resolve with a top-level {error} (or {configured:false}).
  */
+/**
+ * Pure: a client that fans out internally (ClinicalTrials.gov runs three
+ * sponsor searches, Grants.gov three agencies, USAJOBS four) carries its
+ * errors one level down. It did not answer when every part failed.
+ */
+function nestedFailure(d) {
+  const parts = Object.values(d).filter((v) => v && typeof v === "object" && !Array.isArray(v));
+  if (!parts.length || !parts.every((v) => v.error)) return null;
+  return parts[0].error;
+}
+
 function collectUnavailable({ federalData, systemBlocks }) {
   const out = [];
   const push = (id, reason) => {
@@ -351,15 +415,21 @@ function collectUnavailable({ federalData, systemBlocks }) {
   } else if (federalData) {
     if (federalData.usaspending_awards && federalData.usaspending_awards.error) push("usaspending", federalData.usaspending_awards.error);
     const so = federalData.sam_opportunities;
-    if (so && so.error) push("sam_opportunities", so.rateLimited ? `rate limited (shared daily quota${so.resetAt ? `, resets ${so.resetAt}` : ""})` : so.error);
+    if (so && so.error) push("sam_opportunities", so.rateLimited ? `daily quota spent${so.resetAt ? `, resets ${so.resetAt}` : ", resets 00:00 UTC"}` : so.error);
     if (federalData.federal_register && federalData.federal_register.error) push("federal_register", federalData.federal_register.error);
     if (federalData.gao_reports && federalData.gao_reports.error) push("gao_reports", federalData.gao_reports.error);
   }
   for (const b of systemBlocks || []) {
     const d = b.data;
     if (!d || typeof d !== "object" || b.id === "web_federal") continue;
-    if (d.error) push(b.id, d.error);
-    else if (d.configured === false) push(b.id, "not configured");
+    // Not queried for this question (routing), or never connected (no key,
+    // retired API): neither is "not reached this turn". The catalog page
+    // carries the permanent state; listing it on every answer would train
+    // subscribers to ignore the line that matters (a real quota or outage).
+    if (d.skipped || d.configured === false) continue;
+    if (d.error) { push(b.id, d.error); continue; }
+    const nested = nestedFailure(d);
+    if (nested) push(b.id, nested);
   }
   return out;
 }
@@ -453,4 +523,6 @@ module.exports = {
   runEnrichment,
   answerQuestion,
   collectUnavailable,
+  archiveRecencyNote,
+  ARCHIVE_STALE_DAYS,
 };

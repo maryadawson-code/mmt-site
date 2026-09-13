@@ -15,12 +15,22 @@
 // a true upstream outage — these tests ensure that distinction survives.
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { createRequire } from "node:module";
+
+// The SAM.gov client keeps a daily ledger and a response cache in
+// lib/fetch-cache.js (a CommonJS singleton that vi.resetModules() does not
+// touch). Give every test a fresh store, or the 429 case marks the day
+// exhausted for the tests that follow it.
+const cjsRequire = createRequire(import.meta.url);
+const fetchCache = cjsRequire("../../netlify/functions/lib/fetch-cache.js");
+function freshStore() { const d = {}; return { async get(k) { return k in d ? d[k] : null; }, async setJSON(k, v) { d[k] = v; } }; }
 
 describe("SC-OPS: SAM.gov throttle detection", () => {
   let originalFetch;
   beforeEach(() => {
     originalFetch = global.fetch;
     process.env.SAM_GOV_API_KEY = "test-key";
+    fetchCache._setStoreForTests(freshStore());
   });
   afterEach(() => { global.fetch = originalFetch; });
 

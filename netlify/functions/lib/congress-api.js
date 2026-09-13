@@ -12,20 +12,31 @@
 const API_BASE = "https://api.congress.gov/v3";
 const API_KEY = process.env.CONGRESS_API_KEY || "";
 
+// The list endpoints ignore the keyword, so every question fetches the same
+// four lists. Cached for six hours (lib/fetch-cache.js) they cost nothing on
+// repeat and stop competing for the 8s budget in the Ask MMT fan-out (the
+// 2026-09-13 pass logged "Congress.gov (timeout-8s)" while the API itself
+// answered in under 1.5s).
+const { cached, cacheKey } = require("./fetch-cache");
+const LIST_TTL_MS = 6 * 60 * 60 * 1000;
+
 async function callCongress(path, params = {}) {
   if (!API_KEY) {
     return { error: "CONGRESS_API_KEY not configured" };
   }
   const qs = new URLSearchParams({ ...params, api_key: API_KEY, format: "json" });
-  try {
-    const res = await fetch(`${API_BASE}${path}?${qs}`, {
-      headers: { Accept: "application/json" },
-    });
-    if (!res.ok) return { error: `Congress API ${res.status}` };
-    return await res.json();
-  } catch (err) {
-    return { error: err.message };
-  }
+  const { value } = await cached(cacheKey("congress", path, params), LIST_TTL_MS, async () => {
+    try {
+      const res = await fetch(`${API_BASE}${path}?${qs}`, {
+        headers: { Accept: "application/json" },
+      });
+      if (!res.ok) return { error: `Congress API ${res.status}` };
+      return await res.json();
+    } catch (err) {
+      return { error: err.message };
+    }
+  });
+  return value;
 }
 
 /**
@@ -43,8 +54,9 @@ async function callCongress(path, params = {}) {
  */
 async function searchBills({ keyword, congress = 119, limit = 250, daysBack = 180 }) {
   const fromDate = new Date(Date.now() - daysBack * 86400000);
-  // API expects ISO 8601 UTC like 2026-01-01T00:00:00Z
-  const fromDateTime = `${fromDate.toISOString().slice(0, 19)}Z`;
+  // API expects ISO 8601 UTC like 2026-01-01T00:00:00Z. Day precision so the
+  // window (and the cache key) is stable within a day.
+  const fromDateTime = `${fromDate.toISOString().slice(0, 10)}T00:00:00Z`;
   const data = await callCongress(`/bill/${congress}`, {
     limit: String(Math.min(limit, 250)),
     sort: "updateDate+desc",
@@ -79,7 +91,7 @@ async function searchBills({ keyword, congress = 119, limit = 250, daysBack = 18
  */
 async function searchBillSummaries({ congress = 119, limit = 250, daysBack = 180 } = {}) {
   const fromDate = new Date(Date.now() - daysBack * 86400000);
-  const fromDateTime = `${fromDate.toISOString().slice(0, 19)}Z`;
+  const fromDateTime = `${fromDate.toISOString().slice(0, 10)}T00:00:00Z`;
   const data = await callCongress(`/summaries/${congress}`, {
     limit: String(Math.min(limit, 250)),
     sort: "updateDate+desc",

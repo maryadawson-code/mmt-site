@@ -306,7 +306,7 @@ function makeHandler(overrides = {}) {
       user_email: email,
       details: {
         email, tier, question, answer: result.answer, agency: result.agency, has_data: result.hasData,
-        model: result.model, source_ids: sources.map((s) => s.id), unavailable: unavailable.map((u) => u.id),
+        model: result.model, source_ids: sources.map((s) => s.id), unavailable: unavailable.map((u) => u.id), shapes: result.shapes || [], routed: result.routed || [],
         search_phrase: result.searchPhrase, history_turns: history.length,
         submitted_at: now.toISOString(), month,
       },
@@ -320,7 +320,7 @@ function makeHandler(overrides = {}) {
     user_email: email,
     details: {
       turn_id: turnId, email, ip_hash: ipHash, question, answer: result.answer, agency: result.agency,
-      has_data: result.hasData, model: result.model, sources, unavailable: unavailable.map((u) => u.id),
+      has_data: result.hasData, model: result.model, sources, unavailable: unavailable.map((u) => u.id), shapes: result.shapes || [], routed: result.routed || [],
       search_phrase: result.searchPhrase, history_turns: history.length,
       submitted_at: now.toISOString(), month, hint,
     },

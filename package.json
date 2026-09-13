@@ -29,6 +29,7 @@
     "scan:pii": "node scripts/scan-pii.js"
   },
   "dependencies": {
+    "@netlify/blobs": "^11.0.3",
     "@sentry/node": "^10.65.0",
     "@supabase/supabase-js": "^2.116.0",
     "bcryptjs": "^3.0.3",
