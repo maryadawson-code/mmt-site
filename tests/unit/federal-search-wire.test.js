@@ -6,6 +6,15 @@
 // the boundary the APIs see, not at the prompt.
 
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
+import { createRequire } from "node:module";
+
+// The SAM.gov client's daily ledger and response cache live in a CommonJS
+// singleton; every test gets a fresh store so one test's cache hit or 429
+// cannot change what the next one sends to the wire.
+const cjsRequire = createRequire(import.meta.url);
+const fetchCache = cjsRequire("../../netlify/functions/lib/fetch-cache.js");
+const samQuota = cjsRequire("../../netlify/functions/lib/sam-quota.js");
+function freshStore() { const d = {}; return { async get(k) { return k in d ? d[k] : null; }, async setJSON(k, v) { d[k] = v; } }; }
 
 const QUESTION = "Tell me all about data governence awards in the DHA";
 let api;
@@ -43,7 +52,7 @@ beforeAll(async () => {
   api = await import("../../netlify/functions/lib/federal-data-apis.js");
 });
 afterAll(() => { globalThis.fetch = realFetch; delete process.env.SAM_GOV_API_KEY; });
-beforeEach(() => { calls = []; });
+beforeEach(() => { calls = []; fetchCache._setStoreForTests(freshStore()); });
 
 describe("deriveKeywords", () => {
   it("never sends the sentence", () => {
@@ -170,5 +179,130 @@ describe("enrichWithFederalData on the wire", () => {
     await api.searchUSASpending({ keyword: "imaging", agency: "VA" });
     const tiers = calls.filter((c) => c.url.includes("spending_by_award")).map((c) => c.body.filters.agencies[0].tier);
     expect(tiers).toEqual(["toptier"]);
+  });
+});
+
+describe("SAM.gov daily quota and cache on the wire", () => {
+  const samQuery = () => calls.filter((c) => c.url.includes("api.sam.gov"));
+
+  it("the same query spends the quota once: the second subscriber is served from cache with no request", async () => {
+    globalThis.fetch = makeFetch({});
+    const a = await api.searchSAMOpportunities({ keyword: "data governance", agency: "DHA", limit: 15 });
+    const b = await api.searchSAMOpportunities({ keyword: "data governance", agency: "DHA", limit: 15 });
+    expect(a.cached).toBeUndefined();
+    expect(b.cached).toBe(true);
+    expect(samQuery().length).toBe(2); // primary + secondary (thin primary) for the FIRST call only
+    expect((await samQuota.samQuotaState()).used).toBe(2);
+  });
+
+  it("a 429 marks the day exhausted: the next question makes no SAM request and says why, and the fallback can run", async () => {
+    globalThis.fetch = async (url, opts = {}) => {
+      const u = String(url);
+      calls.push({ url: u, body: opts.body ? JSON.parse(opts.body) : null });
+      if (u.includes("api.sam.gov")) return jsonRes({ code: "900804", message: "Message throttled out", nextAccessTime: "2026-Sep-14 00:00:00+0000 UTC" }, 429);
+      return jsonRes({ results: [], count: 0, page_metadata: { total: 0 } });
+    };
+    const first = await api.searchSAMOpportunities({ keyword: "ambient scribe", agency: "DHA" });
+    expect(first.rateLimited).toBe(true);
+    expect(first.resetAt).toBe("2026-Sep-14 00:00:00+0000 UTC");
+    const before = samQuery().length;
+    const second = await api.searchSAMOpportunities({ keyword: "telehealth", agency: "VA" });
+    expect(samQuery().length).toBe(before); // nothing went to the wire
+    expect(second.rateLimited).toBe(true);
+    expect(second.quotaGate).toBe("exhausted");
+    expect(second.error).toContain("daily quota exhausted");
+    expect(second.resetAt).toBe("2026-Sep-14 00:00:00+0000 UTC");
+  });
+
+  it("a scheduled caller is refused once the subscriber slice would be touched; a subscriber is not", async () => {
+    globalThis.fetch = makeFetch({});
+    // 10 a day, 6 kept for subscribers: after four are spent a cron gets nothing
+    await samQuota.reserveSam(4);
+    const cron = await api.searchSAMOpportunities({ keyword: "x", priority: "scheduled" });
+    expect(cron.rateLimited).toBe(true);
+    expect(cron.quotaGate).toBe("reserved_for_subscribers");
+    expect(samQuery().length).toBe(0);
+    const sub = await api.searchSAMOpportunities({ keyword: "x" });
+    expect(sub.error).toBeUndefined();
+    expect(samQuery().length).toBeGreaterThan(0);
+  });
+
+  it("USASpending rows link to the real award page and carry the description", async () => {
+    globalThis.fetch = makeFetch({ subtierResults: [{ "Award ID": "HT001524F0063", "Recipient Name": "NEW TECH SOLUTIONS, INC.", "Award Amount": 286673, "Description": "IMMUTA SOFTWARE FOR DATA GOVERNANCE", generated_internal_id: "CONT_AWD_HT001524F0063_9700_NNG15SC82B_8000" }] });
+    const out = await api.searchUSASpending({ keyword: "data governance", agency: "DHA" });
+    expect(calls[0].body.fields).toContain("generated_internal_id");
+    expect(out.awards[0].source_url).toBe("https://www.usaspending.gov/award/CONT_AWD_HT001524F0063_9700_NNG15SC82B_8000");
+    expect(out.awards[0].description).toBe("IMMUTA SOFTWARE FOR DATA GOVERNANCE");
+    const ctx = api.formatFederalDataContext({ usaspending_awards: { awards: out.awards, total: 1 } });
+    expect(ctx).toContain("IMMUTA SOFTWARE FOR DATA GOVERNANCE");
+    expect(ctx).toContain("award $0.29M");
+  });
+
+  it("a Federal Register hit that does not carry the question's terms is dropped before the model sees it", async () => {
+    globalThis.fetch = async (url, opts = {}) => {
+      const u = String(url);
+      calls.push({ url: u, body: opts.body ? JSON.parse(opts.body) : null });
+      if (u.includes("federalregister.gov")) return jsonRes({ results: [
+        { title: "Renewal of Department of Defense Federal Advisory Committees; Defense Business Board", abstract: "charter renewal", document_number: "2026-11621", html_url: "https://www.federalregister.gov/d/2026-11621" },
+        { title: "Defense Health Agency Data Governance Council Notice", abstract: "", document_number: "2026-99999", html_url: "https://www.federalregister.gov/d/2026-99999" },
+      ], count: 2 });
+      if (u.includes("api.sam.gov")) return jsonRes({ opportunitiesData: [], totalRecords: 0 });
+      if (u.includes("gao.gov")) return { ok: true, status: 200, text: async () => "<rss><channel></channel></rss>" };
+      return jsonRes({ results: [], page_metadata: { total: 0 } });
+    };
+    const out = await api.enrichWithFederalData({ topic: QUESTION, agency: "DHA" });
+    expect(out.federal_register.documents.map((d) => d.document_number)).toEqual(["2026-99999"]);
+    expect(out.federal_register.filtered_out).toBe(1);
+  });
+});
+
+describe("vendor and product questions on the wire", () => {
+  const usaCalls = () => calls.filter((c) => c.url.includes("spending_by_award")).map((c) => c.body.filters);
+
+  it("an unscoped question never sends an empty keyword (the twenty largest awards in government are not an answer)", async () => {
+    globalThis.fetch = makeFetch({ toptierResults: [] });
+    const out = await api.enrichWithFederalData({ topic: "tell me about all GetWell awards" });
+    const filters = usaCalls();
+    expect(filters.length).toBe(1);
+    expect(filters[0].keywords).toEqual(["getwell"]);
+    expect(filters.some((f) => !f.keywords && !f.agencies)).toBe(false);
+    expect(out.usaspending_awards.awards).toEqual([]);
+  });
+
+  it("with an agency the empty rung still runs, scoped (\"what has CDC awarded\" is a real query)", async () => {
+    globalThis.fetch = makeFetch({ subtierResults: [] , toptierResults: [] });
+    await api.enrichWithFederalData({ topic: "Show me CDC awards", agency: "CDC" });
+    const filters = usaCalls();
+    expect(filters.every((f) => Array.isArray(f.agencies) && f.agencies.length === 1)).toBe(true);
+  });
+
+  it("a candidate vendor name also runs a recipient search, and both kinds of award reach the model with their descriptions", async () => {
+    globalThis.fetch = async (url, opts = {}) => {
+      const u = String(url);
+      calls.push({ url: u, body: opts.body ? JSON.parse(opts.body) : null });
+      if (u.includes("spending_by_award")) {
+        const f = JSON.parse(opts.body).filters;
+        if (f.recipient_search_text) {
+          return jsonRes({ results: [{ "Award ID": "HT001425PE009", "Recipient Name": "GETWELLNETWORK INC", "Award Amount": 181540, "Description": "GETWELL NETWORK SOFTWARE FOR ATAMMC", "Awarding Sub Agency": "Defense Health Agency", generated_internal_id: "CONT_AWD_HT001425PE009_9700_-NONE-_-NONE-" }], page_metadata: { total: 1 } });
+        }
+        return jsonRes({ results: [
+          { "Award ID": "36C10B23F0309", "Recipient Name": "THUNDERCAT TECHNOLOGY, LLC", "Award Amount": 12952798, "Description": "NASA SEWP ORDER FOR GETWELL NETWORK HARDWARE UPGRADE AND EXPANSION", "Awarding Sub Agency": "Department of Veterans Affairs", generated_internal_id: "CONT_AWD_36C10B23F0309_3600_NNG15SC03B_8000" },
+          { "Award ID": "2043FY20C00001", "Recipient Name": "ALUTIIQ C&W SERVICES, LLC", "Award Amount": 20866412, "Description": "O&M SERVICES 5333 GETWELL MEMPHIS TN", "Awarding Sub Agency": "Internal Revenue Service", generated_internal_id: "CONT_AWD_2043FY20C00001_2050_-NONE-_-NONE-" },
+        ], page_metadata: { total: 2 } });
+      }
+      if (u.includes("api.sam.gov")) return jsonRes({ opportunitiesData: [], totalRecords: 0 });
+      if (u.includes("gao.gov")) return { ok: true, status: 200, text: async () => "<rss><channel></channel></rss>" };
+      return jsonRes({ results: [], count: 0, page_metadata: { total: 0 } });
+    };
+    const out = await api.enrichWithFederalData({ topic: "tell me about all GetWell awards", recipientName: "getwell" });
+    const filters = usaCalls();
+    expect(filters.find((f) => f.recipient_search_text)).toMatchObject({ recipient_search_text: ["getwell"] });
+    expect(out.usaspending_recipient_awards.awards[0].recipient).toBe("GETWELLNETWORK INC");
+    const ctx = api.formatFederalDataContext(out);
+    expect(ctx).toContain("RECIPIENTS NAMED LIKE \"getwell\"");
+    expect(ctx).toContain("NASA SEWP ORDER FOR GETWELL NETWORK");
+    expect(ctx).toContain("5333 GETWELL MEMPHIS");
+    expect(ctx).toContain("a keyword that only matches a street address");
+    expect(ctx).toContain("https://www.usaspending.gov/award/CONT_AWD_HT001425PE009_9700_-NONE-_-NONE-");
   });
 });

@@ -26,6 +26,8 @@
 // once/day (see its runSamPath daily-quota gate).
 // ============================================================
 
+const { reserveSam, markSamExhausted, quotaReason } = require("./sam-quota");
+
 function fmtDate(d) {
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   const dd = String(d.getDate()).padStart(2, "0");
@@ -39,6 +41,21 @@ async function sam_search_opportunities(args = {}) {
   // nothing and behave exactly as before.
   const apiKey = args.api_key || process.env.SAM_GOV_API_KEY;
   if (!apiKey) throw new Error("SAM_GOV_API_KEY not configured");
+
+  // Shared-key callers go through the daily ledger (lib/sam-quota.js). The
+  // crons that call this shim are "scheduled": they only spend what is left
+  // above the slice kept for subscriber questions. A caller that already
+  // reserved a batch passes reserved:true; a caller with its own key
+  // (args.api_key) is outside the shared quota and skips the ledger.
+  const sharedKey = !args.api_key;
+  if (sharedKey && !args.reserved) {
+    const gate = await reserveSam(1, { priority: args.priority || "scheduled" });
+    if (!gate.ok) {
+      const err = new Error(`SAM.gov skipped: ${quotaReason(gate)}`);
+      err.quotaGate = gate.reason;
+      throw err;
+    }
+  }
 
   const limit = Math.min(Number(args.limit ?? 10), 25);
   const daysBack = Number(args.posted_from_days_ago ?? 30);
@@ -58,6 +75,10 @@ async function sam_search_opportunities(args = {}) {
   const res = await fetch(url.toString(), { headers: { Accept: "application/json" } });
   if (!res.ok) {
     const text = await res.text();
+    if (sharedKey && (res.status === 429 || /900804/.test(text))) {
+      const m = text.match(/after\s+([0-9A-Za-z-]+\s+[0-9:+]+\s*UTC?)/);
+      await markSamExhausted(m ? m[1] : null);
+    }
     throw new Error(`SAM.gov ${res.status}: ${text.slice(0, 200)}`);
   }
   const json = await res.json();

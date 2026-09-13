@@ -2,9 +2,10 @@
 // web-federal-search.js — last-resort web search, federal sites only
 //
 // Mary (2026-09-10): "It should be using my sam.gov API or searching
-// itself." The structured clients come first. This runs ONLY when
-// USASpending, SAM.gov Opportunities and the contract-award client all
-// returned nothing for the question (shouldWebFallback), and it is
+// itself." The structured clients come first. This runs when USASpending,
+// SAM.gov Opportunities and the contract-award client all returned nothing,
+// or (2026-09-13) when SAM.gov or USASpending could not be reached on a
+// contract, vehicle or budget question (shouldWebFallback), and it is
 // restricted to .gov/.mil domains through Perplexity's search_domain_filter,
 // so the "federal sources and MMT's archive, nothing else" promise on
 // /ask/sources still holds. Results are labeled LEADS in the context and
@@ -40,14 +41,31 @@ function isFederalUrl(u) {
   }
 }
 
-/** Pure: run the fallback only when the structured award/opportunity sources were silent. */
-function shouldWebFallback({ federalData, contractAwardsData } = {}) {
+/**
+ * Pure: run the fallback when the structured award/opportunity picture is
+ * incomplete. Two cases:
+ *   1. USASpending, SAM.gov Opportunities and the contract-award client all
+ *      returned nothing (the original rule).
+ *   2. SAM.gov or USASpending could not be reached (quota, outage, timeout)
+ *      on a question that wants award or solicitation facts. The 2026-09-13
+ *      pass had one USASpending row and SAM.gov out of quota, so the
+ *      solicitation side of the answer had no source at all and the
+ *      fallback never ran. With the 10-a-day SAM.gov key this is the common
+ *      case, not the rare one.
+ */
+function shouldWebFallback({ federalData, contractAwardsData, shapes } = {}) {
   const fd = federalData || {};
   const awards = fd.usaspending_awards && Array.isArray(fd.usaspending_awards.awards) ? fd.usaspending_awards.awards.length : 0;
   const opps = fd.sam_opportunities && Array.isArray(fd.sam_opportunities.opportunities) ? fd.sam_opportunities.opportunities.length : 0;
   const ca = contractAwardsData && contractAwardsData.awards;
   const caCount = ca && Array.isArray(ca.awards) ? ca.awards.length : (Array.isArray(ca) ? ca.length : 0);
-  return awards === 0 && opps === 0 && caCount === 0;
+  if (awards === 0 && opps === 0 && caCount === 0) return true;
+  const so = fd.sam_opportunities || {};
+  const ua = fd.usaspending_awards || {};
+  const samSilent = !!(so.error || so.rateLimited) || !!(fd.error && !fd.usaspending_awards);
+  const usaSilent = !!ua.error || !!(fd.error && !fd.usaspending_awards);
+  const wantsAwards = !Array.isArray(shapes) || shapes.some((s) => s === "procurement" || s === "general" || s === "budget");
+  return wantsAwards && (samSilent || usaSilent);
 }
 
 function enabled(env = process.env) {
@@ -102,7 +120,7 @@ async function webFederalSearch({ query, agency, question, fetchImpl = fetch } =
 function formatWebFederalContext(result) {
   if (!result || result.skipped || result.error || result.noResults || !result.content) return "";
   const cites = (result.citations || []).map((u, i) => `  [${i + 1}] ${u}`).join("\n");
-  return `\n\nWEB SEARCH OF FEDERAL SITES (fallback; .gov/.mil pages only; the structured APIs returned nothing on this question). Treat as LEADS: cite the page URL, say it came from a web search, and tell the subscriber to verify on the page before relying on it:\n${result.content}\n${cites ? `Pages:\n${cites}` : ""}`;
+  return `\n\nWEB SEARCH OF FEDERAL SITES (fallback; .gov/.mil pages only; run because the structured award or solicitation sources were silent or could not be reached on this question). Treat as LEADS: cite the page URL, say it came from a web search, and tell the subscriber to verify on the page before relying on it:\n${result.content}\n${cites ? `Pages:\n${cites}` : ""}`;
 }
 
 module.exports = { webFederalSearch, formatWebFederalContext, shouldWebFallback, isFederalUrl, FEDERAL_DOMAINS, NO_RESULTS };

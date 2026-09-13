@@ -1,5 +1,192 @@
 # Mission Meets Tech - Developer & Content Governance
 
+## Sprint 2026-09-13 — Ask MMT accuracy pass: 7 dead connections, a 10-a-day SAM.gov key, 7 off-topic "sources", one invented acronym
+
+Mary ran the live accuracy pass ("Tell me all about data governance awards
+in the DHA") and pasted the answer. The retrieval fixes of 09-10 worked (the
+tracker entry and both April briefs were cited, the agency scope was right,
+the not-reached list was honest). Everything else in the answer exposed a
+class-level defect, and Mary's instruction was explicit: fix the tool for
+every question, not this one.
+
+**What the answer showed, and the general cause behind each:**
+- **"Field of Competition date of July 19."** The May 29 Capture Corner says
+  `FOC July 19` (Full Operational Capability); "Field of Competition" appears
+  nowhere. The model expanded an acronym it did not know. Nothing stopped it.
+- **A real DHA data governance award was in the context and ignored.**
+  USASpending returned HT001524F0063, New Tech Solutions, $286,673, "IMMUTA
+  SOFTWARE FOR DATA GOVERNANCE". The row the model saw carried no description
+  and read "$0.00M obligated" (obligations lag the award value), and its
+  link (`usaspending.gov/award/<PIID>`) is a 404: the award page wants the
+  generated id. The answer told Mary to go check SAM.gov instead.
+- **"Sources (12)", seven of them noise:** a CFPB open-banking rule (12 CFR
+  1033), an SEC swap-data rule (17 CFR 49), clinical trials, grant listings,
+  the Defense Business Board's charter renewal, an SEC docket. Every client
+  ran for every question, the searches are loose full text, and every
+  system that returned rows became a "source".
+- **Seven systems "not reached this turn".** Only one was transient. GAO
+  (gao.gov 403s every search path from a server), SAM Assistance Listings
+  (wrong endpoint, 404 forever), ITDashboard (public API retired), HHS open
+  data (opendata.hhs.gov is a JavaScript app, `/api/1` returns HTML), USAJOBS
+  (no key), and Congress.gov (an 8s timeout under fan-out contention; the API
+  answers in 1.4s). Listing a permanent state on every answer trains readers
+  to ignore the line that matters. ONC Health IT data had the same disease
+  (dashboard API redirects to HTML) and showed up on the next question.
+- **SAM.gov "rate limited (shared daily quota)" on a Sunday afternoon.** The
+  docs (open.gsa.gov, read 2026-09-13) say a personal key with **no role in
+  SAM.gov gets 10 requests a day**; with a role, 1,000. Assistance Listings
+  shares the pool (both 429'd together). The pursuit-calendar cron spends 5
+  at 00:00 UTC and the L1 loop 5 at 12:00 UTC, so **Ask MMT never had SAM.gov
+  during business hours on any day**, and the Monday re-verify workflow
+  (up to 20 lookups) took Mondays too. Structural, not a blip.
+
+Shipped (PR #195, 33 files, +8 libs, +8 test files; 848/848 unit tests):
+- **`lib/fetch-cache.js`** — TTL cache on Netlify Blobs (enabled on the site,
+  no migration, no env var; `netlify blobs:list ask-mmt-cache`), memory
+  fallback, storage errors are misses, upstream errors are never cached.
+- **`lib/sam-quota.js`** — the SAM.gov daily ledger. Interactive callers
+  (a subscriber or tool user waiting) spend down to zero and are refused only
+  after a real 429 today; scheduled callers (calendar, L1, the shim) may only
+  spend what is left above `INTERACTIVE_RESERVE` (6), so with the 10-a-day key
+  the crons skip their SAM path and say why. A 429 marks the UTC day exhausted
+  so nothing else wastes a call. `SAM_DAILY_QUOTA` (env, ~20 bytes) lifts the
+  ceiling; the crons resume on their own. SAM responses cache 6h so a repeat
+  question costs nothing. Re-verify workflow moved to Saturday 01:00 UTC with
+  `max_sam` default 4.
+- **`lib/question-shape.js`** — regex shapes (procurement, budget, policy,
+  research, grants, workforce, data, general) route the optional systems:
+  PubMed/ClinicalTrials for research, Grants/Assistance Listings for grants,
+  eCFR/Regulations.gov for policy and general, USAJOBS for hiring, HHS open
+  data/ONC for data. Not routed = not queried, not "not reached", never a
+  source. `/ask/sources` prints "Queried for ... questions" from the same
+  table.
+- **`lib/relevance.js`** — a returned record is shown (and so cited) only if
+  it carries the question's phrase or enough of its specific terms; generic
+  words never count. Applied to Federal Register, eCFR (plus a title scope of
+  2/32/38/41/42/45/48 unless the question names a title), Regulations.gov,
+  GAO, HHS datasets, Assistance Listings.
+- **`lib/acronyms.js`** — ACRONYM REFERENCE block: MMT's glossary first
+  (42 terms, now extracted from `glossary.html` into the corpus by
+  `scripts/lib/glossary-extract.js`; a glossary entry whose term is the
+  question's token outranks articles that mention it), then a curated table
+  (~190). Built only from acronyms present in the question and context;
+  unknown ones are named as "write as-is". Headings and shouted records
+  (all-caps runs) never produce noise. Prompt rule: expand only from the
+  block or a source excerpt.
+- **Prompt rules** for live records (every matching record is cited or set
+  aside in one clause; never "go check" a system whose record is in the
+  block), dates (an `MMT ARCHIVE RECENCY` line when the newest MMT match is
+  >60 days old), and no product pitches outside the empty-block shape.
+- **USASpending rows** carry the description and award amount; links use the
+  generated award id (`/keyword_search/<PIID>` when absent). Department
+  totals read `agency_data_by_year` (was printing $0.0B) and are labeled as
+  the department, not the sub-agency.
+- **Connections:** GAO via `lib/gao-feed.js` (the reports RSS, latest 25,
+  cached 1h, scope stated in context and catalog); Assistance Listings via
+  `api.sam.gov/assistance-listings/v1/search` (no keyword param exists:
+  pull the department's active listings by FPDS code from CGAC, cache 24h,
+  match locally); HHS via `healthdata.gov/api/catalog/v1` (Socrata);
+  Congress lists cached 6h at day precision; ONC via
+  `healthit.gov/data/open-api?source=` (developer counts + AHA adoption,
+  yearly files, cached); ITDashboard and USAJOBS are `conditional` in the
+  catalog with the reason; `configured:false` and nested all-parts-failed
+  clients are handled by `collectUnavailable`.
+- **Web fallback** now also fires when SAM.gov or USASpending could not be
+  reached on a contract/vehicle/budget question. With the 10-a-day key that
+  is the common case; the live run pulled the three sam.gov data-governance
+  notices the quota had blocked.
+- **`query-terms.js`**: procurement verbs (bought, buy, purchased, spent,
+  paid, received, released, posted, signed, moved, selected...) were reaching
+  the APIs as keywords ("bought ambient scribe"). Stopworded.
+- **Campaign:** `askmmt-001` (launch) filled with the verified question, text
+  format, approved; `askmmt-002` rewritten to what the pass proved (the FOC
+  miss) with no invented "four of five" tally, approved; the 9/14 soft-launch
+  email lists the DHA question as a fourth "try". Both posts voice-swept.
+  `premium_chat_turn` events now carry `shapes` and `routed` for the
+  month-one usage post.
+
+**Live run 2026-09-13 (real APIs, SAM exhausted):** the DHA question lists
+5 MMT items + USASpending (Immuta, with description and working link) +
+the federal web search, and nothing else; research, policy and grant
+questions route their systems and only those. 848/848 unit tests
+(69 files, +8), build exit 0 (694 pages), validate-dist, validate-routes
+(36), validate-ask-mmt-coverage (20 libs), scan-pii, voice sweep clean,
+esbuild bundle of premium-chat resolves `@netlify/blobs`.
+
+**Needs Mary (cannot be done from code):**
+1. **A role in SAM.gov for the account that owns `SAM_GOV_API_KEY`** (an
+   entity registration for MMT, or the key of an account that already holds
+   one). That turns 10 requests a day into 1,000. Then
+   `netlify env:set SAM_DAILY_QUOTA 1000` and every cron resumes. Until
+   then: subscribers get SAM.gov first, the fallback covers the rest, and the
+   calendar/L1 SAM paths are paused (RSS carries the calendar).
+2. A free USAJOBS developer key (developer.usajobs.gov): set
+   `USAJOBS_API_KEY` and `USAJOBS_USER_EMAIL` (~60 bytes; env headroom is
+   about 790 bytes).
+3. (Done: #195 merged 2026-09-13 21:26 UTC on Mary's "make sure the tool
+   works as expected"; production deploy live 21:32 UTC; the GetWell
+   question and its follow-up verified against the deployed function.)
+4. Ask the live bot a few more questions and check "Not reached" is empty
+   or names only SAM.gov's quota.
+
+**Same day, second pass: vendor and product questions, follow-ups, links.**
+Mary's live test asked "tell me about all GetWell awards", then "the product
+is GetWell", then "all awards tied to the product regardless of who got
+them". The bot answered "no awards to GetWell" three times. USASpending
+had the answer the whole time: Thundercat's NASA SEWP orders "FOR GETWELL
+NETWORK" at VA (VISN 21, VISN 8) and GetWellNetwork Inc's own prime award at
+DHA. Four general causes, all fixed:
+- The model never saw award descriptions (fixed above), so a reseller's
+  award for the product looked like an award to a stranger.
+- Nothing searched by recipient. `searchUSASpendingRecipients()` now runs
+  on any short phrase with no known vehicle (`recipient_search_text`;
+  free, returns nothing when no recipient carries the name) and lands in
+  the block as "RECIPIENTS NAMED LIKE". The prompt says a product named in
+  a reseller's description is an award tied to the product, and a street
+  address match (an IRS facility on Getwell Road) is not.
+- The keyword ladder's empty rung ran UNSCOPED when the question named no
+  agency, returning the twenty largest awards in government (Northrop,
+  Lockheed, Pfizer) as "20 awards found". The empty rung now runs only with
+  an agency or NAICS to scope it.
+- A follow-up with no terms of its own ("regardless of who got them") was
+  retrieved as `interested tied product regardless go`. `resolveFollowUp()`
+  retrieves a no-term or pronoun-led follow-up as a continuation of the
+  previous question (the model still sees the subscriber's wording), and
+  those scaffolding words are stopwords. "product/products/tool/tools" are
+  generic kind-nouns, never keywords.
+Also: every Congress.gov link is now the congress.gov page (bills, CRS
+products, committee reports, a hearing search), not the api.congress.gov
+JSON the widget was rendering as "record 1"; and `stripEmDashes()` enforces
+the voice rule on the model's answer, which kept emitting them.
+
+Hard rules (do not regress):
+- **Every SAM.gov call goes through `lib/sam-quota.js`.** Scheduled
+  consumers reserve at "scheduled" priority; a 429 marks the day exhausted.
+  Never add a SAM consumer that bypasses the ledger, and never spend the
+  subscriber reserve from a cron.
+- **A system is queried when the question calls for it, and only a queried
+  system can be "not reached" or a source.** Add a new optional client to
+  `OPTIONAL_SYSTEMS` in `lib/question-shape.js`; the catalog `use` text and
+  the routing come from the same table.
+- **A record is cited only if it is relevant.** Any new client whose upstream
+  search is full text runs its rows through `filterRelevant` before the
+  model sees them.
+- **The model expands acronyms only from the ACRONYM REFERENCE block.** New
+  acronyms go in the glossary (preferred) or `lib/acronyms.js`, never in the
+  prompt.
+- **A permanently dead system is `conditional` in the catalog with the reason,
+  not "not reached this turn".** Verify a dead endpoint with a browser UA and
+  `-L` before deciding it is dead; four of the six here had moved, not died.
+- **Blobs, not env vars, not migrations, for caches and ledgers.** The env is
+  byte-budgeted (07-01) and migrations are gated.
+- **Every `exports.handler` function that touches Blobs calls
+  `connectEvent(event)` (lib/fetch-cache.js) first.** Lambda-compatible
+  handlers get the Blobs context on the event, not the environment; without
+  the call the store is silently unavailable and the cache degrades to
+  per-instance memory. Found after #195 deployed with an empty store; fixed
+  in #196 for premium-chat, signal-chain, compliance-check,
+  pursuit-calendar-refresh and loop-opportunity-discovery.
+
 ## Sprint 2026-09-11 — Intel quality report: the section that said "None" was reading the wrong file
 
 Worked the Friday 2026-09-11 intel-quality-report. The headline finding was not

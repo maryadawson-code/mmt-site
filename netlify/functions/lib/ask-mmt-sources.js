@@ -25,13 +25,15 @@ const SOURCE_CATALOG = [
     provides: "Federal obligations, awards, recipients, spending by agency and NAICS",
     use: "Who won what, for how much, and how the money has moved" },
   { id: "sam_opportunities", name: "SAM.gov Opportunities", url: "https://sam.gov/search/?index=opp", mode: "live",
+    note: "SAM.gov limits this key to a small number of queries a day, kept for subscriber questions. When the day's quota is spent the answer says so and the federal web search covers solicitations.",
     provides: "Active solicitations, sources sought, RFIs, presolicitations, award notices",
     use: "Solicitation status, response deadlines, set-aside and NAICS details" },
   { id: "federal_register", name: "Federal Register", url: "https://www.federalregister.gov", mode: "live",
     provides: "Rules, proposed rules, and notices from federal agencies",
     use: "Regulatory actions that change a program or a requirement" },
   { id: "gao_reports", name: "GAO reports", url: "https://www.gao.gov/reports-testimonies", mode: "live",
-    provides: "Government Accountability Office reports and testimonies",
+    note: "gao.gov blocks search from servers, so Ask MMT reads GAO's published-reports feed (the latest 25 reports) and matches the question against it. Older reports are not searched.",
+    provides: "The Government Accountability Office's most recent published reports",
     use: "Oversight findings on a program, an acquisition, or an agency" },
   { id: "congress", name: "Congress.gov", url: "https://www.congress.gov", mode: "live",
     provides: "Bills, NDAA text, appropriations, committee activity",
@@ -49,12 +51,15 @@ const SOURCE_CATALOG = [
     provides: "Federal grant opportunities",
     use: "Grant-funded work adjacent to a contract opportunity" },
   { id: "sam_assistance", name: "SAM.gov Assistance Listings", url: "https://sam.gov/content/assistance-listings", mode: "live",
+    note: "The listings API has no keyword search. Ask MMT pulls the department's active listings once a day and matches the question against them. Shares the SAM.gov daily quota.",
     provides: "Catalog of federal assistance programs (formerly CFDA)",
     use: "The program authority behind a grant or cooperative agreement" },
-  { id: "usajobs", name: "USAJOBS", url: "https://www.usajobs.gov", mode: "live",
+  { id: "usajobs", name: "USAJOBS", url: "https://www.usajobs.gov", mode: "conditional",
+    note: "Needs a free USAJOBS developer key (developer.usajobs.gov). Until USAJOBS_API_KEY and USAJOBS_USER_EMAIL are set the client returns nothing, so it is listed here rather than cited.",
     provides: "Open federal job announcements",
     use: "Hiring signals that show where an office is building capacity" },
-  { id: "it_dashboard", name: "Federal IT Dashboard", url: "https://itdashboard.gov", mode: "live",
+  { id: "it_dashboard", name: "Federal IT Dashboard", url: "https://itdashboard.gov", mode: "conditional",
+    note: "itdashboard.gov retired its public API in 2025 and its data-feed tool is form-driven, so nothing can be queried at question time. Listed so you know it will not be cited.",
     provides: "Agency IT investment portfolios and CIO ratings",
     use: "The investment line and its rating behind an IT program" },
   { id: "cms", name: "CMS provider data", url: "https://data.cms.gov", mode: "live",
@@ -67,7 +72,7 @@ const SOURCE_CATALOG = [
     provides: "Certified Health IT Product List",
     use: "Whether a product and edition are certified, and for what criteria" },
   { id: "hhs_open", name: "HHS open data", url: "https://healthdata.gov", mode: "live",
-    provides: "HHS datasets across CDC, FDA, NIH, HRSA, and CMS",
+    provides: "HHS datasets from the healthdata.gov catalog (CDC, FDA, NIH, HRSA, CMS, and the Office of the CDO)",
     use: "Program-level data behind an HHS question" },
   { id: "ecfr", name: "eCFR", url: "https://www.ecfr.gov", mode: "live",
     provides: "Code of Federal Regulations, including the FAR, DFARS, and HIPAA",
@@ -94,10 +99,17 @@ const SOURCE_CATALOG = [
     provides: "Public-company filings",
     use: "What a public competitor has told its investors about a contract" },
   { id: "web_federal", name: "Web search of federal sites", url: "https://missionmeetstech.com/ask/sources#fallback", mode: "fallback",
-    note: "Runs only when USASpending, SAM.gov Opportunities and the contract-award client all return nothing for the question. Restricted to .gov and .mil domains (sam.gov, usaspending.gov, health.mil, va.gov, hhs.gov, cms.gov, gsa.gov, gao.gov, congress.gov, govinfo.gov, federalregister.gov, nih.gov, arpa-h.gov, healthit.gov, defense.gov).",
+    note: "Runs when USASpending, SAM.gov Opportunities and the contract-award client all return nothing for the question, or when SAM.gov or USASpending could not be reached on a contract, vehicle or budget question. Restricted to .gov and .mil domains (sam.gov, usaspending.gov, health.mil, va.gov, hhs.gov, cms.gov, gsa.gov, gao.gov, congress.gov, govinfo.gov, federalregister.gov, nih.gov, arpa-h.gov, healthit.gov, defense.gov).",
     provides: "Pages on federal sites the structured APIs did not surface",
     use: "A lead when the structured sources are silent, labeled as a web-search lead in the answer, never a primary citation" },
 ];
+
+// Optional systems say when they are queried (lib/question-shape.js), so
+// the public table and the routing cannot disagree.
+const { queriedWhen, OPTIONAL_SYSTEMS } = require("./question-shape");
+for (const s of SOURCE_CATALOG) {
+  if (OPTIONAL_SYSTEMS[s.id]) s.use = `${s.use}. ${queriedWhen(s.id)}`;
+}
 
 const CATALOG_BY_ID = Object.fromEntries(SOURCE_CATALOG.map((s) => [s.id, s]));
 
@@ -142,6 +154,7 @@ function splitFederalData(data) {
   if (!data || typeof data !== "object") return parts;
   const usa = [];
   if (data.usaspending_awards && Array.isArray(data.usaspending_awards.awards) && data.usaspending_awards.awards.length) usa.push(data.usaspending_awards);
+  if (data.usaspending_recipient_awards && Array.isArray(data.usaspending_recipient_awards.awards) && data.usaspending_recipient_awards.awards.length) usa.push(data.usaspending_recipient_awards);
   if (data.spending_categories && Array.isArray(data.spending_categories.categories) && data.spending_categories.categories.length) usa.push(data.spending_categories);
   if (data.agency_spending && data.agency_spending.spending) usa.push(data.agency_spending);
   if (usa.length) parts.push({ id: "usaspending", data: usa });

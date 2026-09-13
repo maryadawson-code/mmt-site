@@ -14,13 +14,18 @@ name: Contract Tracker re-verify
 
 on:
   schedule:
-    - cron: '0 5 * * 1'    # Mondays 05:00 UTC (~1 AM ET), offset from auto-repair (04:00)
+    # Saturdays 01:00 UTC (Fri 9 PM ET). Moved off Monday 2026-09-13: this run
+    # spends the SAM.gov key's daily quota (10 requests a day on a personal
+    # key with no SAM.gov role), and on a Monday that left Ask MMT with no
+    # SAM.gov for the whole business day. Saturday keeps the burn away from
+    # subscriber questions. Raise max_sam once the key holds a SAM.gov role.
+    - cron: '0 1 * * 6'
   workflow_dispatch:
     inputs:
       max_sam:
-        description: 'Max SAM lookups this run (SAM has a small shared daily quota)'
+        description: 'Max SAM lookups this run (the shared key allows 10 a day until it holds a SAM.gov role)'
         required: false
-        default: '20'
+        default: '4'
 
 permissions:
   contents: write
@@ -44,7 +49,7 @@ jobs:
       - name: Re-verify contract tracker listings
         env:
           SAM_GOV_API_KEY: ${{ secrets.SAM_GOV_API_KEY }}
-        run: node scripts/reverify-contract-tracker.js --apply --max "${{ github.event.inputs.max_sam || '20' }}"
+        run: node scripts/reverify-contract-tracker.js --apply --max "${{ github.event.inputs.max_sam || '4' }}"
 
       - name: Check for changes
         id: changes

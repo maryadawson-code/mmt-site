@@ -18,8 +18,25 @@ const ENDPOINT_DOCS = "https://api.regulations.gov/v4/documents";
 const TIMEOUT_MS = 8000;
 const API_KEY = process.env.REGULATIONS_GOV_API_KEY || "DEMO_KEY";
 
-// Agencies most relevant to federal health IT subscribers
+const { filterRelevant } = require("./relevance");
+const { agencyFor, agencyCgac } = require("./federal-agencies");
+
+// Agencies most relevant to federal health IT subscribers (raw-text fallback)
 const HEALTH_AGENCIES = ["CMS", "HHS", "FDA", "CDC", "ONC", "VA", "NIH", "DoD"];
+
+// Regulations.gov agencyId for a registry agency code. Sub-agencies that do
+// not file their own dockets roll up to the department through the
+// registry's CGAC (097 DoD, 075 HHS, 036 VA...).
+const REGS_ID_BY_CODE = { CMS: "CMS", FDA: "FDA", CDC: "CDC", NIH: "NIH", HRSA: "HRSA", SAMHSA: "SAMHSA", AHRQ: "AHRQ", IHS: "IHS", VA: "VA", GSA: "GSA", DHS: "DHS", SSA: "SSA", NASA: "NASA", HHS: "HHS" };
+const REGS_ID_BY_CGAC = { "097": "DOD", "075": "HHS", "036": "VA", "047": "GSA", "070": "DHS", "028": "SSA", "080": "NASA" };
+function regsAgencyId(agency) {
+  if (!agency) return null;
+  const a = agencyFor(agency);
+  const code = a ? a.code : String(agency).toUpperCase();
+  if (REGS_ID_BY_CODE[code]) return REGS_ID_BY_CODE[code];
+  const cgac = agencyCgac(agency);
+  return (cgac && REGS_ID_BY_CGAC[String(cgac)]) || null;
+}
 
 /**
  * Search active dockets matching a topic string. Returns the open
@@ -119,12 +136,17 @@ function detectAgencyId(text) {
   return null;
 }
 
-async function enrichWithRegulationsGov({ topic }) {
-  const agencyId = detectAgencyId(topic);
+async function enrichWithRegulationsGov({ topic, agency }) {
+  const agencyId = regsAgencyId(agency) || detectAgencyId(topic);
   const [dockets, openComments] = await Promise.all([
-    searchDockets({ topic, agencyId, limit: 5 }),
-    searchOpenComments({ topic, agencyId, limit: 5 }),
+    searchDockets({ topic, agencyId, limit: 8 }),
+    searchOpenComments({ topic, agencyId, limit: 8 }),
   ]);
+  // searchTerm is full text across the docket: "data governance" matched an
+  // FDA notice, a NASA docket and an SEC rule (2026-09-13). Keep a docket or
+  // document only when its title carries the question's terms.
+  if (Array.isArray(dockets.dockets)) dockets.dockets = filterRelevant(dockets.dockets, topic || "", ["title"]).slice(0, 5);
+  if (Array.isArray(openComments.documents)) openComments.documents = filterRelevant(openComments.documents, topic || "", ["title"]).slice(0, 5);
   return { agencyId, dockets, openComments };
 }
 
@@ -151,6 +173,7 @@ function formatRegulationsGovContext(data) {
 }
 
 module.exports = {
+  regsAgencyId,
   searchDockets,
   searchOpenComments,
   detectAgencyId,

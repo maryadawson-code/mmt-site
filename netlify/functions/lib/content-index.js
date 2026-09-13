@@ -98,6 +98,16 @@ function scoreItem(item, queryTokens, acronyms, phrase) {
   const bodyText = (item.excerpt || "").toLowerCase();
 
   let score = 0;
+
+  // A glossary entry whose term IS one of the question's tokens ("what is an
+  // ATO", "explain TEFCA") is the definition the subscriber asked for; it
+  // outranks the articles that merely mention the term.
+  if (item.type === "glossary" && item.title) {
+    const t = String(item.title).toLowerCase();
+    // Agency acronyms are scope, not the subject ("awards in the DHA" is
+    // not asking what DHA is), so they never trigger the definition boost.
+    if (!AGENCY_ACRONYMS.has(t) && (queryTokens.includes(t) || (acronyms && acronyms.has && acronyms.has(t)))) score += 30;
+  }
   // Exact topic phrase ("data governance", "community care network"): the
   // strongest on-topic signal there is, so it outweighs a pile of scope hits.
   if (phrase && phrase.includes(" ")) {

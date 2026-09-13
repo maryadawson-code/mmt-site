@@ -113,7 +113,10 @@ const CORS_HEADERS = {
 const MONTHLY_CAP = MMT_PRICING.compliance_check.premium_monthly_allowance;         // 15
 const INSTITUTIONAL_CAP = MMT_PRICING.compliance_check.team_pack_allowance + 25;   // 75 (Team + Institutional headroom)
 
+const { connectEvent: connectBlobs } = require("./lib/fetch-cache");
+
 exports.handler = async (event) => {
+  connectBlobs(event); // Netlify Blobs context rides on the event in Lambda-compatible functions
   if (event.httpMethod === "OPTIONS") {
     return { statusCode: 204, headers: CORS_HEADERS, body: "" };
   }
