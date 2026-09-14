@@ -312,6 +312,7 @@ function turnTelemetry(result, startedAt) {
       carried: !!result.carried,
       unlisted_link_count: Number(result.unlisted_link_count) || 0,
       unsupported_dollar_count: Number(result.unsupported_dollar_count) || 0,
+      voice_fixes: Number(result.voice_fixes) || 0,
     },
   };
 }

@@ -97,7 +97,7 @@ describe("runEnrichment: the DHA data governance question (procurement shape)", 
     const r = await assistant.runEnrichment(QUESTION);
     const usa = r.sources.find((s) => s.id === "usaspending");
     expect(usa).toBeTruthy();
-    expect(usa.links).toEqual(["https://www.usaspending.gov/award/CONT_AWD_HT001524F0063_9700_NNG15SC82B_8000"]);
+    expect(usa.links.map((l) => l.url || l)).toEqual(["https://www.usaspending.gov/award/CONT_AWD_HT001524F0063_9700_NNG15SC82B_8000"]);
     expect(r.unavailable.map((u) => u.id)).not.toContain("usaspending");
     expect(r.context).toContain("HT001524F0063");
     expect(r.context).toContain("IMMUTA SOFTWARE FOR DATA GOVERNANCE");
@@ -142,7 +142,7 @@ describe("runEnrichment: the DHA data governance question (procurement shape)", 
     };
     const r = await assistant.runEnrichment(QUESTION);
     expect(perplexityCalls).toBe(1);
-    expect(r.sources.find((s) => s.id === "web_federal").links).toEqual(["https://health.mil/News/Articles/2026/x"]);
+    expect(r.sources.find((s) => s.id === "web_federal").links.map((l) => l.url || l)).toEqual(["https://health.mil/News/Articles/2026/x"]);
     delete process.env.PERPLEXITY_API_KEY;
   }, 30000);
 });
@@ -239,7 +239,7 @@ describe("vendor and product questions, and follow-ups", () => {
     expect(r.context).toContain("NASA SEWP ORDER FOR GETWELL NETWORK");
     expect(r.context).toContain("GETWELLNETWORK INC");
     const usa = r.sources.find((s) => s.id === "usaspending");
-    expect(usa.links).toEqual(expect.arrayContaining([
+    expect(usa.links.map((l) => l.url || l)).toEqual(expect.arrayContaining([
       "https://www.usaspending.gov/award/CONT_AWD_36C10B23F0309_3600_NNG15SC03B_8000",
       "https://www.usaspending.gov/award/CONT_AWD_HT001425PE009_9700_-NONE-_-NONE-",
     ]));

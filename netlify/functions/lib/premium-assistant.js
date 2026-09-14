@@ -52,7 +52,7 @@ const { webFederalSearch, formatWebFederalContext, shouldWebFallback } = require
 // these check the finished answer (links it did not retrieve are de-linked,
 // a model-written Sources tail is dropped, unsupported dollar figures are
 // counted in shadow mode).
-const { stripSourcesSection, enforceLinks, dollarGuard } = require("./answer-guards");
+const { stripSourcesSection, enforceLinks, dollarGuard, enforceVoice } = require("./answer-guards");
 // Sprint 6 Phase 2 2026-05-15: optional circuit breakers + metrics.
 // Both gates default OFF — code paths byte-identical to Sprint 5 unless
 // ASK_MMT_CIRCUITS_ENABLED=true and/or ASK_MMT_METRICS_ENABLED=true are
@@ -319,7 +319,17 @@ async function runEnrichment(question, { now = new Date() } = {}) {
     wageDetData,
     edgarData,
   ] = await Promise.all([
-    instrument("usaspending",             () => enrichWithFederalData({ topic: primaryQuery, agency: agency || undefined, naics: primaryNaics, recipientName, rungs: matchedVehicles.length ? [matchedVehicles[0].canonical, ...vehicleSearchTerms] : undefined }), metricsSb),
+    // The federal layer derives fiscal-year windows, set-aside codes and
+    // obligation intent from its `topic`, but the topic it receives is the
+    // stripped phrase (years and set-aside words already removed), so those
+    // come from the question's own terms here.
+    instrument("usaspending",             () => enrichWithFederalData({
+      topic: primaryQuery, agency: agency || undefined, naics: primaryNaics, recipientName,
+      rungs: matchedVehicles.length ? [matchedVehicles[0].canonical, ...vehicleSearchTerms] : undefined,
+      since: terms.since || undefined,
+      setAside: terms.setAside && Array.isArray(terms.setAside.codes) && terms.setAside.codes.length ? terms.setAside.codes : undefined,
+      wantsObligations: /\b(obligat\w*|spen[dt]\w*|paid|pay|pays|bought|buy|buys|cost|costs|since|fy\s?\d|year|years)\b/i.test(question),
+    }), metricsSb),
     instrument("congress",                () => enrichWithCongress({ topic: primaryQuery, relevanceTokens: vehicleSearchTerms.length > 0 ? undefined : terms.tokens }), metricsSb),
     instrument("govinfo",                 () => enrichWithGovInfo({ topic: primaryQuery }),                                      metricsSb),
     optional("pubmed",                    () => enrichWithPubMed({ topic: topicQuery, yearsBack: 5 })),
@@ -394,7 +404,7 @@ async function runEnrichment(question, { now = new Date() } = {}) {
   const delayText = awardDelayNote(agencyCode, now);
   const baseContext = [
     formatVehiclesContext(matchedVehicles),
-    formatCorpusContext(corpusMatches),
+    formatCorpusContext(corpusMatches, terms.corrected || question, terms.phrase),
     recencyText,
     federalText,
     delayText,
@@ -407,7 +417,7 @@ async function runEnrichment(question, { now = new Date() } = {}) {
   const acronyms = acronymReference({ question, context: baseContext });
   const context = baseContext + (acronyms.block || "");
 
-  const sources = buildSources({ systems: systemBlocks, corpusMatches });
+  const sources = buildSources({ systems: systemBlocks, corpusMatches, queriedAt: new Date().toISOString() });
 
   return {
     agency,
@@ -589,10 +599,12 @@ async function answerQuestion({ question, history = [], maxTokens = 1500 }) {
     // renders the server list), enforce the voice rule, de-link anything
     // the server did not retrieve, then count unsupported dollar figures
     // without touching the text.
-    const linked = enforceLinks(stripEmDashes(stripSourcesSection(raw)), context, sources);
+    const voiced = enforceVoice(stripEmDashes(stripSourcesSection(raw)));
+    const linked = enforceLinks(voiced.answer, context, sources);
     const dollars = dollarGuard(linked.answer, context);
     return {
       answer: linked.answer,
+      voice_fixes: voiced.voice_fixes,
       agency,
       agencyName: scopeName,
       hasData: hasAnyData,

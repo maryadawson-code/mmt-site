@@ -107,3 +107,24 @@ describe("dollarGuard (shadow mode)", () => {
     expect(dollarGuard("", "")).toEqual({ unsupported_dollar_count: 0, unsupported: [] });
   });
 });
+
+describe("enforceVoice", () => {
+  it("replaces banned words and transitions outside quotes, case-preserved, and counts the fixes", () => {
+    const { enforceVoice } = require("../../netlify/functions/lib/answer-guards.js");
+    const r = enforceVoice("The scope includes a comprehensive baseline inventory. Furthermore, a Robust catalog will leverage the fabric.");
+    expect(r.answer).toBe("The scope includes a full baseline inventory. Also, a Strong catalog will use the fabric.");
+    expect(r.voice_fixes).toBe(4);
+  });
+  it("never edits a quoted passage", () => {
+    const { enforceVoice } = require("../../netlify/functions/lib/answer-guards.js");
+    const r = enforceVoice('Mary wrote "a comprehensive baseline" and I agree it is comprehensive.');
+    expect(r.answer).toBe('Mary wrote "a comprehensive baseline" and I agree it is full.');
+    expect(r.voice_fixes).toBe(1);
+  });
+  it("is a no-op on clean text", () => {
+    const { enforceVoice } = require("../../netlify/functions/lib/answer-guards.js");
+    expect(enforceVoice("A plain sentence about ecosystems? No: about the landscape.").voice_fixes).toBe(1);
+    expect(enforceVoice("").voice_fixes).toBe(0);
+    expect(enforceVoice(undefined).answer).toBe("");
+  });
+});

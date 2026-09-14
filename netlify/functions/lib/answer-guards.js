@@ -154,7 +154,52 @@ function dollarGuard(answer, context) {
   return { unsupported_dollar_count: unsupported.length, unsupported };
 }
 
+// --- Voice rule ------------------------------------------------------------
+// CLAUDE.md bans these words and transitions in every user-facing string; the
+// prompt says so, and the model still echoes them when a SOURCE carries them
+// (the DHA data governance tracker entry says "comprehensive baseline data
+// inventory", eval 2026-09-14). Deterministic, case-preserving replacements
+// outside double-quoted segments, so a quoted passage is never misquoted.
+const VOICE_REPLACEMENTS = [
+  [/\bcomprehensive\b/gi, "full"], [/\brobust\b/gi, "strong"], [/\bpivotal\b/gi, "key"],
+  [/\btransformative\b/gi, "major"], [/\bdelve\b/gi, "dig"], [/\bleverages?\b/gi, "use"],
+  [/\bleveraging\b/gi, "using"], [/\bleveraged\b/gi, "used"], [/\bsynergy\b/gi, "fit"],
+  [/\bsynergies\b/gi, "fits"], [/\bparadigm\b/gi, "model"], [/\bholistic\b/gi, "whole"],
+  [/\bstreamlines?\b/gi, "simplify"], [/\bstreamlining\b/gi, "simplifying"], [/\bstreamlined\b/gi, "simplified"],
+  [/\bactionable\b/gi, "usable"], [/\becosystems?\b/gi, "landscape"],
+  [/\bFurthermore,?\s*/g, "Also, "], [/\bMoreover,?\s*/g, "Also, "], [/\bAdditionally,?\s*/g, "Also, "],
+  [/\bIn conclusion,?\s*/g, ""],
+];
+
+function matchCase(source, replacement) {
+  if (source === source.toUpperCase() && source.length > 1) return replacement.toUpperCase();
+  if (source[0] === source[0].toUpperCase()) return replacement[0].toUpperCase() + replacement.slice(1);
+  return replacement;
+}
+
+/**
+ * Pure. Returns { answer, voice_fixes }. Text inside straight or curly
+ * double quotes is left exactly as written.
+ */
+function enforceVoice(answer) {
+  const text = String(answer || "");
+  if (!text) return { answer: text, voice_fixes: 0 };
+  let fixes = 0;
+  const parts = text.split(/("[^"]*"|\u201c[^\u201d]*\u201d)/);
+  const out = parts.map((part, i) => {
+    if (i % 2 === 1) return part; // quoted segment
+    let p = part;
+    for (const [re, rep] of VOICE_REPLACEMENTS) {
+      p = p.replace(re, (m) => { fixes += 1; return /[A-Za-z]/.test(rep) ? matchCase(m, rep) : rep; });
+    }
+    return p;
+  });
+  return { answer: out.join(""), voice_fixes: fixes };
+}
+
 module.exports = {
+  enforceVoice,
+  VOICE_REPLACEMENTS,
   stripSourcesSection,
   enforceLinks,
   dollarGuard,
