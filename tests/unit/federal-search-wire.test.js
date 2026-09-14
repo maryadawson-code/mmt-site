@@ -52,7 +52,10 @@ beforeAll(async () => {
   api = await import("../../netlify/functions/lib/federal-data-apis.js");
 });
 afterAll(() => { globalThis.fetch = realFetch; delete process.env.SAM_GOV_API_KEY; });
-beforeEach(() => { calls = []; fetchCache._setStoreForTests(freshStore()); });
+beforeEach(() => { calls = []; delete process.env.SAM_DAILY_QUOTA; fetchCache._setStoreForTests(freshStore()); });
+
+// Pinned so the request bodies below are byte-stable.
+const TODAY = "2026-09-14";
 
 describe("deriveKeywords", () => {
   it("never sends the sentence", () => {
@@ -191,7 +194,25 @@ describe("SAM.gov daily quota and cache on the wire", () => {
     const b = await api.searchSAMOpportunities({ keyword: "data governance", agency: "DHA", limit: 15 });
     expect(a.cached).toBeUndefined();
     expect(b.cached).toBe(true);
-    expect(samQuery().length).toBe(2); // primary + secondary (thin primary) for the FIRST call only
+    // 10-a-day key: ONE request per question (the secondary is skipped), and only for the FIRST call
+    expect(samQuery().length).toBe(1);
+    expect(a.secondary_skipped).toMatch(/one request per question/);
+    expect((await samQuota.samQuotaState()).used).toBe(1);
+  });
+
+  it("on the 10-a-day key a question costs one SAM request; with SAM_DAILY_QUOTA=1000 the relaxed secondary may run (up to 2)", async () => {
+    globalThis.fetch = makeFetch({});
+    await api.searchSAMOpportunities({ keyword: "data governance", relaxKeyword: "governance", agency: "DHA", limit: 15 });
+    expect(samQuery().length).toBe(1);
+    expect((await samQuota.samQuotaState()).used).toBe(1);
+
+    calls = [];
+    fetchCache._setStoreForTests(freshStore());
+    process.env.SAM_DAILY_QUOTA = "1000";
+    const r = await api.searchSAMOpportunities({ keyword: "data governance", relaxKeyword: "governance", agency: "DHA", limit: 15 });
+    expect(samQuery().length).toBe(2);
+    expect(r.secondary_skipped).toBeUndefined();
+    expect(new URL(samQuery()[1].url).searchParams.get("q")).toBe("governance");
     expect((await samQuota.samQuotaState()).used).toBe(2);
   });
 
@@ -253,6 +274,198 @@ describe("SAM.gov daily quota and cache on the wire", () => {
     const out = await api.enrichWithFederalData({ topic: QUESTION, agency: "DHA" });
     expect(out.federal_register.documents.map((d) => d.document_number)).toEqual(["2026-99999"]);
     expect(out.federal_register.filtered_out).toBe(1);
+  });
+});
+
+describe("2026-09-14: rungs, per-call timeouts, windows, obligations, totals, set-asides, call budget", () => {
+  const usaCalls = () => calls.filter((c) => c.url.includes("spending_by_award")).map((c) => c.body.filters);
+  const award = (id, amount, extra = {}) => ({ "Award ID": id, "Recipient Name": "R", "Award Amount": amount, "Description": "x", generated_internal_id: `CONT_AWD_${id}`, ...extra });
+
+  it("rungs replace the derived ladder: the first USASpending body carries keywords ['T4NG2'], one rung per entry", async () => {
+    globalThis.fetch = makeFetch({ toptierResults: [] });
+    await api.enrichWithFederalData({ topic: "T4NG2 T4NG 2 Transformation Twenty-One Total Technology Next Generation 2", agency: "VA", rungs: ["T4NG2", "T4NG 2"], today: TODAY });
+    const filters = usaCalls();
+    expect(filters[0].keywords).toEqual(["T4NG2"]);
+    expect(filters[1].keywords).toEqual(["T4NG 2"]);
+    expect(filters.length).toBe(2);
+    // SAM.gov and the Federal Register get the bare canonical name too
+    expect(new URL(calls.find((c) => c.url.includes("api.sam.gov")).url).searchParams.get("q")).toBe("T4NG2");
+    expect(new URL(calls.find((c) => c.url.includes("federalregister.gov")).url).searchParams.get("conditions[term]")).toBe("T4NG2");
+  });
+
+  it("a SAM.gov stub that never resolves times out on its own: awards still arrive, only sam_opportunities carries error 'timeout'", async () => {
+    globalThis.fetch = async (url, opts = {}) => {
+      const u = String(url);
+      calls.push({ url: u, body: opts.body ? JSON.parse(opts.body) : null });
+      if (u.includes("api.sam.gov")) return new Promise(() => {}); // never
+      if (u.includes("spending_by_award")) {
+        await new Promise((r) => setTimeout(r, 100));
+        return jsonRes({ results: [award("VA-1", 1000)], page_metadata: { total: 1 } });
+      }
+      // a feed with one real item, so GAO answers (an empty feed is its own error)
+      if (u.includes("gao.gov")) return { ok: true, status: 200, text: async () => "<rss><channel><item><title>VA Telehealth Scheduling</title><link>https://www.gao.gov/products/gao-26-107001</link><pubDate>Mon, 01 Sep 2026 00:00:00 GMT</pubDate><description>scheduling</description></item></channel></rss>" };
+      return jsonRes({ results: [], count: 0, page_metadata: { total: 0 } });
+    };
+    const started = Date.now();
+    const out = await api.enrichWithFederalData({ topic: "telehealth scheduling", agency: "VA", today: TODAY });
+    const elapsed = Date.now() - started;
+    expect(out.usaspending_awards.awards[0].piid).toBe("VA-1");
+    expect(out.sam_opportunities.error).toBe("timeout");
+    expect(out.sam_opportunities.opportunities).toEqual([]);
+    expect(out.federal_register.error).toBeUndefined();
+    expect(out.gao_reports.error).toBeUndefined();
+    expect(out.summary).toMatch(/timed out: sam_opportunities/);
+    // bounded by the SAM timeout, not the 8s fan-out
+    expect(elapsed).toBeGreaterThanOrEqual(api.TIMEOUTS_MS.sam - 50);
+    expect(elapsed).toBeLessThan(api.TIMEOUTS_MS.awards);
+  }, 15000);
+
+  it("'How much has VA obligated to Oracle since FY2024?': phrase 'oracle', window from 2023-10-01, a recipient search and a pinned spending_over_time body", async () => {
+    globalThis.fetch = async (url, opts = {}) => {
+      const u = String(url);
+      calls.push({ url: u, body: opts.body ? JSON.parse(opts.body) : null });
+      if (u.includes("spending_over_time")) {
+        return jsonRes({ group: "fiscal_year", results: [
+          { aggregated_amount: 888005560.9, time_period: { fiscal_year: "2024" } },
+          { aggregated_amount: 1006448723.83, time_period: { fiscal_year: "2025" } },
+          { aggregated_amount: 1624179010.54, time_period: { fiscal_year: "2026" } },
+        ] });
+      }
+      if (u.includes("spending_by_award")) {
+        const f = JSON.parse(opts.body).filters;
+        if (f.recipient_search_text) return jsonRes({ results: [award("36C10B24D0001", 250000000, { "Recipient Name": "ORACLE AMERICA, INC." })], page_metadata: { total: 1 } });
+        return jsonRes({ results: [], page_metadata: { total: 0 } });
+      }
+      if (u.includes("api.sam.gov")) return jsonRes({ opportunitiesData: [], totalRecords: 0 });
+      if (u.includes("gao.gov")) return { ok: true, status: 200, text: async () => "<rss><channel></channel></rss>" };
+      return jsonRes({ results: [], count: 0, page_metadata: { total: 0 } });
+    };
+    const question = "How much has VA obligated to Oracle since FY2024?";
+    const out = await api.enrichWithFederalData({ topic: question, agency: "VA", recipientName: "oracle", today: TODAY });
+
+    // the keyword search: phrase without the year, window from the FY start
+    const kw = usaCalls().find((f) => f.keywords);
+    expect(kw.keywords).toEqual(["oracle"]);
+    expect(kw.time_period).toEqual([{ start_date: "2023-10-01", end_date: TODAY }]);
+    expect(out.window_start).toBe("2023-10-01");
+
+    // the recipient search, same window
+    const rs = usaCalls().find((f) => f.recipient_search_text);
+    expect(rs.recipient_search_text).toEqual(["oracle"]);
+    expect(rs.time_period).toEqual([{ start_date: "2023-10-01", end_date: TODAY }]);
+
+    // the obligations-by-year call, body pinned to the shape verified live 2026-09-14
+    const ot = calls.find((c) => c.url === "https://api.usaspending.gov/api/v2/search/spending_over_time/");
+    expect(ot.body).toEqual({
+      group: "fiscal_year",
+      filters: {
+        recipient_search_text: ["oracle"],
+        award_type_codes: ["A", "B", "C", "D"],
+        time_period: [{ start_date: "2023-10-01", end_date: TODAY }],
+        agencies: [{ type: "funding", tier: "toptier", name: "Department of Veterans Affairs" }],
+      },
+    });
+    expect(out.usaspending_recipient_obligations.years.map((y) => y.fiscal_year)).toEqual([2024, 2025, 2026]);
+    expect(out.usaspending_recipient_obligations.total).toBeCloseTo(3518633295.27, 2);
+
+    const ctx = api.formatFederalDataContext(out);
+    expect(ctx).toContain('USASPENDING.GOV OBLIGATIONS BY FISCAL YEAR TO RECIPIENTS NAMED LIKE "oracle"');
+    expect(ctx).toContain("- FY2024: $888.01M");
+    expect(ctx).toContain("- FY2025: $1006.45M");
+    expect(ctx).toContain("- FY2026: $1624.18M");
+    expect(ctx).toContain("Total FY2024 to FY2026, computed in code: $3518.63M. Quote these figures; do not re-add them.");
+    expect(ctx).toContain("funding department Department of Veterans Affairs");
+  });
+
+  it("the obligations call runs only when the question asks for money over time", async () => {
+    globalThis.fetch = makeFetch({ toptierResults: [] });
+    const out = await api.enrichWithFederalData({ topic: "tell me about all GetWell awards", recipientName: "getwell", today: TODAY });
+    expect(calls.some((c) => c.url.includes("spending_over_time"))).toBe(false);
+    expect(out.usaspending_recipient_obligations.skipped).toMatch(/money over time/);
+    // and the caller can force it
+    calls = [];
+    await api.enrichWithFederalData({ topic: "tell me about all GetWell awards", recipientName: "getwell", wantsObligations: true, today: TODAY });
+    expect(calls.some((c) => c.url.includes("spending_over_time"))).toBe(true);
+  });
+
+  it("the totals line is computed in code for a fixture of three awards, for both award blocks", () => {
+    const awards = [
+      { piid: "A1", recipient: "X", award_amount: 1000000, obligated: 0, description: "one", source_url: "u1" },
+      { piid: "A2", recipient: "Y", award_amount: 2500000, obligated: 0, description: "two", source_url: "u2" },
+      { piid: "A3", recipient: "Z", award_amount: 250000, obligated: 0, description: "three", source_url: "u3" },
+    ];
+    const ctx = api.formatFederalDataContext({
+      usaspending_awards: { awards, total: 42 },
+      usaspending_recipient_awards: { name: "acme", awards: awards.slice(0, 2), total: 2 },
+    });
+    expect(ctx).toContain("Rows shown: 3 of 42 matching; sum of award amounts shown: $3.75M (award amount field, potential value as reported to FPDS). Quote these figures; do not re-add them.");
+    expect(ctx).toContain("Rows shown: 2 of 2 matching; sum of award amounts shown: $3.50M (award amount field, potential value as reported to FPDS). Quote these figures; do not re-add them.");
+    // no em dash anywhere in what the model reads
+    expect(ctx).not.toMatch(/\u2014/);
+  });
+
+  it("set-aside wording becomes set_aside_type_codes on the award search and leaves the keyword", async () => {
+    globalThis.fetch = makeFetch({ subtierResults: [award("DHA-SB", 5)] });
+    const out = await api.enrichWithFederalData({ topic: "SDVOSB set-aside data governance awards in the DHA", agency: "DHA", today: TODAY });
+    const f = usaCalls()[0];
+    expect(f.keywords).toEqual(["data governance"]);
+    expect(f.set_aside_type_codes).toEqual(["SDVOSBC", "SDVOSBS"]);
+    expect(out.set_aside_codes).toEqual(["SDVOSBC", "SDVOSBS"]);
+    expect(api.formatFederalDataContext(out)).toContain("set-aside codes SDVOSBC/SDVOSBS");
+    // an explicit list from the caller wins
+    calls = [];
+    await api.enrichWithFederalData({ topic: "data governance", agency: "DHA", setAside: ["8A"], today: TODAY });
+    expect(usaCalls()[0].set_aside_type_codes).toEqual(["8A"]);
+    // no wording, no filter
+    calls = [];
+    await api.enrichWithFederalData({ topic: "data governance", agency: "DHA", today: TODAY });
+    expect(usaCalls()[0].set_aside_type_codes).toBeUndefined();
+  });
+
+  it("spending_by_category runs only with a NAICS list, sends the registry's name-tier agency filter (never toptier_code), and caches 24h", async () => {
+    globalThis.fetch = makeFetch({ toptierResults: [] });
+    await api.enrichWithFederalData({ topic: "data governance", agency: "DHA", today: TODAY });
+    expect(calls.some((c) => c.url.includes("spending_by_category"))).toBe(false);
+
+    calls = [];
+    globalThis.fetch = async (url, opts = {}) => {
+      const u = String(url);
+      calls.push({ url: u, body: opts.body ? JSON.parse(opts.body) : null });
+      if (u.includes("spending_by_category")) return jsonRes({ results: [{ code: "541512", name: "Computer Systems Design Services", amount: 8551344722.79, count: 0 }] });
+      if (u.includes("api.sam.gov")) return jsonRes({ opportunitiesData: [], totalRecords: 0 });
+      if (u.includes("gao.gov")) return { ok: true, status: 200, text: async () => "<rss><channel></channel></rss>" };
+      return jsonRes({ results: [], count: 0, page_metadata: { total: 0 } });
+    };
+    const a = await api.enrichWithFederalData({ topic: "data governance", agency: "DHA", naics: ["541512"], today: TODAY });
+    const cat = calls.find((c) => c.url.includes("spending_by_category"));
+    expect(cat.body.filters.agencies).toEqual([{ type: "funding", tier: "toptier", name: "Department of Defense" }]);
+    expect(JSON.stringify(cat.body)).not.toContain("toptier_code");
+    expect(cat.body.filters.naics_codes).toEqual(["541512"]);
+    expect(a.spending_categories.categories[0].naics).toBe("541512");
+    expect(a.spending_categories.cached).toBeUndefined();
+
+    calls = [];
+    const b = await api.enrichWithFederalData({ topic: "data governance", agency: "DHA", naics: ["541512"], today: TODAY });
+    expect(calls.some((c) => c.url.includes("spending_by_category"))).toBe(false);
+    expect(b.spending_categories.cached).toBe(true);
+    expect(b.spending_categories.categories[0].amount).toBe(8551344722.79);
+  });
+
+  it("hard cap: two spending_by_award calls per question for the ladder, a widening retry included", async () => {
+    // DHA subtier empty on every rung: rung 0 subtier + widening = 2 calls, so rung 1 never runs
+    globalThis.fetch = makeFetch({ subtierResults: [], toptierResults: [] });
+    const out = await api.enrichWithFederalData({ topic: "remote patient monitoring outcomes", agency: "DHA", today: TODAY });
+    const filters = usaCalls().filter((f) => !f.recipient_search_text);
+    expect(filters.length).toBe(api.MAX_AWARD_CALLS);
+    expect(filters.map((f) => f.agencies[0].tier)).toEqual(["subtier", "toptier"]);
+    expect(out.award_calls).toBe(2);
+    // and when a widening would be the third call, the subtier result stands
+    calls = [];
+    const budget = { used: 1, max: 2 };
+    const r = await api.searchUSASpending({ keyword: "x", agency: "DHA", _budget: budget });
+    expect(usaCalls().length).toBe(1);
+    expect(r.widen_skipped).toMatch(/budget/);
+    expect(r.widened_from_subtier).toBeUndefined();
   });
 });
 

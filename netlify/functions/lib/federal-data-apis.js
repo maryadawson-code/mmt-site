@@ -27,11 +27,11 @@ const SAM_API_KEY = process.env.SAM_GOV_API_KEY || "";
  * @param {number} [params.limit] - Max results (default 20)
  * @returns {Promise<{awards: Array, total: number, error?: string}>}
  */
-const { extractSearchTerms, searchPhrase, keywordLadder } = require("./query-terms");
+const { extractSearchTerms, searchPhrase, keywordLadder, obligationsIntent } = require("./query-terms");
 // 2026-09-13: SAM.gov's daily quota ledger + response cache, GAO via its
 // feed (gao.gov 403s every search path from a server), and record-level
 // relevance so a loose full-text hit never becomes a cited source.
-const { reserveSam, markSamExhausted, quotaReason } = require("./sam-quota");
+const { reserveSam, markSamExhausted, quotaReason, dailyQuota } = require("./sam-quota");
 const { cached, cacheKey, cacheGet, cacheSet } = require("./fetch-cache");
 const { searchGaoFeed } = require("./gao-feed");
 const { filterRelevant } = require("./relevance");
@@ -65,6 +65,36 @@ function deriveKeywords(topic) {
 // wording; rung 1 is the most specific term (or no keyword). Bounded because
 // the whole federal fan-out sits under an 8s timeout in premium-assistant.
 const MAX_KEYWORD_ATTEMPTS = 2;
+// Hard cap on spending_by_award calls for the keyword ladder in ONE question,
+// INCLUDING a subtier-to-department widening retry (a widening counts).
+const MAX_AWARD_CALLS = 2;
+
+// 2026-09-14: one slow upstream used to hold the whole bundle until
+// premium-assistant's 8s fan-out timeout dropped every federal result at
+// once. Each sub-call now has its own bound and resolves to
+// { ...emptyShape, error: "timeout" } on its own, so a stalled SAM.gov
+// never costs the USASpending rows that answered in 100ms.
+const TIMEOUTS_MS = {
+  awards: 7000,          // the keyword ladder, widening included
+  sam: 4000,
+  federal_register: 4000,
+  gao: 4000,
+  agency_totals: 3000,
+  recipients: 4000,
+  categories: 3000,
+  obligations: 4000,
+};
+function bounded(promise, ms, emptyShape) {
+  let timer = null;
+  const onTimeout = new Promise((resolve) => {
+    timer = setTimeout(() => resolve({ ...emptyShape, error: "timeout", timeout_ms: ms }), ms);
+    if (timer && typeof timer.unref === "function") timer.unref();
+  });
+  const guarded = Promise.resolve(promise).catch((err) => ({ ...emptyShape, error: err && err.message ? err.message : String(err) }));
+  return Promise.race([guarded, onTimeout]).finally(() => { if (timer) clearTimeout(timer); });
+}
+const money = (n) => `$${((Number(n) || 0) / 1e6).toFixed(2)}M`;
+const todayIso = (today) => (/^\d{4}-\d{2}-\d{2}$/.test(String(today || "")) ? String(today) : new Date().toISOString().slice(0, 10));
 
 // Fields every award search asks for, and the one mapping every award row
 // goes through, so the keyword search and the recipient search cannot
@@ -109,13 +139,13 @@ function mapAward(r) {
  * Both together answer "all awards tied to the product regardless of who
  * got them". USASpending has no quota, so this is a free extra call.
  */
-async function searchUSASpendingRecipients({ name, agency, limit = 15, startDate = "2022-10-01" }) {
+async function searchUSASpendingRecipients({ name, agency, limit = 15, startDate = "2022-10-01", today }) {
   const q = String(name || "").trim().slice(0, 60);
   if (q.length < 3) return { awards: [], total: 0, skipped: "no name" };
   const filters = {
     recipient_search_text: [q],
     award_type_codes: ["A", "B", "C", "D"],
-    time_period: [{ start_date: startDate, end_date: new Date().toISOString().slice(0, 10) }],
+    time_period: [{ start_date: startDate, end_date: todayIso(today) }],
   };
   if (agency) {
     const f = usaspendingAgencyFilter(agency, { tier: "toptier" });
@@ -140,7 +170,52 @@ async function searchUSASpendingRecipients({ name, agency, limit = 15, startDate
   }
 }
 
-async function searchUSASpending({ keyword, agency, naics, startDate, endDate, limit = 20, _tier }) {
+/**
+ * Contract obligations to recipients matching `name`, one row per fiscal
+ * year, from USASpending's spending_over_time endpoint (shape verified live
+ * 2026-09-14: POST { group: "fiscal_year", filters } answers
+ * results[].aggregated_amount keyed by time_period.fiscal_year). The total
+ * is computed HERE so the model quotes a figure instead of adding rows.
+ * A window that enters a fiscal year mid-way returns a partial year; the
+ * context block says so.
+ */
+async function searchRecipientObligationsByYear({ name, agency, since, today }) {
+  const q = String(name || "").trim().slice(0, 60);
+  if (q.length < 3) return { years: [], total: 0, skipped: "no name" };
+  const start = /^\d{4}-\d{2}-\d{2}$/.test(String(since || "")) ? since : "2022-10-01";
+  const end = todayIso(today);
+  const filters = {
+    recipient_search_text: [q],
+    award_type_codes: ["A", "B", "C", "D"],
+    time_period: [{ start_date: start, end_date: end }],
+  };
+  const f = agency ? usaspendingAgencyFilter(agency, { tier: "toptier" }) : null;
+  if (f) filters.agencies = [f];
+  try {
+    const res = await fetch("https://api.usaspending.gov/api/v2/search/spending_over_time/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ group: "fiscal_year", filters }),
+    });
+    if (!res.ok) {
+      let detail = "";
+      try { detail = (await res.text()).slice(0, 200); } catch { /* ignore */ }
+      return { years: [], total: 0, name: q, since: start, until: end, error: `USASpending API ${res.status}${detail ? `: ${detail}` : ""}` };
+    }
+    const data = await res.json();
+    const years = (data.results || [])
+      .map((r) => ({ fiscal_year: Number(r.time_period && r.time_period.fiscal_year) || null, obligated: Number(r.aggregated_amount) || 0 }))
+      .filter((y) => y.fiscal_year)
+      .sort((a, b) => a.fiscal_year - b.fiscal_year);
+    const total = years.reduce((sum, y) => sum + y.obligated, 0);
+    return { name: q, since: start, until: end, agency_scope: f ? f.name : null, years, total };
+  } catch (err) {
+    console.error("USASpending spending_over_time error:", err.message);
+    return { years: [], total: 0, name: q, since: start, until: end, error: err.message };
+  }
+}
+
+async function searchUSASpending({ keyword, agency, naics, startDate, endDate, limit = 20, setAside, today, _tier, _budget }) {
   // USASpending Contract Award mappings: `filters.keyword` (singular) is
   // deprecated and silently rejected; `keywords` (plural array) is the
   // current shape. Empty/missing keyword: omit the filter rather than
@@ -166,18 +241,30 @@ async function searchUSASpending({ keyword, agency, naics, startDate, endDate, l
     if (agencyFilter) filters.agencies = [agencyFilter];
   }
   const usedSubtier = !!(filters.agencies && filters.agencies[0] && filters.agencies[0].tier === "subtier") && hasSubtier(agency);
-  const retryToptier = () => searchUSASpending({ keyword, agency, naics, startDate, endDate, limit, _tier: "toptier" });
+  const retryToptier = () => searchUSASpending({ keyword, agency, naics, startDate, endDate, limit, setAside, today, _tier: "toptier", _budget });
+  // The per-question call budget (MAX_AWARD_CALLS) is shared with the
+  // widening retry; when it is spent, the result in hand is the answer.
+  const budgetLeft = () => !_budget || _budget.used < _budget.max;
 
   if (naics && naics.length > 0) {
     filters.naics_codes = naics.map(String);
   }
 
+  // "small business", "SDVOSB", "8(a)"... travel as USASpending's
+  // set_aside_type_codes (lib/query-terms.js), never as keywords.
+  if (Array.isArray(setAside) && setAside.length > 0) {
+    filters.set_aside_type_codes = setAside.map(String);
+  }
+
   if (startDate || endDate) {
     filters.time_period = [{
       start_date: startDate || "2024-01-01",
-      end_date: endDate || new Date().toISOString().slice(0, 10),
+      end_date: endDate || todayIso(today),
     }];
   }
+
+  if (!budgetLeft()) return { awards: [], total: 0, skipped: "award call budget spent" };
+  if (_budget) _budget.used += 1;
 
   try {
     const res = await fetch("https://api.usaspending.gov/api/v2/search/spending_by_award/", {
@@ -211,7 +298,7 @@ async function searchUSASpending({ keyword, agency, naics, startDate, endDate, l
       } catch { /* ignore */ }
       const message = `USASpending API ${res.status}${detail ? `: ${detail}` : ""}`;
       console.error(message);
-      if (usedSubtier) {
+      if (usedSubtier && budgetLeft()) {
         console.warn(`[USASPENDING] subtier filter rejected for ${agency}; retrying at toptier`);
         return retryToptier();
       }
@@ -222,6 +309,7 @@ async function searchUSASpending({ keyword, agency, naics, startDate, endDate, l
     if (usedSubtier && (!data.results || data.results.length === 0)) {
       // Nothing at the sub-agency: widen to the department so a scoped
       // question still gets the department's records rather than silence.
+      if (!budgetLeft()) return { awards: [], total: 0, widen_skipped: "award call budget spent" };
       const wider = await retryToptier();
       return { ...wider, widened_from_subtier: true };
     }
@@ -237,25 +325,20 @@ async function searchUSASpending({ keyword, agency, naics, startDate, endDate, l
 /**
  * Search USASpending for spending by agency + NAICS category.
  * Returns aggregate spending totals useful for TAM estimates.
+ *
+ * Runs ONLY when a NAICS list is present: without one the endpoint is a
+ * department-wide aggregate no question asked for. The agencies filter is
+ * the registry's { type, tier: "toptier", name } (verified live
+ * 2026-09-14: `toptier_code` answers 400 "Unexpected field", which is what
+ * every scoped question got until today). Cached 24h per agency + NAICS +
+ * fiscal year: the aggregate does not move within a day.
  */
+const CATEGORY_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 async function getSpendingByCategory({ agency, naics, fiscal_year }) {
-  const filters = {};
-
-  if (agency) {
-    // CGAC from the registry, so every tracked agency resolves rather than
-    // the five that used to be hardcoded here. NOTE: this endpoint takes
-    // `toptier_code`, which spending_by_award rejects; the shape is
-    // unverified against the live API and is on the live accuracy pass.
-    const code = agencyCgac(agency);
-    if (code) {
-      filters.agencies = [{ type: "funding", tier: "toptier", toptier_code: code }];
-    }
-  }
-
-  if (naics && naics.length > 0) {
-    filters.naics_codes = naics.map(String);
-  }
-
+  if (!naics || naics.length === 0) return { categories: [], skipped: "no NAICS" };
+  const filters = { naics_codes: naics.map(String) };
+  const agencyFilter = agency ? usaspendingAgencyFilter(agency, { tier: "toptier" }) : null;
+  if (agencyFilter) filters.agencies = [agencyFilter];
   if (fiscal_year) {
     filters.time_period = [{
       start_date: `${fiscal_year - 1}-10-01`,
@@ -263,26 +346,36 @@ async function getSpendingByCategory({ agency, naics, fiscal_year }) {
     }];
   }
 
-  try {
-    const res = await fetch("https://api.usaspending.gov/api/v2/search/spending_by_category/naics/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ filters, limit: 10, page: 1 }),
-    });
+  const key = cacheKey("usa-naics", agencyFilter ? agencyFilter.name : "all", filters.naics_codes, fiscal_year || "");
+  const { value, cached: hit } = await cached(key, CATEGORY_CACHE_TTL_MS, async () => {
+    try {
+      const res = await fetch("https://api.usaspending.gov/api/v2/search/spending_by_category/naics/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ filters, limit: 10, page: 1 }),
+      });
 
-    if (!res.ok) return { categories: [], error: `USASpending API ${res.status}` };
-    const data = await res.json();
-    return {
-      categories: (data.results || []).map((r) => ({
-        naics: r.code || "",
-        name: r.name || "",
-        amount: r.amount || 0,
-        count: r.count || 0,
-      })),
-    };
-  } catch (err) {
-    return { categories: [], error: err.message };
-  }
+      if (!res.ok) {
+        let detail = "";
+        try { detail = (await res.text()).slice(0, 200); } catch { /* ignore */ }
+        return { categories: [], error: `USASpending API ${res.status}${detail ? `: ${detail}` : ""}` };
+      }
+      const data = await res.json();
+      return {
+        categories: (data.results || []).map((r) => ({
+          naics: r.code || "",
+          name: r.name || "",
+          amount: r.amount || 0,
+          count: r.count || 0,
+        })),
+        agency_scope: agencyFilter ? agencyFilter.name : null,
+        fiscal_year: fiscal_year || null,
+      };
+    } catch (err) {
+      return { categories: [], error: err.message };
+    }
+  });
+  return hit ? { ...value, cached: true } : value;
 }
 
 // SAM.gov department names — exact strings expected by the `deptname`
@@ -468,7 +561,13 @@ async function searchSAMOpportunities({ keyword, relaxKeyword, naics, agency, li
     const PRIMARY_THRESHOLD = 3;
     let secondary = null;
     let secondaryRaw = [];
-    if ((deptName || relaxKeyword) && primaryRaw.length < PRIMARY_THRESHOLD && (await reserveSam(1, { priority })).ok) {
+    // On the 10-a-day key (no SAM.gov role) a question costs ONE request:
+    // the relaxed secondary call only runs once SAM_DAILY_QUOTA says the
+    // account holds a role (1,000 a day).
+    const allowSecondary = dailyQuota() > 10;
+    let secondarySkipped = null;
+    if (!allowSecondary) secondarySkipped = "daily quota is 10 or fewer; one request per question";
+    if (allowSecondary && (deptName || relaxKeyword) && primaryRaw.length < PRIMARY_THRESHOLD && (await reserveSam(1, { priority })).ok) {
       secondary = await callSam(secondaryParams).catch((e) => ({ __error: e && e.message ? e.message : String(e) }));
       if (secondary && !secondary.__error) {
         secondaryRaw = secondary.opportunitiesData || secondary.opportunities || [];
@@ -500,6 +599,7 @@ async function searchSAMOpportunities({ keyword, relaxKeyword, naics, agency, li
       primary_count: primaryRaw.length,
       secondary_count: secondaryRaw.length,
     };
+    if (secondarySkipped) result.secondary_skipped = secondarySkipped;
     await cacheSet(cacheId, result, SAM_CACHE_TTL_MS);
     return result;
   } catch (err) {
@@ -666,25 +766,50 @@ async function getAgencySpendingTotals({ agency_code, fiscal_year, agency_name }
  * @param {string} params.topic - Research topic
  * @param {string} [params.agency] - Target agency
  * @param {string[]} [params.naics] - NAICS codes
+ * @param {string} [params.recipientName] - candidate vendor name for the recipient search
+ * @param {string[]} [params.rungs] - keyword rungs that REPLACE keywordLadder(): the
+ *   first is a bare canonical vehicle name ("T4NG2"), later rungs the alternates;
+ *   each rung is one keywords[] entry
+ * @param {string} [params.since] - YYYY-MM-DD start of the award window (defaults to
+ *   the fiscal/calendar year named in the topic, else FY2024 start)
+ * @param {string[]} [params.setAside] - USASpending set_aside_type_codes (defaults to
+ *   what the topic's wording implies)
+ * @param {boolean} [params.wantsObligations] - run the obligations-by-fiscal-year call
+ *   for the recipient (defaults to detection on the topic)
+ * @param {string} [params.today] - YYYY-MM-DD, pins the window end (tests)
  * @returns {Promise<Object>} Combined API results
  */
-async function enrichWithFederalData({ topic, agency, naics, recipientName }) {
-  const terms = extractSearchTerms(topic);
-  const ladder = keywordLadder(terms);
-  const keywords = deriveKeywords(topic);
+async function enrichWithFederalData({ topic, agency, naics, recipientName, rungs, since, setAside, wantsObligations, today }) {
+  const terms = extractSearchTerms(topic, { today });
+  const customRungs = Array.isArray(rungs)
+    ? [...new Set(rungs.map((r) => String(r || "").trim()))].filter((r, i, arr) => r || i === arr.length - 1)
+    : null;
+  const ladder = customRungs && customRungs.length ? customRungs : keywordLadder(terms);
+  // With vehicle rungs the bare canonical name is the best SAM.gov and
+  // Federal Register query too; otherwise the derived phrase.
+  const keywords = customRungs && customRungs.length ? customRungs[0] : deriveKeywords(topic);
   const frSlugs = agency ? federalRegisterSlugs(agency) : [];
+  const windowStart = /^\d{4}-\d{2}-\d{2}$/.test(String(since || "")) ? since : (terms.since || null);
+  const awardStart = windowStart || "2023-10-01"; // FY2024 start: 2+ years of data
+  const recipientStart = windowStart || "2022-10-01";
+  const setAsideCodes = Array.isArray(setAside) && setAside.length ? setAside : (terms.setAside ? terms.setAside.codes : null);
+  const wantsObl = typeof wantsObligations === "boolean" ? wantsObligations : obligationsIntent(topic);
+  const budget = { used: 0, max: MAX_AWARD_CALLS };
 
-  console.log(`[FEDERAL-API] Enriching: "${keywords}" agency=${agency || "all"} naics=${(naics || []).join(",")}`);
+  console.log(`[FEDERAL-API] Enriching: "${keywords}" agency=${agency || "all"} naics=${(naics || []).join(",")} since=${windowStart || "default"} setAside=${setAsideCodes ? setAsideCodes.length + " codes" : "none"}`);
 
-  // Run all queries in parallel — comprehensive federal data gathering
-  const [awards, categories, samOpps, fedRegRaw, gaoReports, agencySpending, recipientAwards] = await Promise.all([
+  // Every query runs in parallel and under its own bound (TIMEOUTS_MS).
+  const [awards, categories, samOpps, fedRegRaw, gaoReports, agencySpending, recipientAwards, recipientObligations] = await Promise.all([
     // Walk the keyword ladder: the subscriber's own wording first, then the
     // most specific term, so a wordy or unusual question relaxes into a hit
     // instead of returning zero. An ERROR is never retried (it is not a
-    // miss, and retrying would multiply the failure).
-    (async () => {
+    // miss, and retrying would multiply the failure). At most
+    // MAX_KEYWORD_ATTEMPTS rungs and MAX_AWARD_CALLS requests, widening
+    // included.
+    bounded((async () => {
       let last = null;
       for (let i = 0; i < Math.min(ladder.length, MAX_KEYWORD_ATTEMPTS); i++) {
+        if (budget.used >= budget.max) break;
         // The empty rung is "everything the agency awarded", a real query
         // only when there IS an agency or NAICS to scope it. Unscoped, it
         // is the twenty largest awards in government (Northrop, Lockheed,
@@ -695,8 +820,11 @@ async function enrichWithFederalData({ topic, agency, naics, recipientName }) {
           keyword: ladder[i],
           agency: agency || undefined,
           naics: naics || undefined,
-          startDate: "2023-10-01", // FY2024 start — 2+ years of data
+          startDate: awardStart,
+          setAside: setAsideCodes || undefined,
+          today,
           limit: 20,
+          _budget: budget,
         });
         if (res.error) return res;
         if (res.awards && res.awards.length > 0) {
@@ -706,13 +834,13 @@ async function enrichWithFederalData({ topic, agency, naics, recipientName }) {
         if (!ladder[i]) break; // "" was the widest query there is
       }
       return last || { awards: [], total: 0 };
-    })(),
-    getSpendingByCategory({
+    })(), TIMEOUTS_MS.awards, { awards: [], total: 0 }),
+    bounded(getSpendingByCategory({
       agency: agency || undefined,
       naics: naics || undefined,
       fiscal_year: 2026,
-    }),
-    searchSAMOpportunities({
+    }), TIMEOUTS_MS.categories, { categories: [] }),
+    bounded(searchSAMOpportunities({
       keyword: keywords.substring(0, 60),
       relaxKeyword: (ladder[1] || "").substring(0, 60),
       naics: naics && naics[0] ? naics[0] : undefined,
@@ -720,20 +848,23 @@ async function enrichWithFederalData({ topic, agency, naics, recipientName }) {
       // unscoped across every department (2026-09-10).
       agency: agency || undefined,
       limit: 15,
-    }),
-    searchFederalRegister({
+    }), TIMEOUTS_MS.sam, { opportunities: [], total: 0 }),
+    bounded(searchFederalRegister({
       keyword: keywords,
       agencies: frSlugs.length > 0 ? frSlugs : undefined,
       type: ["RULE", "PRORULE", "NOTICE"],
       limit: 5,
-    }),
-    searchGAOReports({ keyword: keywords, limit: 5 }),
+    }), TIMEOUTS_MS.federal_register, { documents: [], total: 0 }),
+    bounded(searchGAOReports({ keyword: keywords, limit: 5 }), TIMEOUTS_MS.gao, { reports: [] }),
     agency && agencyCgac(agency)
-      ? getAgencySpendingTotals({ agency_code: agencyCgac(agency), fiscal_year: 2026, agency_name: (usaspendingAgencyFilter(agency, { tier: "toptier" }) || {}).name || null })
+      ? bounded(getAgencySpendingTotals({ agency_code: agencyCgac(agency), fiscal_year: 2026, agency_name: (usaspendingAgencyFilter(agency, { tier: "toptier" }) || {}).name || null }), TIMEOUTS_MS.agency_totals, { spending: null })
       : Promise.resolve({ spending: null }),
     recipientName
-      ? searchUSASpendingRecipients({ name: recipientName, agency: agency || undefined, limit: 15 })
+      ? bounded(searchUSASpendingRecipients({ name: recipientName, agency: agency || undefined, limit: 15, startDate: recipientStart, today }), TIMEOUTS_MS.recipients, { awards: [], total: 0 })
       : Promise.resolve({ awards: [], total: 0, skipped: "no candidate name" }),
+    recipientName && wantsObl
+      ? bounded(searchRecipientObligationsByYear({ name: recipientName, agency: agency || undefined, since: recipientStart, today }), TIMEOUTS_MS.obligations, { years: [], total: 0 })
+      : Promise.resolve({ years: [], total: 0, skipped: recipientName ? "question does not ask for money over time" : "no candidate name" }),
   ]);
 
   // The Federal Register search is full text: "data governance" returned the
@@ -752,6 +883,9 @@ async function enrichWithFederalData({ topic, agency, naics, recipientName }) {
   if (recipientAwards && recipientAwards.awards && recipientAwards.awards.length > 0) {
     summary.push(`USASpending: ${recipientAwards.total} awards to recipients matching "${recipientAwards.name}"`);
   }
+  if (recipientObligations && Array.isArray(recipientObligations.years) && recipientObligations.years.length > 0) {
+    summary.push(`USASpending: ${money(recipientObligations.total)} obligated to "${recipientObligations.name}" across ${recipientObligations.years.length} fiscal years`);
+  }
   if (categories.categories && categories.categories.length > 0) {
     const totalSpend = categories.categories.reduce((s, c) => s + c.amount, 0);
     summary.push(`Spending by NAICS: $${(totalSpend / 1e6).toFixed(1)}M across ${categories.categories.length} categories`);
@@ -768,17 +902,24 @@ async function enrichWithFederalData({ topic, agency, naics, recipientName }) {
   if (agencySpending.spending) {
     summary.push(`Agency FY2026 obligated: $${(agencySpending.spending.obligated / 1e9).toFixed(1)}B`);
   }
+  const timedOut = [["usaspending_awards", awards], ["spending_categories", categories], ["sam_opportunities", samOpps], ["federal_register", fedRegRaw], ["gao_reports", gaoReports], ["agency_spending", agencySpending], ["usaspending_recipient_awards", recipientAwards], ["usaspending_recipient_obligations", recipientObligations]]
+    .filter(([, r]) => r && r.error === "timeout").map(([k]) => k);
+  if (timedOut.length) summary.push(`timed out: ${timedOut.join(", ")}`);
 
   console.log(`[FEDERAL-API] Results: ${summary.join("; ") || "no results from any API"}`);
 
   return {
     usaspending_awards: awards,
     usaspending_recipient_awards: recipientAwards,
+    usaspending_recipient_obligations: recipientObligations,
     spending_categories: categories,
     sam_opportunities: samOpps,
     federal_register: fedRegDocs,
     gao_reports: gaoReports,
     agency_spending: agencySpending,
+    window_start: windowStart,
+    set_aside_codes: setAsideCodes,
+    award_calls: budget.used,
     summary: summary.join("; "),
   };
 }
@@ -791,26 +932,47 @@ function formatFederalDataContext(data) {
 
   const sections = [];
 
+  // Totals are computed HERE (2026-09-14) so the model quotes them instead
+  // of adding rows; the award amount field is the potential value as
+  // reported to FPDS, not obligations to date.
+  const totalsLine = (shown, total) => {
+    const sum = shown.reduce((acc, a) => acc + (Number(a.award_amount) || 0), 0);
+    return `Rows shown: ${shown.length} of ${Number(total) || shown.length} matching; sum of award amounts shown: ${money(sum)} (award amount field, potential value as reported to FPDS). Quote these figures; do not re-add them.`;
+  };
+
   // USASpending awards
-  if (data.usaspending_awards && data.usaspending_awards.awards.length > 0) {
+  if (data.usaspending_awards && Array.isArray(data.usaspending_awards.awards) && data.usaspending_awards.awards.length > 0) {
     // Description and award amount are what let the model recognize a
     // record ("IMMUTA SOFTWARE FOR DATA GOVERNANCE") instead of skipping a
     // bare PIID with "$0.00M obligated" (obligations lag the award value).
-    const money = (n) => `$${((Number(n) || 0) / 1e6).toFixed(2)}M`;
-    const rows = data.usaspending_awards.awards.slice(0, 10).map((a) =>
+    const shown = data.usaspending_awards.awards.slice(0, 10);
+    const rows = shown.map((a) =>
       `- ${a.piid}: ${a.recipient} | "${(a.description || "no description").replace(/\s+/g, " ").trim()}" | award ${money(a.award_amount)} (obligated to date ${money(a.obligated)}) | ${a.sub_agency || a.agency} | NAICS ${a.naics || "n/a"} | Set-aside: ${a.set_aside || "none"} | ${a.start_date} to ${a.end_date} | ${a.source_url}`
     ).join("\n");
-    sections.push(`USASPENDING.GOV VERIFIED AWARDS, keyword matched in the description or recipient (${data.usaspending_awards.total} total). A product named in a reseller's or integrator's award description is an award tied to that product; a keyword that only matches a street address or an unrelated word is not:\n${rows}`);
+    const scope = [];
+    if (data.window_start) scope.push(`awards dated ${data.window_start} or later`);
+    if (Array.isArray(data.set_aside_codes) && data.set_aside_codes.length) scope.push(`set-aside codes ${data.set_aside_codes.join("/")}`);
+    sections.push(`USASPENDING.GOV VERIFIED AWARDS, keyword matched in the description or recipient (${data.usaspending_awards.total} total${scope.length ? `; ${scope.join("; ")}` : ""}). A product named in a reseller's or integrator's award description is an award tied to that product; a keyword that only matches a street address or an unrelated word is not:\n${rows}\n${totalsLine(shown, data.usaspending_awards.total)}`);
   }
 
   // Awards where the recipient's own name matched (the vendor as prime).
   if (data.usaspending_recipient_awards && Array.isArray(data.usaspending_recipient_awards.awards) && data.usaspending_recipient_awards.awards.length > 0) {
     const ra = data.usaspending_recipient_awards;
-    const money = (n) => `$${((Number(n) || 0) / 1e6).toFixed(2)}M`;
-    const rows = ra.awards.slice(0, 10).map((a) =>
+    const shown = ra.awards.slice(0, 10);
+    const rows = shown.map((a) =>
       `- ${a.piid}: ${a.recipient} | "${(a.description || "no description").replace(/\s+/g, " ").trim()}" | award ${money(a.award_amount)} | ${a.sub_agency || a.agency} | ${a.start_date} to ${a.end_date} | ${a.source_url}`
     ).join("\n");
-    sections.push(`USASPENDING.GOV AWARDS TO RECIPIENTS NAMED LIKE "${ra.name}" (${ra.total} total; these are the vendor's own awards as prime):\n${rows}`);
+    sections.push(`USASPENDING.GOV AWARDS TO RECIPIENTS NAMED LIKE "${ra.name}" (${ra.total} total; these are the vendor's own awards as prime):\n${rows}\n${totalsLine(shown, ra.total)}`);
+  }
+
+  // Obligations by fiscal year to the recipient, total computed in code.
+  const ro = data.usaspending_recipient_obligations;
+  if (ro && Array.isArray(ro.years) && ro.years.length > 0) {
+    const rows = ro.years.map((y) => `- FY${y.fiscal_year}: ${money(y.obligated)}`).join("\n");
+    const first = ro.years[0].fiscal_year;
+    const lastFy = ro.years[ro.years.length - 1].fiscal_year;
+    const span = first === lastFy ? `FY${first}` : `FY${first} to FY${lastFy}`;
+    sections.push(`USASPENDING.GOV OBLIGATIONS BY FISCAL YEAR TO RECIPIENTS NAMED LIKE "${ro.name}" (contract obligations, ${ro.agency_scope ? `funding department ${ro.agency_scope}` : "all agencies"}, awards dated ${ro.since} to ${ro.until}; a fiscal year the window enters part-way is a partial year):\n${rows}\nTotal ${span}, computed in code: ${money(ro.total)}. Quote these figures; do not re-add them.`);
   }
 
   // Spending categories
@@ -822,7 +984,7 @@ function formatFederalDataContext(data) {
   }
 
   // SAM.gov opportunities
-  if (data.sam_opportunities && data.sam_opportunities.opportunities.length > 0) {
+  if (data.sam_opportunities && Array.isArray(data.sam_opportunities.opportunities) && data.sam_opportunities.opportunities.length > 0) {
     const rows = data.sam_opportunities.opportunities.slice(0, 8).map((o) =>
       `- ${o.solicitation_number || o.notice_id}: "${o.title}" | ${o.type} | ${o.agency} | NAICS ${o.naics} | Set-aside: ${o.set_aside || "none"} | Deadline: ${o.response_deadline || "TBD"} | ${o.url}`
     ).join("\n");
@@ -830,7 +992,7 @@ function formatFederalDataContext(data) {
   }
 
   // Federal Register
-  if (data.federal_register && data.federal_register.documents.length > 0) {
+  if (data.federal_register && Array.isArray(data.federal_register.documents) && data.federal_register.documents.length > 0) {
     const rows = data.federal_register.documents.map((d) =>
       `- ${d.document_number}: "${d.title}" (${d.type}) | ${d.publication_date} | ${d.agencies} | ${d.url}`
     ).join("\n");
@@ -856,7 +1018,7 @@ function formatFederalDataContext(data) {
 
   if (sections.length === 0) return "";
 
-  return "\n\nVERIFIED FEDERAL DATA (from direct API queries — use these as PRIMARY SOURCES, higher authority than web search results):\n\n" + sections.join("\n\n");
+  return "\n\nVERIFIED FEDERAL DATA (from direct API queries; use these as PRIMARY SOURCES, higher authority than web search results):\n\n" + sections.join("\n\n");
 }
 
 // ============================================================
@@ -952,7 +1114,11 @@ function deriveAcquisitionState(opp, { now = Date.now(), staleDays = 120 } = {})
 
 module.exports = {
   searchUSASpendingRecipients,
+  searchRecipientObligationsByYear,
   mapAward,
+  bounded,
+  TIMEOUTS_MS,
+  MAX_AWARD_CALLS,
   deriveKeywords,
   searchUSASpending,
   getSpendingByCategory,
