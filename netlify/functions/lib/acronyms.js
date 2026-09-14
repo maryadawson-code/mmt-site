@@ -61,6 +61,11 @@ const ACRONYMS = {
   DHA: "Defense Health Agency", MHS: "Military Health System", MTF: "Military Treatment Facility",
   DHP: "Defense Health Program", DHMS: "Defense Healthcare Management Systems", DHMSM: "Defense Healthcare Management Systems Modernization",
   FEHRM: "Federal Electronic Health Record Modernization office", JTS: "Joint Trauma System", JWHS: "Joint Warfighter Health System",
+  // DHA reorganization offices and governance boards, verified in MMT's own
+  // published org chart and the 2026-05-29 issue (in-repo sources).
+  OWHA: "Office of Warfighter Health Advantage (DHA)", HCDS: "Health Care Delivery Solutions (DHA)",
+  EMB: "Executive Management Board (DHA)", CEB: "Corporate Executive Board (DHA)", OIB: "Operations Integration Board (DHA)",
+  HCIB: "Healthcare Integration Board (DHA)", ROB: "Resource Oversight Board (DHA)", CTC: "Capability Trade Council (DHA)",
   OASD: "Office of the Assistant Secretary of Defense", "ASD(HA)": "Assistant Secretary of Defense for Health Affairs",
   USU: "Uniformed Services University of the Health Sciences", USUHS: "Uniformed Services University of the Health Sciences",
   VHA: "Veterans Health Administration", VBA: "Veterans Benefits Administration", NCA: "National Cemetery Administration",
