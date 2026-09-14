@@ -160,16 +160,44 @@ function dollarGuard(answer, context) {
 // (the DHA data governance tracker entry says "comprehensive baseline data
 // inventory", eval 2026-09-14). Deterministic, case-preserving replacements
 // outside double-quoted segments, so a quoted passage is never misquoted.
+//
+// Three spans are never rewritten (review 2026-09-14):
+//   - markdown links and bare URLs. \b matches at a hyphen, so the corpus
+//     slug /contracts/cdc-dmi-successor-nssp-ecosystem-contracts/ became
+//     ...-landscape-contracts/, and enforceLinks (which runs AFTER this
+//     guard) then de-linked Mary's own retrieved page as "unlisted".
+//   - Title Case matches that are not sentence-initial, and matches that a
+//     parenthesised acronym follows. "Comprehensive Error Rate Testing
+//     (CERT)", "Comprehensive Care for Joint Replacement (CJR)" and "From
+//     Silos to Synergy" are names of programs and articles; rewriting them
+//     misquotes the source the answer cites. Skips are counted separately
+//     so the rate stays visible on the ops_event.
+//   - the -s forms get their own third-person-singular replacements:
+//     "leverages" -> "uses", "streamlines" -> "simplifies" ("the vendor use
+//     a strong platform" was ungrammatical).
 const VOICE_REPLACEMENTS = [
   [/\bcomprehensive\b/gi, "full"], [/\brobust\b/gi, "strong"], [/\bpivotal\b/gi, "key"],
-  [/\btransformative\b/gi, "major"], [/\bdelve\b/gi, "dig"], [/\bleverages?\b/gi, "use"],
+  [/\btransformative\b/gi, "major"], [/\bdelve\b/gi, "dig"],
+  [/\bleverages\b/gi, "uses"], [/\bleverage\b/gi, "use"],
   [/\bleveraging\b/gi, "using"], [/\bleveraged\b/gi, "used"], [/\bsynergy\b/gi, "fit"],
   [/\bsynergies\b/gi, "fits"], [/\bparadigm\b/gi, "model"], [/\bholistic\b/gi, "whole"],
-  [/\bstreamlines?\b/gi, "simplify"], [/\bstreamlining\b/gi, "simplifying"], [/\bstreamlined\b/gi, "simplified"],
+  [/\bstreamlines\b/gi, "simplifies"], [/\bstreamline\b/gi, "simplify"],
+  [/\bstreamlining\b/gi, "simplifying"], [/\bstreamlined\b/gi, "simplified"],
   [/\bactionable\b/gi, "usable"], [/\becosystems?\b/gi, "landscape"],
   [/\bFurthermore,?\s*/g, "Also, "], [/\bMoreover,?\s*/g, "Also, "], [/\bAdditionally,?\s*/g, "Also, "],
   [/\bIn conclusion,?\s*/g, ""],
 ];
+
+// Spans enforceVoice returns verbatim: straight or curly double-quoted
+// passages, a whole markdown link (its text is usually a title), and a bare
+// URL (same character class as ANY_URL_RE).
+const VOICE_PROTECTED_RE = /("[^"]*"|\u201c[^\u201d]*\u201d|\[[^\]]*\]\(https?:\/\/[^)\s]+\)|https?:\/\/[^\s<>)\]"']+)/;
+// A match is sentence-initial when, walking back over spaces and markdown
+// bullet/emphasis punctuation, we reach the start of the text, a newline or
+// terminal punctuation.
+const VOICE_SKIP_BACK_RE = /[ \t*_#>\-\u2022(\[]/;
+const VOICE_BOUNDARY_RE = /[.!?:;\n]/;
+const VOICE_ACRONYM_AFTER_RE = /^\s*\([A-Z0-9-]{2,}\)/;
 
 function matchCase(source, replacement) {
   if (source === source.toUpperCase() && source.length > 1) return replacement.toUpperCase();
@@ -177,24 +205,45 @@ function matchCase(source, replacement) {
   return replacement;
 }
 
+function sentenceInitial(text, offset) {
+  let i = offset - 1;
+  while (i >= 0 && VOICE_SKIP_BACK_RE.test(text[i])) i -= 1;
+  return i < 0 || VOICE_BOUNDARY_RE.test(text[i]);
+}
+
+/** Pure: a banned-word match that reads as part of a proper name. */
+function isTitleMatch(match, offset, text) {
+  const first = match[0];
+  const titleCase = first !== first.toLowerCase() && first === first.toUpperCase();
+  if (titleCase && !sentenceInitial(text, offset)) return true;
+  return VOICE_ACRONYM_AFTER_RE.test(text.slice(offset + match.length));
+}
+
 /**
- * Pure. Returns { answer, voice_fixes }. Text inside straight or curly
- * double quotes is left exactly as written.
+ * Pure. Returns { answer, voice_fixes, voice_skipped_titles }. Text inside
+ * straight or curly double quotes, markdown links and bare URLs is left
+ * exactly as written; a Title Case match mid-sentence or one followed by a
+ * parenthesised acronym is left as written and counted as a skipped title.
  */
 function enforceVoice(answer) {
   const text = String(answer || "");
-  if (!text) return { answer: text, voice_fixes: 0 };
+  if (!text) return { answer: text, voice_fixes: 0, voice_skipped_titles: 0 };
   let fixes = 0;
-  const parts = text.split(/("[^"]*"|\u201c[^\u201d]*\u201d)/);
+  let skipped = 0;
+  const parts = text.split(VOICE_PROTECTED_RE);
   const out = parts.map((part, i) => {
-    if (i % 2 === 1) return part; // quoted segment
+    if (i % 2 === 1) return part; // quoted segment, markdown link or bare URL
     let p = part;
     for (const [re, rep] of VOICE_REPLACEMENTS) {
-      p = p.replace(re, (m) => { fixes += 1; return /[A-Za-z]/.test(rep) ? matchCase(m, rep) : rep; });
+      p = p.replace(re, (m, offset, whole) => {
+        if (isTitleMatch(m, offset, whole)) { skipped += 1; return m; }
+        fixes += 1;
+        return /[A-Za-z]/.test(rep) ? matchCase(m, rep) : rep;
+      });
     }
     return p;
   });
-  return { answer: out.join(""), voice_fixes: fixes };
+  return { answer: out.join(""), voice_fixes: fixes, voice_skipped_titles: skipped };
 }
 
 module.exports = {

@@ -18,6 +18,7 @@ import { createRequire } from "node:module";
 
 const cjsRequire = createRequire(import.meta.url);
 const fetchCache = cjsRequire("../../netlify/functions/lib/fetch-cache.js");
+const { extractSearchTerms } = cjsRequire("../../netlify/functions/lib/query-terms.js");
 function freshStore() { const d = {}; return { async get(k) { return k in d ? d[k] : null; }, async setJSON(k, v) { d[k] = v; } }; }
 
 const QUESTION = "Tell me all about data governence awards in the DHA";
@@ -249,9 +250,30 @@ describe("vendor and product questions, and follow-ups", () => {
     const history = [{ question: "tell me about all GetWell awards", answer: "..." }];
     expect(assistant.resolveFollowUp("I'm interested in all awards tied to the product regardless of who got them", history)).toMatchObject({ carried: true, question: "tell me about all GetWell awards I'm interested in all awards tied to the product regardless of who got them" });
     expect(assistant.resolveFollowUp("the product is GetWell", history)).toMatchObject({ carried: true });
-    expect(assistant.resolveFollowUp("what about VA?", history)).toMatchObject({ carried: true });
+    expect(assistant.resolveFollowUp("what about VA?", history)).toMatchObject({ carried: true, question: "what about VA? getwell" });
     expect(assistant.resolveFollowUp("Which HRSA grants fund transplant IT?", history)).toMatchObject({ carried: false });
     expect(assistant.resolveFollowUp("what about VA?", [])).toMatchObject({ carried: false });
+  });
+
+  // Review 2026-09-14: agency detection is first-mention, so a follow-up
+  // that names its own agency must lead the retrieval question and carry
+  // only the prior turn's topic, never the prior sentence.
+  it("a follow-up that names a new agency leads the retrieval question and carries only the prior topic", () => {
+    const history = [{ question: "What has VA awarded for EHR modernization?", answer: "..." }];
+    const r = assistant.resolveFollowUp("What about DHA?", history);
+    expect(r).toMatchObject({ carried: true, question: "What about DHA? ehr modernization" });
+    const t = extractSearchTerms(r.question);
+    expect(t.agency).toBe("DHA");
+    expect(t.phrase).toBe("ehr modernization");
+    expect(assistant.detectAgency(r.question)).toBe("DHA");
+  });
+
+  it("a new agency question after a vehicle-only question is not a vehicle search at the new agency", () => {
+    const history = [{ question: "Who holds T4NG2?", answer: "..." }];
+    const r = assistant.resolveFollowUp("What did CMS award this month?", history);
+    expect(r).toEqual({ question: "What did CMS award this month?", carried: false });
+    // the same vehicle-only prior still carries into an agency-less follow-up
+    expect(assistant.resolveFollowUp("who else is on it?", history)).toMatchObject({ carried: true, question: "Who holds T4NG2? who else is on it?" });
   });
 
   it("em dashes never reach the subscriber", () => {

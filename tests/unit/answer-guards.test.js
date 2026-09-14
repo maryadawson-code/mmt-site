@@ -111,9 +111,57 @@ describe("dollarGuard (shadow mode)", () => {
 describe("enforceVoice", () => {
   it("replaces banned words and transitions outside quotes, case-preserved, and counts the fixes", () => {
     const { enforceVoice } = require("../../netlify/functions/lib/answer-guards.js");
-    const r = enforceVoice("The scope includes a comprehensive baseline inventory. Furthermore, a Robust catalog will leverage the fabric.");
-    expect(r.answer).toBe("The scope includes a full baseline inventory. Also, a Strong catalog will use the fabric.");
+    const r = enforceVoice("The scope includes a comprehensive baseline inventory. Furthermore, a robust catalog will leverage the fabric. Robust is the word.");
+    expect(r.answer).toBe("The scope includes a full baseline inventory. Also, a strong catalog will use the fabric. Strong is the word.");
+    expect(r.voice_fixes).toBe(5);
+    expect(r.voice_skipped_titles).toBe(0);
+  });
+
+  // Review 2026-09-14: program, contract and article names carry banned
+  // words. A Title Case match mid-sentence, or one a parenthesised acronym
+  // follows, is a name and stays as written; the skip is counted.
+  it("leaves official program names byte-identical and counts them as skipped titles", () => {
+    const { enforceVoice } = require("../../netlify/functions/lib/answer-guards.js");
+    const names = "CMS runs the Comprehensive Error Rate Testing (CERT) program and the Comprehensive Care for Joint Replacement (CJR) model, and VA runs the Program of Comprehensive Assistance for Family Caregivers (PCAFC).";
+    const r = enforceVoice(names);
+    expect(r.answer).toBe(names);
+    expect(r.voice_fixes).toBe(0);
+    expect(r.voice_skipped_titles).toBe(3);
+    const title = enforceVoice("Mary covered it in From Silos to Synergy and the NSSP Ecosystem Contracts entry.");
+    expect(title.answer).toBe("Mary covered it in From Silos to Synergy and the NSSP Ecosystem Contracts entry.");
+    expect(title.voice_skipped_titles).toBe(2);
+    // sentence-initial capitals are ordinary prose, including after a bullet or bold marker
+    expect(enforceVoice("Comprehensive data matters.\n- **Robust** fabric.").answer).toBe("Full data matters.\n- **Strong** fabric.");
+    // a parenthesised acronym right after the match protects a lowercase name too
+    const acro = enforceVoice("the ecosystem (ECO) tag");
+    expect(acro.answer).toBe("the ecosystem (ECO) tag");
+    expect(acro.voice_skipped_titles).toBe(1);
+  });
+
+  it("uses third-person-singular replacements for the -s forms", () => {
+    const { enforceVoice } = require("../../netlify/functions/lib/answer-guards.js");
+    const r = enforceVoice("The vendor leverages a strong platform and streamlines intake; teams leverage it to streamline work.");
+    expect(r.answer).toBe("The vendor uses a strong platform and simplifies intake; teams use it to simplify work.");
     expect(r.voice_fixes).toBe(4);
+  });
+
+  it("never rewrites a URL or a markdown link, so enforceLinks still recognises a real corpus link", () => {
+    const { enforceVoice, enforceLinks, stripSourcesSection } = require("../../netlify/functions/lib/answer-guards.js");
+    const tracker = "https://missionmeetstech.com/contracts/cdc-dmi-successor-nssp-ecosystem-contracts/";
+    const article = "https://missionmeetstech.com/articles/from-silos-to-synergy-building-the-future-of-mhs-enterprise-/";
+    const context = `MMT ORIGINAL CONTENT\n### CDC DMI Successor / NSSP Ecosystem Contracts\n${tracker}\n### From Silos to Synergy: Building the Future of MHS Enterprise Imaging (Part 2)\n${article}`;
+    const raw = `The CDC ecosystem is shifting. See [the NSSP ecosystem tracker entry](${tracker}) and ${article} for the imaging piece.\n\n**Sources**\n- ${tracker}\n`;
+    // the shipped chain: stripSourcesSection, enforceVoice, then enforceLinks
+    const voiced = enforceVoice(stripSourcesSection(raw));
+    expect(voiced.answer).toContain(`[the NSSP ecosystem tracker entry](${tracker})`);
+    expect(voiced.answer).toContain(`${article} for the imaging piece.`);
+    expect(voiced.answer.startsWith("The CDC landscape is shifting.")).toBe(true);
+    expect(voiced.voice_fixes).toBe(1);
+    const linked = enforceLinks(voiced.answer, context, []);
+    expect(linked.answer).toBe(voiced.answer);
+    expect(linked.unlisted_link_count).toBe(0);
+    expect(linked.answer).toContain(tracker);
+    expect(linked.answer).toContain(article);
   });
   it("never edits a quoted passage", () => {
     const { enforceVoice } = require("../../netlify/functions/lib/answer-guards.js");

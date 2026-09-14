@@ -568,7 +568,28 @@ function resolveFollowUp(question, history = []) {
   const own = Array.isArray(t.phraseTokens) ? t.phraseTokens.length : 0;
   const carry = own === 0 || (own <= 2 && FOLLOW_UP_RE.test(q));
   if (!carry) return { question: q, carried: false };
-  return { question: `${prior} ${q}`, carried: true, prior };
+  // 2026-09-14 review: agency detection is first-mention, so "What about
+  // DHA?" appended to "What has VA awarded for EHR modernization?" was
+  // scoped to VA. When the new question names its own agency or vehicle,
+  // it leads and only the prior turn's TOPIC follows it, never the prior
+  // sentence. A prior question that was only a VEHICLE under a different
+  // agency carries nothing: "Who holds T4NG2?" then "What did CMS award
+  // this month?" is a new question, not a T4NG2 search at CMS. A prior
+  // question that named its own agency is a topic being re-scoped, even
+  // when the topic is also a vehicle alias ("EHR modernization").
+  const ownAgencies = Array.isArray(t.agencies) ? t.agencies : [];
+  const ownScope = ownAgencies.length > 0 || detectVehicles(q).length > 0;
+  if (!ownScope) return { question: `${prior} ${q}`, carried: true, prior };
+  const priorTerms = extractSearchTerms(prior);
+  const priorAgencies = Array.isArray(priorTerms.agencies) ? priorTerms.agencies : [];
+  const priorVehicle = detectVehicles(prior)[0] || null;
+  const vehicleOnlyPrior = priorVehicle && priorVehicle.agency && priorAgencies.length === 0;
+  if (vehicleOnlyPrior && ownAgencies.length > 0 && !ownAgencies.includes(priorVehicle.agency)) {
+    return { question: q, carried: false };
+  }
+  const priorPhrase = String(priorTerms.phrase || "").trim();
+  if (!priorPhrase) return { question: q, carried: false };
+  return { question: `${q} ${priorPhrase}`, carried: true, prior };
 }
 
 /** Pure: the voice rule bans em dashes; the model still emits them. */
@@ -605,6 +626,7 @@ async function answerQuestion({ question, history = [], maxTokens = 1500 }) {
     return {
       answer: linked.answer,
       voice_fixes: voiced.voice_fixes,
+      voice_skipped_titles: voiced.voice_skipped_titles,
       agency,
       agencyName: scopeName,
       hasData: hasAnyData,
