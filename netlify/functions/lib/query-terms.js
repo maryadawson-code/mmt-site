@@ -62,6 +62,7 @@ bought buy buys buying purchase purchased purchases purchasing spent pays pay pa
 receives receiving gave given released posted signed sold sell sells move moved moves ordered picked selected chose chosen
 interested regardless tied go goes went gone got matter matters whoever whichever whether
 long often usually typically quickly fast slow soon early late
+reach reaches reached reaching achieve achieves achieved hit hits reaching finish finishes finished
 fy fiscal last
 `.trim().split(/\s+/));
 
