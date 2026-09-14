@@ -1,0 +1,160 @@
+{
+  "_process": [
+    "Golden set for scripts/ask-mmt-eval.js. Every user-reported Ask MMT failure becomes a row here before it is fixed, so the fix is proven against the question that exposed it and cannot regress silently.",
+    "Rows carry only what a subscriber typed. Marketing examples (ask.html, the widget, the soft-launch email) are copied verbatim so the questions we advertise are the questions we test.",
+    "Fields: id, source (where the question came from), question, history (optional prior turns; an entry may carry answer_from: <row id> to chain the answer produced in the same trial), required (all must appear in the answer, case-insensitive), required_any (at least one must appear), required_cited (must appear in the answer OR a source url/title), forbidden (none may appear), allowed_unavailable (systems that may be not-reached without failing; default sam_opportunities and onc_chpl), max_elapsed_ms (default 45000).",
+    "Rows with the same question and history share one run per trial; the result is graded under every id so duplicates cost no extra API calls.",
+    "Code graders that apply to every row live in the script, not here: no em dash, no exclamation point, no banned word, no trailing Sources section, every link grounded in the context or sources, no acronym expansion outside the ACRONYM REFERENCE, hasData, FOC never expanded as Field of Competition."
+  ],
+  "defaults": {
+    "allowed_unavailable": ["sam_opportunities", "onc_chpl"],
+    "max_elapsed_ms": 45000
+  },
+  "rows": [
+    {
+      "id": "ask-contracts",
+      "source": "ask.html example: Contracts",
+      "question": "What's the status of CCN Next Gen?",
+      "required": ["CCN"]
+    },
+    {
+      "id": "ask-vehicles",
+      "source": "ask.html example: Vehicles",
+      "question": "Who are the incumbents on T4NG2?",
+      "required": ["T4NG2"]
+    },
+    {
+      "id": "ask-budgets",
+      "source": "ask.html example: Budgets",
+      "question": "What's moving in DHA's FY2027 IT budget?",
+      "required": ["DHA"]
+    },
+    {
+      "id": "ask-policy",
+      "source": "ask.html example: Policy",
+      "question": "What did the FY2027 NDAA change for federal EHR programs?",
+      "required": ["NDAA"]
+    },
+    {
+      "id": "ask-evidence",
+      "source": "ask.html example: Evidence",
+      "question": "What does the published research say about remote patient monitoring outcomes in VA?",
+      "required": ["VA"]
+    },
+    {
+      "id": "ask-spend",
+      "source": "ask.html example: Spend",
+      "question": "How much has VA obligated to Oracle since FY2024?",
+      "required": ["Oracle"]
+    },
+    {
+      "id": "widget-001",
+      "source": "js/premium-chat-widget.js SAMPLE_QUESTIONS",
+      "question": "What's the status of CCN Next Gen?",
+      "required": ["CCN"]
+    },
+    {
+      "id": "widget-002",
+      "source": "js/premium-chat-widget.js SAMPLE_QUESTIONS",
+      "question": "Who are the incumbents on T4NG2?",
+      "required": ["T4NG2"]
+    },
+    {
+      "id": "widget-003",
+      "source": "js/premium-chat-widget.js SAMPLE_QUESTIONS",
+      "question": "What's moving in DHA's FY2027 IT budget?",
+      "required": ["DHA"]
+    },
+    {
+      "id": "email-001",
+      "source": "data/ask-mmt-campaign/emails.json soft_launch (2026-09-14)",
+      "question": "What's the status of CCN Next Gen?",
+      "required": ["CCN"]
+    },
+    {
+      "id": "email-002",
+      "source": "data/ask-mmt-campaign/emails.json soft_launch (2026-09-14)",
+      "question": "Who are the incumbents on T4NG2?",
+      "required": ["T4NG2"]
+    },
+    {
+      "id": "email-003",
+      "source": "data/ask-mmt-campaign/emails.json soft_launch (2026-09-14)",
+      "question": "What's moving in DHA's FY2027 IT budget?",
+      "required": ["DHA"]
+    },
+    {
+      "id": "email-004",
+      "source": "data/ask-mmt-campaign/emails.json soft_launch (2026-09-14); the email promises the January close, the dismissed protest and the April briefs",
+      "question": "What's the status of the DHA data governance set-aside?",
+      "required": ["DHA"],
+      "required_cited": ["/contracts/dha-data-governance-wosb-set-aside/"],
+      "forbidden": ["Field of Competition"]
+    },
+    {
+      "id": "fail-2026-09-13-dha-data-governance",
+      "source": "Mary's live accuracy pass 2026-09-13: answer expanded FOC as Field of Competition and told her to go check SAM.gov while the tracker entry was in the block",
+      "question": "Tell me all about data governance awards in the DHA",
+      "required": ["DHA"],
+      "required_cited": ["/contracts/dha-data-governance-wosb-set-aside/"],
+      "forbidden": ["Field of Competition"]
+    },
+    {
+      "id": "fail-2026-09-13-getwell",
+      "source": "Mary's live test 2026-09-13: bot said no awards to GetWell three times while USASpending held Thundercat's SEWP orders FOR GETWELL NETWORK and GetWellNetwork's own DHA prime award (PIID HT001425PE009 in the 2026-09-14 eval run; HT001524F0063 is the Immuta data governance award the same day's pass surfaced and is kept for the record)",
+      "question": "tell me about all GetWell awards",
+      "required": ["Thundercat"],
+      "required_any": ["HT001524F0063", "HT001425PE009", "GetWellNetwork", "GetWell Network"]
+    },
+    {
+      "id": "fail-2026-09-13-foc",
+      "source": "Mary's live accuracy pass 2026-09-13: FOC (Full Operational Capability, May 29 Capture Corner) rendered as Field of Competition",
+      "question": "When does the DHA reorganization reach FOC?",
+      "required": ["FOC"],
+      "forbidden": ["Field of Competition"]
+    },
+    {
+      "id": "followup-getwell-1",
+      "source": "Follow-up pair, turn 1 (2026-09-13 live test)",
+      "question": "tell me about all GetWell awards",
+      "required": ["Thundercat"],
+      "required_any": ["HT001524F0063", "HT001425PE009", "GetWellNetwork", "GetWell Network"]
+    },
+    {
+      "id": "followup-getwell-2",
+      "source": "Follow-up pair, turn 2: no search terms of its own; retrieval must carry the GetWell question forward",
+      "question": "I'm interested in all awards tied to the product regardless of who got them",
+      "history": [
+        { "question": "tell me about all GetWell awards", "answer_from": "followup-getwell-1" }
+      ],
+      "required": ["GetWell"],
+      "required_any": ["Thundercat", "HT001524F0063", "GetWellNetwork"],
+      "expect_carried": true
+    },
+    {
+      "id": "audit-cms-forecast",
+      "source": "Audit 2026-09-13: forecast questions",
+      "question": "What is in the CMS forecast for FY2027?",
+      "required": ["CMS"]
+    },
+    {
+      "id": "audit-dha-director",
+      "source": "Audit 2026-09-13: leadership questions",
+      "question": "Who is the DHA Director?",
+      "required": ["DHA"]
+    },
+    {
+      "id": "audit-compare-epic-oracle",
+      "source": "Audit 2026-09-13: a two-vendor comparison must not throw",
+      "question": "Compare Epic and Oracle Health federal awards",
+      "required": ["Epic", "Oracle"]
+    },
+    {
+      "id": "audit-ato-glossary",
+      "source": "Audit 2026-09-13: a glossary term must cite the glossary",
+      "question": "What is an ATO and how long does it take?",
+      "required": ["Authority to Operate"],
+      "required_cited": ["/glossary"]
+    }
+  ]
+}
