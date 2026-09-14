@@ -96,10 +96,14 @@ and cherry-picked onto one branch):**
   four audit questions) with code graders; runbook `docs/ask-mmt-eval.md`.
 
 **Eval gate before deploy (3 trials, real model, no SAM quota spent):**
-first full run 21/22 pass 3-of-3; the one miss expanded OWHA, which MMT's
-own org chart carries, and led with a web-search date over MMT's dated
-coverage. Both fixed (DHA reorg acronyms added from the org chart; the
-web-lead rule). Re-run: every row 3 of 3.
+first full run 21/22 pass 3-of-3 (the miss expanded OWHA, which MMT's own
+org chart carries, and led with a web-search date over MMT's dated coverage;
+fixed by adding the DHA reorg acronyms and the web-lead rule). Second full
+run 18/22: the T4NG2 question and the Epic/Oracle comparison each expanded a
+correct vendor name (GDIT, SMS) the reference lacked; fixed by adding the
+recurring vendor names. Each failing row then passed 3 of 3 on re-run; the
+grader flags only expansions absent from both the reference and the
+retrieved context.
 
 Hard rules (do not regress):
 - **The eval gate runs before any Ask MMT deploy** (`netlify dev:exec --

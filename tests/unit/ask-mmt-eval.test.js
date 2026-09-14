@@ -43,9 +43,9 @@ describe("graders", () => {
   });
 
   it("an unverified expansion passes only when it sits verbatim in the retrieved context (a vendor name from a source row)", () => {
-    const answer = "SMS (Systems Made Simple) holds a seat.";
-    expect(graders.acronyms_known({ ...runFor(answer), contextText: "Recipient: SYSTEMS MADE SIMPLE INC" })).toBeNull();
-    expect(graders.acronyms_known({ ...runFor(answer), contextText: "Recipient: LEIDOS" })).toMatch(/SMS/);
+    const answer = "ZQE (Zebra Quantum Exchange) holds a seat.";
+    expect(graders.acronyms_known({ ...runFor(answer), contextText: "Recipient: ZEBRA QUANTUM EXCHANGE INC" })).toBeNull();
+    expect(graders.acronyms_known({ ...runFor(answer), contextText: "Recipient: LEIDOS" })).toMatch(/ZQE/);
     expect(evalHarness.judgeExpansion({ tok: "FOC", exp: "Field of Competition", expandAcronym, contextText: "FOC July 19" })).toMatch(/vs known/);
   });
 
