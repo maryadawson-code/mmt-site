@@ -327,6 +327,7 @@ function turnTelemetry(result, startedAt) {
       unlisted_link_count: Number(result.unlisted_link_count) || 0,
       unsupported_dollar_count: Number(result.unsupported_dollar_count) || 0,
       voice_fixes: Number(result.voice_fixes) || 0,
+      voice_skipped_titles: Number(result.voice_skipped_titles) || 0,
     },
   };
 }

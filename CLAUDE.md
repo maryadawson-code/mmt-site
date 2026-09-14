@@ -55,7 +55,7 @@ and cherry-picked onto one branch):**
 - P2 per-call timeouts inside the federal bundle (awards 7s incl. widening,
   SAM 4s, FR 4s, GAO 4s, totals 3s, recipient 4s, category 3s; each times
   out alone as `{ error: 'timeout' }`); `rungs` for matched vehicles (first
-  rung is the canonical name); a hard cap of 2 award calls per question;
+  rung is the canonical name); each rung may widen from subtier to department once (four award calls at most, under a 7s bound);
   fiscal-year windows parsed out of the question (`years`, `since`);
   `searchRecipientObligationsByYear` via `spending_over_time`; code-computed
   totals lines ("Rows shown: N of M; sum of award amounts shown ...") so the
