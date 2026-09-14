@@ -77,6 +77,7 @@ describe("acronymReference", () => {
 import { ACRONYMS } from "../../netlify/functions/lib/acronyms.js";
 
 const NOT_INITIALISMS = new Set([
+  "QUERI", // Quality Enhancement Research Initiative (VA)
   "CACI", "CGI", "KBR", "ICF", "DLT", // company names, not initialisms
   "HCIB", // Healthcare Integration Board: the C comes from Healthcare (DHA org chart)
   "TRICARE", "FedRAMP", "OASIS+", "HUBZone", "T4NG", "T4NG2", "SEWP", "cATO", "8(a)", "J-Book",

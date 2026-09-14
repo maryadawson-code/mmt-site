@@ -95,6 +95,12 @@ const ACRONYMS = {
   RDT: "Research, Development, Test and Evaluation", "RDT&E": "Research, Development, Test and Evaluation", "O&M": "Operation and Maintenance",
   MILCON: "Military Construction", DoD: "Department of Defense", DOD: "Department of Defense", VA: "Department of Veterans Affairs",
   HHS: "Department of Health and Human Services", DHS: "Department of Homeland Security", EO: "Executive Order",
+  // VA research offices and clinical terms that recur in PubMed and VA
+  // context (the research eval row expanded HSRD on its own, 2026-09-14)
+  HSRD: "Health Services Research and Development (VA)", "HSR&D": "Health Services Research and Development (VA)",
+  QUERI: "Quality Enhancement Research Initiative (VA)", ORD: "Office of Research and Development (VA)",
+  RCT: "Randomized Controlled Trial", COPD: "Chronic Obstructive Pulmonary Disease", CHF: "Congestive Heart Failure",
+  PTSD: "Post-Traumatic Stress Disorder", TBI: "Traumatic Brain Injury", ICU: "Intensive Care Unit",
   // Vendors that recur in federal health IT awards (company names the model
   // otherwise expands on its own; the eval flagged GDIT and SMS 2026-09-14)
   GDIT: "General Dynamics Information Technology", SAIC: "Science Applications International Corporation",
