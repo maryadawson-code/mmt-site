@@ -35,7 +35,7 @@ const SCAFFOLDING = [
 const MATRIX = [
   // DHA / DoD
   ["Tell me all about data governence awards in the DHA", "DHA", ["data", "governance"]],
-  ["What is moving in DHA's FY2027 IT budget?", "DHA", ["fy2027"]],
+  ["What is moving in DHA's FY2027 IT budget?", "DHA", ["it", "budget"]],
   ["MHS GENESIS deployment status", "DHA", ["mhs", "genesis"]],
   ["Any TRICARE managed care support recompetes coming?", "DHA", ["tricare"]],
   ["Defense Health Agency telehealth contracts", "DHA", ["telehealth"]],
@@ -72,7 +72,7 @@ const MATRIX = [
   // No agency named
   ["Who are the incumbents on T4NG2?", null, ["t4ng2"]],
   ["What is the status of CCN Next Gen?", null, ["ccn"]],
-  ["What did the FY2027 NDAA change for federal EHR programs?", null, ["fy2027", "ndaa"]],
+  ["What did the FY2027 NDAA change for federal EHR programs?", null, ["ndaa"]],
   ["ambient scribe pilots", null, ["ambient", "scribe"]],
 ];
 
@@ -98,6 +98,13 @@ describe("search terms generalize across questions and agencies", () => {
     for (const keep of mustKeep) {
       expect(t.phraseTokens, `lost "${keep}" from: ${question}`).toContain(keep);
     }
+
+    // 3b. a fiscal or calendar year is a window, never a keyword
+    // (2026-09-14: "fy2024" used to reach USASpending as a search term)
+    for (const tok of [...t.phraseTokens, ...t.rankedTokens]) {
+      expect(/^fy\d{2,4}$|^20\d{2}$|^fy$|^fiscal$/.test(tok), `year leaked as keyword "${tok}" from: ${question}`).toBe(false);
+    }
+    if (/\bFY\s?\d{2,4}\b/i.test(question)) expect(t.years.length, `no year read from: ${question}`).toBeGreaterThan(0);
 
     // 4. the agency's own code never doubles as a keyword (it is a filter)
     if (agency) {

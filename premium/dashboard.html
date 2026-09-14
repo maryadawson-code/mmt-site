@@ -63,7 +63,7 @@
     <div class="dch-meta">
       <span style="font-size:13px; color:var(--mmt-text-secondary);" id="dash-email"></span>
       <a href="/" style="font-size:12px; color:var(--mmt-teal); text-decoration:none;">Back to site</a>
-      <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');document.cookie='mmt_premium=;path=/;max-age=0';document.cookie='mmt_email=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
+      <a href="#" onclick="localStorage.removeItem('mmt_premium');localStorage.removeItem('mmt_premium_ts');localStorage.removeItem('mmt_email');localStorage.removeItem('mmt_subscriber_token');document.cookie='mmt_premium=;path=/;max-age=0';document.cookie='mmt_email=;path=/;max-age=0';window.location.href='/';return false;" style="font-size:12px; color:var(--mmt-text-secondary); text-decoration:none;">Sign out</a>
     </div>
   </div>
 
@@ -204,7 +204,7 @@
 
   <div class="dash-card" style="border-left:3px solid var(--mmt-teal);">
     <h3>Ask MMT</h3>
-    <p style="margin:0 0 12px; color:var(--mmt-text-secondary); font-size:14px;">Instant, sourced answers from SAM.gov, USASpending, Congress.gov, PubMed, and the archive. Your allowance: <span id="ask-chat-cap"><!-- BUILD:ASK_MMT_CAP_PREMIUM --></span> questions a month.</p>
+    <p style="margin:0 0 12px; color:var(--mmt-text-secondary); font-size:14px;">Sourced answers in under a minute from SAM.gov, USASpending, Congress.gov, PubMed, and the archive. Your allowance: <span id="ask-chat-cap"><!-- BUILD:ASK_MMT_CAP_PREMIUM --></span> questions a month.</p>
     <button type="button" class="btn-primary" style="cursor:pointer;" onclick="if(typeof window.mmtOpenAskMMT==='function'){window.mmtOpenAskMMT();}else{window.location.href='/ask';}">Ask a question &rarr;</button>
     <a href="/ask/sources" style="margin-left:12px;font-size:13px;color:var(--mmt-teal);text-decoration:none;">What it reads &rarr;</a>
   </div>

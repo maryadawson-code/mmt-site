@@ -18,7 +18,16 @@
 //     agencies:     ["DHA"]                   // every agency named
 //     corrected:    "...data governance..."   // typo-corrected question
 //     corrections:  [{ from, to }]
+//     years:        [2024]                    // fiscal/calendar years named
+//     since:        "2023-10-01" | null       // earliest start date they imply
+//     setAside:     { kinds, codes } | null   // USASpending set_aside_type_codes
+//     wantsObligations: true|false           // "how much ... obligated/spent/since FY"
 //   }
+//
+// 2026-09-14: a fiscal year in the question ("since FY2024") used to travel
+// to the APIs as the keyword "fy2024" (which matches nothing) instead of
+// bounding the search window; "small business" went the same way. Years
+// and set-aside wording now leave the phrase and come back as filters.
 //
 // Three properties make this work for ANY question, not one:
 //   1. Agency wording comes from lib/federal-agencies.js (27 agencies), not
@@ -53,7 +62,109 @@ bought buy buys buying purchase purchased purchases purchasing spent pays pay pa
 receives receiving gave given released posted signed sold sell sells move moved moves ordered picked selected chose chosen
 interested regardless tied go goes went gone got matter matters whoever whichever whether
 long often usually typically quickly fast slow soon early late
+reach reaches reached reaching achieve achieves achieved hit hits reaching finish finishes finished
+fy fiscal last
 `.trim().split(/\s+/));
+
+// ---- fiscal / calendar years -------------------------------------------
+// A federal fiscal year N runs Oct 1 of N-1 through Sep 30 of N. The year
+// leaves the phrase (an API keyword "fy2024" matches nothing) and comes back
+// as `years` plus `since`, the earliest start date the mentions imply.
+// `today` is injectable so "last year" is deterministic in tests.
+function toDate(today) {
+  if (today instanceof Date && !Number.isNaN(today.getTime())) return today;
+  if (typeof today === "string" && /^\d{4}-\d{2}-\d{2}/.test(today)) return new Date(today.slice(0, 10) + "T00:00:00Z");
+  return new Date();
+}
+function fiscalYearOf(d) {
+  return d.getUTCMonth() >= 9 ? d.getUTCFullYear() + 1 : d.getUTCFullYear();
+}
+function fourDigit(y) {
+  const n = Number(y);
+  return String(y).length === 2 ? 2000 + n : n;
+}
+function extractYears(text, today) {
+  const d = toDate(today);
+  const mentions = []; // { year, fiscal }
+  let out = String(text || "");
+  // FY2024, FY 24, FY'24, fiscal year 2024, fiscal 2024
+  out = out.replace(/\bFY\s?['\u2019]?(\d{4}|\d{2})\b/gi, (m, y) => { mentions.push({ year: fourDigit(y), fiscal: true }); return " "; });
+  out = out.replace(/\bfiscal(?:\s+year)?\s+['\u2019]?(\d{4}|\d{2})\b/gi, (m, y) => { mentions.push({ year: fourDigit(y), fiscal: true }); return " "; });
+  // last year / this year / last fiscal year / prior year
+  out = out.replace(/\b(last|past|previous|prior|this|current|next)\s+(fiscal\s+)?year\b/gi, (m, rel, fiscal) => {
+    const base = fiscal ? fiscalYearOf(d) : d.getUTCFullYear();
+    const shift = /^(last|past|previous|prior)$/i.test(rel) ? -1 : (/^next$/i.test(rel) ? 1 : 0);
+    mentions.push({ year: base + shift, fiscal: !!fiscal });
+    return " ";
+  });
+  // a bare calendar year: "since 2024", "in 2025", "2026 awards"
+  out = out.replace(/\b(20[0-4]\d)\b/g, (m, y) => { mentions.push({ year: Number(y), fiscal: false }); return " "; });
+  const years = [...new Set(mentions.map((m) => m.year))].sort((a, b) => a - b);
+  let since = null;
+  for (const m of mentions) {
+    const start = m.fiscal ? `${m.year - 1}-10-01` : `${m.year}-01-01`;
+    if (!since || start < since) since = start;
+  }
+  // A year that has not started cannot bound a search window.
+  if (since && since > d.toISOString().slice(0, 10)) since = null;
+  return { text: out, years, since };
+}
+
+// ---- set-asides -----------------------------------------------------------
+// USASpending `set_aside_type_codes` (FPDS type-of-set-aside codes). Probed
+// live 2026-09-14: the filter is enforced (an unknown code returns zero rows
+// rather than an error, so only these known codes are ever sent).
+const SET_ASIDE_CODES = {
+  "EDWOSB": ["EDWOSB", "EDWOSBSS"],
+  "WOSB": ["WOSB", "WOSBSS", "EDWOSB", "EDWOSBSS"],
+  "SDVOSB": ["SDVOSBC", "SDVOSBS"],
+  "VOSB": ["VSA", "VSS", "SDVOSBC", "SDVOSBS"],
+  "8(a)": ["8A", "8AN"],
+  "HUBZone": ["HZC", "HZS"],
+};
+const ALL_SMALL_BUSINESS_CODES = ["SBA", "SBP", "8A", "8AN", "HZC", "HZS", "SDVOSBC", "SDVOSBS", "WOSB", "WOSBSS", "EDWOSB", "EDWOSBSS", "VSA", "VSS"];
+// Order matters: the specific kind is matched (and removed) before the
+// generic wording that contains it (EDWOSB before WOSB, SDVOSB before VOSB).
+const SET_ASIDE_PATTERNS = [
+  { kind: "EDWOSB", re: /\b(edwosb|economically[- ]disadvantaged(\s+(women|woman)[- ]owned)?(\s+small\s+business(es)?)?)\b/gi },
+  { kind: "WOSB", re: /\b(wosb|(women|woman)[- ]owned(\s+small\s+business(es)?)?)\b/gi },
+  { kind: "SDVOSB", re: /\b(sdvosb|service[- ]disabled(\s+veteran[- ]owned)?(\s+small\s+business(es)?)?)\b/gi },
+  { kind: "VOSB", re: /\b(vosb|veteran[- ]owned(\s+small\s+business(es)?)?)\b/gi },
+  { kind: "8(a)", re: /(\b8\s?\(a\)|\b8a\b)/gi },
+  { kind: "HUBZone", re: /\bhub[- ]?zone\b/gi },
+  { kind: "small business", re: /\bsmall[- ]business(es)?\b|\bset[- ]asides?\b/gi },
+];
+// The matched wording, normalized, so it can be put back into the phrase
+// when it is the subject of the question ("What is VA's small business
+// goal?", "What is a set-aside?") rather than a filter on it.
+function normalizeSetAsideWording(m) {
+  const w = String(m).toLowerCase().replace(/\s+/g, " ").trim();
+  if (/^set[- ]asides?$/.test(w)) return "set-aside";
+  return w.replace(/businesses$/, "business");
+}
+function extractSetAside(text) {
+  let out = String(text || "");
+  const kinds = [];
+  const wording = [];
+  for (const p of SET_ASIDE_PATTERNS) {
+    let hit = false;
+    out = out.replace(p.re, (m) => { hit = true; wording.push(normalizeSetAsideWording(m)); return " "; });
+    if (hit) kinds.push(p.kind);
+  }
+  if (!kinds.length) return { text: out, setAside: null };
+  const specific = kinds.filter((k) => SET_ASIDE_CODES[k]);
+  const codes = specific.length
+    ? [...new Set(specific.flatMap((k) => SET_ASIDE_CODES[k]))]
+    : ALL_SMALL_BUSINESS_CODES.slice();
+  return { text: out, setAside: { kinds, codes, wording: [...new Set(wording)] } };
+}
+
+// Does the question ask for money over time? Decides whether the recipient
+// obligations-by-fiscal-year call runs (federal-data-apis.js).
+const OBLIGATIONS_RE = /\b(obligat|spend|spent|paid|pay|bought|buy|cost|since|fy|year)/i;
+function obligationsIntent(text) {
+  return OBLIGATIONS_RE.test(String(text || ""));
+}
 
 // Nouns that describe the KIND of record being asked for. The award and
 // opportunity searches are already scoped to those kinds, so passing the
@@ -133,15 +244,21 @@ function specificity(tok, acronyms) {
 
 /**
  * @param {string} question
- * @returns {{phrase, phraseTokens, rankedTokens, tokens, agency, agencies, corrected, corrections}}
+ * @param {{today?: Date|string}} [opts] today pins "last year" (tests)
+ * @returns {{phrase, phraseTokens, rankedTokens, tokens, agency, agencies, corrected, corrections, years, since, setAside, wantsObligations}}
  */
-function extractSearchTerms(question) {
+function extractSearchTerms(question, opts = {}) {
   const raw = String(question || "");
 
   // Agency wording out, agency codes in. The registry strips official names
   // and acronyms but deliberately keeps program words (TRICARE, MHS GENESIS,
   // Medicare) that are usually the best search term in the question.
-  const { text, codes } = stripAgencyWording(raw);
+  const stripped = stripAgencyWording(raw);
+  const codes = stripped.codes;
+  // Years and set-aside wording become filters, never keywords.
+  const yearsOut = extractYears(stripped.text, opts.today);
+  const setAsideOut = extractSetAside(yearsOut.text);
+  const text = setAsideOut.text;
 
   // All-caps runs in the ORIGINAL question are load-bearing: they survive
   // the stopword list and rank as high-specificity.
@@ -171,7 +288,24 @@ function extractSearchTerms(question) {
     tokens.push(w);
   }
 
-  const phraseTokens = tokens.filter((w) => !GENERIC.has(w)).slice(0, MAX_PHRASE_TOKENS);
+  let phraseTokens = tokens.filter((w) => !GENERIC.has(w)).slice(0, MAX_PHRASE_TOKENS);
+
+  // Set-aside wording is a FILTER when something more specific survives
+  // ("SDVOSB data governance awards" searches "data governance" with the
+  // SDVOSB codes). When nothing specific survives, the wording IS the
+  // subject ("What is VA's small business goal?", "What is a set-aside?")
+  // and stripping it sent "goal" or the raw question to SAM.gov, the
+  // Federal Register, GAO and Congress (2026-09-14 review). Put it back at
+  // the front of the phrase and into the tokens; the codes still travel as
+  // the USASpending filter.
+  const setAsideWords = setAsideOut.setAside
+    ? [...new Set(setAsideOut.setAside.wording.flatMap((w) => w.split(" ")))].filter((w) => w.length >= 2)
+    : [];
+  const nothingSpecific = phraseTokens.every((t) => specificity(t, acronyms) === 1);
+  if (setAsideWords.length && nothingSpecific) {
+    phraseTokens = [...setAsideWords, ...phraseTokens.filter((t) => !setAsideWords.includes(t))].slice(0, MAX_PHRASE_TOKENS);
+    tokens.unshift(...setAsideWords.filter((w) => !tokens.includes(w)));
+  }
   const rankedTokens = [...phraseTokens]
     .map((t, i) => ({ t, i, s: specificity(t, acronyms) }))
     .sort((a, b) => (b.s - a.s) || (a.i - b.i))
@@ -193,6 +327,10 @@ function extractSearchTerms(question) {
     agencies: codes,
     corrected,
     corrections,
+    years: yearsOut.years,
+    since: yearsOut.since,
+    setAside: setAsideOut.setAside,
+    wantsObligations: obligationsIntent(raw),
   };
 }
 
@@ -245,7 +383,13 @@ module.exports = {
   keywordLadder,
   specificity,
   levenshtein,
+  extractYears,
+  extractSetAside,
+  obligationsIntent,
+  fiscalYearOf,
   STOPWORDS,
   GENERIC,
   VOCAB_SET,
+  SET_ASIDE_CODES,
+  ALL_SMALL_BUSINESS_CODES,
 };

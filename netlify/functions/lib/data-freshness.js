@@ -18,8 +18,17 @@
 const fs = require("fs");
 const path = require("path");
 
+// Bundled libraries that carry hand-maintained facts. They are code, so
+// they are read through a static require (esbuild inlines it into the
+// Friday report bundle) rather than fs; `file` is still the repo path the
+// validator and the "registry covers the real repo" test read.
+const MODULES = {
+  "./known-vehicles": () => require("./known-vehicles"),
+};
+
 // `paths` are tried in order; `[]` iterates an array and `label` names each
-// item. warn_days is the age at which the row goes stale.
+// item. warn_days is the age at which the row goes stale. An entry with
+// `module` is a bundled lib (see MODULES) instead of a JSON file.
 const REGISTRY = [
   { id: "key-people", file: "data/key-people.json", paths: ["agencies[].verified_date"], label: "agencies[].agency_code", warn_days: 100, cadence: "quarterly", fix: "Re-verify each agency block against its source page (or the newer org chart) and bump verified_date." },
   { id: "agency-profiles", file: "data/premium/agency-profiles/agencies.json", paths: ["[].lastUpdated"], label: "[].slug", warn_days: 100, cadence: "quarterly", fix: "Re-verify the profile's read, vehicles and signals; bump lastUpdated." },
@@ -29,6 +38,9 @@ const REGISTRY = [
   { id: "forecast-portals", file: "data/forecast-portals.json", paths: ["_schema.last_verified"], warn_days: 100, cadence: "with each forecast read", fix: "Re-open each portal URL, fix format/cadence notes, bump _schema.last_verified." },
   { id: "capture-intelligence", file: "capture-intelligence.json", paths: ["published_at"], warn_days: 45, cadence: "monthly", fix: "Publish the next Capture Intelligence sheet." },
   { id: "pursuit-calendar-seed", file: "data/premium/pursuit-calendar-seed.json", paths: ["_meta.last_curated_at", "_meta.last_refreshed", "_meta.updated_at", "_schema.last_verified"], warn_days: 14, cadence: "weekly (cron PR)", fix: "The weekly seed-refresh PR has not merged; check the workflow." },
+  // 2026-09-14: the Ask MMT vehicle baseline. CIO-SP4 read as a live
+  // vehicle eight months after its cancellation because nothing aged it.
+  { id: "known-vehicles", file: "netlify/functions/lib/known-vehicles.js", module: "./known-vehicles", paths: ["VEHICLES[].verified"], label: "VEHICLES[].canonical", warn_days: 90, cadence: "quarterly", fix: "Re-check the vehicle's note against data/idiq-vehicles.json, contracts.json or the issuing office's notice; rewrite the note without undated future claims and bump verified." },
 ];
 
 // Content directories that render through BUILD markers. The markers must
@@ -88,13 +100,46 @@ function readJson(p) {
   return JSON.parse(fs.readFileSync(p, "utf8"));
 }
 
+// Loads a registry entry's data. JSON entries come from `root`. A `module`
+// entry is evaluated from the code that is running:
+//   - its source is under root (a repo checkout): loaded from there;
+//   - no source on disk but the static require resolves (an esbuild bundle,
+//     e.g. the Friday report on Lambda): loaded from the bundle;
+//   - its source sits beside this file but outside root (this lib being run
+//     against a different tree, as the freshness tests do): skipped, since
+//     the entry describes a tree that is not `root`;
+//   - none of the above (a copy of this file with no sibling): skipped.
+// Returns { data } | { skipped } | { error }.
+function loadRegistered(root, spec) {
+  const p = path.join(root, spec.file);
+  if (!spec.module) {
+    if (!fs.existsSync(p)) return { error: "file missing" };
+    try { return { data: readJson(p) }; } catch (e) { return { error: `malformed JSON: ${e.message}` }; }
+  }
+  const loader = MODULES[spec.module];
+  if (typeof loader !== "function") return { error: `module ${spec.module} is not in MODULES` };
+  const onDisk = fs.existsSync(p);
+  const besideMe = fs.existsSync(path.join(__dirname, path.basename(spec.file)));
+  if (onDisk) {
+    let resolved = null;
+    try { resolved = require.resolve(spec.module); } catch (e) { resolved = null; }
+    try {
+      if (resolved && path.resolve(resolved) === path.resolve(p)) return { data: loader() };
+      // a checkout other than the one this file lives in
+      return { data: module.require(p) };
+    } catch (e) { return { error: `module failed to load: ${e.message}` }; }
+  }
+  if (besideMe) return { skipped: `module source is beside this file but outside root ${root}` };
+  try { return { data: loader() }; } catch (e) { return { skipped: `module not bundled here (${e && e.code ? e.code : e.message})` }; }
+}
+
 function evaluateDatasets(root, today) {
   const rows = [];
   for (const spec of REGISTRY) {
-    const p = path.join(root, spec.file);
-    if (!fs.existsSync(p)) { rows.push({ id: spec.id, file: spec.file, label: null, date: null, age_days: Infinity, warn_days: spec.warn_days, stale: true, error: "file missing", fix: spec.fix, cadence: spec.cadence }); continue; }
-    let data;
-    try { data = readJson(p); } catch (e) { rows.push({ id: spec.id, file: spec.file, label: null, date: null, age_days: Infinity, warn_days: spec.warn_days, stale: true, error: `malformed JSON: ${e.message}`, fix: spec.fix, cadence: spec.cadence }); continue; }
+    const loaded = loadRegistered(root, spec);
+    if (loaded.skipped) { console.warn(`[data-freshness] ${spec.id}: ${loaded.skipped}; not evaluated`); continue; }
+    if (loaded.error) { rows.push({ id: spec.id, file: spec.file, label: null, date: null, age_days: Infinity, warn_days: spec.warn_days, stale: true, error: loaded.error, fix: spec.fix, cadence: spec.cadence }); continue; }
+    const data = loaded.data;
     let hits = [];
     for (const ps of spec.paths) {
       hits = resolvePath(data, ps, spec.label).filter((h) => h.value !== undefined && h.value !== null);
@@ -158,4 +203,4 @@ function evaluate(opts = {}) {
   return { today, root, datasets, content, stale_datasets: staleDatasets, stale_content: staleContent, stale_count: staleDatasets.length + staleContent.length };
 }
 
-module.exports = { REGISTRY, CONTENT_DIRS, evaluate, ageDays, resolvePath };
+module.exports = { REGISTRY, CONTENT_DIRS, MODULES, evaluate, ageDays, resolvePath, loadRegistered };

@@ -59,7 +59,7 @@ const SOURCE_CATALOG = [
     provides: "Open federal job announcements",
     use: "Hiring signals that show where an office is building capacity" },
   { id: "it_dashboard", name: "Federal IT Dashboard", url: "https://itdashboard.gov", mode: "conditional",
-    note: "itdashboard.gov retired its public API in 2025 and its data-feed tool is form-driven, so nothing can be queried at question time. Listed so you know it will not be cited.",
+    note: "itdashboard.gov says OMB is taking steps to sunset the site and that, effective April 2026, agency reporting narrows to statutorily required data (read 2026-09-14). Its public API was retired earlier (every /api path returns 404), so nothing can be queried at question time. Listed so you know it will not be cited.",
     provides: "Agency IT investment portfolios and CIO ratings",
     use: "The investment line and its rating behind an IT program" },
   { id: "cms", name: "CMS provider data", url: "https://data.cms.gov", mode: "live",
@@ -68,7 +68,8 @@ const SOURCE_CATALOG = [
   { id: "onc_healthit", name: "ONC Health IT data", url: "https://www.healthit.gov/data", mode: "live",
     provides: "Health IT adoption, interoperability, and certification statistics",
     use: "Adoption and interoperability numbers behind a health IT claim" },
-  { id: "onc_chpl", name: "ONC CHPL", url: "https://chpl.healthit.gov", mode: "live",
+  { id: "onc_chpl", name: "ONC CHPL", url: "https://chpl.healthit.gov", mode: "conditional",
+    note: "The CHPL API answers 401 to its anonymous key (probed 2026-09-14), so the client returns nothing until a free key from chpl.healthit.gov is set as CHPL_API_KEY. Listed so you know it will not be cited until then.",
     provides: "Certified Health IT Product List",
     use: "Whether a product and edition are certified, and for what criteria" },
   { id: "hhs_open", name: "HHS open data", url: "https://healthdata.gov", mode: "live",
@@ -116,32 +117,73 @@ const CATALOG_BY_ID = Object.fromEntries(SOURCE_CATALOG.map((s) => [s.id, s]));
 const LINK_KEYS = /^(url|uilink|link|permalink|source_url|href|pdf_url|study_url)$/i;
 const LIST_LINK_KEYS = /^(citations|links|urls)$/i;
 const MAX_LINKS_PER_SYSTEM = 4;
+// The sibling field that names a record, in preference order. The widget
+// used to print "record 1 · record 2"; a reader could not tell the Immuta
+// award from the T4NG2 notice without clicking each one.
+const LABEL_KEYS = ["title", "name", "piid", "award_id", "noticeId", "notice_id", "solicitation_number", "description"];
+const LABEL_MAX = 60;
+
+function labelFor(obj) {
+  if (!obj || typeof obj !== "object" || Array.isArray(obj)) return null;
+  const lower = Object.fromEntries(Object.keys(obj).map((k) => [k.toLowerCase(), k]));
+  for (const key of LABEL_KEYS) {
+    const actual = lower[key.toLowerCase()];
+    if (!actual) continue;
+    const v = obj[actual];
+    if (typeof v !== "string" && typeof v !== "number") continue;
+    const s = String(v).replace(/\s+/g, " ").trim();
+    if (!s) continue;
+    return s.length > LABEL_MAX ? s.slice(0, LABEL_MAX - 3).trimEnd() + "..." : s;
+  }
+  return null;
+}
 
 /**
  * Walk an enrichment result (bounded depth) and collect the http(s) links
- * the model was shown. Network-free; never throws.
+ * the model was shown, each as { url, label } where label is the record's
+ * nearest sibling title/name/id (or null for a bare citation list).
+ * Deduped by url, capped at MAX_LINKS_PER_SYSTEM. Network-free; never throws.
+ * @returns {Array<{url:string, label:string|null}>}
  */
-function extractLinks(value, depth = 0, out = new Set()) {
-  if (value == null || depth > 4 || out.size >= MAX_LINKS_PER_SYSTEM) return out;
+function extractLinks(value, depth = 0, out = [], seen = new Set()) {
+  if (value == null || depth > 4 || out.length >= MAX_LINKS_PER_SYSTEM) return out;
+  const add = (url, label) => {
+    const u = String(url).trim();
+    if (seen.has(u) || out.length >= MAX_LINKS_PER_SYSTEM) return;
+    seen.add(u);
+    out.push({ url: u, label: label || null });
+  };
   if (Array.isArray(value)) {
-    for (const v of value) extractLinks(v, depth + 1, out);
+    for (const v of value) extractLinks(v, depth + 1, out, seen);
     return out;
   }
   if (typeof value === "object") {
+    let label;
     for (const [k, v] of Object.entries(value)) {
       if (LINK_KEYS.test(k) && typeof v === "string" && /^https?:\/\//i.test(v)) {
-        if (out.size < MAX_LINKS_PER_SYSTEM) out.add(v.trim());
+        if (label === undefined) label = labelFor(value);
+        add(v, label);
       } else if (LIST_LINK_KEYS.test(k) && Array.isArray(v)) {
         // e.g. the web search's `citations: [url, url]`
         for (const item of v) {
-          if (typeof item === "string" && /^https?:\/\//i.test(item) && out.size < MAX_LINKS_PER_SYSTEM) out.add(item.trim());
+          if (typeof item === "string" && /^https?:\/\//i.test(item)) add(item, null);
         }
       } else if (typeof v === "object") {
-        extractLinks(v, depth + 1, out);
+        extractLinks(v, depth + 1, out, seen);
       }
     }
   }
   return out;
+}
+
+/**
+ * The url of a link entry, whether it is the new { url, label } object or
+ * the plain string older answers (and any cached response) carried.
+ */
+function linkUrl(entry) {
+  if (!entry) return "";
+  if (typeof entry === "string") return entry;
+  return typeof entry.url === "string" ? entry.url : "";
 }
 
 /**
@@ -171,10 +213,13 @@ function splitFederalData(data) {
  *   fan-out system; `used` is true when its formatted context was non-empty
  *   (i.e. the model actually saw something from it).
  * @param {Array} corpusMatches - MMT archive matches ({title, date, type, url})
- * @returns {Array<{id, name, kind, url, mode, links?, title?, date?}>}
+ * @param {string|null} [queriedAt] - ISO time the fan-out ran, stamped on
+ *   each system source as `queried_at` (null when the caller does not say).
+ * @returns {Array<{id, name, kind, url, mode, links?, queried_at?, title?, date?}>}
  */
-function buildSources({ systems = [], corpusMatches = [] } = {}) {
+function buildSources({ systems = [], corpusMatches = [], queriedAt = null } = {}) {
   const out = [];
+  const stamp = typeof queriedAt === "string" && queriedAt ? queriedAt : null;
   for (const m of corpusMatches || []) {
     if (!m || !m.url) continue;
     out.push({
@@ -199,10 +244,11 @@ function buildSources({ systems = [], corpusMatches = [] } = {}) {
       name: cat.name,
       url: cat.url,
       mode: cat.mode,
-      links: Array.from(extractLinks(s.data)),
+      links: extractLinks(s.data),
+      queried_at: stamp,
     });
   }
   return out;
 }
 
-module.exports = { SOURCE_CATALOG, CATALOG_BY_ID, buildSources, extractLinks, splitFederalData };
+module.exports = { SOURCE_CATALOG, CATALOG_BY_ID, buildSources, extractLinks, linkUrl, splitFederalData };

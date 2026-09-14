@@ -24,7 +24,7 @@ const ACRONYMS = {
   IDIQ: "Indefinite Delivery, Indefinite Quantity", GWAC: "Government-Wide Acquisition Contract",
   BPA: "Blanket Purchase Agreement", MAC: "Multiple Award Contract", MAS: "Multiple Award Schedule",
   RFP: "Request for Proposal", RFI: "Request for Information", RFQ: "Request for Quotation",
-  RFO: "Refresh (GSA Multiple Award Schedule solicitation refresh)", SOW: "Statement of Work",
+  RFO: "Revolutionary FAR Overhaul", SOW: "Statement of Work",
   PWS: "Performance Work Statement", SOO: "Statement of Objectives", CLIN: "Contract Line Item Number",
   POP: "Period of Performance", NTP: "Notice to Proceed", CPARS: "Contractor Performance Assessment Reporting System",
   FPDS: "Federal Procurement Data System", PIID: "Procurement Instrument Identifier", NAICS: "North American Industry Classification System",
@@ -33,20 +33,24 @@ const ACRONYMS = {
   CMMI: "Center for Medicare and Medicaid Innovation", RSR: "Ryan White HIV/AIDS Program Services Report", RPM: "Remote Patient Monitoring",
   DOI: "Digital Object Identifier", PHR: "Personal Health Record", CDS: "Clinical Decision Support", CPOE: "Computerized Provider Order Entry",
   PSC: "Product Service Code", SAT: "Simplified Acquisition Threshold", MPT: "Micro-Purchase Threshold",
-  LPTA: "Lowest Price Technically Acceptable", BVTO: "Best Value Tradeoff", SSEB: "Source Selection Evaluation Board",
+  LPTA: "Lowest Price Technically Acceptable", BVTO: "Best Value Trade-Off", SSEB: "Source Selection Evaluation Board",
   SSA: "Source Selection Authority", SSAC: "Source Selection Advisory Council", COR: "Contracting Officer's Representative",
   KO: "Contracting Officer", CO: "Contracting Officer", HCA: "Head of Contracting Activity",
   CSO: "Commercial Solutions Opening", AoI: "Area of Interest", AOI: "Area of Interest",
   OTA: "Other Transaction Authority", OT: "Other Transaction", BAA: "Broad Agency Announcement",
   "J&A": "Justification and Approval", CICA: "Competition in Contracting Act", GAO: "Government Accountability Office",
   COFC: "Court of Federal Claims", FAR: "Federal Acquisition Regulation", DFARS: "Defense Federal Acquisition Regulation Supplement",
-  GSAR: "General Services Administration Acquisition Regulation", VAAR: "VA Acquisition Regulation",
-  HHSAR: "HHS Acquisition Regulation", FASA: "Federal Acquisition Streamlining Act",
+  GSAR: "General Services Administration Acquisition Regulation", VAAR: "Veterans Affairs Acquisition Regulation",
+  HHSAR: "Health and Human Services Acquisition Regulation", FASA: "Federal Acquisition Streamlining Act",
   OSDBU: "Office of Small and Disadvantaged Business Utilization", SBA: "Small Business Administration",
   WOSB: "Woman-Owned Small Business", EDWOSB: "Economically Disadvantaged Woman-Owned Small Business",
   SDVOSB: "Service-Disabled Veteran-Owned Small Business", VOSB: "Veteran-Owned Small Business",
   HUBZone: "Historically Underutilized Business Zone", SB: "Small Business", OSB: "Other Than Small Business",
-  ISBEE: "Individual Subcontracting Report", "8(a)": "SBA 8(a) Business Development program",
+  // 2026-09-14: ISBEE was listed as "Individual Subcontracting Report" (that
+  // is ISR). ISBEE is the Buy Indian Act set-aside category, 48 CFR 1452.280-1.
+  ISBEE: "Indian Small Business Economic Enterprise", IEE: "Indian Economic Enterprise",
+  ISR: "Individual Subcontracting Report (eSRS); in a military operations context, Intelligence, Surveillance, and Reconnaissance",
+  "8(a)": "SBA 8(a) Business Development program",
   SEWP: "Solutions for Enterprise-Wide Procurement (NASA)", NITAAC: "NIH Information Technology Acquisition and Assessment Center",
   "CIO-SP3": "Chief Information Officer Solutions and Partners 3", "CIO-CS": "Chief Information Officer Commodities and Solutions",
   T4NG: "Transformation Twenty-One Total Technology Next Generation", T4NG2: "Transformation Twenty-One Total Technology Next Generation 2",
@@ -57,6 +61,11 @@ const ACRONYMS = {
   DHA: "Defense Health Agency", MHS: "Military Health System", MTF: "Military Treatment Facility",
   DHP: "Defense Health Program", DHMS: "Defense Healthcare Management Systems", DHMSM: "Defense Healthcare Management Systems Modernization",
   FEHRM: "Federal Electronic Health Record Modernization office", JTS: "Joint Trauma System", JWHS: "Joint Warfighter Health System",
+  // DHA reorganization offices and governance boards, verified in MMT's own
+  // published org chart and the 2026-05-29 issue (in-repo sources).
+  OWHA: "Office of Warfighter Health Advantage (DHA)", HCDS: "Health Care Delivery Solutions (DHA)",
+  EMB: "Executive Management Board (DHA)", CEB: "Corporate Executive Board (DHA)", OIB: "Operations Integration Board (DHA)",
+  HCIB: "Healthcare Integration Board (DHA)", ROB: "Resource Oversight Board (DHA)", CTC: "Capability Trade Council (DHA)",
   OASD: "Office of the Assistant Secretary of Defense", "ASD(HA)": "Assistant Secretary of Defense for Health Affairs",
   USU: "Uniformed Services University of the Health Sciences", USUHS: "Uniformed Services University of the Health Sciences",
   VHA: "Veterans Health Administration", VBA: "Veterans Benefits Administration", NCA: "National Cemetery Administration",
@@ -86,6 +95,24 @@ const ACRONYMS = {
   RDT: "Research, Development, Test and Evaluation", "RDT&E": "Research, Development, Test and Evaluation", "O&M": "Operation and Maintenance",
   MILCON: "Military Construction", DoD: "Department of Defense", DOD: "Department of Defense", VA: "Department of Veterans Affairs",
   HHS: "Department of Health and Human Services", DHS: "Department of Homeland Security", EO: "Executive Order",
+  // VA research offices and clinical terms that recur in PubMed and VA
+  // context (the research eval row expanded HSRD on its own, 2026-09-14)
+  HSRD: "Health Services Research and Development (VA)", "HSR&D": "Health Services Research and Development (VA)",
+  QUERI: "Quality Enhancement Research Initiative (VA)", ORD: "Office of Research and Development (VA)",
+  RCT: "Randomized Controlled Trial", COPD: "Chronic Obstructive Pulmonary Disease", CHF: "Congestive Heart Failure",
+  PTSD: "Post-Traumatic Stress Disorder", TBI: "Traumatic Brain Injury", ICU: "Intensive Care Unit",
+  // Vendors that recur in federal health IT awards (company names the model
+  // otherwise expands on its own; the eval flagged GDIT and SMS 2026-09-14)
+  GDIT: "General Dynamics Information Technology", SAIC: "Science Applications International Corporation",
+  BAH: "Booz Allen Hamilton", HII: "Huntington Ingalls Industries",
+  // SMS is text messaging in PubMed and ClinicalTrials.gov titles (VEText,
+  // Annie) and a Leidos subsidiary in a USASpending recipient name; both
+  // senses in one row, the ISR pattern. NCI is deliberately absent: the
+  // token is the National Cancer Institute (NIH) in retrieved context, and
+  // the vendor no longer trades under that name.
+  SMS: "Short Message Service (text messaging); in a USASpending recipient name, Systems Made Simple (a Leidos company)",
+  LMI: "Logistics Management Institute", CACI: "CACI International (company name)", CGI: "CGI Federal (company name)",
+  KBR: "KBR (company name)", ICF: "ICF International (company name)", DLT: "DLT Solutions (company name)",
   // General IT
   AI: "Artificial Intelligence", ML: "Machine Learning", NLP: "Natural Language Processing", API: "Application Programming Interface",
   IT: "Information Technology", COTS: "Commercial Off-the-Shelf", SaaS: "Software as a Service", PaaS: "Platform as a Service",

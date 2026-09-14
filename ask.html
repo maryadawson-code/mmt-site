@@ -34,6 +34,16 @@
     details.ask-faq { background:var(--mmt-soft,#F3F4F6); border-radius:12px; padding:16px 20px; margin-bottom:10px; }
     details.ask-faq summary { cursor:pointer; font-weight:700; color:var(--mmt-navy,#0A192F); font-size:15px; list-style:none; }
     details.ask-faq p { margin-top:10px; font-size:14px; line-height:1.55; }
+    .ask-grid > * { min-width:0; }
+    #ask, #mmt-ask-embed { min-width:0; max-width:100%; }
+    .ask-q { min-height:44px; }
+    @media (max-width: 640px) {
+      .ask-table thead { display:none; }
+      .ask-table tr { display:block; padding:10px 0; border-top:1px solid var(--mmt-border,#E5E7EB); }
+      .ask-table td { display:block; border-top:none; padding:3px 0; }
+      .ask-table td[data-label]::before { content:attr(data-label); display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--mmt-text-secondary,#6B7280); margin-bottom:2px; }
+      .ask-table td:first-child { font-weight:700; padding-bottom:6px; }
+    }
   </style>
 </head>
 <body>
@@ -54,15 +64,15 @@
 
         <h2 style="font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary,#6B7280);margin:0 0 12px;">What people ask it</h2>
         <div style="display:flex;flex-direction:column;gap:8px;">
-          <a class="ask-q" href="/ask?q=What%27s%20the%20status%20of%20CCN%20Next%20Gen%3F"><strong>Contracts</strong><span>What's the status of CCN Next Gen?</span></a>
-          <a class="ask-q" href="/ask?q=Who%20are%20the%20incumbents%20on%20T4NG2%3F"><strong>Vehicles</strong><span>Who are the incumbents on T4NG2?</span></a>
-          <a class="ask-q" href="/ask?q=What%27s%20moving%20in%20DHA%27s%20FY2027%20IT%20budget%3F"><strong>Budgets</strong><span>What's moving in DHA's FY2027 IT budget?</span></a>
-          <a class="ask-q" href="/ask?q=What%20did%20the%20FY2027%20NDAA%20change%20for%20federal%20EHR%20programs%3F"><strong>Policy</strong><span>What did the FY2027 NDAA change for federal EHR programs?</span></a>
-          <a class="ask-q" href="/ask?q=What%20does%20the%20published%20research%20say%20about%20remote%20patient%20monitoring%20outcomes%20in%20VA%3F"><strong>Evidence</strong><span>What does the published research say about remote patient monitoring outcomes in VA?</span></a>
-          <a class="ask-q" href="/ask?q=How%20much%20has%20VA%20obligated%20to%20Oracle%20since%20FY2024%3F"><strong>Spend</strong><span>How much has VA obligated to Oracle since FY2024?</span></a>
+          <a class="ask-q" href="#ask" data-q="What's the status of CCN Next Gen?"><strong>Contracts</strong><span>What's the status of CCN Next Gen?</span></a>
+          <a class="ask-q" href="#ask" data-q="Who are the incumbents on T4NG2?"><strong>Vehicles</strong><span>Who are the incumbents on T4NG2?</span></a>
+          <a class="ask-q" href="#ask" data-q="What's moving in DHA's FY2027 IT budget?"><strong>Budgets</strong><span>What's moving in DHA's FY2027 IT budget?</span></a>
+          <a class="ask-q" href="#ask" data-q="What did the FY2027 NDAA change for federal EHR programs?"><strong>Policy</strong><span>What did the FY2027 NDAA change for federal EHR programs?</span></a>
+          <a class="ask-q" href="#ask" data-q="What does the published research say about remote patient monitoring outcomes in VA?"><strong>Evidence</strong><span>What does the published research say about remote patient monitoring outcomes in VA?</span></a>
+          <a class="ask-q" href="#ask" data-q="How much has VA obligated to Oracle since FY2024?"><strong>Spend</strong><span>How much has VA obligated to Oracle since FY2024?</span></a>
         </div>
       </div>
-      <div id="ask">
+      <div id="ask" data-cap-free="<!-- BUILD:ASK_MMT_CAP_FREE -->" data-cap-premium="<!-- BUILD:ASK_MMT_CAP_PREMIUM -->">
         <div id="mmt-ask-embed" aria-live="polite" style="min-height:600px;border:1px solid var(--mmt-border,#E5E7EB);border-radius:16px;background:var(--mmt-soft,#F3F4F6);display:flex;align-items:center;justify-content:center;color:var(--mmt-text-secondary,#6B7280);font-size:14px;">Loading Ask MMT&hellip;</div>
       </div>
     </div>
@@ -105,11 +115,11 @@
         <table class="ask-table">
           <thead><tr><th></th><th>Free</th><th>Premium</th><th>Institutional</th></tr></thead>
           <tbody>
-            <tr><td style="font-weight:600;">Ask MMT questions</td><td><!-- BUILD:ASK_MMT_CAP_FREE --> a month</td><td><!-- BUILD:ASK_MMT_CAP_PREMIUM --> a month</td><td><!-- BUILD:ASK_MMT_CAP_INSTITUTIONAL --> pooled, up to 5 seats</td></tr>
-            <tr><td style="font-weight:600;">Sources on every answer</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
-            <tr><td style="font-weight:600;">Analyst Q&amp;A with Mary</td><td>No</td><td>1 a month (2 on Founding, with priority review)</td><td>3 a month, 2-business-day SLA</td></tr>
-            <tr><td style="font-weight:600;">Everything else in Premium</td><td>No</td><td>Yes</td><td>Yes</td></tr>
-            <tr><td style="font-weight:600;">Price</td><td>$0</td><td>$29.99/month, $249/year, Founding $199/year while spots last</td><td>$2,500 to $5,000/year</td></tr>
+            <tr><td style="font-weight:600;">Ask MMT questions</td><td data-label="Free"><!-- BUILD:ASK_MMT_CAP_FREE --> a month</td><td data-label="Premium"><!-- BUILD:ASK_MMT_CAP_PREMIUM --> a month</td><td data-label="Institutional"><!-- BUILD:ASK_MMT_CAP_INSTITUTIONAL --> pooled, up to 5 seats</td></tr>
+            <tr><td style="font-weight:600;">Sources on every answer</td><td data-label="Free">Yes</td><td data-label="Premium">Yes</td><td data-label="Institutional">Yes</td></tr>
+            <tr><td style="font-weight:600;">Analyst Q&amp;A with Mary</td><td data-label="Free">No</td><td data-label="Premium">1 a month (2 on Founding, with priority review)</td><td data-label="Institutional">3 a month, 2-business-day SLA</td></tr>
+            <tr><td style="font-weight:600;">Everything else in Premium</td><td data-label="Free">No</td><td data-label="Premium">Yes</td><td data-label="Institutional">Yes</td></tr>
+            <tr><td style="font-weight:600;">Price</td><td data-label="Free">$0</td><td data-label="Premium">$29.99/month, $249/year, Founding $199/year while spots last</td><td data-label="Institutional">$2,500 to $5,000/year</td></tr>
           </tbody>
         </table>
       </div>

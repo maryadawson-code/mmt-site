@@ -396,8 +396,8 @@ function generateAskMmtSourcesRows(catalog, full) {
     const note = src.note ? `<span class="src-note" style="display:block;margin-top:4px;font-size:12px;color:#6B7280;">${esc(src.note)}</span>` : '';
     const name = `<a href="${esc(src.url)}" target="_blank" rel="noopener" style="color:#0A192F;font-weight:600;">${esc(src.name)}</a>`;
     return full
-      ? `<tr><td>${name}${note}</td><td>${mode}</td><td>${esc(src.provides)}</td><td>${esc(src.use)}</td></tr>`
-      : `<tr><td>${name}</td><td>${mode}</td><td>${esc(src.provides)}</td></tr>`;
+      ? `<tr><td data-label="Source">${name}${note}</td><td data-label="How">${mode}</td><td data-label="What it provides">${esc(src.provides)}</td><td data-label="How Ask MMT uses it">${esc(src.use)}</td></tr>`
+      : `<tr><td data-label="Source">${name}</td><td data-label="How">${mode}</td><td data-label="What it provides">${esc(src.provides)}</td></tr>`;
   });
   return rows.join('\n            ');
 }

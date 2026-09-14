@@ -5,15 +5,27 @@
 //   - an anonymous answer holds its sources back until an email unlocks them
 //   - the unlock attributes the turn, writes ONE signup event, returns sources
 //   - caps are enforced from ask-mmt-access CHAT_CAPS / FREE_CAP
+// 2026-09-14 additions:
+//   - ASK_MMT_DISABLED=true answers 503 PAUSED before Supabase is touched
+//   - turn events carry duration_ms, tokens_used, cost_estimate (price table)
+//     and the guard counts; every answer returns turn_id
+//   - feedback writes one row per call and emails Mary once per turn
 // Dates are PINNED via the injected `now` and ASK_MMT_FREE_LAUNCH.
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { makeHandler, FREE_TURN_EVENT, MEMBER_TURN_EVENT } from "../../netlify/functions/premium-chat.js";
+import { makeHandler, costEstimate, tokensUsed, FREE_TURN_EVENT, MEMBER_TURN_EVENT, FEEDBACK_EVENT } from "../../netlify/functions/premium-chat.js";
 import { CHAT_CAPS, FREE_CAP } from "../../netlify/functions/lib/ask-mmt-access.js";
 
 // ---- Supabase double: enough PostgREST to run the handler's queries ----
+// ops_events.id is a uuid in prod; the ask path returns it as turn_id and
+// the feedback path refuses anything that is not uuid-shaped, so the double
+// mints uuid-shaped ids. The counter lives outside fakeSupabase because
+// setup() builds a fresh double per request: a per-double counter would
+// hand the feedback row the same id as the turn it is about.
+let nextId = 1000;
+const mintId = () => `00000000-0000-4000-8000-${String(nextId++).padStart(12, "0")}`;
+
 function fakeSupabase(store, clock) {
-  let nextId = 1000;
   const detailKey = (col) => (col.startsWith("details->>") ? col.slice("details->>".length) : null);
   function builder(table) {
     const q = { table, method: "select", filters: [], head: false, count: false, single: false, payload: null, lim: null };
@@ -34,7 +46,7 @@ function fakeSupabase(store, clock) {
   function matches(row, f) {
     const dk = detailKey(f.col);
     const v = dk ? (row.details || {})[dk] : row[f.col];
-    if (f.op === "eq") return v === f.val;
+    if (f.op === "eq") return v === f.val || (v != null && f.val != null && String(v) === String(f.val));
     if (f.op === "is") return f.val === null ? v == null : v === f.val;
     if (f.op === "gte") return String(v) >= String(f.val);
     if (f.op === "in") return f.vals.includes(v);
@@ -43,7 +55,7 @@ function fakeSupabase(store, clock) {
   function run(q) {
     const rows = store.filter((r) => r.__table === q.table);
     if (q.method === "insert") {
-      const row = { ...q.payload, __table: q.table, id: nextId++, created_at: clock().toISOString() };
+      const row = { ...q.payload, __table: q.table, id: mintId(), created_at: clock().toISOString() };
       store.push(row);
       return { data: q.single ? { id: row.id } : [{ id: row.id }], error: null };
     }
@@ -64,16 +76,22 @@ const SOURCES = [
   { id: "mmt_archive", kind: "article", name: "Mission Meets Tech", title: "T4NG2", url: "https://missionmeetstech.com/x" },
   { id: "usaspending", kind: "system", name: "USASpending.gov", url: "https://www.usaspending.gov", mode: "live", links: [] },
 ];
-const ANSWER = { answer: "Bottom line. Sources below.", agency: "VA", hasData: true, model: "test", sources: SOURCES };
+const USAGE = { input_tokens: 1200, output_tokens: 300 };
+const ANSWER = {
+  answer: "Bottom line. Sources below.", agency: "VA", hasData: true, model: "claude-haiku-4-5-20251001", sources: SOURCES,
+  unavailable: [{ id: "sam_opportunities", name: "SAM.gov Opportunities", reason: "daily quota spent" }],
+  usage: USAGE, timings: { enrichment_ms: 800, model_ms: 2100 }, carried: true, unlisted_link_count: 1, unsupported_dollar_count: 2,
+};
 
-function setup({ now = "2026-09-25T15:00:00Z", store = [], entitlement = { ok: true, tier: "premium" }, verify } = {}) {
+function setup({ now = "2026-09-25T15:00:00Z", store = [], entitlement = { ok: true, tier: "premium" }, verify, answer = ANSWER } = {}) {
   const clock = () => new Date(now);
-  const calls = { answer: [] };
+  const calls = { answer: [], createClient: 0, emails: [] };
   const handler = makeHandler({
-    createClient: () => fakeSupabase(store, clock),
-    answerQuestion: async (args) => { calls.answer.push(args); return ANSWER; },
+    createClient: () => { calls.createClient += 1; return fakeSupabase(store, clock); },
+    answerQuestion: async (args) => { calls.answer.push(args); return answer; },
     loadEntitlement: async () => entitlement,
     verifyToken: verify || ((t) => (t === "good" ? { ok: true, email: "member@example.com" } : { ok: false, reason: "bad_signature" })),
+    sendEmail: async (mail) => { calls.emails.push(mail); return { success: true, id: `re_${calls.emails.length}` }; },
     now: clock,
   });
   const post = (body, headers = {}) => handler({ httpMethod: "POST", headers: { "x-nf-client-connection-ip": "203.0.113.5", ...headers }, body: JSON.stringify(body) })
@@ -86,10 +104,11 @@ beforeEach(() => {
   process.env.SUPABASE_SERVICE_KEY = "test-service-key-0123456789";
   delete process.env.ASK_MMT_FREE_DISABLED;
   delete process.env.ASK_MMT_FREE_LAUNCH;
+  delete process.env.ASK_MMT_DISABLED;
   delete process.env.BUTTONDOWN_API_KEY;
   delete process.env.RESEND_API_KEY;
 });
-afterEach(() => { delete process.env.ASK_MMT_FREE_LAUNCH; delete process.env.ASK_MMT_FREE_DISABLED; });
+afterEach(() => { delete process.env.ASK_MMT_FREE_LAUNCH; delete process.env.ASK_MMT_FREE_DISABLED; delete process.env.ASK_MMT_DISABLED; });
 
 describe("members", () => {
   it("a valid token gets the tier cap and full sources; the body email is ignored", async () => {
@@ -227,5 +246,168 @@ describe("request shape", () => {
     const { post } = setup();
     expect((await post({ token: "good", question: "" })).status).toBe(400);
     expect((await post({ token: "good", question: "x".repeat(1001) })).status).toBe(400);
+  });
+});
+
+describe("kill switch (ASK_MMT_DISABLED)", () => {
+  it("answers 503 PAUSED for every action before Supabase or the assistant is touched", async () => {
+    process.env.ASK_MMT_DISABLED = "true";
+    const { post, calls } = setup();
+    for (const body of [
+      { token: "good", question: "Who holds T4NG2?" },
+      { question: "Who holds T4NG2?" },
+      { action: "unlock", turn_id: "0123456789abcdef01234567", email: "a@example.com" },
+      { action: "feedback", turn_id: "1000", verdict: "up" },
+    ]) {
+      const r = await post(body);
+      expect(r.status).toBe(503);
+      expect(r.data).toEqual({ error: "Ask MMT is paused for maintenance. Your allowance is not charged.", reason_code: "PAUSED" });
+    }
+    expect(calls.createClient).toBe(0);
+    expect(calls.answer).toHaveLength(0);
+  });
+
+  it("any other value leaves the tool on", async () => {
+    process.env.ASK_MMT_DISABLED = "false";
+    const { post } = setup();
+    expect((await post({ token: "good", question: "Who holds T4NG2?" })).status).toBe(200);
+  });
+});
+
+describe("turn telemetry and turn_id", () => {
+  it("the member turn event carries duration, tokens, cost from the price table, model, timings, carried and the guard counts; the response returns the row id", async () => {
+    const { post, store } = setup();
+    const r = await post({ token: "good", question: "Who holds T4NG2?" });
+    const turn = store.find((x) => x.event_type === MEMBER_TURN_EVENT);
+    expect(r.data.turn_id).toBe(turn.id);
+    expect(turn.duration_ms).toBeGreaterThan(0);
+    expect(turn.tokens_used).toBe(USAGE.input_tokens + USAGE.output_tokens);
+    expect(turn.cost_estimate).toBe((1200 * 1 + 300 * 5) / 1e6);
+    expect(turn.details.model).toBe("claude-haiku-4-5-20251001");
+    expect(turn.details.enrichment_ms).toBe(800);
+    expect(turn.details.model_ms).toBe(2100);
+    expect(turn.details.carried).toBe(true);
+    expect(turn.details.unlisted_link_count).toBe(1);
+    expect(turn.details.unsupported_dollar_count).toBe(2);
+    expect(turn.details.unavailable).toEqual(["sam_opportunities"]);
+  });
+
+  it("the free turn event carries the same columns and the response returns turn_id alongside the sources", async () => {
+    const { post, store } = setup();
+    const r = await post({ email: "f@example.com", question: "Who holds T4NG2?" });
+    const turn = store.find((x) => x.event_type === FREE_TURN_EVENT);
+    expect(r.data.turn_id).toBe(turn.id);
+    expect(turn.tokens_used).toBe(1500);
+    expect(turn.cost_estimate).toBe(0.0027);
+    expect(turn.duration_ms).toBeGreaterThan(0);
+    expect(turn.details.model).toBe("claude-haiku-4-5-20251001");
+    expect(turn.details.carried).toBe(true);
+    const anon = await post({ question: "Who holds T4NG2?" });
+    expect(anon.data.turn_id).toMatch(/^[0-9a-f-]{36}$/);
+  });
+
+  it("an answer with no usage records null tokens and cost instead of zero", async () => {
+    const { post, store } = setup({ answer: { ...ANSWER, usage: undefined, model: "claude-mystery-9", timings: undefined, carried: undefined } });
+    await post({ token: "good", question: "Who holds T4NG2?" });
+    const turn = store.find((x) => x.event_type === MEMBER_TURN_EVENT);
+    expect(turn.tokens_used).toBeNull();
+    expect(turn.cost_estimate).toBeNull();
+    expect(turn.details.enrichment_ms).toBeNull();
+    expect(turn.details.carried).toBe(false);
+  });
+
+  it("costEstimate follows the in-code price table and returns null for an unknown model", () => {
+    expect(costEstimate("claude-haiku-4-5-20251001", USAGE)).toBe(0.0027);
+    expect(costEstimate("claude-sonnet-5", { input_tokens: 1000000, output_tokens: 1000000 })).toBe(12);
+    expect(costEstimate("claude-opus-5-20260301", { input_tokens: 1000000, output_tokens: 0 })).toBe(15);
+    expect(costEstimate("claude-sonnet-4-5", USAGE)).toBeNull();
+    expect(costEstimate(undefined, USAGE)).toBeNull();
+    expect(tokensUsed({ input_tokens: 5, output_tokens: 7 })).toBe(12);
+    expect(tokensUsed(null)).toBeNull();
+  });
+});
+
+describe("feedback", () => {
+  it("records a row per call and emails Mary once per turn for 'wrong'", async () => {
+    const { post, store, calls } = setup();
+    const a = await post({ token: "good", question: "Who holds T4NG2?" });
+    const turnId = a.data.turn_id;
+
+    const up = await post({ action: "feedback", turn_id: turnId, verdict: "up", token: "good" });
+    expect(up.status).toBe(200);
+    expect(up.data).toEqual({ ok: true, emailed: false });
+    expect(calls.emails).toHaveLength(0);
+
+    const wrong = await post({ action: "feedback", turn_id: turnId, verdict: "wrong", note: "  T4NG2 went to 33 primes, not 30. " + "x".repeat(600), token: "good" });
+    expect(wrong.status).toBe(200);
+    expect(wrong.data).toEqual({ ok: true, emailed: true });
+    expect(calls.emails).toHaveLength(1);
+    const mail = calls.emails[0];
+    expect(mail.to).toBe("mary@missionmeetstech.com");
+    expect(mail.subject).toContain("Who holds T4NG2?");
+    expect(mail.html).toContain("Bottom line. Sources below.");
+    expect(mail.html).toContain("T4NG2 went to 33 primes");
+    expect(mail.html).toContain("member@example.com");
+    expect(mail.html).toContain("sam_opportunities");
+    expect(mail.html).toContain("<li>mmt_archive</li><li>usaspending</li>"); // member rows keep source_ids only
+
+    // A second "wrong" on the same turn: recorded, not re-emailed.
+    const again = await post({ action: "feedback", turn_id: turnId, verdict: "wrong" });
+    expect(again.data).toEqual({ ok: true, emailed: false });
+    expect(calls.emails).toHaveLength(1);
+
+    const rows = store.filter((x) => x.event_type === FEEDBACK_EVENT);
+    expect(rows).toHaveLength(3);
+    expect(rows.map((r) => r.details.verdict)).toEqual(["up", "wrong", "wrong"]);
+    expect(rows[1].user_email).toBe("member@example.com");
+    expect(rows[1].details.note.length).toBe(500);
+    expect(rows[1].details.turn_id).toBe(String(turnId));
+    expect(rows[2].user_email).toBeNull(); // no token on the third call: never from the body
+    for (const row of rows) expect(row.details.ip_hash).toMatch(/^[0-9a-f]{32}$/); // attributable, never the raw IP
+  });
+
+  it("refuses a non-uuid turn id, an unknown turn and a bad verdict; none of them write a row or email Mary", async () => {
+    const { post, store, calls } = setup();
+    const a = await post({ token: "good", question: "Who holds T4NG2?" });
+    const real = a.data.turn_id;
+    expect(real).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
+
+    expect((await post({ action: "feedback", turn_id: real, verdict: "meh" })).status).toBe(400);
+    for (const bad of ["", "1000", "../x", "flood-1", "0123456789abcdef01234567", real + "x"]) {
+      expect((await post({ action: "feedback", turn_id: bad, verdict: "wrong" })).status, bad).toBe(400);
+    }
+    // Well-formed but names no turn: the flood shape. 404, nothing written,
+    // nothing emailed, however many fresh ids arrive.
+    for (let i = 0; i < 5; i++) {
+      const r = await post({ action: "feedback", turn_id: `11111111-2222-4333-8444-${String(i).padStart(12, "0")}`, verdict: "wrong", note: "no such turn" });
+      expect(r.status).toBe(404);
+      expect(r.data).toEqual({ error: "Unknown turn." });
+    }
+    // A row that exists but is not a turn (the feedback row itself) is not a turn either.
+    const ok = await post({ action: "feedback", turn_id: real, verdict: "up" });
+    expect(ok.status).toBe(200);
+    const feedbackRow = store.find((x) => x.event_type === FEEDBACK_EVENT);
+    expect((await post({ action: "feedback", turn_id: feedbackRow.id, verdict: "wrong" })).status).toBe(404);
+
+    expect(calls.emails).toHaveLength(0);
+    expect(store.filter((x) => x.event_type === FEEDBACK_EVENT)).toHaveLength(1);
+  });
+
+  it("a turn lookup error records nothing and asks the caller to retry", async () => {
+    const { post, store, calls } = setup();
+    const a = await post({ token: "good", question: "Who holds T4NG2?" });
+    const failing = { from: () => { const api = { select: () => api, eq: () => api, in: () => api, limit: () => api, maybeSingle: () => api, then: (res) => res({ data: null, error: { message: "boom" } }) }; return api; } };
+    const handler = makeHandler({
+      createClient: () => failing,
+      answerQuestion: async () => ANSWER,
+      loadEntitlement: async () => ({ ok: true, tier: "premium" }),
+      verifyToken: () => ({ ok: false, reason: "bad_signature" }),
+      sendEmail: async (mail) => { calls.emails.push(mail); return { success: true }; },
+      now: () => new Date("2026-09-25T15:00:00Z"),
+    });
+    const r = await handler({ httpMethod: "POST", headers: {}, body: JSON.stringify({ action: "feedback", turn_id: a.data.turn_id, verdict: "wrong" }) });
+    expect(r.statusCode).toBe(500);
+    expect(calls.emails).toHaveLength(0);
+    expect(store.filter((x) => x.event_type === FEEDBACK_EVENT)).toHaveLength(0);
   });
 });
