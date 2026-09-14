@@ -11,6 +11,8 @@ import { createRequire } from "node:module";
 const cjsRequire = createRequire(import.meta.url);
 const chpl = cjsRequire("../../netlify/functions/lib/onc-chpl-api.js");
 const { collectUnavailable } = cjsRequire("../../netlify/functions/lib/premium-assistant.js");
+const { _setStoreForTests } = cjsRequire("../../netlify/functions/lib/fetch-cache.js");
+function freshStore() { const d = {}; return { async get(k) { return k in d ? d[k] : null; }, async setJSON(k, v) { d[k] = v; } }; }
 
 const LISTING = {
   id: 10001,
@@ -33,7 +35,7 @@ function stubFetch(body, status = 200) {
   globalThis.fetch = async (url, opts = {}) => { calls.push({ url: String(url), headers: opts.headers || {} }); return jsonRes(body, status); };
 }
 
-beforeEach(() => { realFetch = globalThis.fetch; calls = []; delete process.env.CHPL_API_KEY; });
+beforeEach(() => { realFetch = globalThis.fetch; calls = []; delete process.env.CHPL_API_KEY; _setStoreForTests(freshStore()); });
 afterEach(() => { globalThis.fetch = realFetch; delete process.env.CHPL_API_KEY; });
 
 describe("enrichWithCHPL", () => {
@@ -81,10 +83,61 @@ describe("enrichWithCHPL", () => {
     await chpl.searchCertifiedProducts({ keyword: "Epic", limit: 2 });
     expect(calls[0].headers["API-KEY"]).toBe("ANONYMOUS");
     process.env.CHPL_API_KEY = "  real-key-123 ";
-    await chpl.searchCertifiedProducts({ keyword: "Epic", limit: 2 });
+    await chpl.searchCertifiedProducts({ keyword: "Oracle", limit: 2 });
     expect(calls[1].headers["API-KEY"]).toBe("real-key-123");
     expect(calls[1].url).toContain("chpl.healthit.gov/rest/search/v3?");
-    expect(calls[1].url).toContain("searchTerm=Epic");
+    expect(calls[1].url).toContain("searchTerm=Oracle");
+  });
+
+  // Measured 2026-09-14 with the real key: searchTerm matches names, not
+  // sentences ("epic certified edition cures" returned zero rows; "Epic"
+  // returned 323, 35 active).
+  it("searches the product or vendor NAME in the topic, never the sentence, and asks for Active listings newest first", async () => {
+    stubFetch({ results: [LISTING], recordCount: 35 });
+    await chpl.enrichWithCHPL({ topic: "epic certified edition cures" });
+    expect(calls[0].url).toContain("searchTerm=Epic");
+    expect(calls[0].url).toContain("certificationStatuses=Active");
+    expect(calls[0].url).toContain("orderBy=certification_date");
+    expect(calls[0].url).toContain("sortDescending=true");
+    await chpl.enrichWithCHPL({ topic: "certification meditech expanse" });
+    expect(calls[1].url).toContain("searchTerm=Expanse");
+    await chpl.enrichWithCHPL({ topic: "oracle health certified" });
+    expect(calls[2].url).toContain("searchTerm=Oracle");
+    const r = await chpl.enrichWithCHPL({ topic: "mhs genesis built certified ehr" });
+    expect(calls[3].url).toContain("searchTerm=mhs+genesis");
+    expect(r.search_term).toBe("mhs genesis");
+    expect(chpl.searchTermFor("certified ehr products")).toBeNull();
+    expect(await chpl.enrichWithCHPL({ topic: "certified ehr products" })).toEqual({ skipped: true });
+  });
+
+  it("retries ONCE after a 429 (one call every two seconds) and reports the limit if it persists", async () => {
+    const waits = [];
+    const sleepImpl = async (ms) => { waits.push(ms); };
+    let n = 0;
+    globalThis.fetch = async (url) => { calls.push({ url: String(url) }); n += 1; return n === 1 ? jsonRes({}, 429) : jsonRes({ results: [LISTING], recordCount: 1 }); };
+    const r = await chpl.enrichWithCHPL({ topic: "Is Epic certified", sleepImpl });
+    expect(r.products).toHaveLength(1);
+    expect(waits).toEqual([2200]);
+    expect(calls).toHaveLength(2);
+    _setStoreForTests(freshStore());
+    globalThis.fetch = async (url) => { calls.push({ url: String(url) }); return jsonRes({}, 429); };
+    const again = await chpl.enrichWithCHPL({ topic: "Is Epic certified", sleepImpl });
+    expect(again.products).toEqual([]);
+    expect(again.error).toMatch(/429/);
+    expect(again.error).toMatch(/2 seconds/);
+    expect(calls).toHaveLength(4);
+  });
+
+  it("caches a successful search for the day and never caches an error", async () => {
+    stubFetch({ results: [LISTING], recordCount: 1 });
+    await chpl.enrichWithCHPL({ topic: "Is Epic certified" });
+    await chpl.enrichWithCHPL({ topic: "Epic certified?" });
+    expect(calls).toHaveLength(1);
+    _setStoreForTests(freshStore());
+    stubFetch({}, 503);
+    await chpl.enrichWithCHPL({ topic: "Is Epic certified" });
+    await chpl.enrichWithCHPL({ topic: "Is Epic certified" });
+    expect(calls).toHaveLength(3);
   });
 });
 
@@ -104,7 +157,7 @@ describe("formatCHPLContext", () => {
   it("renders the listings the model may cite, with the total", () => {
     const p = { chpl_id: "15.04.04.2891", developer: "Epic Systems Corporation", product_name: "EpicCare", version: "2022", edition: "2015", status: "Active", status_date: "2022-06-30", url: "https://chpl.healthit.gov/#/listing/10001" };
     const out = chpl.formatCHPLContext({ products: [p], total: 40, reason: "Ask MMT vendor lookup for: Epic" });
-    expect(out).toContain("ONC CHPL CERTIFIED PRODUCT LISTINGS (1 of 40)");
+    expect(out).toContain("ONC CHPL CERTIFIED PRODUCT LISTINGS (1 of 40 active)");
     expect(out).toContain("Epic Systems Corporation / EpicCare");
     expect(out).toContain("https://chpl.healthit.gov/#/listing/10001");
     expect(out).not.toContain("—");
@@ -127,5 +180,8 @@ describe("searchCertifiedProducts", () => {
     stubFetch({}, 503);
     const r = await chpl.searchCertifiedProducts({ keyword: "Epic" });
     expect(r).toEqual({ products: [], total: 0, error: "CHPL API 503" });
+    expect(calls[0].url).toContain("certificationStatuses=Active");
+    await chpl.searchCertifiedProducts({ keyword: "Epic", activeOnly: false });
+    expect(calls[1].url).not.toContain("certificationStatuses");
   });
 });

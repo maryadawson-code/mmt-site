@@ -44,12 +44,11 @@ describe("SOURCE_CATALOG", () => {
     expect(CATALOG_BY_ID.web_federal.mode).toBe("fallback");
   });
 
-  it("is honest about CHPL (401 to the anonymous key) and the IT Dashboard (sunset)", () => {
+  it("lists CHPL as live now that MMT holds a key (set 2026-09-14) and is honest about the IT Dashboard (sunset)", () => {
     const chpl = CATALOG_BY_ID.onc_chpl;
-    expect(chpl.mode).toBe("conditional");
-    expect(chpl.note).toMatch(/401/);
-    expect(chpl.note).toMatch(/CHPL_API_KEY/);
-    expect(chpl.note).toMatch(/chpl\.healthit\.gov/);
+    expect(chpl.mode).toBe("live");
+    expect(chpl.note).toMatch(/API key/);
+    expect(chpl.url).toBe("https://chpl.healthit.gov");
     const itd = CATALOG_BY_ID.it_dashboard;
     expect(itd.mode).toBe("conditional");
     expect(itd.note).toMatch(/sunset/i);
