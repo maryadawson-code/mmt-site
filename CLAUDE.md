@@ -1,5 +1,133 @@
 # Mission Meets Tech - Developer & Content Governance
 
+## Sprint 2026-09-14 — Ask MMT "best it can be": a 9-agent audit, a spec, and the ship-tonight tier before the soft-launch email
+
+Mary, after the 09-13 fixes deployed: "is this tool now the best it can be
+based on industry best practices and what people in govcon want and need?
+if not continue by building the ultimate spec and then delivering on it."
+The honest answer was no. A workflow of nine agents (GovCon user needs,
+competitor capabilities, grounded-AI practice, a code audit, a 16-question
+retrieval matrix, an 8-question graded answer pass with the real model, a
+widget UX review, a spec synthesis, and a skeptical capture lead's critique)
+found the deployed tool failing questions its own /ask page advertises.
+The critique's ranking of why a capture lead cancels set the build order:
+a wrong dollar figure, a dead link, a confident answer to something the tool
+never checked.
+
+**What the audit found (all confirmed against the code or a live run):**
+- Any question naming Oracle, Cerner, Epic, Meditech, ONC or "certified"
+  crashed enrichment: `enrichWithCHPL` nested the whole result under
+  `products` and the formatter called `.slice` on it.
+- Vehicle questions sent the joined alias string as one keyword ("T4NG2
+  T4NG 2 Transformation Twenty-One ...") and got zero awards; the ladder
+  never reached the bare name.
+- The marketed Spend example ("How much has VA obligated to Oracle since
+  FY2024?") searched the year and lost the vendor; nothing searched by
+  recipient, and nothing summed obligations by fiscal year.
+- 201 forecast rows, 30 FY2027 budget lines, CSO AoIs and key people were
+  bundled into the function but never indexed. 31 of 35 IDIQ corpus links
+  rendered as `missionmeetstech.comhttps://sam.gov/...`, 3 contract links
+  404'd, all 24 capture-intel signals were undated, brief excerpts opened
+  with nav boilerplate.
+- `known-vehicles.js` told the model CIO-SP4 was live and T4NG2 had ~25
+  primes, labeled "verified" with no date; ISBEE was expanded as a
+  subcontracting report (it is the Buy Indian Act set-aside).
+- One shared 8s race dropped the whole USASpending/SAM/FR/GAO bundle on 9 of
+  16 questions under load, and the not-reached list then named two of the
+  four; `spending_by_category` sent `toptier_code` and 400'd on 15 of 16.
+- The model wrote its own trailing Sources list (the last path for a
+  fabricated link), miscounted totals, had no "today", no DoD 90-day award
+  delay caveat, no award-vs-obligated definition, and no model override;
+  nothing logged tokens, cost or duration.
+- The widget's email unlock replaced the answer instead of revealing the
+  sources; Enter during a wait sent twice; tables rendered as pipes; no kill
+  switch, no feedback path, no copy, no clear, stale tokens spent a member's
+  allowance after sign-out.
+
+**Shipped (PR "ask-mmt-ultimate", six packages built in parallel worktrees
+and cherry-picked onto one branch):**
+- P4 CHPL no longer crashes (flat `products`, top-level `error`,
+  `CHPL_API_KEY` with the ANONYMOUS fallback that currently 401s); catalog:
+  ONC CHPL `conditional`, IT Dashboard sunset note; `extractLinks` returns
+  `{ url, label }` (label from title/PIID/notice id) and sources carry
+  `queried_at`; `linkUrl()` keeps string links working; acronyms ISBEE/IEE/
+  ISR fixed, plus an initials-consistency test over the whole table.
+- P2 per-call timeouts inside the federal bundle (awards 7s incl. widening,
+  SAM 4s, FR 4s, GAO 4s, totals 3s, recipient 4s, category 3s; each times
+  out alone as `{ error: 'timeout' }`); `rungs` for matched vehicles (first
+  rung is the canonical name); a hard cap of 2 award calls per question;
+  fiscal-year windows parsed out of the question (`years`, `since`);
+  `searchRecipientObligationsByYear` via `spending_over_time`; code-computed
+  totals lines ("Rows shown: N of M; sum of award amounts shown ...") so the
+  model quotes instead of adding; USASpending `set_aside_type_codes` from
+  the question's set-aside words (14 codes probed live); one SAM request per
+  question while `dailyQuota() <= 10`; `known-vehicles.js` corrected from
+  in-repo sources with a `verified` date per entry and registered in
+  `data-freshness.js`.
+- P1 `lib/answer-guards.js`: `stripSourcesSection`, `enforceLinks` (any URL
+  not in the context or the server sources becomes plain text; count on the
+  ops_event), `dollarGuard` in shadow mode (counts figures with no support
+  in the context; never rewrites), `enforceVoice` (banned words and
+  transitions replaced outside quoted text). Prompt: `TODAY` in the user
+  turn, no model-written Sources, conflict rule, award-vs-obligated fields,
+  DoD 90-day AWARD DATA DELAY line for CGAC 097/017/021/057, "a web lead
+  never sets the bottom line". `ASK_MMT_MODEL` override read at call time
+  (temperature only for haiku ids; 25s/45s aborts), `ASK_MMT_DISABLED=true`
+  pauses every action with a 503 `PAUSED`, per-turn `duration_ms`,
+  `tokens_used`, `cost_estimate` (in-code price table), `turn_id` on every
+  answer, `{ action: 'feedback' }` with one email to Mary per turn for
+  "wrong". Fallback content is scrubbed of emails and phone numbers.
+- P5 corpus 347 to 595 items: forecast rows, budget lines, CSO AoIs, key
+  people (names and titles only), the monthly forecast and GAO Sustain
+  reads; the four link/date bugs fixed; excerpt windows around the hit;
+  per-type cap of 3 so 201 forecast rows cannot crowd out articles. Agency
+  profiles deliberately not indexed yet (98KB, bundle budget).
+- P3 widget: unlock fixed, in-flight guard, staged loading status with a
+  55s abort and a Retry card, tables/ordered lists/autolinks, overflow fixes
+  at 375px, "Could not check this turn" above the sources, Copy and thumbs
+  (feedback keyed on `turn_id`), Clear, persisted meter, token attached only
+  for a premium session and cleared on sign-out, clickable sample chips,
+  PAUSED card, dialog semantics and Escape; dashboard copy "Sourced answers
+  in under a minute"; soft-launch email "It answers in about half a
+  minute"; `/ask/sources` rows stack under 640px.
+- P6 `scripts/ask-mmt-eval.js` + `scripts/ask-mmt-eval-set.json` (22 rows:
+  the six /ask examples, the three widget samples, the four questions in the
+  09-14 email, the three documented failures, the GetWell follow-up pair,
+  four audit questions) with code graders; runbook `docs/ask-mmt-eval.md`.
+
+**Eval gate before deploy (3 trials, real model, no SAM quota spent):**
+first full run 21/22 pass 3-of-3; the one miss expanded OWHA, which MMT's
+own org chart carries, and led with a web-search date over MMT's dated
+coverage. Both fixed (DHA reorg acronyms added from the org chart; the
+web-lead rule). Re-run: every row 3 of 3.
+
+Hard rules (do not regress):
+- **The eval gate runs before any Ask MMT deploy** (`netlify dev:exec --
+  node scripts/ask-mmt-eval.js --trials 3`), and every reported failure
+  becomes a row. Unit tests prove plumbing; the eval grades answers.
+- **The model never writes links or totals.** Links come only from the
+  context and the server sources (`enforceLinks`); totals come from the
+  computed lines the federal layer prints. A new record block must print its
+  own count and sum.
+- **Every sub-call in a fan-out has its own timeout**, and a timed-out system
+  is listed as not reached by name. One shared race is the 09-14 failure.
+- **A vehicle question's first keyword is the canonical name**, passed as
+  `rungs`; never the joined alias string.
+- **Years, set-aside words and follow-up scaffolding are not keywords.** They
+  become `since`, `set_aside_type_codes` and carried context.
+- **Acronym expansions come from the glossary, the curated table or a source
+  excerpt, and the curated table is initials-checked by a test.** Add a DHA
+  office to `acronyms.js` only from an in-repo source.
+- **Kill switch first, redeploy second.** `ASK_MMT_DISABLED=true` pauses the
+  tool honestly; use it before touching a launch-day deploy.
+
+**Needs Mary:** register a free CHPL API key and set `CHPL_API_KEY`
+(~40 env bytes); decide the model (`ASK_MMT_MODEL=claude-sonnet-5` costs
+about 2x; compare cost and duration in ops_events after a week); the
+SAM.gov role (regenerate the key, then `SAM_DAILY_QUOTA=1000`); hand-label
+30 to 50 turns for a groundedness judge (next week); Plausible goals
+(`ask_copy`, `ask_feedback_up`, `ask_feedback_down` added tonight).
+
 ## Sprint 2026-09-13 — Ask MMT accuracy pass: 7 dead connections, a 10-a-day SAM.gov key, 7 off-topic "sources", one invented acronym
 
 Mary ran the live accuracy pass ("Tell me all about data governance awards

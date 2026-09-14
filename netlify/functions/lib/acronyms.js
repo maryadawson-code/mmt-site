@@ -95,6 +95,13 @@ const ACRONYMS = {
   RDT: "Research, Development, Test and Evaluation", "RDT&E": "Research, Development, Test and Evaluation", "O&M": "Operation and Maintenance",
   MILCON: "Military Construction", DoD: "Department of Defense", DOD: "Department of Defense", VA: "Department of Veterans Affairs",
   HHS: "Department of Health and Human Services", DHS: "Department of Homeland Security", EO: "Executive Order",
+  // Vendors that recur in federal health IT awards (company names the model
+  // otherwise expands on its own; the eval flagged GDIT and SMS 2026-09-14)
+  GDIT: "General Dynamics Information Technology", SAIC: "Science Applications International Corporation",
+  BAH: "Booz Allen Hamilton", SMS: "Systems Made Simple (a Leidos company)", HII: "Huntington Ingalls Industries",
+  LMI: "Logistics Management Institute", CACI: "CACI International (company name)", CGI: "CGI Federal (company name)",
+  KBR: "KBR (company name)", ICF: "ICF International (company name)", DLT: "DLT Solutions (company name)",
+  NCI: "NCI Information Systems (company name)",
   // General IT
   AI: "Artificial Intelligence", ML: "Machine Learning", NLP: "Natural Language Processing", API: "Application Programming Interface",
   IT: "Information Technology", COTS: "Commercial Off-the-Shelf", SaaS: "Software as a Service", PaaS: "Platform as a Service",
