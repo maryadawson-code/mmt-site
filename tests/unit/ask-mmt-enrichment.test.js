@@ -260,3 +260,122 @@ describe("vendor and product questions, and follow-ups", () => {
     expect(assistant.stripEmDashes("")).toBe("");
   });
 });
+
+// 2026-09-14: prompt currency, DoD award-data delay, whole-bundle failures,
+// and the post-answer guards wired through answerQuestion.
+describe("callClaude: date in the user turn, model-specific request shape", () => {
+  it("prepends a TODAY line to the USER message (never the system prompt) and sends no temperature for a sonnet model", async () => {
+    process.env.ANTHROPIC_API_KEY = "sk-ant-test";
+    let sent = null;
+    const fetchImpl = async (url, opts) => { sent = { url, body: JSON.parse(opts.body), headers: opts.headers }; return jsonRes({ content: [{ type: "text", text: "ok" }], usage: { input_tokens: 10, output_tokens: 2 } }); };
+    const r = await assistant.callClaude({ question: "Who holds T4NG2?", context: "ctx", model: "claude-sonnet-5", today: "2026-09-14", fetchImpl });
+    expect(sent.url).toBe("https://api.anthropic.com/v1/messages");
+    expect(sent.headers["x-api-key"]).toBe("sk-ant-test");
+    expect(sent.body.model).toBe("claude-sonnet-5");
+    expect(sent.body.messages[0].role).toBe("user");
+    expect(sent.body.messages[0].content.startsWith("TODAY: 2026-09-14 (America/New_York)\n\n")).toBe(true);
+    expect(sent.body.system).not.toContain("TODAY:");
+    expect("temperature" in sent.body).toBe(false);
+    expect(r).toEqual({ answer: "ok", model: "claude-sonnet-5", usage: { input_tokens: 10, output_tokens: 2 } });
+    delete process.env.ANTHROPIC_API_KEY;
+  });
+
+  it("sends a temperature for a haiku model, and the default model is read from ASK_MMT_MODEL at call time", async () => {
+    process.env.ANTHROPIC_API_KEY = "sk-ant-test";
+    let sent = null;
+    const fetchImpl = async (url, opts) => { sent = JSON.parse(opts.body); return jsonRes({ content: [{ type: "text", text: "ok" }], usage: {} }); };
+    await assistant.callClaude({ question: "q", context: "", today: "2026-09-14", fetchImpl });
+    expect(sent.model).toBe("claude-haiku-4-5-20251001");
+    expect(sent.temperature).toBe(0.2);
+    process.env.ASK_MMT_MODEL = "claude-sonnet-5";
+    expect(assistant.defaultModel()).toBe("claude-sonnet-5");
+    await assistant.callClaude({ question: "q", context: "", today: "2026-09-14", fetchImpl });
+    expect(sent.model).toBe("claude-sonnet-5");
+    expect("temperature" in sent).toBe(false);
+    delete process.env.ASK_MMT_MODEL;
+    delete process.env.ANTHROPIC_API_KEY;
+    expect(assistant.CLAUDE_TIMEOUT_HAIKU_MS).toBe(25000);
+    expect(assistant.CLAUDE_TIMEOUT_OTHER_MS).toBe(45000);
+  });
+
+  it("the system prompt carries the conflict, award-field and delay rules and no longer asks for a Sources list", async () => {
+    process.env.ANTHROPIC_API_KEY = "sk-ant-test";
+    let system = "";
+    await assistant.callClaude({ question: "q", context: "", today: "2026-09-14", fetchImpl: async (u, o) => { system = JSON.parse(o.body).system; return jsonRes({ content: [], usage: {} }); } });
+    delete process.env.ANTHROPIC_API_KEY;
+    expect(system).toContain("prefer the later-dated live record");
+    expect(system).toContain("Never call either the contract value");
+    expect(system).toContain("AWARD DATA DELAY line, repeat it");
+    expect(system).toContain("Do not append a Sources section");
+    expect(system).not.toContain('End with a "Sources" list');
+  });
+
+  it("dateET renders the site's clock as YYYY-MM-DD", () => {
+    expect(assistant.dateET(new Date("2026-09-14T03:30:00Z"))).toBe("2026-09-13"); // still the 13th in New York
+    expect(assistant.dateET(new Date("2026-09-14T12:00:00Z"))).toBe("2026-09-14");
+  });
+});
+
+describe("AWARD DATA DELAY for DoD components", () => {
+  const now = new Date("2026-09-14T12:00:00Z");
+  it("a DHA question's context carries the delay line with today minus 90 days; a CMS question's does not", async () => {
+    globalThis.fetch = async () => { throw new Error("egress blocked"); };
+    const dha = await assistant.runEnrichment(QUESTION, { now });
+    expect(dha.context).toContain("AWARD DATA DELAY: DoD award data becomes public on USAspending about 90 days after award");
+    expect(dha.context).toContain("awards signed since 2026-06-16 may not appear yet");
+    const cms = await assistant.runEnrichment("What has CMS awarded for data governance?", { now });
+    expect(cms.agency).toBe("CMS");
+    expect(cms.context).not.toContain("AWARD DATA DELAY");
+  }, 30000);
+
+  it("awardDelayNote covers every DoD CGAC in the registry and nothing civilian", () => {
+    for (const cgac of ["097", "021", "017", "057"]) expect(assistant.awardDelayNote(cgac, now)).toContain("2026-06-16");
+    for (const cgac of ["075", "036", "047", null, undefined]) expect(assistant.awardDelayNote(cgac, now)).toBe("");
+    expect(assistant.AWARD_DELAY_DAYS).toBe(90);
+  });
+
+  it("the delay line alone does not count as data", async () => {
+    globalThis.fetch = async () => { throw new Error("egress blocked"); };
+    const r = await assistant.runEnrichment("What did DISA award for zzqx widgets?", { now });
+    expect(r.agency).toBe("DISA");
+    expect(r.context).toContain("AWARD DATA DELAY");
+    // no corpus hit for a nonsense topic, every upstream down: the only
+    // text is the not-reached list, the delay line and the acronym block
+    if (r.corpusMatches === 0) expect(r.hasAnyData).toBe(false);
+  }, 30000);
+});
+
+describe("collectUnavailable: a whole-bundle failure names all four federal-data systems", () => {
+  it("lists usaspending, sam_opportunities, federal_register and gao_reports with the bundle's reason", () => {
+    const out = assistant.collectUnavailable({ federalData: { error: "timeout-8s" }, systemBlocks: [] });
+    expect(out.map((u) => u.id)).toEqual(["usaspending", "sam_opportunities", "federal_register", "gao_reports"]);
+    expect(out.every((u) => u.reason === "timeout-8s")).toBe(true);
+  });
+});
+
+describe("answerQuestion applies the guards and reports timings", () => {
+  it("drops the model's Sources tail, de-links an unlisted URL, keeps the MMT link, counts an unsupported dollar figure, and returns usage and timings", async () => {
+    process.env.ANTHROPIC_API_KEY = "sk-ant-test";
+    const modelText = "**Bottom line:** the WOSB set-aside closed in January (Mission Meets Tech, Apr 4 2026) — proposals are in.\n\nThe notice is at [SAM.gov](https://sam.gov/opp/abc123/view) and the tracker at [MMT](https://missionmeetstech.com/contracts/dha-data-governance-wosb-set-aside/). The follow-on is worth $34 million.\n\n**Sources**\n- [SAM.gov](https://sam.gov/opp/abc123/view)\n";
+    globalThis.fetch = async (url) => {
+      if (String(url).includes("api.anthropic.com")) return jsonRes({ content: [{ type: "text", text: modelText }], usage: { input_tokens: 1200, output_tokens: 300 } });
+      throw new Error("egress blocked");
+    };
+    const r = await assistant.answerQuestion({ question: QUESTION });
+    delete process.env.ANTHROPIC_API_KEY;
+    expect(r.error).toBeUndefined();
+    expect(r.answer).not.toMatch(/Sources/);
+    expect(r.answer).not.toContain("—");
+    expect(r.answer).toContain("(Mission Meets Tech, Apr 4 2026)");
+    expect(r.answer).toContain("The notice is at SAM.gov and the tracker at [MMT](https://missionmeetstech.com/contracts/dha-data-governance-wosb-set-aside/)");
+    expect(r.answer).not.toContain("sam.gov/opp/abc123");
+    expect(r.unlisted_link_count).toBe(1);
+    expect(r.unlisted_links).toEqual(["https://sam.gov/opp/abc123/view"]);
+    expect(r.unsupported_dollar_count).toBe(1);
+    expect(r.unsupported_dollars).toEqual(["$34 million"]);
+    expect(r.usage).toEqual({ input_tokens: 1200, output_tokens: 300 });
+    expect(r.timings.enrichment_ms).toBeGreaterThanOrEqual(0);
+    expect(r.timings.model_ms).toBeGreaterThanOrEqual(0);
+    expect(r.model).toBe("claude-haiku-4-5-20251001");
+  }, 30000);
+});

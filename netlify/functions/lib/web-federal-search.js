@@ -15,14 +15,21 @@
 // whose id is not 32-hex is dropped before the model sees it.
 //
 // Gates: PERPLEXITY_API_KEY present; ASK_MMT_WEB_FALLBACK_DISABLED not
-// "true". Cheapest model (sonar), 20s timeout, one call per question.
+// "true". Cheapest model (sonar), 12s timeout, one call per question
+// (2026-09-14: 20s to 12s; the whole answer has to land inside the
+// widget's patience, and the fallback is the last step before the model).
+//
+// PII: federal pages carry contracting-officer names, emails and phones.
+// The model must never see or repeat those, so the content is scrubbed
+// before it reaches the context (scan-pii covers the repo; this covers the
+// live path).
 // ============================================================
 
 const { isMalformedSamPermalink } = require("./url-validator");
 
 const PERPLEXITY_URL = "https://api.perplexity.ai/chat/completions";
 const MODEL = "sonar";
-const TIMEOUT_MS = 20000;
+const TIMEOUT_MS = 12000;
 const FEDERAL_DOMAINS = [
   "sam.gov", "usaspending.gov", "health.mil", "defense.gov", "va.gov", "hhs.gov", "cms.gov",
   "gsa.gov", "gao.gov", "congress.gov", "govinfo.gov", "federalregister.gov", "nih.gov",
@@ -31,6 +38,16 @@ const FEDERAL_DOMAINS = [
 const NO_RESULTS = "NO_RESULTS";
 
 const SYSTEM = `You are a research assistant limited to U.S. federal government websites. Report only what the cited pages state: program names, office names, solicitation or contract numbers, dates, dollar figures, and who was awarded what. Quote the page's own wording for any number or date. If the pages do not answer the question, reply with exactly ${NO_RESULTS}. Never guess a SAM.gov notice URL; cite only URLs that were actually returned. No markdown headings; short paragraphs or bullets.`;
+
+const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
+// US phone shapes: 202-555-0100, (202) 555-0100, 202.555.0100, +1 202 555 0100.
+// Solicitation numbers (HT0011-25-R-0001) and dates (2026-09-14) do not fit.
+const PHONE_RE = /(?:\+?1[\s.-]?)?\(?\b\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}\b/g;
+
+/** Pure: replace email addresses and phone numbers before the model sees the text. */
+function scrubPii(text) {
+  return String(text || "").replace(EMAIL_RE, "[email removed]").replace(PHONE_RE, "[phone removed]");
+}
 
 function isFederalUrl(u) {
   try {
@@ -104,7 +121,7 @@ async function webFederalSearch({ query, agency, question, fetchImpl = fetch } =
       return { error: `Perplexity ${res.status}: ${text.slice(0, 160)}` };
     }
     const data = await res.json();
-    const content = String((data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || "").trim();
+    const content = scrubPii(String((data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || "").trim());
     const citations = (Array.isArray(data.citations) ? data.citations : [])
       .filter((u) => typeof u === "string" && /^https?:\/\//i.test(u) && isFederalUrl(u) && !isMalformedSamPermalink(u))
       .slice(0, 8);
@@ -123,4 +140,4 @@ function formatWebFederalContext(result) {
   return `\n\nWEB SEARCH OF FEDERAL SITES (fallback; .gov/.mil pages only; run because the structured award or solicitation sources were silent or could not be reached on this question). Treat as LEADS: cite the page URL, say it came from a web search, and tell the subscriber to verify on the page before relying on it:\n${result.content}\n${cites ? `Pages:\n${cites}` : ""}`;
 }
 
-module.exports = { webFederalSearch, formatWebFederalContext, shouldWebFallback, isFederalUrl, FEDERAL_DOMAINS, NO_RESULTS };
+module.exports = { webFederalSearch, formatWebFederalContext, shouldWebFallback, isFederalUrl, scrubPii, FEDERAL_DOMAINS, NO_RESULTS, TIMEOUT_MS };

@@ -48,6 +48,11 @@ const { buildSources, splitFederalData, CATALOG_BY_ID } = require("./ask-mmt-sou
 const { extractSearchTerms } = require("./query-terms");
 const { detectAgencies, agencyCgac, agencyName } = require("./federal-agencies");
 const { webFederalSearch, formatWebFederalContext, shouldWebFallback } = require("./web-federal-search");
+// 2026-09-14: post-answer guards. The prompt says what the model may cite;
+// these check the finished answer (links it did not retrieve are de-linked,
+// a model-written Sources tail is dropped, unsupported dollar figures are
+// counted in shadow mode).
+const { stripSourcesSection, enforceLinks, dollarGuard } = require("./answer-guards");
 // Sprint 6 Phase 2 2026-05-15: optional circuit breakers + metrics.
 // Both gates default OFF — code paths byte-identical to Sprint 5 unless
 // ASK_MMT_CIRCUITS_ENABLED=true and/or ASK_MMT_METRICS_ENABLED=true are
@@ -55,7 +60,6 @@ const { webFederalSearch, formatWebFederalContext, shouldWebFallback } = require
 const { getCircuit } = require("./circuit-registry");
 const { createClient: createSupabaseClient } = require("@supabase/supabase-js");
 
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 
 const CIRCUITS_ENABLED = process.env.ASK_MMT_CIRCUITS_ENABLED === "true";
@@ -136,9 +140,37 @@ async function instrument(circuitName, fn, supabase) {
   return result;
 }
 
-// Default to Haiku — fast, cheap, and good enough for grounded Q&A where
-// the model's job is to synthesize already-verified facts.
-const DEFAULT_MODEL = "claude-haiku-4-5-20251001";
+// Default to Haiku: fast, cheap, and good enough for grounded Q&A where
+// the model's job is to synthesize already-verified facts. Read at call
+// time so ASK_MMT_MODEL can switch the deployed function (and a test) with
+// no code change.
+const FALLBACK_MODEL = "claude-haiku-4-5-20251001";
+function defaultModel() {
+  return process.env.ASK_MMT_MODEL || FALLBACK_MODEL;
+}
+function isHaiku(model) {
+  return String(model || "").toLowerCase().includes("haiku");
+}
+// Haiku answers in a few seconds; the abort is a backstop for a hung
+// connection, not a budget. Sonnet and Opus get the older, longer window.
+const CLAUDE_TIMEOUT_HAIKU_MS = 25000;
+const CLAUDE_TIMEOUT_OTHER_MS = 45000;
+
+/** YYYY-MM-DD in America/New_York (the site's clock). */
+function dateET(d = new Date()) {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
+}
+
+// DoD (CGAC 097 and the three military departments, which carry their own
+// CGAC in the registry) publishes award data to USAspending on a delay.
+// The model is told so it does not read "no award since June" as a fact.
+const DOD_CGACS = new Set(["097", "021", "017", "057"]);
+const AWARD_DELAY_DAYS = 90;
+function awardDelayNote(cgac, now = new Date()) {
+  if (!cgac || !DOD_CGACS.has(String(cgac))) return "";
+  const since = new Date(now.getTime() - AWARD_DELAY_DAYS * 86400000);
+  return `\n\nAWARD DATA DELAY: DoD award data becomes public on USAspending about 90 days after award (USAspending About the Data), so awards signed since ${dateET(since)} may not appear yet.`;
+}
 
 // MMT's glossary (corpus items of type "glossary") is the first place an
 // acronym expansion comes from; the curated table in lib/acronyms.js is
@@ -188,6 +220,9 @@ HARD RULES:
 - If ANY of the three evidence classes above is present in the block, answer from it. Do NOT say "I don't have verified facts" when MMT articles or vehicle baselines are in the block — they ARE verified facts.
 - If the block contains MMT articles relevant to the question, lead with what Mary wrote. Quote a specific excerpt when it sharpens the answer. Link to the URL.
 - Do not invent contract numbers, dollar amounts, deadlines, hiring counts, or citations that aren't in the block.
+- CONFLICTS: when two records in the block disagree on status, date, awardee or dollar value, say so in the bottom line, cite both with their dates, and prefer the later-dated live record; never pick one silently.
+- AWARD FIELDS: USASpending award amount is the potential value as reported to FPDS; obligated is money actually committed. Name the field you are quoting. Never call either the contract value. Never add, average or annualize amounts yourself; if the block carries a computed totals line, quote it.
+- If the block contains an AWARD DATA DELAY line, repeat it in the answer.
 - If the block is genuinely empty on the question, say so plainly and recommend what to check next. Never fabricate to fill a gap. (Empty means zero MMT articles AND zero API results, not just "the API returned nothing for this specific keyword.") Use this exact shape for the bottom line in that case: "I don't have a source for that in the systems I read. Where I'd look: <the one or two primary sources most likely to hold it>. If you want it researched properly, MarketPulse delivers a source-cited brief in 24 hours (https://missionmeetstech.com/marketpulse)." Do not pad an empty answer with general knowledge dressed up as fact.
 - If a system listed under SYSTEMS NOT REACHED would normally hold the answer (SAM.gov for solicitations, USASpending for awards), say that it could not be checked this turn and name it. Never imply "no such record exists" because a system was silent.
 - ACRONYMS: expand an acronym only with the expansion given in the ACRONYM REFERENCE block or spelled out in a source excerpt. If neither gives it, write the acronym exactly as it appears in the source. Never guess what letters stand for.
@@ -209,9 +244,9 @@ VOICE (Mary Womack — warm but fierce, first-person, federal health IT pro):
 OUTPUT FORMAT (markdown):
 - **1-sentence bottom line** at the top (what the subscriber needs to know first).
 - Then the 3-6 paragraphs / bullets of substantive answer with inline citations.
-- End with a "Sources" list pulling every inline citation into markdown links. Put MMT article links first so the subscriber can continue reading on the site.`;
+- Do not append a Sources section; the reader sees the server-built sources list under your answer. Keep inline citations in parentheses.`;
 
-async function runEnrichment(question) {
+async function runEnrichment(question, { now = new Date() } = {}) {
   // Detect any federal vehicles mentioned (OASIS+, T4NG2, MHS GENESIS, etc.).
   // Matched vehicles override the agency and search-term detection so that
   // a question like "what's going on with OASIS+?" gets queried as
@@ -284,7 +319,7 @@ async function runEnrichment(question) {
     wageDetData,
     edgarData,
   ] = await Promise.all([
-    instrument("usaspending",             () => enrichWithFederalData({ topic: primaryQuery, agency: agency || undefined, naics: primaryNaics, recipientName }), metricsSb),
+    instrument("usaspending",             () => enrichWithFederalData({ topic: primaryQuery, agency: agency || undefined, naics: primaryNaics, recipientName, rungs: matchedVehicles.length ? [matchedVehicles[0].canonical, ...vehicleSearchTerms] : undefined }), metricsSb),
     instrument("congress",                () => enrichWithCongress({ topic: primaryQuery, relevanceTokens: vehicleSearchTerms.length > 0 ? undefined : terms.tokens }), metricsSb),
     instrument("govinfo",                 () => enrichWithGovInfo({ topic: primaryQuery }),                                      metricsSb),
     optional("pubmed",                    () => enrichWithPubMed({ topic: topicQuery, yearsBack: 5 })),
@@ -355,12 +390,14 @@ async function runEnrichment(question) {
     ? `\n\nSYSTEMS NOT REACHED THIS TURN (queried but no answer; do not treat as "no records exist"; if the question depends on one of these, say it could not be checked):\n${unavailable.map((u) => `- ${u.name}: ${u.reason}`).join("\n")}`
     : "";
 
-  const recencyText = archiveRecencyNote(corpusMatches);
+  const recencyText = archiveRecencyNote(corpusMatches, now);
+  const delayText = awardDelayNote(agencyCode, now);
   const baseContext = [
     formatVehiclesContext(matchedVehicles),
     formatCorpusContext(corpusMatches),
     recencyText,
     federalText,
+    delayText,
     ...systemBlocks.map((b) => b.text),
     unavailableText,
   ].filter(Boolean).join("");
@@ -376,7 +413,7 @@ async function runEnrichment(question) {
     agency,
     agencyName: agency ? agencyName(agency) : null,
     context,
-    hasAnyData: baseContext.length > unavailableText.length + recencyText.length,
+    hasAnyData: baseContext.length > unavailableText.length + recencyText.length + delayText.length,
     corpusMatches: corpusMatches.length,
     vehiclesDetected: matchedVehicles.map((v) => v.canonical),
     sources,
@@ -418,8 +455,12 @@ function collectUnavailable({ federalData, systemBlocks }) {
     out.push({ id, name: cat.name, reason: shortReason(reason) || "no answer" });
   };
   if (federalData && federalData.error && !federalData.usaspending_awards) {
+    // The whole federal-data bundle failed (timeout, throw): every system
+    // it fans out to went unanswered, not just the two that are named most.
     push("usaspending", federalData.error);
     push("sam_opportunities", federalData.error);
+    push("federal_register", federalData.error);
+    push("gao_reports", federalData.error);
   } else if (federalData) {
     if (federalData.usaspending_awards && federalData.usaspending_awards.error) push("usaspending", federalData.usaspending_awards.error);
     const so = federalData.sam_opportunities;
@@ -448,11 +489,17 @@ function formatHistory(history) {
   return `\nPRIOR TURNS IN THIS CONVERSATION (for follow-up context only; re-verify any fact against the block below before repeating it):\n${turns}\n`;
 }
 
-async function callClaude({ question, context, history = [], model = DEFAULT_MODEL, maxTokens = 1500 }) {
-  if (!ANTHROPIC_API_KEY) {
+async function callClaude({ question, context, history = [], model = defaultModel(), maxTokens = 1500, today = dateET(), fetchImpl = fetch }) {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
     throw new Error("ANTHROPIC_API_KEY not configured");
   }
-  const userPrompt = `Subscriber question: "${question}"
+  // The date rides in the USER turn, never the system prompt, so prompt
+  // caching of the system text stays possible and the model reads "today"
+  // as part of the question it is answering.
+  const userPrompt = `TODAY: ${today} (America/New_York)
+
+Subscriber question: "${question}"
 ${formatHistory(history)}
 VERIFIED FACTS AVAILABLE (cite any of these — the block may contain MMT articles, MMT federal-vehicle baselines, MMT contract intel, MMT capture-intel signals, MMT IDIQ-vehicle analyst notes, and live federal API results. All are first-class evidence. Treat "MMT ORIGINAL CONTENT" entries and IDIQ vehicle excerpts as things Mary has already published — answer from them and cite the URL):
 ${context || "(Nothing matched on either the MMT corpus or the live federal APIs. Answer honestly — say what you can from general knowledge and recommend what the subscriber should check next. Do NOT invent facts.)"}
@@ -460,15 +507,15 @@ ${context || "(Nothing matched on either the MMT corpus or the live federal APIs
 Answer the subscriber now, following the voice and format rules in the system prompt. If the block contains MMT coverage of the topic, lead with what I wrote and quote the most relevant line.`;
 
   const ac = new AbortController();
-  const timer = setTimeout(() => ac.abort(), 45000);
+  const timer = setTimeout(() => ac.abort(), isHaiku(model) ? CLAUDE_TIMEOUT_HAIKU_MS : CLAUDE_TIMEOUT_OTHER_MS);
 
   try {
-    const res = await fetch(ANTHROPIC_URL, {
+    const res = await fetchImpl(ANTHROPIC_URL, {
       method: "POST",
       signal: ac.signal,
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY,
+        "x-api-key": apiKey,
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
@@ -476,7 +523,8 @@ Answer the subscriber now, following the voice and format rules in the system pr
         max_tokens: maxTokens,
         system: SYSTEM_PROMPT,
         messages: [{ role: "user", content: userPrompt }],
-        temperature: 0.2,
+        // claude-sonnet-5 rejects a temperature (400); Haiku accepts one.
+        ...(isHaiku(model) ? { temperature: 0.2 } : {}),
       }),
     });
     if (!res.ok) {
@@ -532,10 +580,19 @@ async function answerQuestion({ question, history = [], maxTokens = 1500 }) {
   }
   try {
     const followUp = resolveFollowUp(question, history);
+    const t0 = Date.now();
     const { agency, agencyName: scopeName, context, hasAnyData, sources, unavailable, searchPhrase, corrections, shapes, routed } = await runEnrichment(followUp.question);
-    const { answer, model, usage } = await callClaude({ question, context, history, maxTokens });
+    const t1 = Date.now();
+    const { answer: raw, model, usage } = await callClaude({ question, context, history, maxTokens });
+    const t2 = Date.now();
+    // Guards, in order: drop the model's own Sources tail (the widget
+    // renders the server list), enforce the voice rule, de-link anything
+    // the server did not retrieve, then count unsupported dollar figures
+    // without touching the text.
+    const linked = enforceLinks(stripEmDashes(stripSourcesSection(raw)), context, sources);
+    const dollars = dollarGuard(linked.answer, context);
     return {
-      answer: stripEmDashes(answer),
+      answer: linked.answer,
       agency,
       agencyName: scopeName,
       hasData: hasAnyData,
@@ -548,6 +605,11 @@ async function answerQuestion({ question, history = [], maxTokens = 1500 }) {
       shapes,
       routed,
       carried: followUp.carried,
+      unlisted_link_count: linked.unlisted_link_count,
+      unlisted_links: linked.unlisted,
+      unsupported_dollar_count: dollars.unsupported_dollar_count,
+      unsupported_dollars: dollars.unsupported,
+      timings: { enrichment_ms: t1 - t0, model_ms: t2 - t1 },
     };
   } catch (err) {
     return {
@@ -565,9 +627,16 @@ module.exports = {
   detectAgency,
   runEnrichment,
   answerQuestion,
+  callClaude,
   collectUnavailable,
   archiveRecencyNote,
+  awardDelayNote,
   resolveFollowUp,
   stripEmDashes,
+  defaultModel,
+  dateET,
   ARCHIVE_STALE_DAYS,
+  AWARD_DELAY_DAYS,
+  CLAUDE_TIMEOUT_HAIKU_MS,
+  CLAUDE_TIMEOUT_OTHER_MS,
 };

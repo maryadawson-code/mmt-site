@@ -101,3 +101,37 @@ describe("isFederalUrl", () => {
     expect(isFederalUrl("nope")).toBe(false);
   });
 });
+
+// 2026-09-14: the fallback content is scrubbed of contact details before
+// the model sees it, and the call is bounded at 12s.
+import { scrubPii, TIMEOUT_MS } from "../../netlify/functions/lib/web-federal-search.js";
+
+describe("PII scrub on the fallback content", () => {
+  it("removes email addresses and phone numbers and leaves solicitation numbers, dates, dollars and PIIDs alone", () => {
+    const text = "Contact jane.doe@dha.mil or (703) 555-0142 or 703-555-0142 or +1 703.555.0142 or 703 555 0142. Solicitation HT0011-25-R-0001 due 2026-09-14, award $1,250,000, PIID 36C10B23F0309, NAICS 541512.";
+    const out = scrubPii(text);
+    expect(out).not.toContain("jane.doe@dha.mil");
+    expect(out).not.toMatch(/\d{3}[\s.-]\d{3}[\s.-]\d{4}/);
+    expect(out).toContain("[email removed]");
+    expect((out.match(/\[phone removed\]/g) || []).length).toBe(4);
+    expect(out).toContain("HT0011-25-R-0001");
+    expect(out).toContain("2026-09-14");
+    expect(out).toContain("$1,250,000");
+    expect(out).toContain("36C10B23F0309");
+    expect(out).toContain("NAICS 541512");
+    expect(scrubPii("")).toBe("");
+    expect(scrubPii(null)).toBe("");
+  });
+
+  it("applies to what webFederalSearch returns, so the context never carries a contracting officer's address", async () => {
+    process.env.PERPLEXITY_API_KEY = "pplx-test";
+    const r = await webFederalSearch({ query: "data governance", question: "q", fetchImpl: async () => ({ ok: true, json: async () => ({ choices: [{ message: { content: "Notice HT0011-25-R-0001; contracting officer john.smith@health.mil, 703-555-0100." } }], citations: ["https://sam.gov/opp/0123456789abcdef0123456789abcdef/view"] }) }) });
+    expect(r.content).toBe("Notice HT0011-25-R-0001; contracting officer [email removed], [phone removed].");
+    expect(formatWebFederalContext(r)).not.toContain("health.mil,");
+    expect(formatWebFederalContext(r)).not.toContain("555-0100");
+  });
+
+  it("times out at 12 seconds", () => {
+    expect(TIMEOUT_MS).toBe(12000);
+  });
+});
