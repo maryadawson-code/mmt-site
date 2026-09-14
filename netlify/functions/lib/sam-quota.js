@@ -33,6 +33,14 @@
 
 const { cacheGet, cacheSet } = require("./fetch-cache");
 
+// 2026-09-14: the key moved to the with-role tier (1,000 a day) and
+// SAM_DAILY_QUOTA=1000 was set in Netlify. A deploy with no function code
+// change reused the existing Lambdas, and their environment with them, so
+// the live function kept the old key and 429'd while the new key answered
+// 200 from netlify dev:exec. Touching this shared lib re-bundles every SAM
+// consumer (premium-chat, signal-chain, compliance-check, pursuit-calendar,
+// loop-opportunity-discovery) so the next deploy re-creates them with the
+// current environment.
 const DEFAULT_DAILY_QUOTA = 10;
 const INTERACTIVE_RESERVE = 6;
 

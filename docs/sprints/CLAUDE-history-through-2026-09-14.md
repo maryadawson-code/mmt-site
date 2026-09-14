@@ -156,6 +156,12 @@ Hard rules (do not regress):
   checks it against dist/.** Future-dated content is held with the ET
   publish gate, and every excerpt is scrubbed of emails and phone numbers
   before it is written.
+- **A Netlify env var change reaches a function only when that function's
+  bundle changes.** An API-triggered rebuild with no code change reused the
+  Lambdas and their old environment (verified 2026-09-14: the new SAM key
+  answered 200 from `netlify dev:exec` while the live function 429'd on the
+  old one). After `netlify env:set`, change a shared lib the affected
+  functions bundle (or the functions themselves) and deploy that.
 - **Kill switch first, redeploy second.** `ASK_MMT_DISABLED=true` pauses the
   tool honestly; use it before touching a launch-day deploy.
 

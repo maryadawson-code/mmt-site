@@ -21,7 +21,7 @@ const { createClient } = require("@supabase/supabase-js");
 const { sendEmail } = require("./lib/send-email");
 
 // Update this when the SAM.gov key is regenerated. Format: YYYY-MM-DD UTC.
-const SAM_KEY_EXPIRES_UTC = "2026-10-10";
+const SAM_KEY_EXPIRES_UTC = "2026-12-13" // key regenerated 2026-09-14 (SAM.gov role tier, 1,000 requests a day); 90-day expiry;
 
 const REMINDER_THRESHOLDS = [30, 14, 7, 3, 1];
 const NOTIFY_TO = "mary@missionmeetstech.com";

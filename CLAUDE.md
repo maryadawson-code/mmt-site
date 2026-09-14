@@ -81,7 +81,7 @@ Mary's voice: warm but fierce, story-first, conversational, technical but access
 ## Platform rules (do not regress)
 
 - SAM.gov personal key: 10 requests/day until the account has a role. Every SAM call goes through `lib/sam-quota.js`; crons never spend the subscriber reserve. SAM Contract Data API is dead (2026-02-24); award data comes from USASpending v2. Update `SAM_KEY_EXPIRES_UTC` in `sam-key-expiration-reminder.js` on every key rotation.
-- Netlify function env is capped at 4KB by AWS Lambda. Check `netlify env:list --json` before adding a var; move large non-secret values to bundled files. Caches and ledgers use Netlify Blobs via `lib/fetch-cache.js`; handlers call `connectEvent(event)` first.
+- Netlify function env is capped at 4KB by AWS Lambda. Check `netlify env:list --json` before adding a var; move large non-secret values to bundled files. Caches and ledgers use Netlify Blobs via `lib/fetch-cache.js`; handlers call `connectEvent(event)` first. An env var change reaches a function only when that function's bundle changes: after `netlify env:set`, change a shared lib the affected functions require and deploy that, then verify from the function's behavior (a code-free rebuild reused the Lambdas with the old SAM key on 2026-09-14).
 - Every static asset a function reads at runtime is in `[functions].included_files`. A `// schedule =` comment is not a schedule; the `netlify.toml` block is.
 - Netlify crons are at-least-once: claim idempotency before the work. Never `adminCopy` inside a bulk-send loop.
 - A once-a-day consumer of dated content walks a bounded catch-up window with a floor.
