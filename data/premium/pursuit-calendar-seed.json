@@ -1,41 +1,13 @@
 {
   "_meta": {
     "description": "Pursuit Calendar seed events. Source of truth when Supabase pursuit_calendar table is unreachable. Times are America/New_York (ET). Status is computed dynamically by the renderer for date-based events; explicit status values (Protest, Protest Due, Watch, Needs Source) are honored as-is.",
-    "last_curated_at": "2026-09-07",
+    "last_curated_at": "2026-09-14",
     "curator": "automated",
     "timezone": "America/New_York",
-    "window_start": "2026-09-07",
-    "window_end": "2026-12-06"
+    "window_start": "2026-09-14",
+    "window_end": "2026-12-13"
   },
   "events": [
-    {
-      "id": "b8b39ca4-1520-48c4-a3f9-e0fce14f1941",
-      "title": "Advanced Research Projects Agency for Health (ARPA-H) Small Business Innovation Research (SBIR)/Small Business Technology Transfer (STTR) Program",
-      "event_date": "2026-09-11",
-      "event_time_et": null,
-      "agency": "ARPA-H",
-      "vehicle": "7599226SN106",
-      "ref": null,
-      "category": "deadline",
-      "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/bdd2026ead744527be7b623032a4c79a/view",
-      "source_system": "sam.gov",
-      "notes": "Sol: 7599226SN106 · NAICS 541715 · Set-aside: Small Business Set Aside - Total"
-    },
-    {
-      "id": "09ce892f-9084-4f45-8a99-aa07deed78f0",
-      "title": "JOMIS Joint Medical Planning, Modeling and Simulation Capabilities",
-      "event_date": "2026-09-13",
-      "event_time_et": null,
-      "agency": "DHA",
-      "vehicle": "DHA_JOMIS_JMP_20260813",
-      "ref": null,
-      "category": "rfi",
-      "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/213a2fe3a447465e8f30699c9f056ec4/view",
-      "source_system": "sam.gov",
-      "notes": "Sol: DHA_JOMIS_JMP_20260813 · NAICS 541512"
-    },
     {
       "id": "a026007a-c479-47b8-8c04-4356005f8c8d",
       "title": "Portfolio Acquisition Executive, Medical Digital Solutions, (PAE MDS) End User Services (EUS) Area of Interest Application, Workflow, Adoption, and Change Support (AWACS)",
@@ -46,9 +18,23 @@
       "ref": null,
       "category": "deadline",
       "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/65cc015d3f22488dab4189e52174339c/view",
+      "source_url": "https://sam.gov/workspace/contract/opp/5ad10c73d29b487fa70e750479bb0517/view",
       "source_system": "sam.gov",
       "notes": "Sol: HT003826SC005-AOI0001 · NAICS 541512 · Set-aside: No Set aside used"
+    },
+    {
+      "id": "143e8c0a-3aaa-48d3-825e-9c8c155209ac",
+      "title": "Glucometers and Abbott i-STAT Analyzers RALS Data Management System",
+      "event_date": "2026-09-20",
+      "event_time_et": null,
+      "agency": "DHA",
+      "vehicle": "HT940626NOI3825",
+      "ref": null,
+      "category": "rfi",
+      "status_override": null,
+      "source_url": "https://sam.gov/workspace/contract/opp/3fc6e637e2674250b9338400a181060e/view",
+      "source_system": "sam.gov",
+      "notes": "Sol: HT940626NOI3825 · NAICS 541512 · Set-aside: No Set aside used"
     },
     {
       "id": "71af6ea8-8f85-4a92-bf65-c4fd52af92cc",
@@ -60,7 +46,7 @@
       "ref": null,
       "category": "deadline",
       "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/fd5c6361a1454bd5b9cb387d3845d228/view",
+      "source_url": "https://sam.gov/workspace/contract/opp/0e6b5119ca2540868b047f155d57ea9d/view",
       "source_system": "sam.gov",
       "notes": "Sol: 7599226SN106 · NAICS 541715 · Set-aside: Small Business Set Aside - Total"
     }
