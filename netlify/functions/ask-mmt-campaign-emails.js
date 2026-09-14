@@ -21,6 +21,13 @@
 // blocked address is skipped and the skip is counted. A lookup failure
 // DEFERS the send to the next run rather than mailing blind.
 //
+// The RUN is claimed before any send (lib/cron-claim.js): one
+// ASK_MMT_CAMPAIGN_RUN row per ET day, earliest claim wins, later fires are
+// relabeled ASK_MMT_CAMPAIGN_RUN_LOST_CLAIM_RACE. Netlify fired this cron
+// three times at 13:15 UTC on 2026-09-14 and two of them each mailed all 70
+// Premium members the soft-launch note, because the marker was written after
+// the loop. The soft-launch marker is now written before its loop as well.
+//
 // Kill switch: ASK_MMT_CAMPAIGN_EMAILS_DISABLED="true". Per-run send cap
 // MAX_SENDS_PER_RUN. Reads the ops_events tables with .range() pagination
 // (PostgREST caps a request at 1000 rows).
@@ -31,6 +38,7 @@ const { sendEmail } = require("./lib/send-email");
 const { buttondownGet } = require("./lib/email-migration");
 const campaign = require("./lib/ask-mmt-campaign");
 const { todayET } = require("./lib/ask-mmt-access");
+const { claimOnce, finalizeClaim } = require("./lib/cron-claim");
 
 const SOURCE_FN = "ask-mmt-campaign-emails";
 const MARY = "mary@missionmeetstech.com";
@@ -68,11 +76,11 @@ async function fetchAll(supabase, eventType, columns) {
  * No API key configured → "ok" (the address opted in at the widget gate and
  * the footer carries the reply-to-stop line).
  */
-async function buttondownStatus(email) {
-  const apiKey = process.env.BUTTONDOWN_API_KEY;
+async function buttondownStatus(email, ctx = {}) {
+  const apiKey = (ctx.env || process.env).BUTTONDOWN_API_KEY;
   if (!apiKey) return "ok";
   try {
-    const sub = await buttondownGet(apiKey, email);
+    const sub = await (ctx.lookup || buttondownGet)(apiKey, email);
     if (!sub) return "ok"; // not on the list yet (the add at unlock may have failed); still opted in at the gate
     return SKIP_TYPES.has(String(sub.subscriber_type || "").toLowerCase()) ? "skip" : "ok";
   } catch (e) {
@@ -92,7 +100,8 @@ async function premiumRecipients(supabase) {
   return [...(subs || []), ...(adminU || [])].map((u) => (u.email || "").toLowerCase()).filter((e) => e && !seen.has(e) && seen.add(e));
 }
 
-async function runSoftLaunch({ supabase, emails, today, budget }) {
+async function runSoftLaunch(ctx) {
+  const { supabase, emails, today, budget, send } = ctx;
   const spec = emails.soft_launch;
   if (!spec || !spec.send_on || today < spec.send_on) return { status: "not_due" };
   const { data: done } = await supabase
@@ -102,26 +111,34 @@ async function runSoftLaunch({ supabase, emails, today, budget }) {
 
   const recipients = await premiumRecipients(supabase);
   const mail = campaign.renderEmail("soft_launch", { emails });
+  // Marker BEFORE the loop, finalized after it: a rerun must not re-mail the
+  // members who already got it, and an overlapping invocation has to see the
+  // marker while this one is still sending (the loop takes ~60s for 70
+  // members; the 2026-09-14 double send happened inside that window).
+  const marker = await claimOnce(supabase, {
+    eventType: campaign.EVENTS.CAMPAIGN_SENT, sourceFunction: SOURCE_FN, userEmail: MARY,
+    key: spec.key, details: { date: today, recipients: recipients.length },
+  });
+  if (!marker.ok) return { status: marker.reason, key: spec.key, error: marker.error || null };
   const sent = [], failed = [];
   for (const to of recipients) {
     if (budget.used >= MAX_SENDS_PER_RUN) { failed.push({ to, error: "run_budget_exhausted" }); continue; }
-    const r = await sendEmail({ to, from: campaign.FROM, subject: mail.subject, html: mail.html, tags: [{ name: "campaign", value: "ask-mmt-soft-launch" }] });
+    const r = await send({ to, from: campaign.FROM, subject: mail.subject, html: mail.html, tags: [{ name: "campaign", value: "ask-mmt-soft-launch" }] });
     budget.used += 1;
     if (r && r.success) sent.push(to); else failed.push({ to, error: (r && r.error) || "send_failed" });
     await sleep(THROTTLE_MS);
   }
-  // One marker even on partial failure: the failures are listed for Mary and
-  // a rerun must not re-mail the members who already got it.
-  await logEvent(supabase, {
-    event_type: campaign.EVENTS.CAMPAIGN_SENT,
-    user_email: MARY,
+  // Finalize the marker with the counts even on partial failure: the
+  // failures are listed for Mary and the marker stays.
+  await finalizeClaim(supabase, marker.claimId, {
     severity: failed.length ? "warning" : "info",
-    details: { key: spec.key, date: today, recipients: recipients.length, sent: sent.length, failed: failed.length, failed_list: failed.slice(0, 50) },
+    details: { key: spec.key, date: today, status: "sent", recipients: recipients.length, sent: sent.length, failed: failed.length, failed_list: failed.slice(0, 50) },
   });
   return { status: "sent", recipients: recipients.length, sent: sent.length, failed: failed.length, failed_list: failed };
 }
 
-async function runWelcome({ supabase, emails, now, budget }) {
+async function runWelcome(ctx) {
+  const { supabase, emails, now, budget, send } = ctx;
   const signups = await fetchAll(supabase, campaign.EVENTS.SIGNUP, "created_at, details");
   const sentRows = await fetchAll(supabase, campaign.EVENTS.WELCOME_SENT, "details");
   const sentBy = new Map();
@@ -140,12 +157,12 @@ async function runWelcome({ supabase, emails, now, budget }) {
     const due = campaign.dueWelcomeSteps({ signupAt: s.created_at, now, sentSteps: sentBy.get(email) || new Set(), steps: emails.welcome });
     if (!due.length) continue;
     if (budget.used >= MAX_SENDS_PER_RUN) { out.deferred += 1; continue; }
-    const gate = await buttondownStatus(email);
+    const gate = await buttondownStatus(email, ctx);
     if (gate === "skip") { out.skipped_unsubscribed += 1; continue; }
     if (gate === "defer") { out.deferred += 1; continue; }
     const step = due[0];
     const mail = campaign.renderEmail(step.key, { emails });
-    const r = await sendEmail({ to: email, from: campaign.FROM, subject: mail.subject, html: mail.html, tags: [{ name: "campaign", value: `ask-mmt-${step.key}` }] });
+    const r = await send({ to: email, from: campaign.FROM, subject: mail.subject, html: mail.html, tags: [{ name: "campaign", value: `ask-mmt-${step.key}` }] });
     budget.used += 1;
     if (r && r.success) {
       out.sent += 1;
@@ -159,7 +176,8 @@ async function runWelcome({ supabase, emails, now, budget }) {
   return out;
 }
 
-async function runMonthlyReset({ supabase, emails, today, now, budget }) {
+async function runMonthlyReset(ctx) {
+  const { supabase, emails, today, now, budget, send } = ctx;
   if (!campaign.isFirstOfMonth(today)) return { status: "not_first" };
   const key = campaign.resetKeyFor(today);
   const spec = emails.monthly_reset;
@@ -176,10 +194,10 @@ async function runMonthlyReset({ supabase, emails, today, now, budget }) {
     seen.add(email);
     out.candidates += 1;
     if (budget.used >= MAX_SENDS_PER_RUN) { out.deferred += 1; continue; }
-    const gate = await buttondownStatus(email);
+    const gate = await buttondownStatus(email, ctx);
     if (gate === "skip") { out.skipped_unsubscribed += 1; continue; }
     if (gate === "defer") { out.deferred += 1; continue; }
-    const r = await sendEmail({ to: email, from: campaign.FROM, subject: mail.subject, html: mail.html, tags: [{ name: "campaign", value: "ask-mmt-reset" }] });
+    const r = await send({ to: email, from: campaign.FROM, subject: mail.subject, html: mail.html, tags: [{ name: "campaign", value: "ask-mmt-reset" }] });
     budget.used += 1;
     if (r && r.success) {
       out.sent += 1;
@@ -192,46 +210,71 @@ async function runMonthlyReset({ supabase, emails, today, now, budget }) {
   return out;
 }
 
-exports.handler = async () => {
-  const now = new Date();
-  const today = todayET(now);
-  if (String(process.env.ASK_MMT_CAMPAIGN_EMAILS_DISABLED || "").toLowerCase() === "true") {
-    return { statusCode: 200, body: JSON.stringify({ skipped: "kill_switch", today }) };
-  }
-  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
-    return { statusCode: 500, body: JSON.stringify({ error: "supabase_not_configured" }) };
-  }
-  const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-  let emails;
-  try { emails = campaign.loadEmails(); } catch (e) { return { statusCode: 500, body: JSON.stringify({ error: "copy_missing", detail: e.message }) }; }
+/**
+ * Build the cron handler. Side effects are injectable so the double-fire race
+ * is unit-tested against a scripted Supabase (tests/unit/ask-mmt-campaign-handler.test.js).
+ */
+function makeHandler(deps = {}) {
+  const env = deps.env || process.env;
+  const createClientImpl = deps.createClient || createClient;
+  const send = deps.sendEmail || sendEmail;
+  const nowImpl = deps.now || (() => new Date());
+  const lookup = deps.buttondownGet || buttondownGet;
+  const loadEmails = deps.loadEmails || campaign.loadEmails;
 
-  const budget = { used: 0 };
-  const report = { today };
-  try {
-    report.soft_launch = await runSoftLaunch({ supabase, emails, today, budget });
-    report.welcome = await runWelcome({ supabase, emails, now, budget });
-    report.monthly_reset = await runMonthlyReset({ supabase, emails, today, now, budget });
-  } catch (e) {
-    report.error = e.message;
-    await logEvent(supabase, { event_type: "ASK_MMT_CAMPAIGN_RUN", user_email: MARY, severity: "error", details: { ...report } });
-    return { statusCode: 500, body: JSON.stringify(report) };
-  }
+  return async () => {
+    const now = nowImpl();
+    const today = todayET(now);
+    if (String(env.ASK_MMT_CAMPAIGN_EMAILS_DISABLED || "").toLowerCase() === "true") {
+      return { statusCode: 200, body: JSON.stringify({ skipped: "kill_switch", today }) };
+    }
+    if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_KEY) {
+      return { statusCode: 500, body: JSON.stringify({ error: "supabase_not_configured" }) };
+    }
+    const supabase = createClientImpl(env.SUPABASE_URL, env.SUPABASE_SERVICE_KEY);
+    let emails;
+    try { emails = loadEmails(); } catch (e) { return { statusCode: 500, body: JSON.stringify({ error: "copy_missing", detail: e.message }) }; }
 
-  const anySend = (report.soft_launch.sent || 0) + (report.welcome.sent || 0) + (report.monthly_reset.sent || 0);
-  const anyFail = (report.soft_launch.failed || 0) + (report.welcome.failed || 0) + (report.monthly_reset.failed || 0);
-  await logEvent(supabase, { event_type: "ASK_MMT_CAMPAIGN_RUN", user_email: MARY, severity: anyFail ? "warning" : "info", details: { ...report, sends: anySend } });
+    // CLAIM the run before any send: one run per ET day, earliest claim wins.
+    const run = await claimOnce(supabase, {
+      eventType: "ASK_MMT_CAMPAIGN_RUN", sourceFunction: SOURCE_FN, userEmail: MARY,
+      keyField: "today", key: today, loserEventType: "ASK_MMT_CAMPAIGN_RUN_LOST_CLAIM_RACE",
+    });
+    if (!run.ok) {
+      return { statusCode: 200, body: JSON.stringify({ skipped: run.reason, today, ...(run.winner ? { winner: run.winner } : {}), ...(run.error ? { error: run.error } : {}) }) };
+    }
 
-  if (report.soft_launch.status === "sent" || anyFail) {
+    const budget = { used: 0 };
+    const report = { today };
+    const ctx = { supabase, emails, today, now, budget, send, env, lookup };
     try {
-      await sendEmail({
-        to: MARY,
-        from: "MMT Ops <mary@missionmeetstech.com>",
-        subject: `Ask MMT campaign emails: ${anySend} sent${anyFail ? `, ${anyFail} FAILED` : ""} (${today})`,
-        html: `<pre style="white-space:pre-wrap;font-family:inherit;">${JSON.stringify(report, null, 2).replace(/</g, "&lt;")}</pre>`,
-      });
-    } catch (e) { console.warn(`${SOURCE_FN}: summary email failed:`, e.message); }
-  }
-  return { statusCode: 200, body: JSON.stringify({ ...report, sends: anySend }) };
-};
+      report.soft_launch = await runSoftLaunch(ctx);
+      report.welcome = await runWelcome(ctx);
+      report.monthly_reset = await runMonthlyReset(ctx);
+    } catch (e) {
+      report.error = e.message;
+      await finalizeClaim(supabase, run.claimId, { severity: "error", details: { ...report, status: "error" } });
+      return { statusCode: 500, body: JSON.stringify(report) };
+    }
 
+    const anySend = (report.soft_launch.sent || 0) + (report.welcome.sent || 0) + (report.monthly_reset.sent || 0);
+    const anyFail = (report.soft_launch.failed || 0) + (report.welcome.failed || 0) + (report.monthly_reset.failed || 0);
+    await finalizeClaim(supabase, run.claimId, { severity: anyFail ? "warning" : "info", details: { ...report, sends: anySend, status: "done" } });
+
+    if (report.soft_launch.status === "sent" || anyFail) {
+      try {
+        await send({
+          to: MARY,
+          from: "MMT Ops <mary@missionmeetstech.com>",
+          subject: `Ask MMT campaign emails: ${anySend} sent${anyFail ? `, ${anyFail} FAILED` : ""} (${today})`,
+          html: `<pre style="white-space:pre-wrap;font-family:inherit;">${JSON.stringify(report, null, 2).replace(/</g, "&lt;")}</pre>`,
+        });
+      } catch (e) { console.warn(`${SOURCE_FN}: summary email failed:`, e.message); }
+    }
+    return { statusCode: 200, body: JSON.stringify({ ...report, sends: anySend }) };
+  };
+}
+
+exports.handler = makeHandler();
+exports.makeHandler = makeHandler;
 exports.MAX_SENDS_PER_RUN = MAX_SENDS_PER_RUN;

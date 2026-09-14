@@ -11,8 +11,30 @@
 // Cost: $0 — included in Buttondown's $9/month plan (up to 1,000 subs)
 // ============================================================
 
+const { createClient } = require('@supabase/supabase-js');
+const { claimOnce, finalizeClaim } = require('./lib/cron-claim');
+
 const BUTTONDOWN_API_KEY = process.env.BUTTONDOWN_API_KEY;
 const SITE_URL = 'https://missionmeetstech.com';
+const CLAIM_EVENT = 'newsletter_send';
+
+// Buttondown is the record of what went out. An issue created seconds ago
+// sits in about_to_send / in_flight for minutes before it is "sent", so a
+// status=sent check alone cannot see it; look at every status an issue
+// passes through.
+const ISSUE_STATUSES = ['sent', 'in_flight', 'about_to_send', 'scheduled'];
+async function alreadyOnButtondown(title) {
+  const needle = title.substring(0, 40);
+  for (const status of ISSUE_STATUSES) {
+    const res = await fetch(`https://api.buttondown.com/v1/emails?status=${status}&count=5`, {
+      headers: { 'Authorization': `Token ${BUTTONDOWN_API_KEY}` }
+    });
+    if (!res.ok) continue;
+    const data = await res.json();
+    if ((data.results || []).some((e) => e.subject && e.subject.includes(needle))) return true;
+  }
+  return false;
+}
 
 exports.handler = async (event) => {
   if (!BUTTONDOWN_API_KEY) {
@@ -20,6 +42,15 @@ exports.handler = async (event) => {
     return { statusCode: 200, body: JSON.stringify({ skipped: true, reason: 'no API key' }) };
   }
 
+  // Netlify fires scheduled functions more than once on some ticks. A second
+  // Buttondown create here would mail the whole free list twice, so the send
+  // is CLAIMED in ops_events before the create (lib/cron-claim.js).
+  const supabase = (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY)
+    ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY)
+    : null;
+  if (!supabase) console.warn('newsletter-send: Supabase not configured; sending without a double-fire claim');
+  let claim = null;
+  let claimKey = null;
   try {
     // Fetch the latest newsletters.json from the live site to find new articles
     const articlesRes = await fetch(`${SITE_URL}/newsletters.json`);
@@ -40,26 +71,11 @@ exports.handler = async (event) => {
       return { statusCode: 200, body: JSON.stringify({ skipped: true, reason: 'no new articles' }) };
     }
 
-    // Check if we already sent for the most recent article (prevent duplicates)
-    // Use Buttondown's draft list to check
-    const draftsRes = await fetch('https://api.buttondown.com/v1/emails?status=sent&count=5', {
-      headers: { 'Authorization': `Token ${BUTTONDOWN_API_KEY}` }
-    });
-
-    if (draftsRes.ok) {
-      const draftsData = await draftsRes.json();
-      const sentEmails = draftsData.results || [];
-      const latestTitle = recentArticles[0].title;
-
-      // If we already sent an email containing this article title, skip
-      const alreadySent = sentEmails.some(e =>
-        e.subject && e.subject.includes(latestTitle.substring(0, 40))
-      );
-
-      if (alreadySent) {
-        console.log(`Already sent email for "${latestTitle}" — skipping`);
-        return { statusCode: 200, body: JSON.stringify({ skipped: true, reason: 'already sent' }) };
-      }
+    // Already sent? (prevent duplicates across ticks and days)
+    const latestTitle = recentArticles[0].title;
+    if (await alreadyOnButtondown(latestTitle)) {
+      console.log(`Already sent email for "${latestTitle}" — skipping`);
+      return { statusCode: 200, body: JSON.stringify({ skipped: true, reason: 'already sent' }) };
     }
 
     // Build the email
@@ -105,6 +121,19 @@ exports.handler = async (event) => {
     body += `*Mission Meets Tech covers the gap between policy, procurement, and what actually ships across DHA, VA, and federal health IT.*\n\n`;
     body += `[ProposalPulse — Score your proposal](${SITE_URL}/proposal-pulse.html) | [MarketPulse — Custom market intelligence](${SITE_URL}/marketpulse.html) | [Contract Tracker](${SITE_URL}/contract-tracker.html)\n`;
 
+    // CLAIM the send, keyed on the article; of two overlapping invocations
+    // only the earliest claim creates the Buttondown email.
+    if (supabase) {
+      claimKey = latest.url || latest.title;
+      claim = await claimOnce(supabase, {
+        eventType: CLAIM_EVENT, sourceFunction: 'newsletter-send', keyField: 'article', key: claimKey, details: { subject },
+      });
+      if (!claim.ok) {
+        console.log(`newsletter-send: ${claim.reason} for "${subject}"`);
+        return { statusCode: 200, body: JSON.stringify({ skipped: true, reason: claim.reason, winner: claim.winner || null }) };
+      }
+    }
+
     // Send via Buttondown API
     const sendRes = await fetch('https://api.buttondown.com/v1/emails', {
       method: 'POST',
@@ -130,6 +159,9 @@ exports.handler = async (event) => {
 
     const result = await sendRes.json();
     console.log(`Newsletter sent: "${subject}" — ID: ${result.id}`);
+    if (claim && claim.claimId) {
+      await finalizeClaim(supabase, claim.claimId, { details: { article: claimKey, subject, status: 'sent', buttondown_id: result.id } });
+    }
 
     return {
       statusCode: 200,
@@ -143,6 +175,11 @@ exports.handler = async (event) => {
 
   } catch (err) {
     console.error('Newsletter send error:', err.message);
+    if (claim && claim.claimId) {
+      // The failure record no longer carries the claim's event_type, so the
+      // next tick (or Friday's run) may try again.
+      await finalizeClaim(supabase, claim.claimId, { event_type: 'newsletter_send_failed', severity: 'error', details: { article: claimKey, status: 'failed', error: err.message } });
+    }
     return {
       statusCode: 500,
       body: JSON.stringify({ error: err.message }),
