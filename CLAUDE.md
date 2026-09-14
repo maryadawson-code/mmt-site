@@ -105,6 +105,32 @@ recurring vendor names. Each failing row then passed 3 of 3 on re-run; the
 grader flags only expansions absent from both the reference and the
 retrieved context.
 
+**Adversarial review before merge (28 agents: five dimensions, every finding
+refuted or confirmed): 18 confirmed of 23.** The ones that mattered:
+- **Every article citation in the corpus linked to `/articles/<slug>/`, which
+  404s on production** (the site writes `/newsletter/<slug>/`). Pre-existing:
+  every Ask MMT answer since 04-19 carried dead article links, including
+  the ones in the 09-13 live pass. Fixed in the corpus builder with a
+  dist-backed test.
+- **The voice guard rewrote banned words inside URLs and proper names**
+  ("Comprehensive Care for Joint Replacement" became "Full Care...", the
+  `cdc-dmi-successor-nssp-ecosystem-contracts` slug became
+  `nssp-landscape-contracts` and was then de-linked as "invented"). URLs,
+  markdown links, Title Case names and acronym-tagged phrases are now
+  protected spans.
+- **The corpus indexed the embargoed 09-15 issue** (build-time clock was
+  UTC; the site's publish gate is ET) and **carried contracting officers'
+  emails and direct phone numbers** from two Capture Corners. Future-dated
+  items are held with the ET gate and every excerpt is scrubbed.
+- A follow-up naming its own agency ("What about DHA?" after a VA question)
+  inherited the OLD agency through first-mention detection; the recipient
+  obligations block printed a "$0.00M total, quote it" table for a topic word
+  used as a vendor name; "Rows shown: 10 of 20 matching" printed the page
+  size as the match count; "Type of Set Aside" is not a field USASpending
+  returns per award; subtier widening spent the keyword ladder's budget;
+  the vehicle-fact and vendor acronym rows NCI and SMS were wrong in a
+  health context; an expired member token read as the free-tier gate.
+
 Hard rules (do not regress):
 - **The eval gate runs before any Ask MMT deploy** (`netlify dev:exec --
   node scripts/ask-mmt-eval.js --trials 3`), and every reported failure
@@ -121,7 +147,15 @@ Hard rules (do not regress):
   become `since`, `set_aside_type_codes` and carried context.
 - **Acronym expansions come from the glossary, the curated table or a source
   excerpt, and the curated table is initials-checked by a test.** Add a DHA
-  office to `acronyms.js` only from an in-repo source.
+  office to `acronyms.js` only from an in-repo source. An acronym with two
+  live senses in this domain (SMS, ISR) gets a dual-sense row or no row.
+- **Post-generation text guards never touch URLs, markdown links, Title
+  Case names or acronym-tagged phrases.** A guard that edits a slug turns a
+  real citation into an "invented" one.
+- **A corpus item's URL is the path the site actually writes, and a test
+  checks it against dist/.** Future-dated content is held with the ET
+  publish gate, and every excerpt is scrubbed of emails and phone numbers
+  before it is written.
 - **Kill switch first, redeploy second.** `ASK_MMT_DISABLED=true` pauses the
   tool honestly; use it before touching a launch-day deploy.
 
