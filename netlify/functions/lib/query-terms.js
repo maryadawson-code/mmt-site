@@ -134,12 +134,21 @@ const SET_ASIDE_PATTERNS = [
   { kind: "HUBZone", re: /\bhub[- ]?zone\b/gi },
   { kind: "small business", re: /\bsmall[- ]business(es)?\b|\bset[- ]asides?\b/gi },
 ];
+// The matched wording, normalized, so it can be put back into the phrase
+// when it is the subject of the question ("What is VA's small business
+// goal?", "What is a set-aside?") rather than a filter on it.
+function normalizeSetAsideWording(m) {
+  const w = String(m).toLowerCase().replace(/\s+/g, " ").trim();
+  if (/^set[- ]asides?$/.test(w)) return "set-aside";
+  return w.replace(/businesses$/, "business");
+}
 function extractSetAside(text) {
   let out = String(text || "");
   const kinds = [];
+  const wording = [];
   for (const p of SET_ASIDE_PATTERNS) {
     let hit = false;
-    out = out.replace(p.re, () => { hit = true; return " "; });
+    out = out.replace(p.re, (m) => { hit = true; wording.push(normalizeSetAsideWording(m)); return " "; });
     if (hit) kinds.push(p.kind);
   }
   if (!kinds.length) return { text: out, setAside: null };
@@ -147,7 +156,7 @@ function extractSetAside(text) {
   const codes = specific.length
     ? [...new Set(specific.flatMap((k) => SET_ASIDE_CODES[k]))]
     : ALL_SMALL_BUSINESS_CODES.slice();
-  return { text: out, setAside: { kinds, codes } };
+  return { text: out, setAside: { kinds, codes, wording: [...new Set(wording)] } };
 }
 
 // Does the question ask for money over time? Decides whether the recipient
@@ -279,7 +288,24 @@ function extractSearchTerms(question, opts = {}) {
     tokens.push(w);
   }
 
-  const phraseTokens = tokens.filter((w) => !GENERIC.has(w)).slice(0, MAX_PHRASE_TOKENS);
+  let phraseTokens = tokens.filter((w) => !GENERIC.has(w)).slice(0, MAX_PHRASE_TOKENS);
+
+  // Set-aside wording is a FILTER when something more specific survives
+  // ("SDVOSB data governance awards" searches "data governance" with the
+  // SDVOSB codes). When nothing specific survives, the wording IS the
+  // subject ("What is VA's small business goal?", "What is a set-aside?")
+  // and stripping it sent "goal" or the raw question to SAM.gov, the
+  // Federal Register, GAO and Congress (2026-09-14 review). Put it back at
+  // the front of the phrase and into the tokens; the codes still travel as
+  // the USASpending filter.
+  const setAsideWords = setAsideOut.setAside
+    ? [...new Set(setAsideOut.setAside.wording.flatMap((w) => w.split(" ")))].filter((w) => w.length >= 2)
+    : [];
+  const nothingSpecific = phraseTokens.every((t) => specificity(t, acronyms) === 1);
+  if (setAsideWords.length && nothingSpecific) {
+    phraseTokens = [...setAsideWords, ...phraseTokens.filter((t) => !setAsideWords.includes(t))].slice(0, MAX_PHRASE_TOKENS);
+    tokens.unshift(...setAsideWords.filter((w) => !tokens.includes(w)));
+  }
   const rankedTokens = [...phraseTokens]
     .map((t, i) => ({ t, i, s: specificity(t, acronyms) }))
     .sort((a, b) => (b.s - a.s) || (a.i - b.i))

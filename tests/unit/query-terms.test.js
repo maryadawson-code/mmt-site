@@ -3,7 +3,7 @@
 // included. If it ever goes back to the API as a sentence, this fails.
 
 import { describe, it, expect } from "vitest";
-import { extractSearchTerms, levenshtein, extractYears, extractSetAside, obligationsIntent, fiscalYearOf, ALL_SMALL_BUSINESS_CODES } from "../../netlify/functions/lib/query-terms.js";
+import { extractSearchTerms, searchPhrase, keywordLadder, levenshtein, extractYears, extractSetAside, obligationsIntent, fiscalYearOf, ALL_SMALL_BUSINESS_CODES } from "../../netlify/functions/lib/query-terms.js";
 
 // Pinned: "last year" and "a future fiscal year" depend on today.
 const TODAY = "2026-09-14";
@@ -137,6 +137,37 @@ describe("extractSearchTerms", () => {
     it("no set-aside wording, no filter", () => {
       expect(extractSearchTerms("data governance awards at DHA").setAside).toBe(null);
       expect(extractSetAside("plain text").setAside).toBe(null);
+    });
+  });
+
+  describe("set-aside wording that IS the subject stays in the phrase (2026-09-14 review)", () => {
+    it("'What is VA's small business goal?' keeps 'small business' in the phrase and still carries every small-business code", () => {
+      const t = extractSearchTerms("What is VA's small business goal?", { today: TODAY });
+      expect(t.phrase).toBe("small business goal");
+      expect(t.phraseTokens).toEqual(["small", "business", "goal"]);
+      expect(t.tokens).toEqual(["small", "business", "goal"]);
+      expect(t.agency).toBe("VA");
+      expect(t.setAside.codes).toEqual(ALL_SMALL_BUSINESS_CODES);
+      expect(t.setAside.wording).toEqual(["small business"]);
+      expect(searchPhrase(t)).toBe("small business goal");
+    });
+    it("'What is a set-aside?' never searches with an empty phrase or the raw question", () => {
+      const q = "What is a set-aside?";
+      const t = extractSearchTerms(q, { today: TODAY });
+      expect(t.phrase).toBe("set-aside");
+      expect(searchPhrase(t)).toBe("set-aside");
+      expect(searchPhrase(q)).not.toBe("");
+      expect(searchPhrase(q)).not.toBe(q);
+      expect(keywordLadder(t)).toEqual(["set-aside", ""]);
+      expect(extractSetAside("set asides and set-asides").setAside.wording).toEqual(["set-aside"]);
+    });
+    it("a named kind with nothing else specific becomes the keyword; a specific term beside it still wins", () => {
+      expect(extractSearchTerms("What WOSB awards did VA make?").phrase).toBe("wosb");
+      expect(extractSearchTerms("DHA SDVOSB awards").tokens).toEqual(["sdvosb", "awards"]);
+      // unchanged: a specific term survives, so the wording stays a filter
+      expect(extractSearchTerms("What is the small business set-aside on T4NG2?").phrase).toBe("t4ng2");
+      expect(extractSearchTerms("how do set-asides work on T4NG2").phrase).toBe("t4ng2");
+      expect(extractSearchTerms("women-owned small business cloud awards").phrase).toBe("cloud");
     });
   });
 

@@ -65,9 +65,14 @@ function deriveKeywords(topic) {
 // wording; rung 1 is the most specific term (or no keyword). Bounded because
 // the whole federal fan-out sits under an 8s timeout in premium-assistant.
 const MAX_KEYWORD_ATTEMPTS = 2;
-// Hard cap on spending_by_award calls for the keyword ladder in ONE question,
-// INCLUDING a subtier-to-department widening retry (a widening counts).
-const MAX_AWARD_CALLS = 2;
+// Each rung may widen from a sub-agency to its department ONCE, so the
+// ceiling on spending_by_award calls for one question is two per rung.
+// Rungs and widenings are counted separately (2026-09-14 review): charging
+// the widening against a two-call cap meant a DHA question whose full phrase
+// missed at both tiers never reached the relaxed rung, which is the "keyword
+// relaxes, it does not disappear" rule reversed. TIMEOUTS_MS.awards is the
+// wall-clock bound; live calls answered in 0.1s to 1.4s each.
+const MAX_AWARD_CALLS = MAX_KEYWORD_ATTEMPTS * 2;
 
 // 2026-09-14: one slow upstream used to hold the whole bundle until
 // premium-assistant's 8s fan-out timeout dropped every federal result at
@@ -94,17 +99,34 @@ function bounded(promise, ms, emptyShape) {
   return Promise.race([guarded, onTimeout]).finally(() => { if (timer) clearTimeout(timer); });
 }
 const money = (n) => `$${((Number(n) || 0) / 1e6).toFixed(2)}M`;
+// How many rows matched, in words the model can quote. An exact count comes
+// from the count endpoint or a short page; a full page whose count call
+// failed is described, never numbered (the page length is not a match count).
+function describeMatchCount(result) {
+  const n = result && Array.isArray(result.awards) ? result.awards.length : 0;
+  const total = result && Number.isFinite(Number(result.total)) && result.total !== null ? Number(result.total) : null;
+  const exact = !(result && (result.total_exact === false || (result.has_more && (total === null || total < n))));
+  if (exact) return `${total !== null && total > 0 ? total : n} matching`;
+  return `the top ${n} by award amount (more matches exist beyond this page; the exact count was not available)`;
+}
 const todayIso = (today) => (/^\d{4}-\d{2}-\d{2}$/.test(String(today || "")) ? String(today) : new Date().toISOString().slice(0, 10));
 
 // Fields every award search asks for, and the one mapping every award row
 // goes through, so the keyword search and the recipient search cannot
 // drift (description + real award link matter to the model: 2026-09-13).
+// Only names the Contract Award mapping recognizes (verified live
+// 2026-09-14 against spending_by_award): an unknown field name answers
+// 200 with null on every row, exactly like an invented one. "Total
+// Obligated Amount", "NAICS Code", "NAICS Description" and "Type of Set
+// Aside" were all unknown, so every row printed "$0.00M obligated",
+// "NAICS n/a" and "Set-aside: none" beside a set-aside-filtered scope
+// line. NAICS and PSC come back as { code, description }; "Total Outlays"
+// is the money paid out to date.
 const AWARD_FIELDS = [
-  "Award ID", "Recipient Name", "Award Amount",
-  "Total Obligated Amount", "Description", "Start Date",
-  "End Date", "Awarding Agency", "Awarding Sub Agency",
-  "Contract Award Type", "NAICS Code", "NAICS Description",
-  "Type of Set Aside", "generated_internal_id",
+  "Award ID", "Recipient Name", "Award Amount", "Total Outlays",
+  "Description", "Start Date", "End Date", "Awarding Agency",
+  "Awarding Sub Agency", "Contract Award Type", "NAICS", "PSC",
+  "generated_internal_id",
 ];
 
 function mapAward(r) {
@@ -112,16 +134,16 @@ function mapAward(r) {
     piid: r["Award ID"] || "unknown",
     recipient: r["Recipient Name"] || "",
     award_amount: r["Award Amount"] || 0,
-    obligated: r["Total Obligated Amount"] || 0,
+    outlays: Number(r["Total Outlays"]) || 0,
     description: (r["Description"] || "").substring(0, 200),
     start_date: r["Start Date"] || "",
     end_date: r["End Date"] || "",
     agency: r["Awarding Agency"] || "",
     sub_agency: r["Awarding Sub Agency"] || "",
     award_type: r["Contract Award Type"] || "",
-    naics: r["NAICS Code"] || "",
-    naics_desc: r["NAICS Description"] || "",
-    set_aside: r["Type of Set Aside"] || "",
+    naics: (r.NAICS && r.NAICS.code) || "",
+    naics_desc: (r.NAICS && r.NAICS.description) || "",
+    psc: (r.PSC && r.PSC.code) || "",
     // usaspending.gov/award/<PIID> is a dead link (404 on the API and the
     // page); the award page wants the generated id. Fall back to the
     // keyword search page, which resolves for any PIID.
@@ -129,6 +151,47 @@ function mapAward(r) {
       ? `https://www.usaspending.gov/award/${encodeURIComponent(r.generated_internal_id)}`
       : `https://www.usaspending.gov/keyword_search/${encodeURIComponent(r["Award ID"] || "")}`,
   };
+}
+
+/**
+ * Exact match count for a spending_by_award filter set. The page endpoint's
+ * page_metadata carries hasNext and no total (verified live 2026-09-14), so
+ * a full page said nothing about how many rows matched and the context
+ * block printed the page length (20) as the match count while the real
+ * count for "telehealth" at VA was 105. spending_by_award_count takes the
+ * same filters, needs no key or quota, and answered in 0.5s to 1.3s live.
+ * Returns null when it cannot answer; the caller then says "more exist"
+ * instead of printing a number.
+ */
+async function countUSASpendingAwards(filters) {
+  try {
+    const res = await fetch("https://api.usaspending.gov/api/v2/search/spending_by_award_count/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ filters, subawards: false }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const n = data && data.results ? Number(data.results.contracts) : NaN;
+    return Number.isFinite(n) ? n : null;
+  } catch (err) {
+    console.error("USASpending spending_by_award_count error:", err.message);
+    return null;
+  }
+}
+
+/**
+ * Page result -> { awards, total, has_more, total_exact }. A short page IS
+ * the count (no second call). A full page asks the count endpoint; if that
+ * fails, total is null and has_more true, and the context block says more
+ * matches exist rather than presenting the page length as a match count.
+ */
+async function withMatchCount(data, awards, filters) {
+  const hasMore = !!(data && data.page_metadata && data.page_metadata.hasNext);
+  if (!hasMore) return { awards, total: awards.length, has_more: false, total_exact: true };
+  const count = await countUSASpendingAwards(filters);
+  if (count !== null && count >= awards.length) return { awards, total: count, has_more: true, total_exact: true };
+  return { awards, total: null, has_more: true, total_exact: false };
 }
 
 /**
@@ -164,7 +227,7 @@ async function searchUSASpendingRecipients({ name, agency, limit = 15, startDate
     }
     const data = await res.json();
     const awards = (data.results || []).map(mapAward);
-    return { awards, total: data.page_metadata?.total || awards.length, name: q };
+    return { ...(await withMatchCount(data, awards, filters)), name: q };
   } catch (err) {
     return { awards: [], total: 0, name: q, error: err.message };
   }
@@ -203,11 +266,16 @@ async function searchRecipientObligationsByYear({ name, agency, since, today }) 
       return { years: [], total: 0, name: q, since: start, until: end, error: `USASpending API ${res.status}${detail ? `: ${detail}` : ""}` };
     }
     const data = await res.json();
+    // spending_over_time answers a ROW PER YEAR at $0 when no recipient
+    // carries the name (verified live 2026-09-14 for "telehealth"), unlike
+    // spending_by_award, which answers nothing. A zero year is not a figure
+    // to quote; when every year is zero the name matched no vendor.
     const years = (data.results || [])
       .map((r) => ({ fiscal_year: Number(r.time_period && r.time_period.fiscal_year) || null, obligated: Number(r.aggregated_amount) || 0 }))
-      .filter((y) => y.fiscal_year)
+      .filter((y) => y.fiscal_year && y.obligated > 0)
       .sort((a, b) => a.fiscal_year - b.fiscal_year);
     const total = years.reduce((sum, y) => sum + y.obligated, 0);
+    if (!years.length) return { name: q, since: start, until: end, agency_scope: f ? f.name : null, years: [], total: 0, skipped: "no recipient matched" };
     return { name: q, since: start, until: end, agency_scope: f ? f.name : null, years, total };
   } catch (err) {
     console.error("USASpending spending_over_time error:", err.message);
@@ -242,8 +310,9 @@ async function searchUSASpending({ keyword, agency, naics, startDate, endDate, l
   }
   const usedSubtier = !!(filters.agencies && filters.agencies[0] && filters.agencies[0].tier === "subtier") && hasSubtier(agency);
   const retryToptier = () => searchUSASpending({ keyword, agency, naics, startDate, endDate, limit, setAside, today, _tier: "toptier", _budget });
-  // The per-question call budget (MAX_AWARD_CALLS) is shared with the
-  // widening retry; when it is spent, the result in hand is the answer.
+  // MAX_AWARD_CALLS is a ceiling (two calls per rung: the sub-agency, then
+  // its department once). The ladder counts rungs, not calls, so a widening
+  // never costs a rung; the ceiling only bites on a caller-supplied budget.
   const budgetLeft = () => !_budget || _budget.used < _budget.max;
 
   if (naics && naics.length > 0) {
@@ -315,7 +384,7 @@ async function searchUSASpending({ keyword, agency, naics, startDate, endDate, l
     }
     const awards = (data.results || []).map(mapAward);
 
-    return { awards, total: data.page_metadata?.total || awards.length };
+    return withMatchCount(data, awards, filters);
   } catch (err) {
     console.error("USASpending API error:", err.message);
     return { awards: [], total: 0, error: err.message };
@@ -794,7 +863,10 @@ async function enrichWithFederalData({ topic, agency, naics, recipientName, rung
   const recipientStart = windowStart || "2022-10-01";
   const setAsideCodes = Array.isArray(setAside) && setAside.length ? setAside : (terms.setAside ? terms.setAside.codes : null);
   const wantsObl = typeof wantsObligations === "boolean" ? wantsObligations : obligationsIntent(topic);
-  const budget = { used: 0, max: MAX_AWARD_CALLS };
+  // `used` counts spending_by_award calls (widenings included, for the
+  // ops_event); `rungs` counts keyword attempts, which is what the ladder
+  // is bounded on. A widening never consumes a rung.
+  const budget = { used: 0, rungs: 0, max: MAX_AWARD_CALLS };
 
   console.log(`[FEDERAL-API] Enriching: "${keywords}" agency=${agency || "all"} naics=${(naics || []).join(",")} since=${windowStart || "default"} setAside=${setAsideCodes ? setAsideCodes.length + " codes" : "none"}`);
 
@@ -804,12 +876,15 @@ async function enrichWithFederalData({ topic, agency, naics, recipientName, rung
     // most specific term, so a wordy or unusual question relaxes into a hit
     // instead of returning zero. An ERROR is never retried (it is not a
     // miss, and retrying would multiply the failure). At most
-    // MAX_KEYWORD_ATTEMPTS rungs and MAX_AWARD_CALLS requests, widening
-    // included.
+    // MAX_KEYWORD_ATTEMPTS rungs; each rung may widen to the department
+    // once, so at most MAX_AWARD_CALLS requests. The widening is not a
+    // rung: a sub-agency question that misses at both tiers still gets
+    // the relaxed keyword (2026-09-14 review).
     bounded((async () => {
       let last = null;
       for (let i = 0; i < Math.min(ladder.length, MAX_KEYWORD_ATTEMPTS); i++) {
         if (budget.used >= budget.max) break;
+        budget.rungs += 1;
         // The empty rung is "everything the agency awarded", a real query
         // only when there IS an agency or NAICS to scope it. Unscoped, it
         // is the twenty largest awards in government (Northrop, Lockheed,
@@ -877,13 +952,16 @@ async function enrichWithFederalData({ topic, agency, naics, recipientName, rung
   }
 
   const summary = [];
-  if (awards.total > 0) {
-    summary.push(`USASpending: ${awards.total} awards found, top ${awards.awards.length} returned`);
+  if (awards.awards && awards.awards.length > 0) {
+    summary.push(`USASpending: ${describeMatchCount(awards)}, top ${awards.awards.length} returned`);
   }
-  if (recipientAwards && recipientAwards.awards && recipientAwards.awards.length > 0) {
-    summary.push(`USASpending: ${recipientAwards.total} awards to recipients matching "${recipientAwards.name}"`);
+  const primeMatched = !!(recipientAwards && Array.isArray(recipientAwards.awards) && recipientAwards.awards.length > 0);
+  if (primeMatched) {
+    summary.push(`USASpending: ${describeMatchCount(recipientAwards)} to recipients matching "${recipientAwards.name}"`);
   }
-  if (recipientObligations && Array.isArray(recipientObligations.years) && recipientObligations.years.length > 0) {
+  // The obligations figure is only a figure when the name matched a prime;
+  // a topic word used as a recipient name gets $0 rows, never a summary.
+  if (primeMatched && recipientObligations && Array.isArray(recipientObligations.years) && recipientObligations.years.length > 0 && Number(recipientObligations.total) > 0) {
     summary.push(`USASpending: ${money(recipientObligations.total)} obligated to "${recipientObligations.name}" across ${recipientObligations.years.length} fiscal years`);
   }
   if (categories.categories && categories.categories.length > 0) {
@@ -920,6 +998,7 @@ async function enrichWithFederalData({ topic, agency, naics, recipientName, rung
     window_start: windowStart,
     set_aside_codes: setAsideCodes,
     award_calls: budget.used,
+    award_rungs: budget.rungs,
     summary: summary.join("; "),
   };
 }
@@ -934,45 +1013,54 @@ function formatFederalDataContext(data) {
 
   // Totals are computed HERE (2026-09-14) so the model quotes them instead
   // of adding rows; the award amount field is the potential value as
-  // reported to FPDS, not obligations to date.
-  const totalsLine = (shown, total) => {
+  // reported to FPDS, not obligations to date. The match count is the
+  // count endpoint's figure, never the page length: a full page with no
+  // count in hand says "more matches exist" (2026-09-14 review).
+  const totalsLine = (shown, result) => {
     const sum = shown.reduce((acc, a) => acc + (Number(a.award_amount) || 0), 0);
-    return `Rows shown: ${shown.length} of ${Number(total) || shown.length} matching; sum of award amounts shown: ${money(sum)} (award amount field, potential value as reported to FPDS). Quote these figures; do not re-add them.`;
+    return `Rows shown: ${shown.length} of ${describeMatchCount(result)}, largest award amounts first; sum of award amounts shown: ${money(sum)} (award amount field, potential value as reported to FPDS). Quote these figures; do not re-add them.`;
   };
 
   // USASpending awards
   if (data.usaspending_awards && Array.isArray(data.usaspending_awards.awards) && data.usaspending_awards.awards.length > 0) {
     // Description and award amount are what let the model recognize a
     // record ("IMMUTA SOFTWARE FOR DATA GOVERNANCE") instead of skipping a
-    // bare PIID with "$0.00M obligated" (obligations lag the award value).
+    // bare PIID. Outlays and NAICS print only when the API returned them;
+    // the per-row set-aside is not a field this endpoint exposes, and the
+    // scope line already states the filter that was applied.
     const shown = data.usaspending_awards.awards.slice(0, 10);
     const rows = shown.map((a) =>
-      `- ${a.piid}: ${a.recipient} | "${(a.description || "no description").replace(/\s+/g, " ").trim()}" | award ${money(a.award_amount)} (obligated to date ${money(a.obligated)}) | ${a.sub_agency || a.agency} | NAICS ${a.naics || "n/a"} | Set-aside: ${a.set_aside || "none"} | ${a.start_date} to ${a.end_date} | ${a.source_url}`
+      `- ${a.piid}: ${a.recipient} | "${(a.description || "no description").replace(/\s+/g, " ").trim()}" | award ${money(a.award_amount)}${Number(a.outlays) > 0 ? ` (outlays to date ${money(a.outlays)})` : ""} | ${a.sub_agency || a.agency}${a.naics ? ` | NAICS ${a.naics}` : ""}${a.psc ? ` | PSC ${a.psc}` : ""} | ${a.start_date} to ${a.end_date} | ${a.source_url}`
     ).join("\n");
     const scope = [];
     if (data.window_start) scope.push(`awards dated ${data.window_start} or later`);
-    if (Array.isArray(data.set_aside_codes) && data.set_aside_codes.length) scope.push(`set-aside codes ${data.set_aside_codes.join("/")}`);
-    sections.push(`USASPENDING.GOV VERIFIED AWARDS, keyword matched in the description or recipient (${data.usaspending_awards.total} total${scope.length ? `; ${scope.join("; ")}` : ""}). A product named in a reseller's or integrator's award description is an award tied to that product; a keyword that only matches a street address or an unrelated word is not:\n${rows}\n${totalsLine(shown, data.usaspending_awards.total)}`);
+    if (Array.isArray(data.set_aside_codes) && data.set_aside_codes.length) scope.push(`set-aside codes ${data.set_aside_codes.join("/")}, applied as a filter; the rows below are all set-aside awards`);
+    sections.push(`USASPENDING.GOV VERIFIED AWARDS, keyword matched in the description or recipient (${describeMatchCount(data.usaspending_awards)}${scope.length ? `; ${scope.join("; ")}` : ""}). A product named in a reseller's or integrator's award description is an award tied to that product; a keyword that only matches a street address or an unrelated word is not:\n${rows}\n${totalsLine(shown, data.usaspending_awards)}`);
   }
 
   // Awards where the recipient's own name matched (the vendor as prime).
-  if (data.usaspending_recipient_awards && Array.isArray(data.usaspending_recipient_awards.awards) && data.usaspending_recipient_awards.awards.length > 0) {
-    const ra = data.usaspending_recipient_awards;
+  const ra = data.usaspending_recipient_awards;
+  const primeMatched = !!(ra && Array.isArray(ra.awards) && ra.awards.length > 0);
+  if (primeMatched) {
     const shown = ra.awards.slice(0, 10);
     const rows = shown.map((a) =>
       `- ${a.piid}: ${a.recipient} | "${(a.description || "no description").replace(/\s+/g, " ").trim()}" | award ${money(a.award_amount)} | ${a.sub_agency || a.agency} | ${a.start_date} to ${a.end_date} | ${a.source_url}`
     ).join("\n");
-    sections.push(`USASPENDING.GOV AWARDS TO RECIPIENTS NAMED LIKE "${ra.name}" (${ra.total} total; these are the vendor's own awards as prime):\n${rows}\n${totalsLine(shown, ra.total)}`);
+    sections.push(`USASPENDING.GOV AWARDS TO RECIPIENTS NAMED LIKE "${ra.name}" (${describeMatchCount(ra)}; these are the vendor's own awards as prime):\n${rows}\n${totalsLine(shown, ra)}`);
   }
 
   // Obligations by fiscal year to the recipient, total computed in code.
+  // Rendered only when the recipient search itself matched a prime AND the
+  // years carry money: a topic word ("telehealth") used as a recipient name
+  // gets $0 rows from spending_over_time, and a "$0.00M total, quote it"
+  // line became the answer's headline (2026-09-14 review).
   const ro = data.usaspending_recipient_obligations;
-  if (ro && Array.isArray(ro.years) && ro.years.length > 0) {
+  if (primeMatched && ro && Array.isArray(ro.years) && ro.years.length > 0 && Number(ro.total) > 0) {
     const rows = ro.years.map((y) => `- FY${y.fiscal_year}: ${money(y.obligated)}`).join("\n");
     const first = ro.years[0].fiscal_year;
     const lastFy = ro.years[ro.years.length - 1].fiscal_year;
     const span = first === lastFy ? `FY${first}` : `FY${first} to FY${lastFy}`;
-    sections.push(`USASPENDING.GOV OBLIGATIONS BY FISCAL YEAR TO RECIPIENTS NAMED LIKE "${ro.name}" (contract obligations, ${ro.agency_scope ? `funding department ${ro.agency_scope}` : "all agencies"}, awards dated ${ro.since} to ${ro.until}; a fiscal year the window enters part-way is a partial year):\n${rows}\nTotal ${span}, computed in code: ${money(ro.total)}. Quote these figures; do not re-add them.`);
+    sections.push(`USASPENDING.GOV OBLIGATIONS BY FISCAL YEAR TO VENDORS WHOSE NAME CONTAINS "${ro.name}" (a vendor-name match only; this is NOT spending on the topic "${ro.name}"; contract obligations, ${ro.agency_scope ? `funding department ${ro.agency_scope}` : "all agencies"}, awards dated ${ro.since} to ${ro.until}; a fiscal year the window enters part-way is a partial year; years with no obligations are omitted):\n${rows}\nTotal ${span}, computed in code: ${money(ro.total)}. Quote these figures; do not re-add them.`);
   }
 
   // Spending categories
@@ -1119,6 +1207,9 @@ module.exports = {
   bounded,
   TIMEOUTS_MS,
   MAX_AWARD_CALLS,
+  MAX_KEYWORD_ATTEMPTS,
+  countUSASpendingAwards,
+  describeMatchCount,
   deriveKeywords,
   searchUSASpending,
   getSpendingByCategory,
