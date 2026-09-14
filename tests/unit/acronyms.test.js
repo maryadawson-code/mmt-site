@@ -68,3 +68,59 @@ describe("acronymReference", () => {
     expect(expandAcronym("PIID")).toBe("Procurement Instrument Identifier");
   });
 });
+
+// 2026-09-14: ISBEE was defined as "Individual Subcontracting Report" (that is
+// ISR). A curated expansion is supposed to be checkable at a glance: the
+// initials of its words carry the acronym's capital letters in order. The
+// non-initialisms (syllabic names, product names, counted letters) are
+// allow-listed by hand so a new bad row cannot hide among them.
+import { ACRONYMS } from "../../netlify/functions/lib/acronyms.js";
+
+const NOT_INITIALISMS = new Set([
+  "TRICARE", "FedRAMP", "OASIS+", "HUBZone", "T4NG", "T4NG2", "SEWP", "cATO", "8(a)", "J-Book",
+  "PIID",   // Procurement Instrument IDentifier: the ID is two letters of one word
+  "KO",     // Contracting Officer, the traditional K
+  "VETS",   // Veterans Technology Services, a GWAC brand
+  "MILCON", // MILitary CONstruction, syllabic
+]);
+
+function initials(expansion) {
+  return expansion.split(/[^A-Za-z0-9]+/).filter(Boolean).map((w) => w[0].toUpperCase()).join("");
+}
+function capitals(acronym) {
+  return acronym.replace(/[^A-Z0-9]/g, "");
+}
+function inOrder(needle, hay) {
+  let i = 0;
+  for (const c of hay) if (c === needle[i]) i += 1;
+  return i === needle.length;
+}
+
+describe("curated table", () => {
+  it("Buy Indian Act terms are right: ISBEE, IEE, and ISR is the subcontracting report", () => {
+    expect(ACRONYMS.ISBEE).toBe("Indian Small Business Economic Enterprise");
+    expect(ACRONYMS.IEE).toBe("Indian Economic Enterprise");
+    expect(ACRONYMS.ISR).toMatch(/^Individual Subcontracting Report/);
+    expect(expandAcronym("isbee")).toBe("Indian Small Business Economic Enterprise");
+  });
+
+  it("every expansion's initials carry the acronym's letters in order, unless allow-listed as a non-initialism", () => {
+    const violations = [];
+    for (const [acronym, expansion] of Object.entries(ACRONYMS)) {
+      if (NOT_INITIALISMS.has(acronym)) continue;
+      if (!inOrder(capitals(acronym), initials(expansion))) violations.push(`${acronym} => ${expansion}`);
+    }
+    expect(violations).toEqual([]);
+  });
+
+  it("the allow-list only names rows that actually need it (no stale entries hiding a future bad row)", () => {
+    const needless = [...NOT_INITIALISMS].filter((a) => ACRONYMS[a] && inOrder(capitals(a), initials(ACRONYMS[a])));
+    // These pass the rule on their own; they stay listed because the task
+    // named them, and the check still runs on every row not in the set.
+    expect(needless.sort()).toEqual(["8(a)", "FedRAMP", "HUBZone", "J-Book", "OASIS+", "SEWP", "cATO"].sort());
+  });
+
+  it("carries no em dashes (voice rule)", () => {
+    expect(JSON.stringify(ACRONYMS)).not.toContain("—");
+  });
+});
