@@ -249,6 +249,34 @@ describe("errors", () => {
     expect(msgs.textContent).toMatch(/Sign in again/);
   });
 
+  it("a member with an expired token before the free tier opens gets Sign in again, not the closed-tier card, and the token is dropped", async () => {
+    // Pinned to the soft-launch week: the server answers FREE_TIER_CLOSED
+    // with hint token_expired for a lapsed member (2026-09-14 review finding).
+    localStorage.setItem("mmt_subscriber_token", "stale");
+    localStorage.setItem("mmt_premium", "true");
+    localStorage.setItem("mmt_premium_ts", String(Date.UTC(2026, 7, 1)));
+    localStorage.setItem("mmt_email", "member@example.com");
+    const { msgs, input } = mount();
+    queue.push(jsonResponse(403, {
+      error: "Ask MMT opens to everyone on 2026-09-21. Premium members can sign in and use it now.",
+      reason_code: "FREE_TIER_CLOSED",
+      opens: "2026-09-21",
+      hint: "token_expired",
+      mode: "free",
+    }));
+    input.value = "What did the FY2027 NDAA change?";
+    pressEnter(input);
+    await flush();
+    expect(calls[0].body.token).toBe("stale");
+    expect(localStorage.getItem("mmt_subscriber_token")).toBeNull();
+    expect(msgs.textContent).toMatch(/Your sign-in has expired/);
+    expect(msgs.textContent).toMatch(/Sign in again/);
+    expect(msgs.textContent).not.toMatch(/opens to everyone/);
+    const signIn = Array.from(msgs.querySelectorAll("a")).find((a) => /Sign in again/.test(a.textContent));
+    expect(signIn.getAttribute("href")).toBe("/dashboard.html");
+    expect(msgs.querySelector("a[href*='/pricing']")).toBeNull();
+  });
+
   it("never sends the token when the paywall does not report a premium session", async () => {
     localStorage.setItem("mmt_subscriber_token", "leftover");
     const { input } = mount();

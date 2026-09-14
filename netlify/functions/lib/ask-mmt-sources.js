@@ -59,7 +59,7 @@ const SOURCE_CATALOG = [
     provides: "Open federal job announcements",
     use: "Hiring signals that show where an office is building capacity" },
   { id: "it_dashboard", name: "Federal IT Dashboard", url: "https://itdashboard.gov", mode: "conditional",
-    note: "itdashboard.gov posted its own notice that it is being sunset effective April 2026 (read 2026-09-14), and its public API was retired before that, so nothing can be queried at question time. Listed so you know it will not be cited.",
+    note: "itdashboard.gov says OMB is taking steps to sunset the site and that, effective April 2026, agency reporting narrows to statutorily required data (read 2026-09-14). Its public API was retired earlier (every /api path returns 404), so nothing can be queried at question time. Listed so you know it will not be cited.",
     provides: "Agency IT investment portfolios and CIO ratings",
     use: "The investment line and its rating behind an IT program" },
   { id: "cms", name: "CMS provider data", url: "https://data.cms.gov", mode: "live",

@@ -221,16 +221,38 @@ ${note ? `<p><strong>Their note:</strong> ${esc(note)}</p>` : ""}
 </div>`;
 }
 
-async function handleFeedback({ supabase, body, now, deps }) {
+// A turn id is the ops_events row id the ask path returned: a UUID. Anything
+// else is refused before Supabase is asked (a non-UUID filter on the uuid
+// column is a PostgREST 22P02, not a miss).
+const TURN_ID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+async function handleFeedback({ supabase, body, ipHash, now, deps }) {
   const turnId = String(body.turn_id || "").trim();
   const verdict = String(body.verdict || "").trim().toLowerCase();
-  if (!/^[A-Za-z0-9-]{1,64}$/.test(turnId)) return reply(400, { error: "Invalid turn id." });
+  if (!TURN_ID_RE.test(turnId)) return reply(400, { error: "Invalid turn id." });
   if (!FEEDBACK_VERDICTS.has(verdict)) return reply(400, { error: "verdict must be up, down or wrong." });
   const note = body.note == null ? "" : String(body.note).trim().slice(0, FEEDBACK_NOTE_MAX);
 
   // The email, when a real token rides along; never from the body.
   const caller = access.resolveCaller({ token: body.token, email: undefined, verifyToken: deps.verifyToken });
   const email = caller.mode === "member" ? caller.email : null;
+
+  // The turn must exist. Feedback is unauthenticated, so the turn row is the
+  // only proof the caller was ever answered: ids are issued after the ask
+  // caps ran and cannot be guessed. Nothing is written and nothing is
+  // emailed for an id that names no turn.
+  const { data: turn, error: turnErr } = await supabase
+    .from("ops_events")
+    .select("id, event_type, details, created_at")
+    .eq("id", turnId)
+    .in("event_type", [MEMBER_TURN_EVENT, FREE_TURN_EVENT])
+    .limit(1)
+    .maybeSingle();
+  if (turnErr) {
+    console.warn("premium-chat: feedback turn lookup failed:", turnErr.message);
+    return reply(500, { error: "Could not record that. Try again in a moment." });
+  }
+  if (!turn) return reply(404, { error: "Unknown turn." });
 
   // One email per turn: look for an earlier "wrong" BEFORE writing ours.
   let priorWrong = 0;
@@ -253,20 +275,12 @@ async function handleFeedback({ supabase, body, now, deps }) {
     event_type: FEEDBACK_EVENT,
     user_email: email,
     severity: verdict === "wrong" ? "warning" : "info",
-    details: { turn_id: turnId, verdict, note, user_email: email, submitted_at: now.toISOString() },
+    details: { turn_id: turnId, verdict, note, user_email: email, ip_hash: ipHash, submitted_at: now.toISOString() },
   });
   if (!feedbackId) return reply(500, { error: "Could not record that. Try again in a moment." });
 
   let emailed = false;
   if (verdict === "wrong" && priorWrong === 0) {
-    const { data: turn, error: turnErr } = await supabase
-      .from("ops_events")
-      .select("id, event_type, details, created_at")
-      .eq("id", turnId)
-      .in("event_type", [MEMBER_TURN_EVENT, FREE_TURN_EVENT])
-      .limit(1)
-      .maybeSingle();
-    if (turnErr) console.warn("premium-chat: feedback turn lookup failed:", turnErr.message);
     const sent = await deps.sendEmail({
       to: FEEDBACK_TO,
       from: campaign.FROM,
@@ -344,7 +358,7 @@ function makeHandler(overrides = {}) {
   const ipHash = access.hashIp(ip, SUPABASE_SERVICE_KEY.slice(0, 16));
 
   if (body.action === "unlock") return handleUnlock({ supabase, body, ipHash, now, deps });
-  if (body.action === "feedback") return handleFeedback({ supabase, body, now, deps });
+  if (body.action === "feedback") return handleFeedback({ supabase, body, ipHash, now, deps });
 
   const question = String(body.question || "").trim();
   if (!question) return reply(400, { error: "question is required" });

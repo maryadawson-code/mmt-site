@@ -783,6 +783,15 @@
     function handleError(question, r) {
       var data = r.data || {};
       var code = data.reason_code || '';
+      // A token_* hint means a member whose sign-in lapsed. Before the free
+      // tier opens the server answers FREE_TIER_CLOSED for them, so this
+      // check runs ahead of every reason_code branch: drop the dead token
+      // and point at sign-in, never at "opens to everyone".
+      if (data.hint && /^token_/.test(data.hint)) {
+        lsDel(TOKEN_KEY);
+        addCard('Your sign-in has expired. <a href="/dashboard.html" style="' + CARD_LINK + '">Sign in again</a> to use your Premium allowance.');
+        return;
+      }
       if (code === 'FREE_LIMIT' || code === 'MEMBER_LIMIT') { showLimit(data); return; }
       if (code === 'EMAIL_REQUIRED') {
         pendingQuestion = question;
@@ -800,7 +809,6 @@
         addCard(escapeHtml(data.error) + ' <a href="' + pricingHref('closed') + '" style="' + CARD_LINK + '">See Premium</a>');
         return;
       }
-      if (data.hint && /^token_/.test(data.hint)) lsDel(TOKEN_KEY);
       retryBubble(question, data.error || 'Something went wrong on our side. Try again.');
     }
 

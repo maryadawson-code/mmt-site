@@ -98,10 +98,15 @@ const ACRONYMS = {
   // Vendors that recur in federal health IT awards (company names the model
   // otherwise expands on its own; the eval flagged GDIT and SMS 2026-09-14)
   GDIT: "General Dynamics Information Technology", SAIC: "Science Applications International Corporation",
-  BAH: "Booz Allen Hamilton", SMS: "Systems Made Simple (a Leidos company)", HII: "Huntington Ingalls Industries",
+  BAH: "Booz Allen Hamilton", HII: "Huntington Ingalls Industries",
+  // SMS is text messaging in PubMed and ClinicalTrials.gov titles (VEText,
+  // Annie) and a Leidos subsidiary in a USASpending recipient name; both
+  // senses in one row, the ISR pattern. NCI is deliberately absent: the
+  // token is the National Cancer Institute (NIH) in retrieved context, and
+  // the vendor no longer trades under that name.
+  SMS: "Short Message Service (text messaging); in a USASpending recipient name, Systems Made Simple (a Leidos company)",
   LMI: "Logistics Management Institute", CACI: "CACI International (company name)", CGI: "CGI Federal (company name)",
   KBR: "KBR (company name)", ICF: "ICF International (company name)", DLT: "DLT Solutions (company name)",
-  NCI: "NCI Information Systems (company name)",
   // General IT
   AI: "Artificial Intelligence", ML: "Machine Learning", NLP: "Natural Language Processing", API: "Application Programming Interface",
   IT: "Information Technology", COTS: "Commercial Off-the-Shelf", SaaS: "Software as a Service", PaaS: "Platform as a Service",

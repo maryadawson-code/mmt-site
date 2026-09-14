@@ -17,8 +17,15 @@ import { makeHandler, costEstimate, tokensUsed, FREE_TURN_EVENT, MEMBER_TURN_EVE
 import { CHAT_CAPS, FREE_CAP } from "../../netlify/functions/lib/ask-mmt-access.js";
 
 // ---- Supabase double: enough PostgREST to run the handler's queries ----
+// ops_events.id is a uuid in prod; the ask path returns it as turn_id and
+// the feedback path refuses anything that is not uuid-shaped, so the double
+// mints uuid-shaped ids. The counter lives outside fakeSupabase because
+// setup() builds a fresh double per request: a per-double counter would
+// hand the feedback row the same id as the turn it is about.
+let nextId = 1000;
+const mintId = () => `00000000-0000-4000-8000-${String(nextId++).padStart(12, "0")}`;
+
 function fakeSupabase(store, clock) {
-  let nextId = 1000;
   const detailKey = (col) => (col.startsWith("details->>") ? col.slice("details->>".length) : null);
   function builder(table) {
     const q = { table, method: "select", filters: [], head: false, count: false, single: false, payload: null, lim: null };
@@ -39,8 +46,6 @@ function fakeSupabase(store, clock) {
   function matches(row, f) {
     const dk = detailKey(f.col);
     const v = dk ? (row.details || {})[dk] : row[f.col];
-    // PostgREST compares the uuid `id` column to a string; the double's ids
-    // are numbers, so compare as strings when both sides exist.
     if (f.op === "eq") return v === f.val || (v != null && f.val != null && String(v) === String(f.val));
     if (f.op === "is") return f.val === null ? v == null : v === f.val;
     if (f.op === "gte") return String(v) >= String(f.val);
@@ -50,7 +55,7 @@ function fakeSupabase(store, clock) {
   function run(q) {
     const rows = store.filter((r) => r.__table === q.table);
     if (q.method === "insert") {
-      const row = { ...q.payload, __table: q.table, id: nextId++, created_at: clock().toISOString() };
+      const row = { ...q.payload, __table: q.table, id: mintId(), created_at: clock().toISOString() };
       store.push(row);
       return { data: q.single ? { id: row.id } : [{ id: row.id }], error: null };
     }
@@ -298,7 +303,7 @@ describe("turn telemetry and turn_id", () => {
     expect(turn.details.model).toBe("claude-haiku-4-5-20251001");
     expect(turn.details.carried).toBe(true);
     const anon = await post({ question: "Who holds T4NG2?" });
-    expect(typeof anon.data.turn_id).toBe("number");
+    expect(anon.data.turn_id).toMatch(/^[0-9a-f-]{36}$/);
   });
 
   it("an answer with no usage records null tokens and cost instead of zero", async () => {
@@ -358,15 +363,51 @@ describe("feedback", () => {
     expect(rows[1].details.note.length).toBe(500);
     expect(rows[1].details.turn_id).toBe(String(turnId));
     expect(rows[2].user_email).toBeNull(); // no token on the third call: never from the body
+    for (const row of rows) expect(row.details.ip_hash).toMatch(/^[0-9a-f]{32}$/); // attributable, never the raw IP
   });
 
-  it("validates the verdict and the turn id, and a wrong on an unknown turn still emails with what it has", async () => {
-    const { post, calls } = setup();
-    expect((await post({ action: "feedback", turn_id: "1000", verdict: "meh" })).status).toBe(400);
-    expect((await post({ action: "feedback", turn_id: "", verdict: "up" })).status).toBe(400);
-    expect((await post({ action: "feedback", turn_id: "../x", verdict: "up" })).status).toBe(400);
-    const r = await post({ action: "feedback", turn_id: "9999", verdict: "wrong", note: "no such turn" });
-    expect(r.data).toEqual({ ok: true, emailed: true });
-    expect(calls.emails[0].html).toContain("question not on the turn row");
+  it("refuses a non-uuid turn id, an unknown turn and a bad verdict; none of them write a row or email Mary", async () => {
+    const { post, store, calls } = setup();
+    const a = await post({ token: "good", question: "Who holds T4NG2?" });
+    const real = a.data.turn_id;
+    expect(real).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
+
+    expect((await post({ action: "feedback", turn_id: real, verdict: "meh" })).status).toBe(400);
+    for (const bad of ["", "1000", "../x", "flood-1", "0123456789abcdef01234567", real + "x"]) {
+      expect((await post({ action: "feedback", turn_id: bad, verdict: "wrong" })).status, bad).toBe(400);
+    }
+    // Well-formed but names no turn: the flood shape. 404, nothing written,
+    // nothing emailed, however many fresh ids arrive.
+    for (let i = 0; i < 5; i++) {
+      const r = await post({ action: "feedback", turn_id: `11111111-2222-4333-8444-${String(i).padStart(12, "0")}`, verdict: "wrong", note: "no such turn" });
+      expect(r.status).toBe(404);
+      expect(r.data).toEqual({ error: "Unknown turn." });
+    }
+    // A row that exists but is not a turn (the feedback row itself) is not a turn either.
+    const ok = await post({ action: "feedback", turn_id: real, verdict: "up" });
+    expect(ok.status).toBe(200);
+    const feedbackRow = store.find((x) => x.event_type === FEEDBACK_EVENT);
+    expect((await post({ action: "feedback", turn_id: feedbackRow.id, verdict: "wrong" })).status).toBe(404);
+
+    expect(calls.emails).toHaveLength(0);
+    expect(store.filter((x) => x.event_type === FEEDBACK_EVENT)).toHaveLength(1);
+  });
+
+  it("a turn lookup error records nothing and asks the caller to retry", async () => {
+    const { post, store, calls } = setup();
+    const a = await post({ token: "good", question: "Who holds T4NG2?" });
+    const failing = { from: () => { const api = { select: () => api, eq: () => api, in: () => api, limit: () => api, maybeSingle: () => api, then: (res) => res({ data: null, error: { message: "boom" } }) }; return api; } };
+    const handler = makeHandler({
+      createClient: () => failing,
+      answerQuestion: async () => ANSWER,
+      loadEntitlement: async () => ({ ok: true, tier: "premium" }),
+      verifyToken: () => ({ ok: false, reason: "bad_signature" }),
+      sendEmail: async (mail) => { calls.emails.push(mail); return { success: true }; },
+      now: () => new Date("2026-09-25T15:00:00Z"),
+    });
+    const r = await handler({ httpMethod: "POST", headers: {}, body: JSON.stringify({ action: "feedback", turn_id: a.data.turn_id, verdict: "wrong" }) });
+    expect(r.statusCode).toBe(500);
+    expect(calls.emails).toHaveLength(0);
+    expect(store.filter((x) => x.event_type === FEEDBACK_EVENT)).toHaveLength(0);
   });
 });
