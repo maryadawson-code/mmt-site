@@ -121,10 +121,7 @@ function scoreItem(item, queryTokens, acronyms, phrase) {
   // Structured rows (forecast, budget, key people) carry the agency they
   // belong to. When the question names that agency the row is in scope by
   // definition, which a mention of "CMS" in an article body is not.
-  if (item.agency && acronyms && acronyms.has(String(item.agency).toLowerCase())) {
-    score += 6;
-    acronymHit = true;
-  }
+  const agencyRow = Boolean(item.agency && acronyms && acronyms.has(String(item.agency).toLowerCase()));
 
   for (const tok of queryTokens) {
     // Acronyms and proper-noun tokens from the original query are the
@@ -143,6 +140,21 @@ function scoreItem(item, queryTokens, acronyms, phrase) {
     const matches = bodyText.split(tok).length - 1;
     if (matches > 0 && isAcronym(tok)) acronymHit = true;
     score += Math.min(matches, 5) * weight;
+  }
+
+  // The agency boost is scope, and scope alone is not an answer. It applies
+  // only when the row also carries the question's topic phrase (or the
+  // question has no phrase: "What is in the CMS forecast?"). Unconditional,
+  // it let three VA forecast rows with no query term in their text outrank
+  // the VA Ambient Scribe tracker entry for "What is VA doing with ambient
+  // scribes?", because acronymHit also exempted them from the quartering
+  // below while "va" (two letters) never reaches queryTokens, so no
+  // article or brief could earn it (2026-09-14). A `score > 0` gate is not
+  // enough: "award", "health" and the agency name itself match every
+  // forecast row's template text.
+  if (agencyRow && (!phrase || `${titleText} ${descText} ${tagText} ${bodyText}`.includes(phrase))) {
+    score += 6;
+    acronymHit = true;
   }
 
   // Recency boost only applies when the item matched on a load-bearing
@@ -169,6 +181,25 @@ function scoreItem(item, queryTokens, acronyms, phrase) {
 // alone is 201 rows, and a question that touches it would otherwise return
 // five forecast rows and no article, brief or tracker entry (2026-09-14).
 const DEFAULT_PER_TYPE_CAP = 3;
+
+// Item types whose `date` is a publish date the site gates on. A staged
+// issue is held by build.js until its date in America/New_York; the corpus
+// builder holds it the same way, and this read-time guard covers a bundle
+// built before the builder learned to (2026-09-14). Other types carry a
+// verification or period-of-performance date, which may sit in the future
+// on purpose (an IDIQ whose pop_start is next year), so they are never held.
+const PUBLISH_DATED_TYPES = new Set(["article", "premium_brief", "monthly_brief", "capture_corner", "forecast_delta", "gao_sustain"]);
+
+// YYYY-MM-DD in America/New_York, the same clock as build.js's publish gate
+// (scripts/lib/publish-gate.js). Inlined so the Lambda bundle does not reach
+// outside netlify/functions for it.
+function todayET(at = new Date()) {
+  return at.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+}
+
+function isUnpublished(item, today) {
+  return PUBLISH_DATED_TYPES.has(item.type) && Boolean(item.date) && String(item.date) > today;
+}
 
 /**
  * The term the excerpt window should open on: the exact phrase when the
@@ -197,6 +228,8 @@ function anchorTerm(item, tokens, acronyms, phrase) {
  * @param {number} [options.perTypeCap] - max items of one `type` (default 3;
  *   0 or a negative number lifts the cap)
  * @param {number} [options.topN] - overrides `limit` when given
+ * @param {string} [options.today] - YYYY-MM-DD (America/New_York) the publish
+ *   gate compares against; defaults to the real ET clock. Tests pin it.
  * @returns {Array} sorted by score desc, each with _score and _anchor
  */
 function searchCorpus(query, limit = 5, phrase = "", options = {}) {
@@ -209,7 +242,9 @@ function searchCorpus(query, limit = 5, phrase = "", options = {}) {
   const opts = options && typeof options === "object" ? options : {};
   const perTypeCap = Number.isFinite(opts.perTypeCap) ? opts.perTypeCap : DEFAULT_PER_TYPE_CAP;
   const topN = Number.isFinite(opts.topN) && opts.topN > 0 ? opts.topN : limit;
+  const today = /^\d{4}-\d{2}-\d{2}$/.test(String(opts.today || "")) ? opts.today : todayET();
   const scored = corpus.items
+    .filter((item) => !isUnpublished(item, today))
     .map((item) => ({ item, score: scoreItem(item, tokens, acronyms, cleanPhrase) }))
     .filter((s) => s.score > 0)
     .sort((a, b) => b.score - a.score);
@@ -311,5 +346,7 @@ module.exports = {
   excerptWindow,
   absoluteUrl,
   DEFAULT_PER_TYPE_CAP,
+  PUBLISH_DATED_TYPES,
+  todayET,
   _setCorpusForTests,
 };

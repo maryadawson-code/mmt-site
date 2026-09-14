@@ -15,12 +15,19 @@
 import { describe, it, expect, afterEach } from "vitest";
 import { createRequire } from "node:module";
 
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
 const cjsRequire = createRequire(import.meta.url);
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
+const matter = cjsRequire("gray-matter");
 const ci = cjsRequire("../../netlify/functions/lib/content-index.js");
 const builder = cjsRequire("../../scripts/build-content-corpus.js");
 const fullCorpus = cjsRequire("../../netlify/functions/data/mmt-content-corpus.json");
 const publicCorpus = cjsRequire("../../netlify/functions/data/mmt-content-corpus-public.json");
 const contractsFile = cjsRequire("../../contracts.json");
+const { extractSearchTerms } = cjsRequire("../../netlify/functions/lib/query-terms.js");
 
 const { searchCorpus, formatCorpusContext, excerptWindow, absoluteUrl, _setCorpusForTests } = ci;
 
@@ -33,7 +40,7 @@ function item(overrides) {
     date: "2026-01-15",
     description: "",
     tags: [],
-    url: "/articles/untitled/",
+    url: "/newsletter/untitled/",
     excerpt: "",
     premium: false,
     ...overrides,
@@ -142,13 +149,13 @@ describe("formatCorpusContext", () => {
     fixture([
       item({ id: "abs", type: "idiq_vehicle", title: "T4NG2", url: "https://sam.gov/opp/abc/view", excerpt: "T4NG2 vehicle" }),
       item({ id: "rel", type: "idiq_vehicle", title: "T4NG2 tracker", url: "/idiq-tracker.html#t4ng2", source_url: "https://sam.gov/opp/def/view", excerpt: "T4NG2 on the tracker" }),
-      item({ id: "bare", type: "article", title: "T4NG2 article", url: "articles/t4ng2/", excerpt: "T4NG2 article body" }),
+      item({ id: "bare", type: "article", title: "T4NG2 article", url: "newsletter/t4ng2/", excerpt: "T4NG2 article body" }),
     ]);
     const ctx = formatCorpusContext(searchCorpus("Tell me about T4NG2", 5, ""));
     expect(ctx).not.toContain("missionmeetstech.comhttp");
     expect(ctx).toContain("URL: https://sam.gov/opp/abc/view");
     expect(ctx).toContain("URL: https://missionmeetstech.com/idiq-tracker.html#t4ng2 | Source: https://sam.gov/opp/def/view");
-    expect(ctx).toContain("URL: https://missionmeetstech.com/articles/t4ng2/");
+    expect(ctx).toContain("URL: https://missionmeetstech.com/newsletter/t4ng2/");
   });
 
   it("absoluteUrl is idempotent on absolute input and prefixes relative paths", () => {
@@ -243,6 +250,105 @@ describe("briefRegion", () => {
 });
 
 // ---------------------------------------------------------------------
+// Agency boost is gated on the topic phrase (2026-09-14)
+// ---------------------------------------------------------------------
+describe("agency boost gate", () => {
+  const rows = [
+    item({ id: "row-1", type: "forecast_row", title: "VA forecast: VISN 21 Biomedical IT refresh", agency: "VA", date: "2026-09-10", url: "/premium/forecast-delta", excerpt: "Agency: VA\nItem: VISN 21 Biomedical IT refresh\nAward estimate: FY27 Q1", premium: true }),
+    item({ id: "row-2", type: "forecast_row", title: "VA forecast: Contract Management Solution", agency: "VA", date: "2026-09-10", url: "/premium/forecast-delta", excerpt: "Agency: VA\nItem: Contract Management Solution\nAward estimate: FY27 Q2", premium: true }),
+    item({ id: "tracker", type: "contract_intel", title: "VA Ambient Scribe IDIQ (36C10B26R0006)", url: "/contracts/va-ambient-scribe-idiq/", date: "2026-08-17", excerpt: "Agency: VA. VA ambient scribe IDIQ, GAO protest decided." }),
+  ];
+
+  it("a VA row with no query term in its text never outranks the entry whose title is the phrase", () => {
+    fixture(rows);
+    const out = searchCorpus("What is VA doing with ambient scribes?", 5, "ambient scribe");
+    expect(out[0].id).toBe("tracker");
+    expect(out.filter((m) => m.type === "forecast_row" && m._anchor === "")).toEqual([]);
+  });
+
+  it("the boost still applies when the row carries the phrase, and when the question has no phrase", () => {
+    fixture([
+      ...rows,
+      item({ id: "row-3", type: "forecast_row", title: "VA forecast: Ambient scribe pilot expansion", agency: "VA", date: "2026-09-10", url: "/premium/forecast-delta", excerpt: "Agency: VA\nItem: ambient scribe pilot", premium: true }),
+    ]);
+    const withPhrase = searchCorpus("What is VA doing with ambient scribes?", 5, "ambient scribe");
+    expect(withPhrase.map((m) => m.id)).toContain("row-3");
+    expect(withPhrase.map((m) => m.id)).not.toContain("row-1");
+    const noPhrase = searchCorpus("What is in the VA forecast?", 5, "");
+    expect(noPhrase.filter((m) => m.type === "forecast_row").length).toBe(3);
+  });
+});
+
+// ---------------------------------------------------------------------
+// Publish gate: read time (fixture, pinned dates) and build time (real files)
+// ---------------------------------------------------------------------
+describe("publish gate", () => {
+  const staged = [
+    item({ id: "held", type: "article", title: "VA raters and service records", date: "2026-09-15", url: "/newsletter/held/", excerpt: "VA raters enter service that never happened. EO 14426 and DEERS." }),
+    item({ id: "held-brief", type: "premium_brief", title: "The Clause That Opens on January 6", date: "2026-09-15", url: "/premium/briefs/capture-corner-2026-09-15.html", excerpt: "VA raters and the DEERS clause.", premium: true }),
+    item({ id: "live", type: "article", title: "VA raters, the earlier read", date: "2026-09-11", url: "/newsletter/live/", excerpt: "VA raters and DEERS records, the earlier piece." }),
+    item({ id: "vehicle", type: "idiq_vehicle", title: "VA raters support IDIQ", date: "2027-01-01", url: "/idiq-tracker.html", excerpt: "VA raters DEERS vehicle, period of performance starts next year." }),
+  ];
+
+  it("searchCorpus never returns a publish-dated item later than today (ET), and releases it on its date", () => {
+    fixture(staged);
+    const before = searchCorpus("What about VA raters and DEERS?", 5, "", { today: "2026-09-14" });
+    expect(before.map((m) => m.id).sort()).toEqual(["live", "vehicle"]);
+    const onDay = searchCorpus("What about VA raters and DEERS?", 5, "", { today: "2026-09-15" });
+    expect(onDay.map((m) => m.id).sort()).toEqual(["held", "held-brief", "live", "vehicle"]);
+  });
+
+  it("a period-of-performance or verification date in the future is not a publish date and is never held", () => {
+    fixture(staged);
+    const out = searchCorpus("VA raters IDIQ", 5, "", { today: "2026-09-14" });
+    expect(out.map((m) => m.id)).toContain("vehicle");
+  });
+
+  it("the builder holds the 2026-09-15 article and Capture Corner on 2026-09-14 (ET) and includes them on 2026-09-15", () => {
+    const heldArticle = "article-vas-manual-tells-raters-to-enter-service-that-never-happened";
+    const heldBrief = "brief-capture-corner-2026-09-15";
+    const before = [...builder.buildArticles("2026-09-14"), ...builder.buildBriefs("2026-09-14")].map((i) => i.id);
+    expect(before).not.toContain(heldArticle);
+    expect(before).not.toContain(heldBrief);
+    expect(before).toContain("brief-capture-corner-2026-09-11");
+    const onDay = [...builder.buildArticles("2026-09-15"), ...builder.buildBriefs("2026-09-15")].map((i) => i.id);
+    expect(onDay).toContain(heldArticle);
+    expect(onDay).toContain(heldBrief);
+    expect(builder.isHeld("2026-09-15", "2026-09-14")).toBe(true);
+    expect(builder.isHeld("2026-09-14", "2026-09-14")).toBe(false);
+    expect(builder.isHeld("", "2026-09-14")).toBe(false);
+  });
+
+  it("buildArticles never emits the _template placeholder and every url is /newsletter/<slug>/", () => {
+    const arts = builder.buildArticles("2026-09-14");
+    expect(arts.some((a) => a.id.includes("replace-with-url-slug"))).toBe(false);
+    for (const a of arts) expect(a.url).toBe(`/newsletter/${a.slug}/`);
+  });
+
+  it("collectItems scrubs every item and buildIdiqVehicles carries no fragment", () => {
+    for (const v of builder.buildIdiqVehicles()) expect(v.url).toBe("/idiq-tracker.html");
+    const { allItems } = builder.collectItems("2026-09-14");
+    expect(allItems.some((i) => /@va\.gov/i.test(i.excerpt))).toBe(false);
+    expect(allItems.some((i) => i.date > "2026-09-14" && ci.PUBLISH_DATED_TYPES.has(i.type))).toBe(false);
+  });
+});
+
+describe("scrubCorpusText", () => {
+  it("removes emails and phone numbers and keeps clause numbers", () => {
+    const out = builder.scrubCorpusText("Contracting Officer: Terricia Lloyd ( Terricia.Lloyd@va.gov ; 512-981-4453 ) under GSAR 552.239-7001, DFARS 252.204-7012 and FAR 52.204-21; also 202.306.4240 and (202) 306-4240.");
+    expect(out).not.toMatch(/@/);
+    expect(out).not.toMatch(/512-981-4453|202.306.4240|306-4240/);
+    expect(out).toContain("552.239-7001");
+    expect(out).toContain("252.204-7012");
+    expect(out).toContain("52.204-21");
+    expect(out).toContain("[email removed]");
+    expect(out).toContain("[phone removed]");
+    expect(builder.scrubCorpusText("")).toBe("");
+    expect(builder.scrubCorpusText(undefined)).toBe("");
+  });
+});
+
+// ---------------------------------------------------------------------
 // The committed corpus: properties of the real data
 // ---------------------------------------------------------------------
 describe("committed corpus", () => {
@@ -284,17 +390,105 @@ describe("committed corpus", () => {
     }
   });
 
+  // 2026-09-14: two Capture Corners and the migrated May monthly carried VA
+  // contracting officers' emails and direct lines; the model quoted them
+  // when asked for the contact. The builder scrubs every item now.
+  it("no item of any type carries an email address or a phone number in its excerpt or description", () => {
+    const EMAIL = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/;
+    const PHONE = /(?:\+?1[\s.-]?)?\(?\b\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}\b/;
+    const CLAUSE = /\b\d{2,3}\.\d{3}-\d{1,4}\b/g;
+    expect(items.length).toBeGreaterThan(500);
+    for (const r of items) {
+      const text = `${r.excerpt || ""} ${r.description || ""}`;
+      expect(text, `${r.type} ${r.id} email`).not.toMatch(EMAIL);
+      expect(text.replace(CLAUSE, ""), `${r.type} ${r.id} phone`).not.toMatch(PHONE);
+    }
+  });
+
+  it("the scrub keeps FAR/GSAR/DFARS clause numbers, which share a phone number's digit shape", () => {
+    // The CMMC article is about DFARS 252.204-7012; a scrub that ate the
+    // clause number would gut the answer to any CMMC question.
+    const cmmc = items.find((i) => i.id === "article-health-net-never-had-a-cmmc-deadline");
+    expect(cmmc).toBeTruthy();
+    expect(cmmc.excerpt).toContain("252.204-7012");
+    expect(items.some((i) => /552\.239-7001/.test(i.excerpt))).toBe(true);
+  });
+
+  it("holds nothing the site is still holding: no publish-dated item is later than the corpus's own build day (ET)", () => {
+    const buildDay = ci.todayET(new Date(fullCorpus.generated_at));
+    expect(buildDay).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    const late = items.filter((i) => ci.PUBLISH_DATED_TYPES.has(i.type) && i.date && String(i.date) > buildDay);
+    expect(late.map((i) => `${i.id} ${i.date}`)).toEqual([]);
+  });
+
+  it("every article url is /newsletter/<slug>/, the path build.js writes, and the template is not an item", () => {
+    const rows = byType("article");
+    expect(rows.length).toBeGreaterThan(100);
+    const slugify = (n) => String(n || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "untitled";
+    const dir = path.join(ROOT, "content", "newsletter");
+    const expected = new Set();
+    for (const f of fs.readdirSync(dir).filter((f) => f.endsWith(".md") && !f.startsWith("_"))) {
+      const { data } = matter(fs.readFileSync(path.join(dir, f), "utf8"));
+      if (data.title) expected.add(`/newsletter/${data.slug || slugify(data.title)}/`);
+    }
+    for (const r of rows) {
+      expect(r.url, r.id).toMatch(/^\/newsletter\/[a-z0-9-]+\/$/);
+      expect(expected.has(r.url), `${r.id} -> ${r.url} is not a page build.js writes`).toBe(true);
+    }
+    expect(rows.some((r) => /replace-with-url-slug|untitled/.test(r.url))).toBe(false);
+  });
+
+  // Dist-backed: after `node build.js`, every article the corpus cites must
+  // be a page under dist/. CI runs the unit suite without a build, so the
+  // check runs only when dist/newsletter exists (locally and in deploy-gate).
+  const distNewsletter = path.join(ROOT, "dist", "newsletter");
+  const hasDist = fs.existsSync(distNewsletter);
+  it.skipIf(!hasDist)("every article url resolves to dist/newsletter/<slug>/index.html after node build.js", () => {
+    const missing = byType("article")
+      .map((r) => r.url)
+      .filter((u) => !fs.existsSync(path.join(ROOT, "dist", u.replace(/^\//, ""), "index.html")));
+    expect(missing).toEqual([]);
+  });
+
+  // The production call shape (premium-assistant.js): the spelling-corrected
+  // question and the extracted phrase. Before the agency-boost gate these
+  // three returned VA forecast/budget rows with no query term in their text
+  // above the on-topic tracker, IDIQ, capture-intel and glossary items.
+  const ask = (q) => {
+    const t = extractSearchTerms(q);
+    return searchCorpus(t.corrected || q, 5, t.phrase);
+  };
+
+  it("'What is VA doing with ambient scribes?' leads with the VA Ambient Scribe tracker entry and returns no zero-topic row", () => {
+    const out = ask("What is VA doing with ambient scribes?");
+    expect(out[0].type).toBe("contract_intel");
+    expect(out[0].title).toMatch(/VA Ambient Scribe/);
+    expect(out.every((m) => m._anchor !== "")).toBe(true);
+    expect(searchCorpus("What is VA doing with ambient scribes?", 5, "ambient scribe")[0].title).toMatch(/VA Ambient Scribe/);
+  });
+
+  it("'What did VA award for telehealth?' returns no forecast_row or budget_line", () => {
+    const out = ask("What did VA award for telehealth?");
+    expect(out.length).toBeGreaterThan(0);
+    expect(out.filter((m) => m.type === "forecast_row" || m.type === "budget_line")).toEqual([]);
+  });
+
+  it("'Tell me about Oracle Health at VA' puts the IDIQ, capture-intel and glossary items in the top 3", () => {
+    const out = ask("Tell me about Oracle Health at VA");
+    expect(out.slice(0, 3).map((m) => m.type).sort()).toEqual(["capture_intel", "glossary", "idiq_vehicle"]);
+  });
+
   it("every capture_intel item has a non-empty date", () => {
     const rows = byType("capture_intel");
     expect(rows.length).toBeGreaterThan(0);
     for (const r of rows) expect(r.date, r.id).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 
-  it("every idiq_vehicle url is the MMT tracker anchored on the vehicle, with the primary source kept as source_url", () => {
+  it("every idiq_vehicle url is the MMT tracker page with no fragment (the cards render client-side with no ids), with the primary source kept as source_url", () => {
     const rows = byType("idiq_vehicle");
     expect(rows.length).toBeGreaterThan(0);
     for (const r of rows) {
-      expect(r.url, r.id).toMatch(/^\/idiq-tracker\.html#[a-z0-9-]+$/);
+      expect(r.url, r.id).toMatch(/^\/idiq-tracker\.html$/);
       expect(r.url).not.toMatch(/^https?:/);
     }
     expect(rows.some((r) => /^https?:\/\//.test(r.source_url || ""))).toBe(true);

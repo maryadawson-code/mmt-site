@@ -17,6 +17,13 @@
 const fs = require("fs");
 const path = require("path");
 const matter = require("gray-matter");
+// build.js's publish clock (America/New_York). The corpus used to gate the
+// monthly reads on the UTC date and nothing else, so the 2026-09-15 article
+// and Capture Corner were searchable, quotable and cited (as 404 links) on
+// 09-14 while the site held them (2026-09-14).
+const { todayET } = require("./lib/publish-gate");
+// The one email/phone scrub the live path already uses for web leads.
+const { scrubPii } = require("../netlify/functions/lib/web-federal-search");
 
 const ROOT = path.join(__dirname, "..");
 const ARTICLE_DIR = path.join(ROOT, "content", "newsletter");
@@ -121,9 +128,39 @@ function briefRegion(raw) {
     .replace(/<h3>[^<]*Premium[^<]*<\/h3>/gi, " ");
 }
 
-function buildArticles() {
+// True when a dated item is still held by the publish gate: its date is
+// later than `today` (YYYY-MM-DD, America/New_York). An undated item is
+// never held, which is what build.js does with an unparseable date.
+function isHeld(date, today) {
+  return Boolean(today && date && String(date) > String(today));
+}
+
+// FAR / GSAR / DFARS clause numbers (52.204-21, 252.204-7012, 552.239-7001)
+// have the digit shape of a phone number with a dot then a hyphen. They are
+// citations, not contacts, and the articles that carry them are about the
+// clause, so they are masked before the scrub and restored after it.
+const CLAUSE_RE = /\b\d{2,3}\.\d{3}-\d{1,4}\b/g;
+
+// Every excerpt and description goes through this before it is written.
+// Two Capture Corners and the migrated May monthly carried VA contracting
+// officers' emails and direct phone numbers into the block the model
+// quotes from (2026-09-14). scan-pii never reads this file and allowlists
+// .gov addresses by design, so the guard has to sit here.
+function scrubCorpusText(text) {
+  const keep = [];
+  const masked = String(text || "").replace(CLAUSE_RE, (m) => {
+    keep.push(m);
+    return `\u0000${keep.length - 1}\u0000`;
+  });
+  return scrubPii(masked).replace(/\u0000(\d+)\u0000/g, (_, i) => keep[Number(i)]);
+}
+
+function buildArticles(today) {
   if (!fs.existsSync(ARTICLE_DIR)) return [];
-  const files = fs.readdirSync(ARTICLE_DIR).filter((f) => f.endsWith(".md"));
+  // Files starting with `_` are templates and drafts; build.js skips them
+  // the same way, so `_template.md` used to be a corpus item with the URL
+  // /articles/replace-with-url-slug/ (2026-09-14).
+  const files = fs.readdirSync(ARTICLE_DIR).filter((f) => f.endsWith(".md") && !f.startsWith("_"));
   const items = [];
   for (const file of files) {
     const fullPath = path.join(ARTICLE_DIR, file);
@@ -132,15 +169,21 @@ function buildArticles() {
       const { data, content } = matter(raw);
       const body = stripMarkdown(content);
       if (!data.title) continue;
+      const date = data.date ? new Date(data.date).toISOString().slice(0, 10) : "";
+      if (isHeld(date, today)) continue;
+      // build.js writes the page at dist/newsletter/<data.slug || slugify(title)>/.
+      // The corpus said /articles/<slug>/ for five months, and every
+      // article citation Ask MMT ever produced 404'd (2026-09-14).
+      const slug = data.slug || slugify(data.title);
       items.push({
-        id: `article-${data.slug || file.replace(/\.md$/, "")}`,
+        id: `article-${slug}`,
         type: "article",
         title: data.title,
-        slug: data.slug || file.replace(/\.md$/, ""),
-        date: data.date ? new Date(data.date).toISOString().slice(0, 10) : "",
+        slug,
+        date,
         description: data.description || "",
         tags: data.tags || [],
-        url: `/articles/${data.slug || file.replace(/\.md$/, "")}/`,
+        url: `/newsletter/${slug}/`,
         excerpt: body.substring(0, EXCERPT_CHARS),
         premium: data.premium === true,
       });
@@ -151,7 +194,7 @@ function buildArticles() {
   return items;
 }
 
-function buildBriefs() {
+function buildBriefs(today) {
   if (!fs.existsSync(BRIEFS_DIR)) return [];
   const files = fs.readdirSync(BRIEFS_DIR).filter((f) => f.endsWith(".html"));
   const items = [];
@@ -166,6 +209,8 @@ function buildBriefs() {
       const body = stripHtml(briefRegion(raw));
       const stem = file.replace(/\.html$/, ""); // YYYY-MM-DD or capture-corner-YYYY-MM-DD
       const date = isoDate(stem);
+      // build.js holds premium/briefs/<...YYYY-MM-DD>.html past its date.
+      if (isHeld(date, today)) continue;
       items.push({
         id: `brief-${stem}`,
         type: "premium_brief",
@@ -185,7 +230,7 @@ function buildBriefs() {
   return items;
 }
 
-function buildMonthlyBriefs() {
+function buildMonthlyBriefs(today) {
   if (!fs.existsSync(MONTHLY_DIR)) return [];
   const files = fs.readdirSync(MONTHLY_DIR).filter((f) => f.endsWith(".html") || f.endsWith(".md"));
   const items = [];
@@ -206,6 +251,7 @@ function buildMonthlyBriefs() {
         body = stripMarkdown(content);
       }
       const date = (file.match(/(\d{4}-\d{2}(?:-\d{2})?)/) || [])[1] || "";
+      if (isHeld(date, today)) continue;
       items.push({
         id: `monthly-${file.replace(/\.(html|md)$/, "")}`,
         type: "monthly_brief",
@@ -387,10 +433,13 @@ function buildIdiqVehicles() {
         date: v.pop_start || "",
         description: `${v.agency || ""} ${v.sub_agency || ""} — ${v.vehicle_type || "IDIQ"} ${v.ceiling_usd ? `· $${(v.ceiling_usd/1e9).toFixed(2)}B ceiling` : ""}`.trim(),
         tags: ["idiq", v.agency, v.sub_agency, v.set_aside, v.vehicle_type, v.status].filter(Boolean),
-        // The MMT tracker page, anchored on the vehicle. The absolute
-        // primary_source_url used to sit here and rendered as
-        // "https://missionmeetstech.comhttps://sam.gov/..." (2026-09-14).
-        url: `/idiq-tracker.html#${v.vehicle_id || slugify(v.name)}`,
+        // The MMT tracker page. The absolute primary_source_url used to sit
+        // here and rendered as "https://missionmeetstech.comhttps://sam.gov/..."
+        // (2026-09-14). No fragment: the vehicle cards are rendered
+        // client-side by js/mmt-paywall.js with no id attribute, so a
+        // #<vehicle_id> anchor matched nothing and the browser stayed at
+        // the top of the page anyway.
+        url: "/idiq-tracker.html",
         source_url: v.primary_source_url || null,
         excerpt: body.substring(0, EXCERPT_CHARS),
         premium: false,
@@ -677,13 +726,15 @@ function buildMonthlyContent(dir, type, url, tag, today) {
   return items;
 }
 
-function build() {
-  console.log("[corpus] building MMT content corpus...");
-  const today = new Date().toISOString().slice(0, 10);
-  const articles = buildArticles();
+// Every item the builders produce, dated against `today` (YYYY-MM-DD in
+// America/New_York; default the real ET clock) and with every excerpt and
+// description scrubbed. Pure apart from file reads, so a test can pin the
+// date and inspect the result without writing the corpus files.
+function collectItems(today = todayET()) {
+  const articles = buildArticles(today);
   const migrated = buildMigratedDeliverables();
-  const briefs = [...buildBriefs(), ...migrated.filter((i) => i.type !== "monthly_brief")];
-  const monthlies = [...buildMonthlyBriefs(), ...migrated.filter((i) => i.type === "monthly_brief")];
+  const briefs = [...buildBriefs(today), ...migrated.filter((i) => i.type !== "monthly_brief")];
+  const monthlies = [...buildMonthlyBriefs(today), ...migrated.filter((i) => i.type === "monthly_brief")];
   const contracts = buildContracts();
   const captureIntel = buildCaptureIntel();
   const glossary = buildGlossary();
@@ -698,9 +749,12 @@ function build() {
     ...articles, ...briefs, ...monthlies, ...contracts, ...captureIntel, ...glossary, ...idiqVehicles,
     ...forecastRows, ...budgetLines, ...csoAois, ...keyPeople, ...forecastDelta, ...gaoSustain,
   ];
-  const corpus = {
-    generated_at: new Date().toISOString(),
-    total: allItems.length,
+  for (const it of allItems) {
+    it.excerpt = scrubCorpusText(it.excerpt);
+    it.description = scrubCorpusText(it.description);
+  }
+  return {
+    allItems,
     counts: {
       articles: articles.length,
       friday_briefs: briefs.length,
@@ -716,6 +770,17 @@ function build() {
       forecast_delta: forecastDelta.length,
       gao_sustain: gaoSustain.length,
     },
+  };
+}
+
+function build(options = {}) {
+  console.log("[corpus] building MMT content corpus...");
+  const today = options.today || todayET();
+  const { allItems, counts } = collectItems(today);
+  const corpus = {
+    generated_at: new Date().toISOString(),
+    total: allItems.length,
+    counts,
     items: allItems,
   };
 
@@ -754,4 +819,7 @@ if (require.main === module) {
   build();
 }
 
-module.exports = { build, briefRegion, isoDate, slugify, fiscalYearOf };
+module.exports = {
+  build, collectItems, buildArticles, buildBriefs, buildMonthlyBriefs, buildIdiqVehicles,
+  briefRegion, isoDate, slugify, fiscalYearOf, isHeld, scrubCorpusText,
+};
