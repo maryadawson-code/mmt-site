@@ -118,6 +118,14 @@ function scoreItem(item, queryTokens, acronyms, phrase) {
   let acronymHit = false;
   const isAcronym = (t) => acronyms && acronyms.has(t);
 
+  // Structured rows (forecast, budget, key people) carry the agency they
+  // belong to. When the question names that agency the row is in scope by
+  // definition, which a mention of "CMS" in an article body is not.
+  if (item.agency && acronyms && acronyms.has(String(item.agency).toLowerCase())) {
+    score += 6;
+    acronymHit = true;
+  }
+
   for (const tok of queryTokens) {
     // Acronyms and proper-noun tokens from the original query are the
     // load-bearing part of the question. Weight them 5x so a single
@@ -157,38 +165,134 @@ function scoreItem(item, queryTokens, acronyms, phrase) {
   return score;
 }
 
+// No one dataset may fill the answer's MMT block. The forecast pipeline
+// alone is 201 rows, and a question that touches it would otherwise return
+// five forecast rows and no article, brief or tracker entry (2026-09-14).
+const DEFAULT_PER_TYPE_CAP = 3;
+
+/**
+ * The term the excerpt window should open on: the exact phrase when the
+ * excerpt carries it, else the most load-bearing query token it carries
+ * (topic acronyms first, then longer tokens). "" when nothing matched the
+ * excerpt, which sends the window to the start of the item.
+ */
+function anchorTerm(item, tokens, acronyms, phrase) {
+  const body = String(item.excerpt || "").toLowerCase();
+  if (phrase && phrase.includes(" ") && body.includes(phrase)) return phrase;
+  const ranked = [...new Set(tokens)].sort((a, b) => {
+    const aw = acronyms.has(a) ? (AGENCY_ACRONYMS.has(a) ? 1 : 2) : 0;
+    const bw = acronyms.has(b) ? (AGENCY_ACRONYMS.has(b) ? 1 : 2) : 0;
+    return bw - aw || b.length - a.length;
+  });
+  for (const tok of ranked) if (body.includes(tok)) return tok;
+  return "";
+}
+
 /**
  * Search the corpus for items matching `query`.
  * @param {string} query
  * @param {number} [limit] - max items to return (default 5)
- * @returns {Array} sorted by score desc
+ * @param {string} [phrase] - the question's exact topic phrase, if any
+ * @param {object} [options]
+ * @param {number} [options.perTypeCap] - max items of one `type` (default 3;
+ *   0 or a negative number lifts the cap)
+ * @param {number} [options.topN] - overrides `limit` when given
+ * @returns {Array} sorted by score desc, each with _score and _anchor
  */
-function searchCorpus(query, limit = 5, phrase = "") {
+function searchCorpus(query, limit = 5, phrase = "", options = {}) {
   const corpus = loadCorpus();
   if (!corpus.items || corpus.items.length === 0) return [];
   const tokens = tokenize(query);
   if (tokens.length === 0) return [];
   const acronyms = extractAcronyms(query);
+  const cleanPhrase = String(phrase || "").toLowerCase().trim();
+  const opts = options && typeof options === "object" ? options : {};
+  const perTypeCap = Number.isFinite(opts.perTypeCap) ? opts.perTypeCap : DEFAULT_PER_TYPE_CAP;
+  const topN = Number.isFinite(opts.topN) && opts.topN > 0 ? opts.topN : limit;
   const scored = corpus.items
-    .map((item) => ({ item, score: scoreItem(item, tokens, acronyms, String(phrase || "").toLowerCase().trim()) }))
+    .map((item) => ({ item, score: scoreItem(item, tokens, acronyms, cleanPhrase) }))
     .filter((s) => s.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit);
-  return scored.map((s) => ({ ...s.item, _score: s.score }));
+    .sort((a, b) => b.score - a.score);
+  const out = [];
+  const perType = new Map();
+  for (const s of scored) {
+    if (out.length >= topN) break;
+    const type = s.item.type || "unknown";
+    const seen = perType.get(type) || 0;
+    if (perTypeCap > 0 && seen >= perTypeCap) continue;
+    perType.set(type, seen + 1);
+    out.push({ ...s.item, _score: s.score, _anchor: anchorTerm(s.item, tokens, acronyms, cleanPhrase) });
+  }
+  return out;
+}
+
+// The context window per item. The top match gets more room because it is
+// the one the answer leans on; the rest get enough to quote a passage.
+const WINDOW_CHARS = 700;
+const TOP_WINDOW_CHARS = 1500;
+
+/**
+ * A window of `size` chars from `text` around the first hit of `term`
+ * (roughly a third before the hit, two thirds after), snapped to word
+ * boundaries and marked with "..." where it was cut. Falls back to the
+ * start of the text when the term is absent.
+ */
+function excerptWindow(text, term, size) {
+  const body = String(text || "");
+  if (body.length <= size) return body;
+  const hit = term ? body.toLowerCase().indexOf(String(term).toLowerCase()) : -1;
+  let start = hit > 0 ? Math.max(0, hit - Math.floor(size / 3)) : 0;
+  if (start > 0) {
+    const ws = body.indexOf(" ", start);
+    if (ws > -1 && ws < hit) start = ws + 1;
+  }
+  let end = Math.min(body.length, start + size);
+  if (end < body.length) {
+    const ws = body.lastIndexOf(" ", end);
+    if (ws > start + Math.floor(size / 2)) end = ws;
+  }
+  return `${start > 0 ? "..." : ""}${body.slice(start, end).trim()}${end < body.length ? " ..." : ""}`;
+}
+
+// An item URL is site-relative; a source_url (SAM.gov, an agency PDF) is
+// absolute. Never glue the host onto a URL that already carries one: the
+// IDIQ items used to render "https://missionmeetstech.comhttps://sam.gov/...".
+function absoluteUrl(url) {
+  const u = String(url || "").trim();
+  if (!u) return "https://missionmeetstech.com/";
+  if (/^https?:\/\//i.test(u)) return u;
+  return `https://missionmeetstech.com${u.startsWith("/") ? "" : "/"}${u}`;
 }
 
 /**
  * Format matched corpus items as a context block for prompt injection.
+ * Each item shows a window around the term that matched it (its `_anchor`
+ * from searchCorpus, or the `phrase`/`query` passed here), not the first
+ * 600 chars of the item, which for a long brief was the intro and never
+ * the passage the question was about.
+ * @param {Array} matches - from searchCorpus (first item is the top match)
+ * @param {string} [query] - optional; used to find an anchor when _anchor is absent
+ * @param {string} [phrase] - optional exact phrase, preferred over query tokens
  */
-function formatCorpusContext(matches) {
+function formatCorpusContext(matches, query = "", phrase = "") {
   if (!matches || matches.length === 0) return "";
-  const rows = matches.map((m) => {
-    const excerpt = (m.excerpt || "").substring(0, 600);
+  const tokens = tokenize(query);
+  const acronyms = extractAcronyms(query);
+  const cleanPhrase = String(phrase || "").toLowerCase().trim();
+  const rows = matches.map((m, i) => {
+    const anchor = typeof m._anchor === "string" ? m._anchor : anchorTerm(m, tokens, acronyms, cleanPhrase);
+    const excerpt = excerptWindow(m.excerpt, anchor, i === 0 ? TOP_WINDOW_CHARS : WINDOW_CHARS);
+    const source = m.source_url && /^https?:\/\//i.test(String(m.source_url)) ? ` | Source: ${m.source_url}` : "";
     return `### ${m.title}
-- Date: ${m.date || "undated"} | Type: ${m.type} | URL: https://missionmeetstech.com${m.url}
+- Date: ${m.date || "undated"} | Type: ${m.type} | URL: ${absoluteUrl(m.url)}${source}
 - Excerpt: ${excerpt}`;
   }).join("\n\n");
-  return `\n\nMMT ORIGINAL CONTENT (Mary's own articles + premium briefs — cite these as "Mission Meets Tech" and link to the URL):\n\n${rows}`;
+  return `\n\nMMT ORIGINAL CONTENT (Mary's own articles, premium briefs, tracker entries and reference tables. Cite these as "Mission Meets Tech" and link to the URL):\n\n${rows}`;
+}
+
+/** Test hook: inject a fixture corpus (pass null to reload from disk). */
+function _setCorpusForTests(corpus) {
+  CORPUS = corpus && typeof corpus === "object" ? corpus : null;
 }
 
 function corpusMeta() {
@@ -204,4 +308,8 @@ module.exports = {
   searchCorpus,
   formatCorpusContext,
   corpusMeta,
+  excerptWindow,
+  absoluteUrl,
+  DEFAULT_PER_TYPE_CAP,
+  _setCorpusForTests,
 };
