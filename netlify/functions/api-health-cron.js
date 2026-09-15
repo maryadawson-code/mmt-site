@@ -16,6 +16,7 @@ const { createClient } = require("@supabase/supabase-js");
 const { sendEmail } = require("./lib/send-email");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { runEnrichment } = require("./lib/premium-assistant");
+const { checkUSASpendingTurns } = require("./lib/usaspending-alert");
 
 const PROBE_QUESTION = "VA EHRM contract awards FY2026";
 const LOW_DATA_THRESHOLD_CHARS = 500;
@@ -73,8 +74,18 @@ exports.handler = async () => {
     }
   }
 
+  // The probe cannot see a USASpending outage (see lib/usaspending-alert.js);
+  // the last hour of real subscriber turns can.
+  let usaspending = null;
+  try {
+    usaspending = await checkUSASpendingTurns(supabase, { send: sendEmail });
+  } catch (err) {
+    console.error("api-health-cron: usaspending turn check failed:", err && err.message);
+    usaspending = { checked: false, error: err && err.message };
+  }
+
   return {
     statusCode: 200,
-    body: JSON.stringify({ ok: true, context_chars: (result.context || "").length, had_any_data: result.hasAnyData }),
+    body: JSON.stringify({ ok: true, context_chars: (result.context || "").length, had_any_data: result.hasAnyData, usaspending }),
   };
 };

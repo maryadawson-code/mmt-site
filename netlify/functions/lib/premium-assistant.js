@@ -58,6 +58,7 @@ const { stripSourcesSection, enforceLinks, dollarGuard, enforceVoice } = require
 // ASK_MMT_CIRCUITS_ENABLED=true and/or ASK_MMT_METRICS_ENABLED=true are
 // set in Netlify env. Rollout is a Mary-controlled flip; see Sprint 6 spec.
 const { getCircuit } = require("./circuit-registry");
+const { handOffSlowUSASpending } = require("./usaspending-handoff");
 const { createClient: createSupabaseClient } = require("@supabase/supabase-js");
 
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
@@ -246,7 +247,12 @@ OUTPUT FORMAT (markdown):
 - Then the 3-6 paragraphs / bullets of substantive answer with inline citations.
 - Do not append a Sources section; the reader sees the server-built sources list under your answer. Keep inline citations in parentheses.`;
 
-async function runEnrichment(question, { now = new Date() } = {}) {
+/**
+ * Pure: what a question sends to the federal layer. Split out of
+ * runEnrichment so the nightly USASpending pre-warm asks each known vehicle
+ * exactly the way a subscriber's question about it does (same cache keys).
+ */
+function federalQueryFor(question) {
   // Detect any federal vehicles mentioned (OASIS+, T4NG2, MHS GENESIS, etc.).
   // Matched vehicles override the agency and search-term detection so that
   // a question like "what's going on with OASIS+?" gets queried as
@@ -276,6 +282,22 @@ async function runEnrichment(question, { now = new Date() } = {}) {
   const recipientName = matchedVehicles.length === 0 && terms.phraseTokens.length >= 1 && terms.phraseTokens.length <= 3
     ? terms.phrase
     : undefined;
+  // The federal layer derives fiscal-year windows, set-aside codes and
+  // obligation intent from its `topic`, but the topic it receives is the
+  // stripped phrase (years and set-aside words already removed), so those
+  // come from the question's own terms here.
+  const federalArgs = {
+    topic: primaryQuery, agency: agency || undefined, naics: primaryNaics, recipientName,
+    rungs: matchedVehicles.length ? [matchedVehicles[0].canonical, ...vehicleSearchTerms] : undefined,
+    since: terms.since || undefined,
+    setAside: terms.setAside && Array.isArray(terms.setAside.codes) && terms.setAside.codes.length ? terms.setAside.codes : undefined,
+    wantsObligations: /\b(obligat\w*|spen[dt]\w*|paid|pay|pays|bought|buy|buys|cost|costs|since|fy\s?\d|year|years)\b/i.test(question),
+  };
+  return { matchedVehicles, terms, agency, agencyCode, vehicleSearchTerms, topicQuery, primaryQuery, federalArgs };
+}
+
+async function runEnrichment(question, { now = new Date() } = {}) {
+  const { matchedVehicles, terms, agency, agencyCode, vehicleSearchTerms, topicQuery, primaryQuery, federalArgs } = federalQueryFor(question);
 
   // Sprint 5 2026-05-15: 8s per-enrichment timeout. Sprint 6 2026-05-15
   // Phase 2: same behavior, but the helper now lives at module scope as
@@ -319,17 +341,7 @@ async function runEnrichment(question, { now = new Date() } = {}) {
     wageDetData,
     edgarData,
   ] = await Promise.all([
-    // The federal layer derives fiscal-year windows, set-aside codes and
-    // obligation intent from its `topic`, but the topic it receives is the
-    // stripped phrase (years and set-aside words already removed), so those
-    // come from the question's own terms here.
-    instrument("usaspending",             () => enrichWithFederalData({
-      topic: primaryQuery, agency: agency || undefined, naics: primaryNaics, recipientName,
-      rungs: matchedVehicles.length ? [matchedVehicles[0].canonical, ...vehicleSearchTerms] : undefined,
-      since: terms.since || undefined,
-      setAside: terms.setAside && Array.isArray(terms.setAside.codes) && terms.setAside.codes.length ? terms.setAside.codes : undefined,
-      wantsObligations: /\b(obligat\w*|spen[dt]\w*|paid|pay|pays|bought|buy|buys|cost|costs|since|fy\s?\d|year|years)\b/i.test(question),
-    }), metricsSb),
+    instrument("usaspending",             () => enrichWithFederalData(federalArgs),                                               metricsSb),
     instrument("congress",                () => enrichWithCongress({ topic: primaryQuery, relevanceTokens: vehicleSearchTerms.length > 0 ? undefined : terms.tokens }), metricsSb),
     instrument("govinfo",                 () => enrichWithGovInfo({ topic: primaryQuery }),                                      metricsSb),
     optional("pubmed",                    () => enrichWithPubMed({ topic: topicQuery, yearsBack: 5 })),
@@ -360,10 +372,14 @@ async function runEnrichment(question, { now = new Date() } = {}) {
   // "this answer drew on X".
   // Fallback web search of federal sites, only when the structured
   // award/opportunity sources returned nothing (never throws).
+  // Both run after the fan-out; the handoff waits at most 1.5s for a 202.
   let webData = { skipped: "not_needed" };
-  if (shouldWebFallback({ federalData, contractAwardsData, shapes })) {
-    webData = await webFederalSearch({ query: primaryQuery, agency, question });
-  }
+  const [handedOff] = await Promise.all([
+    handOffSlowUSASpending(question, federalData),
+    shouldWebFallback({ federalData, contractAwardsData, shapes })
+      ? webFederalSearch({ query: primaryQuery, agency, question }).then((w) => { webData = w; })
+      : null,
+  ]);
 
   const federalText = formatFederalDataContext(federalData);
   const systemBlocks = [
@@ -395,7 +411,7 @@ async function runEnrichment(question, { now = new Date() } = {}) {
   // Systems that were queried but did not answer (timeout, quota, HTTP
   // error, missing key). Their silence must never read as "no record
   // exists": the model is told, the widget shows it, and ops can see it.
-  const unavailable = collectUnavailable({ federalData, systemBlocks });
+  const unavailable = collectUnavailable({ federalData, systemBlocks, handedOff });
   const unavailableText = unavailable.length
     ? `\n\nSYSTEMS NOT REACHED THIS TURN (queried but no answer; do not treat as "no records exist"; if the question depends on one of these, say it could not be checked):\n${unavailable.map((u) => `- ${u.name}: ${u.reason}`).join("\n")}`
     : "";
@@ -457,12 +473,15 @@ function nestedFailure(d) {
   return parts[0].error;
 }
 
-function collectUnavailable({ federalData, systemBlocks }) {
+function collectUnavailable({ federalData, systemBlocks, handedOff = false }) {
   const out = [];
   const push = (id, reason) => {
     const cat = CATALOG_BY_ID[id];
     if (!cat || out.some((u) => u.id === id)) return;
-    out.push({ id, name: cat.name, reason: shortReason(reason) || "no answer" });
+    // The slow query was handed to the background worker (usaspending-handoff),
+    // which saves its answer: the subscriber can ask again shortly.
+    const suffix = id === "usaspending" && handedOff ? "; still running, ask again in a minute or two" : "";
+    out.push({ id, name: cat.name, reason: (shortReason(reason) || "no answer") + suffix });
   };
   if (federalData && federalData.error && !federalData.usaspending_awards) {
     // The whole federal-data bundle failed (timeout, throw): every system
@@ -472,7 +491,11 @@ function collectUnavailable({ federalData, systemBlocks }) {
     push("federal_register", federalData.error);
     push("gao_reports", federalData.error);
   } else if (federalData) {
-    if (federalData.usaspending_awards && federalData.usaspending_awards.error) push("usaspending", federalData.usaspending_awards.error);
+    const ua = federalData.usaspending_awards;
+    if (ua && ua.error) push("usaspending", ua.error);
+    // Answered from the saved copy of the same query: still not reached
+    // live, and the subscriber sees which day the rows are from.
+    else if (ua && ua.stale) push("usaspending", `${ua.live_error}; answered from results saved ${ua.fetched_on}`);
     const so = federalData.sam_opportunities;
     if (so && so.error) push("sam_opportunities", so.rateLimited ? `daily quota spent${so.resetAt ? `, resets ${so.resetAt}` : ", resets 00:00 UTC"}` : so.error);
     if (federalData.federal_register && federalData.federal_register.error) push("federal_register", federalData.federal_register.error);
@@ -660,6 +683,7 @@ async function answerQuestion({ question, history = [], maxTokens = 1500 }) {
 module.exports = {
   detectAgency,
   runEnrichment,
+  federalQueryFor,
   answerQuestion,
   callClaude,
   collectUnavailable,

@@ -98,6 +98,63 @@ function bounded(promise, ms, emptyShape) {
   const guarded = Promise.resolve(promise).catch((err) => ({ ...emptyShape, error: err && err.message ? err.message : String(err) }));
   return Promise.race([guarded, onTimeout]).finally(() => { if (timer) clearTimeout(timer); });
 }
+
+// 2026-09-15: USASpending answered cold queries in 3s to 40s+ (measured live:
+// one T4NG2 body ran past 40s, then answered in 4s once USASpending had it
+// warm). Three of that day's five subscriber turns lost USASpending at the
+// bound, and "try again" failed the same way because the late answer was
+// thrown away. Every USASpending search in the fan-out now goes through
+// usaGuarded():
+//   1. the same query already answered today (UTC day, the day the request
+//      body's end_date carries) is served with no request;
+//   2. a live answer is saved when it lands, even after the bound stopped
+//      waiting for it, so the retry and the next subscriber are warm;
+//   3. when the live query times out or errors, the last good answer to the
+//      SAME query (at most USA_LAST_GOOD_TTL_MS old) is served, marked
+//      stale with the day it was fetched, and the context block says so.
+// A stale copy is never widened, merged or re-dated.
+const USA_FRESH_TTL_MS = 26 * 60 * 60 * 1000; // the key carries the day; TTL only bounds storage
+const USA_LAST_GOOD_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+const CACHE_READ_BOUND_MS = 500;
+
+function readBounded(key) {
+  let timer = null;
+  const miss = new Promise((resolve) => {
+    timer = setTimeout(() => resolve(null), CACHE_READ_BOUND_MS);
+    if (timer && typeof timer.unref === "function") timer.unref();
+  });
+  return Promise.race([cacheGet(key).catch(() => null), miss]).finally(() => { if (timer) clearTimeout(timer); });
+}
+
+const isAnswer = (v) => !!(v && typeof v === "object" && !v.error);
+
+async function usaGuarded(namespace, parts, run, { ms, emptyShape, today }) {
+  const day = todayIso(today);
+  const freshKey = cacheKey(`usa-${namespace}`, day, ...parts);
+  const lastGoodKey = cacheKey(`usa-${namespace}-lastgood`, ...parts);
+  // Both reads start together so a fallback costs no time after the bound.
+  const lastGoodRead = readBounded(lastGoodKey);
+  const fresh = await readBounded(freshKey);
+  if (isAnswer(fresh)) return { ...fresh, cached: true };
+
+  const live = Promise.resolve().then(run).then(async (value) => {
+    if (isAnswer(value)) {
+      await Promise.all([
+        cacheSet(freshKey, value, USA_FRESH_TTL_MS),
+        cacheSet(lastGoodKey, { value, fetched_on: day }, USA_LAST_GOOD_TTL_MS),
+      ]);
+    }
+    return value;
+  });
+  const out = await bounded(live, ms, emptyShape);
+  if (!out || !out.error) return out;
+  const lastGood = await lastGoodRead;
+  if (lastGood && isAnswer(lastGood.value) && lastGood.fetched_on) {
+    return { ...lastGood.value, stale: true, fetched_on: lastGood.fetched_on, live_error: out.error };
+  }
+  return out;
+}
+
 const money = (n) => `$${((Number(n) || 0) / 1e6).toFixed(2)}M`;
 // How many rows matched, in words the model can quote. An exact count comes
 // from the count endpoint or a short page; a full page whose count call
@@ -848,21 +905,126 @@ async function getAgencySpendingTotals({ agency_code, fiscal_year, agency_name }
  * @param {string} [params.today] - YYYY-MM-DD, pins the window end (tests)
  * @returns {Promise<Object>} Combined API results
  */
-async function enrichWithFederalData({ topic, agency, naics, recipientName, rungs, since, setAside, wantsObligations, today }) {
+/**
+ * Pure: the USASpending side of a fan-out, derived once so the live path and
+ * the nightly pre-warm (usaspending-prewarm-background) build the same
+ * queries and so the same cache keys.
+ */
+function federalPlan({ topic, agency, naics, recipientName, rungs, since, setAside, wantsObligations, today }) {
   const terms = extractSearchTerms(topic, { today });
   const customRungs = Array.isArray(rungs)
     ? [...new Set(rungs.map((r) => String(r || "").trim()))].filter((r, i, arr) => r || i === arr.length - 1)
     : null;
   const ladder = customRungs && customRungs.length ? customRungs : keywordLadder(terms);
-  // With vehicle rungs the bare canonical name is the best SAM.gov and
-  // Federal Register query too; otherwise the derived phrase.
-  const keywords = customRungs && customRungs.length ? customRungs[0] : deriveKeywords(topic);
-  const frSlugs = agency ? federalRegisterSlugs(agency) : [];
   const windowStart = /^\d{4}-\d{2}-\d{2}$/.test(String(since || "")) ? since : (terms.since || null);
-  const awardStart = windowStart || "2023-10-01"; // FY2024 start: 2+ years of data
-  const recipientStart = windowStart || "2022-10-01";
-  const setAsideCodes = Array.isArray(setAside) && setAside.length ? setAside : (terms.setAside ? terms.setAside.codes : null);
-  const wantsObl = typeof wantsObligations === "boolean" ? wantsObligations : obligationsIntent(topic);
+  return {
+    terms,
+    ladder,
+    // With vehicle rungs the bare canonical name is the best SAM.gov and
+    // Federal Register query too; otherwise the derived phrase.
+    keywords: customRungs && customRungs.length ? customRungs[0] : deriveKeywords(topic),
+    agency: agency || undefined,
+    naics: naics && naics.length ? naics : undefined,
+    recipientName,
+    windowStart,
+    awardStart: windowStart || "2023-10-01", // FY2024 start: 2+ years of data
+    recipientStart: windowStart || "2022-10-01",
+    setAsideCodes: Array.isArray(setAside) && setAside.length ? setAside : (terms.setAside ? terms.setAside.codes : null),
+    wantsObl: typeof wantsObligations === "boolean" ? wantsObligations : obligationsIntent(topic),
+    today,
+  };
+}
+
+/**
+ * Walk the keyword ladder: the subscriber's own wording first, then the most
+ * specific term, so a wordy or unusual question relaxes into a hit instead
+ * of returning zero. An ERROR is never retried (it is not a miss, and
+ * retrying would multiply the failure). At most MAX_KEYWORD_ATTEMPTS rungs;
+ * each rung may widen to the department once, so at most MAX_AWARD_CALLS
+ * requests. The widening is not a rung: a sub-agency question that misses at
+ * both tiers still gets the relaxed keyword (2026-09-14 review).
+ */
+async function runAwardLadder(plan, budget) {
+  const { ladder, agency, naics } = plan;
+  let last = null;
+  for (let i = 0; i < Math.min(ladder.length, MAX_KEYWORD_ATTEMPTS); i++) {
+    if (budget.used >= budget.max) break;
+    budget.rungs += 1;
+    // The empty rung is "everything the agency awarded", a real query
+    // only when there IS an agency or NAICS to scope it. Unscoped, it
+    // is the twenty largest awards in government (Northrop, Lockheed,
+    // Pfizer), which the 2026-09-13 GetWell question got back as
+    // "20 awards found, none to GetWell".
+    if (!ladder[i] && !agency && !naics) break;
+    const res = await searchUSASpending({
+      keyword: ladder[i],
+      agency,
+      naics,
+      startDate: plan.awardStart,
+      setAside: plan.setAsideCodes || undefined,
+      today: plan.today,
+      limit: 20,
+      _budget: budget,
+    });
+    if (res.error) return res;
+    if (res.awards && res.awards.length > 0) {
+      return i === 0 ? res : { ...res, relaxed_keyword: ladder[i], original_keyword: ladder[0] };
+    }
+    last = res;
+    if (!ladder[i]) break; // "" was the widest query there is
+  }
+  return last || { awards: [], total: 0 };
+}
+
+// One guarded call per USASpending query family. `ms` is the live bound;
+// the pre-warm passes a long one.
+function guardedAwards(plan, budget, ms) {
+  const parts = [plan.ladder.slice(0, MAX_KEYWORD_ATTEMPTS), plan.agency || "", plan.naics || [], plan.awardStart, plan.setAsideCodes || []];
+  return usaGuarded("awards", parts, () => runAwardLadder(plan, budget), { ms, emptyShape: { awards: [], total: 0 }, today: plan.today });
+}
+function guardedAgencyTotals(plan, ms) {
+  const code = plan.agency ? agencyCgac(plan.agency) : null;
+  if (!code) return Promise.resolve({ spending: null });
+  const name = (usaspendingAgencyFilter(plan.agency, { tier: "toptier" }) || {}).name || null;
+  return usaGuarded("agency-totals", [code, 2026], () => getAgencySpendingTotals({ agency_code: code, fiscal_year: 2026, agency_name: name }), { ms, emptyShape: { spending: null }, today: plan.today });
+}
+function guardedRecipients(plan, ms) {
+  if (!plan.recipientName) return Promise.resolve({ awards: [], total: 0, skipped: "no candidate name" });
+  const { recipientName: name, agency, recipientStart: startDate, today } = plan;
+  return usaGuarded("recipients", [name, agency || "", startDate], () => searchUSASpendingRecipients({ name, agency, limit: 15, startDate, today }), { ms, emptyShape: { awards: [], total: 0 }, today });
+}
+function guardedObligations(plan, ms) {
+  if (!plan.recipientName || !plan.wantsObl) {
+    return Promise.resolve({ years: [], total: 0, skipped: plan.recipientName ? "question does not ask for money over time" : "no candidate name" });
+  }
+  const { recipientName: name, agency, recipientStart: since, today } = plan;
+  return usaGuarded("obligations", [name, agency || "", since], () => searchRecipientObligationsByYear({ name, agency, since, today }), { ms, emptyShape: { years: [], total: 0 }, today });
+}
+
+/**
+ * Nightly pre-warm: run only the USASpending queries a fan-out with these
+ * args would send (never SAM.gov, whose quota is for subscribers), under a
+ * long bound, so the day's first subscriber gets a cached answer. A query
+ * already answered today costs no request, which makes a double-fired cron
+ * harmless. Returns one status per query family.
+ */
+async function warmUSASpending(args, { ms = 60000 } = {}) {
+  const plan = federalPlan(args);
+  const budget = { used: 0, rungs: 0, max: MAX_AWARD_CALLS };
+  const status = (r) => (!r ? "none" : r.cached ? "cached" : r.stale ? `stale (${r.live_error})` : r.error ? `error (${r.error})` : r.skipped ? "skipped" : "fetched");
+  const [awards, agencyTotals, categories] = await Promise.all([
+    guardedAwards(plan, budget, ms),
+    guardedAgencyTotals(plan, ms),
+    bounded(getSpendingByCategory({ agency: plan.agency, naics: plan.naics, fiscal_year: 2026 }), ms, { categories: [] }),
+  ]);
+  return { awards: status(awards), award_rows: awards && Array.isArray(awards.awards) ? awards.awards.length : 0, award_calls: budget.used, agency_totals: status(agencyTotals), categories: categories && categories.error ? `error (${categories.error})` : "ok" };
+}
+
+async function enrichWithFederalData(args) {
+  const plan = federalPlan(args);
+  const { keywords, agency, naics, windowStart, setAsideCodes } = plan;
+  const { terms } = plan;
+  const frSlugs = agency ? federalRegisterSlugs(agency) : [];
   // `used` counts spending_by_award calls (widenings included, for the
   // ops_event); `rungs` counts keyword attempts, which is what the ladder
   // is bounded on. A widening never consumes a rung.
@@ -872,44 +1034,7 @@ async function enrichWithFederalData({ topic, agency, naics, recipientName, rung
 
   // Every query runs in parallel and under its own bound (TIMEOUTS_MS).
   const [awards, categories, samOpps, fedRegRaw, gaoReports, agencySpending, recipientAwards, recipientObligations] = await Promise.all([
-    // Walk the keyword ladder: the subscriber's own wording first, then the
-    // most specific term, so a wordy or unusual question relaxes into a hit
-    // instead of returning zero. An ERROR is never retried (it is not a
-    // miss, and retrying would multiply the failure). At most
-    // MAX_KEYWORD_ATTEMPTS rungs; each rung may widen to the department
-    // once, so at most MAX_AWARD_CALLS requests. The widening is not a
-    // rung: a sub-agency question that misses at both tiers still gets
-    // the relaxed keyword (2026-09-14 review).
-    bounded((async () => {
-      let last = null;
-      for (let i = 0; i < Math.min(ladder.length, MAX_KEYWORD_ATTEMPTS); i++) {
-        if (budget.used >= budget.max) break;
-        budget.rungs += 1;
-        // The empty rung is "everything the agency awarded", a real query
-        // only when there IS an agency or NAICS to scope it. Unscoped, it
-        // is the twenty largest awards in government (Northrop, Lockheed,
-        // Pfizer), which the 2026-09-13 GetWell question got back as
-        // "20 awards found, none to GetWell".
-        if (!ladder[i] && !agency && !(naics && naics.length)) break;
-        const res = await searchUSASpending({
-          keyword: ladder[i],
-          agency: agency || undefined,
-          naics: naics || undefined,
-          startDate: awardStart,
-          setAside: setAsideCodes || undefined,
-          today,
-          limit: 20,
-          _budget: budget,
-        });
-        if (res.error) return res;
-        if (res.awards && res.awards.length > 0) {
-          return i === 0 ? res : { ...res, relaxed_keyword: ladder[i], original_keyword: ladder[0] };
-        }
-        last = res;
-        if (!ladder[i]) break; // "" was the widest query there is
-      }
-      return last || { awards: [], total: 0 };
-    })(), TIMEOUTS_MS.awards, { awards: [], total: 0 }),
+    guardedAwards(plan, budget, TIMEOUTS_MS.awards),
     bounded(getSpendingByCategory({
       agency: agency || undefined,
       naics: naics || undefined,
@@ -917,7 +1042,7 @@ async function enrichWithFederalData({ topic, agency, naics, recipientName, rung
     }), TIMEOUTS_MS.categories, { categories: [] }),
     bounded(searchSAMOpportunities({
       keyword: keywords.substring(0, 60),
-      relaxKeyword: (ladder[1] || "").substring(0, 60),
+      relaxKeyword: (plan.ladder[1] || "").substring(0, 60),
       naics: naics && naics[0] ? naics[0] : undefined,
       // Was never passed here, so the assistant's SAM.gov query ran
       // unscoped across every department (2026-09-10).
@@ -931,15 +1056,9 @@ async function enrichWithFederalData({ topic, agency, naics, recipientName, rung
       limit: 5,
     }), TIMEOUTS_MS.federal_register, { documents: [], total: 0 }),
     bounded(searchGAOReports({ keyword: keywords, limit: 5 }), TIMEOUTS_MS.gao, { reports: [] }),
-    agency && agencyCgac(agency)
-      ? bounded(getAgencySpendingTotals({ agency_code: agencyCgac(agency), fiscal_year: 2026, agency_name: (usaspendingAgencyFilter(agency, { tier: "toptier" }) || {}).name || null }), TIMEOUTS_MS.agency_totals, { spending: null })
-      : Promise.resolve({ spending: null }),
-    recipientName
-      ? bounded(searchUSASpendingRecipients({ name: recipientName, agency: agency || undefined, limit: 15, startDate: recipientStart, today }), TIMEOUTS_MS.recipients, { awards: [], total: 0 })
-      : Promise.resolve({ awards: [], total: 0, skipped: "no candidate name" }),
-    recipientName && wantsObl
-      ? bounded(searchRecipientObligationsByYear({ name: recipientName, agency: agency || undefined, since: recipientStart, today }), TIMEOUTS_MS.obligations, { years: [], total: 0 })
-      : Promise.resolve({ years: [], total: 0, skipped: recipientName ? "question does not ask for money over time" : "no candidate name" }),
+    guardedAgencyTotals(plan, TIMEOUTS_MS.agency_totals),
+    guardedRecipients(plan, TIMEOUTS_MS.recipients),
+    guardedObligations(plan, TIMEOUTS_MS.obligations),
   ]);
 
   // The Federal Register search is full text: "data governance" returned the
@@ -983,6 +1102,9 @@ async function enrichWithFederalData({ topic, agency, naics, recipientName, rung
   const timedOut = [["usaspending_awards", awards], ["spending_categories", categories], ["sam_opportunities", samOpps], ["federal_register", fedRegRaw], ["gao_reports", gaoReports], ["agency_spending", agencySpending], ["usaspending_recipient_awards", recipientAwards], ["usaspending_recipient_obligations", recipientObligations]]
     .filter(([, r]) => r && r.error === "timeout").map(([k]) => k);
   if (timedOut.length) summary.push(`timed out: ${timedOut.join(", ")}`);
+  const staleServed = [["usaspending_awards", awards], ["agency_spending", agencySpending], ["usaspending_recipient_awards", recipientAwards], ["usaspending_recipient_obligations", recipientObligations]]
+    .filter(([, r]) => r && r.stale).map(([k, r]) => `${k} from ${r.fetched_on} (live: ${r.live_error})`);
+  if (staleServed.length) summary.push(`served saved copy: ${staleServed.join(", ")}`);
 
   console.log(`[FEDERAL-API] Results: ${summary.join("; ") || "no results from any API"}`);
 
@@ -1020,6 +1142,10 @@ function formatFederalDataContext(data) {
     const sum = shown.reduce((acc, a) => acc + (Number(a.award_amount) || 0), 0);
     return `Rows shown: ${shown.length} of ${describeMatchCount(result)}, largest award amounts first; sum of award amounts shown: ${money(sum)} (award amount field, potential value as reported to FPDS). Quote these figures; do not re-add them.`;
   };
+  // A saved copy served because the live query did not answer (usaGuarded).
+  const staleNote = (result) => (result && result.stale
+    ? `\nSAVED COPY: USASpending did not answer this query live this turn (${result.live_error}). These are MMT's saved results for the same query, fetched ${result.fetched_on}. Say that date when you cite them; anything awarded since would not show here.`
+    : "");
 
   // USASpending awards
   if (data.usaspending_awards && Array.isArray(data.usaspending_awards.awards) && data.usaspending_awards.awards.length > 0) {
@@ -1035,7 +1161,7 @@ function formatFederalDataContext(data) {
     const scope = [];
     if (data.window_start) scope.push(`awards dated ${data.window_start} or later`);
     if (Array.isArray(data.set_aside_codes) && data.set_aside_codes.length) scope.push(`set-aside codes ${data.set_aside_codes.join("/")}, applied as a filter; the rows below are all set-aside awards`);
-    sections.push(`USASPENDING.GOV VERIFIED AWARDS, keyword matched in the description or recipient (${describeMatchCount(data.usaspending_awards)}${scope.length ? `; ${scope.join("; ")}` : ""}). A product named in a reseller's or integrator's award description is an award tied to that product; a keyword that only matches a street address or an unrelated word is not:\n${rows}\n${totalsLine(shown, data.usaspending_awards)}`);
+    sections.push(`USASPENDING.GOV VERIFIED AWARDS, keyword matched in the description or recipient (${describeMatchCount(data.usaspending_awards)}${scope.length ? `; ${scope.join("; ")}` : ""}). A product named in a reseller's or integrator's award description is an award tied to that product; a keyword that only matches a street address or an unrelated word is not:\n${rows}\n${totalsLine(shown, data.usaspending_awards)}${staleNote(data.usaspending_awards)}`);
   }
 
   // Awards where the recipient's own name matched (the vendor as prime).
@@ -1046,7 +1172,7 @@ function formatFederalDataContext(data) {
     const rows = shown.map((a) =>
       `- ${a.piid}: ${a.recipient} | "${(a.description || "no description").replace(/\s+/g, " ").trim()}" | award ${money(a.award_amount)} | ${a.sub_agency || a.agency} | ${a.start_date} to ${a.end_date} | ${a.source_url}`
     ).join("\n");
-    sections.push(`USASPENDING.GOV AWARDS TO RECIPIENTS NAMED LIKE "${ra.name}" (${describeMatchCount(ra)}; these are the vendor's own awards as prime):\n${rows}\n${totalsLine(shown, ra)}`);
+    sections.push(`USASPENDING.GOV AWARDS TO RECIPIENTS NAMED LIKE "${ra.name}" (${describeMatchCount(ra)}; these are the vendor's own awards as prime):\n${rows}\n${totalsLine(shown, ra)}${staleNote(ra)}`);
   }
 
   // Obligations by fiscal year to the recipient, total computed in code.
@@ -1060,7 +1186,7 @@ function formatFederalDataContext(data) {
     const first = ro.years[0].fiscal_year;
     const lastFy = ro.years[ro.years.length - 1].fiscal_year;
     const span = first === lastFy ? `FY${first}` : `FY${first} to FY${lastFy}`;
-    sections.push(`USASPENDING.GOV OBLIGATIONS BY FISCAL YEAR TO VENDORS WHOSE NAME CONTAINS "${ro.name}" (a vendor-name match only; this is NOT spending on the topic "${ro.name}"; contract obligations, ${ro.agency_scope ? `funding department ${ro.agency_scope}` : "all agencies"}, awards dated ${ro.since} to ${ro.until}; a fiscal year the window enters part-way is a partial year; years with no obligations are omitted):\n${rows}\nTotal ${span}, computed in code: ${money(ro.total)}. Quote these figures; do not re-add them.`);
+    sections.push(`USASPENDING.GOV OBLIGATIONS BY FISCAL YEAR TO VENDORS WHOSE NAME CONTAINS "${ro.name}" (a vendor-name match only; this is NOT spending on the topic "${ro.name}"; contract obligations, ${ro.agency_scope ? `funding department ${ro.agency_scope}` : "all agencies"}, awards dated ${ro.since} to ${ro.until}; a fiscal year the window enters part-way is a partial year; years with no obligations are omitted):\n${rows}\nTotal ${span}, computed in code: ${money(ro.total)}. Quote these figures; do not re-add them.${staleNote(ro)}`);
   }
 
   // Spending categories
@@ -1100,7 +1226,7 @@ function formatFederalDataContext(data) {
     const s = data.agency_spending.spending;
     if (s.total_budgetary_resources > 0 || s.obligated > 0) {
       const who = s.agency_name ? `${s.agency_name} (CGAC ${s.agency_code})` : `CGAC ${s.agency_code || "n/a"}`;
-      sections.push(`DEPARTMENT-LEVEL SPENDING TOTALS for ${who}, FY${s.fiscal_year} to date, per USASpending.gov (the whole department, not the sub-agency asked about):\n- Budgetary resources: $${(s.total_budgetary_resources / 1e9).toFixed(1)}B\n- Obligated: $${(s.obligated / 1e9).toFixed(1)}B\n- Outlayed: $${(s.outlayed / 1e9).toFixed(1)}B`);
+      sections.push(`DEPARTMENT-LEVEL SPENDING TOTALS for ${who}, FY${s.fiscal_year} to date, per USASpending.gov (the whole department, not the sub-agency asked about):\n- Budgetary resources: $${(s.total_budgetary_resources / 1e9).toFixed(1)}B\n- Obligated: $${(s.obligated / 1e9).toFixed(1)}B\n- Outlayed: $${(s.outlayed / 1e9).toFixed(1)}B${staleNote(data.agency_spending)}`);
     }
   }
 
@@ -1219,6 +1345,9 @@ module.exports = {
   searchGAOReports,
   getAgencySpendingTotals,
   enrichWithFederalData,
+  federalPlan,
+  warmUSASpending,
+  usaGuarded,
   formatFederalDataContext,
   deriveAcquisitionState,
 };

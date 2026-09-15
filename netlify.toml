@@ -193,6 +193,12 @@
 [functions."award-tracker"]
   schedule = "0 15 * * *"
 
+# Ask MMT: warm USASpending for every known vehicle just after the UTC day
+# starts (the award search's cache key carries the UTC day). USASpending
+# only, never SAM.gov. Triggers usaspending-prewarm-background (2026-09-15).
+[functions."usaspending-prewarm"]
+  schedule = "10 0 * * *"
+
 # eBuy Open surfacing: triggers ebuy-open-radar-background to scan GSA
 # eBuy Open (Schedule-only RFQs that never hit SAM.gov) for federal
 # health IT RFQs. 11:30 UTC = 7:30 AM ET, 30 min after the SAM/agency
