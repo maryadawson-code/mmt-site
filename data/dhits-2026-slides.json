@@ -1311,7 +1311,7 @@
       "video_id": "hGbZ2GRhPs8",
       "title": "VADM Via's Opening Remarks",
       "duration": 1228,
-      "speaker_note": "Delivered by video from Washington, DC",
+      "speaker_note": "VADM Darin K. Via, Director, Defense Health Agency, by video from Washington, DC",
       "deck_anchors": [],
       "deck_relation": "same",
       "summary": "DHA's Director opened the symposium by video with the theme \"from data to dominance, forging a warfighter health advantage.\" He argued health IT is a warfighting function, showed what DHA's data could do for a cancer patient and a battlefield casualty, and laid out how DHA is changing the way it buys: clearer acquisition lanes, a new Office of Warfighter Health Advantage, and faster CSO and OTA pathways built on live testing.",
@@ -1330,7 +1330,7 @@
         },
         {
           "t": 678,
-          "point": "The fix is not one software system. It is feeding clinical and tactical sensor data into the War Data Platform and using AI to turn it into decisions."
+          "point": "The fix is not one software system. It is feeding clinical and tactical sensor data into the War Data Platform and using AI to turn it into decisions. Dr. Jesus J. Caban, DHA's Chief Data and Analytics Officer, leads the federated data strategy behind it."
         },
         {
           "t": 727,
@@ -1338,11 +1338,11 @@
         },
         {
           "t": 775,
-          "point": "Acquisition lanes: RDML Arena as acting Component Acquisition Executive, with portfolio executives for software, medical devices, and service contracts including TRICARE."
+          "point": "Acquisition lanes: RDML Ivonne Arena as acting Component Acquisition Executive, with portfolio executives for software, medical devices, and service contracts including TRICARE."
         },
         {
           "t": 823,
-          "point": "A new Office of Warfighter Health Advantage will set strategy and recommend which technologies DHA invests in, with final decisions resting with the Director."
+          "point": "A new Office of Warfighter Health Advantage, led by RDML Tracy Farrill, will set strategy and recommend which technologies DHA invests in, with final decisions resting with the Director."
         },
         {
           "t": 872,
@@ -1362,7 +1362,7 @@
       "video_id": "dLly3ZY6cu8",
       "title": "Mr. Pat Flanders' Plenary & Awards",
       "duration": 3443,
-      "speaker_note": null,
+      "speaker_note": "Pat Flanders, Chief Information Officer (J-6), Defense Health Agency",
       "deck_anchors": [
         "mr-pat-flanders-opening-plenary"
       ],
@@ -1375,7 +1375,7 @@
         },
         {
           "t": 500,
-          "point": "Operation Spartan Alloy began about eight weeks before the symposium with no-notice classified meetings called over a weekend."
+          "point": "Operation Spartan Alloy began about eight weeks before the symposium with no-notice classified meetings called over a weekend by Lt. Gen. Paul T. Stanton, DISA director and JFHQ-DODIN commander."
         },
         {
           "t": 597,
@@ -1400,7 +1400,7 @@
         },
         {
           "t": 1330,
-          "point": "DHA decided not to build its own data orchestration layer. General-purpose data goes through the War Data Platform, and operational data flows through JOMIS into Maven for the combatant commands.",
+          "point": "Working with RDML Tracy Farrill and Dr. Jesus J. Caban, DHA decided not to build its own data orchestration layer. General-purpose data goes through the War Data Platform, and operational data flows through JOMIS into Maven for the combatant commands.",
           "featured": true
         },
         {
@@ -1417,7 +1417,7 @@
         },
         {
           "t": 2512,
-          "point": "On ATOs: the timeline is risk-based, AI tools have not sped it up yet, and the DoW CIO paused CMMC Phase 2 for a 60-day analysis.",
+          "point": "On ATOs: the timeline is risk-based, AI tools have not sped it up yet, and DoW CIO Kirsten Davies paused CMMC Phase 2 for a 60-day analysis.",
           "featured": true
         },
         {
@@ -1439,86 +1439,86 @@
       "video_id": "TVOwEXZf1kI",
       "title": "Surgeons General Round Table",
       "duration": 3464,
-      "speaker_note": "Panel: the Joint Staff Surgeon, the Navy Bureau of Medicine and Surgery's Executive Director, the Army Medical Command's Deputy Commanding General (Support), and the Air Force Nurse Corps Chief, moderated by the Office of Warfighter Health Advantage Director",
+      "speaker_note": "Maj. Gen. Clinton K. Murray, Joint Staff Surgeon; Dr. Michael B. McGinnis, Executive Director, Navy Bureau of Medicine and Surgery; Brig. Gen. Jonathan C. Taylor, Deputy Commanding General (Support), U.S. Army Medical Command; Brig. Gen. Gwendolyn A. Foster, Chief, Air Force Nurse Corps. Moderated by RDML Tracy Farrill, Director, Office of Warfighter Health Advantage.",
       "deck_anchors": [],
       "deck_relation": "same",
       "summary": "Service and Joint Staff medical leaders on turning health IT into a warfighting capability. The through-line: get the JOMIS tools into units and exercises now, treat the medical record and wearables as sensors, and fix the digital backbone before anything else. Each leader brought field examples, from a Maven Smart System medical picture to wastewater surveillance at RIMPAC.",
       "moments": [
         {
           "t": 105,
-          "point": "Navy: the goal is to use the medical record as a sensor in the decision chain, moving from an archive to a data-centric model."
+          "point": "McGinnis (Navy): the goal is to use the medical record as a sensor in the decision chain, moving from an archive to a data-centric model."
         },
         {
           "t": 200,
-          "point": "Navy: ships sometimes cut communications on purpose for defensive reasons, so medical systems have to work disconnected."
+          "point": "McGinnis (Navy): ships sometimes cut communications on purpose for defensive reasons, so medical systems have to work disconnected."
         },
         {
           "t": 251,
-          "point": "Navy: focused on fielding JOMIS products at Role 1 and Role 2 through a rapid test cycle with DHA, with fleet commanders involved in setting priorities."
+          "point": "McGinnis (Navy): focused on fielding JOMIS products at Role 1 and Role 2 through a rapid test cycle with DHA, with fleet commanders involved in setting priorities."
         },
         {
           "t": 400,
-          "point": "Air Force: operational medicine comes first, without duplicating enterprise functions. An electronic deployment waiver tool is already speeding deployment decisions."
+          "point": "Foster (Air Force): operational medicine comes first, without duplicating enterprise functions. An electronic deployment waiver tool is already speeding deployment decisions."
         },
         {
           "t": 546,
-          "point": "Army: four priorities, namely time, networks, people, and making data accessible across systems. Get ATOs worked early so data can move from Service networks into the joint environment."
+          "point": "Taylor (Army): four priorities, namely time, networks, people, and making data accessible across systems. Get ATOs worked early so data can move from Service networks into the joint environment."
         },
         {
           "t": 787,
-          "point": "Joint Staff: the Chairman's top focus areas include the digital environment and AI. In a recent operation, the crisis room's Maven Smart System showed medical posture, evacuation coverage, blood across the theater, and casualty flow."
+          "point": "Murray (Joint Staff): the Chairman's top focus areas include the digital environment and AI. In a recent operation, the crisis room's Maven Smart System showed medical posture, evacuation coverage, blood across the theater, and casualty flow."
         },
         {
           "t": 888,
-          "point": "Joint Staff: the tactical edge is still invisible, and much of the medical picture is still someone retyping spreadsheets."
+          "point": "Murray (Joint Staff): the tactical edge is still invisible, and much of the medical picture is still someone retyping spreadsheets."
         },
         {
           "t": 1032,
-          "point": "Army: testing the JOMIS suite at the Joint Readiness Training Center and fielding CDP on Europe's eastern flank. Next step is joint exercises."
+          "point": "Taylor (Army): testing the JOMIS suite at the Joint Readiness Training Center and fielding CDP on Europe's eastern flank. Next step is joint exercises."
         },
         {
           "t": 1275,
-          "point": "Joint Staff: BATDOK-J scales from one patient to a company view and hands data off by web, QR code, or device touch. Air Mobility Command chose CDP as its platform."
+          "point": "Murray (Joint Staff): BATDOK-J scales from one patient to a company view and hands data off by web, QR code, or device touch. Air Mobility Command chose CDP as its platform."
         },
         {
           "t": 1370,
-          "point": "Joint Staff: planning is moving from a chain of evacuation toward a sensor-based mesh for expanded maneuver."
+          "point": "Murray (Joint Staff): planning is moving from a chain of evacuation toward a sensor-based mesh for expanded maneuver."
         },
         {
           "t": 1668,
-          "point": "Air Force: a deployed team in Micronesia linked to satellite, pulled patient records from MHS GENESIS, and coordinated aeromedical evacuation through jammed or unavailable networks."
+          "point": "Foster (Air Force): a deployed team in Micronesia linked to satellite, pulled patient records from MHS GENESIS, and coordinated aeromedical evacuation through jammed or unavailable networks."
         },
         {
           "t": 1808,
-          "point": "Air Force: independent duty medical technicians are prototyping an AI medical preceptor app, now being reviewed with Air Force Research Laboratory for security."
+          "point": "Foster (Air Force): independent duty medical technicians are prototyping an AI medical preceptor app, now being reviewed with Air Force Research Laboratory for security."
         },
         {
           "t": 2099,
-          "point": "Navy: Navy Medicine moves under PAE Maritime as the Navy shifts acquisition authority from systems commands to portfolio executives with more room to move funds."
+          "point": "McGinnis (Navy): Navy Medicine moves under PAE Maritime as the Navy shifts acquisition authority from systems commands to portfolio executives with more room to move funds."
         },
         {
           "t": 2292,
-          "point": "Navy: acquisition needs to move from requirements documents and analyses of alternatives to stated gaps, commercial products, and minimum viable products."
+          "point": "McGinnis (Navy): acquisition needs to move from requirements documents and analyses of alternatives to stated gaps, commercial products, and minimum viable products."
         },
         {
           "t": 2535,
-          "point": "Navy: using a DIU other transaction, wastewater surveillance went from nothing to a hub-and-spoke network across the Pacific, including on ships, in under two years."
+          "point": "McGinnis (Navy): using a DIU other transaction, wastewater surveillance went from nothing to a hub-and-spoke network across the Pacific, including on ships, in under two years."
         },
         {
           "t": 2683,
-          "point": "Joint Staff: missile attacks produced mass concussion exposures and a behavioral health surge. About half the behavioral health cases were Air Force."
+          "point": "Murray (Joint Staff): missile attacks produced mass concussion exposures and a behavioral health surge. About half the behavioral health cases were Air Force."
         },
         {
           "t": 2875,
-          "point": "Air Force: working with Johns Hopkins APL on predictive analytics that flag high-risk service members from individual medical readiness data."
+          "point": "Foster (Air Force): working with Johns Hopkins APL on predictive analytics that flag high-risk service members from individual medical readiness data."
         },
         {
           "t": 3070,
-          "point": "Navy: RIMPAC combined wastewater testing, syndromic surveillance, OpMed CDP data, and sleep-tracking wearables. It was also the first time in that exercise that a Canadian trauma team was credentialed to treat US forces."
+          "point": "McGinnis (Navy): RIMPAC combined wastewater testing, syndromic surveillance, OpMed CDP data, and sleep-tracking wearables. It was also the first time in that exercise that a Canadian trauma team was credentialed to treat US forces."
         },
         {
           "t": 3264,
-          "point": "Closing milestones: Navy says the next-generation medical record is the backbone everything depends on. The Joint Staff asks that systems plan for handoffs to allies, the VA, and civilian care."
+          "point": "Closing milestones: McGinnis says the next-generation medical record is the backbone everything depends on. Murray asks that systems plan for handoffs to allies, the VA, and civilian care."
         }
       ]
     },
@@ -1526,7 +1526,7 @@
       "video_id": "xVdsBU3K4qE",
       "title": "Mr. Michael R. Emerson's Plenary",
       "duration": 3447,
-      "speaker_note": null,
+      "speaker_note": "Michael R. Emerson, Assistant Director, Support, Personnel & Financial Operations, Defense Health Agency",
       "deck_anchors": [
         "mr-michael-emersons-plenary"
       ],
@@ -1595,13 +1595,13 @@
       "video_id": "BMpHatGQ-so",
       "title": "What is the Office of Warfighter Health Advantage?",
       "duration": 3504,
-      "speaker_note": "Presented by the Director of the Office of Warfighter Health Advantage",
+      "speaker_note": "RDML Tracy Farrill, Director, Office of Warfighter Health Advantage",
       "deck_anchors": [
         "the-office-of-warfighter-health-advantage-owha-engine-driving",
         "fail-fast-field-faster-driving-dha-combat-innovation-at"
       ],
       "deck_relation": "related",
-      "summary": "The OWHA Director explained what the new office is: DHA's lead for data-driven decisions, performance, and innovation, pulling formerly separate strategy, analytics, informatics, and innovation cells into one team. The most useful parts for industry and MTF staff are in the Q&A: how a new technology moves through governance in about two weeks, how ideas get scored, and what provider tools are coming next.",
+      "summary": "RDML Tracy Farrill explained what the new office is: DHA's lead for data-driven decisions, performance, and innovation, pulling formerly separate strategy, analytics, informatics, and innovation cells into one team. The most useful parts for industry and MTF staff are in the Q&A: how a new technology moves through governance in about two weeks, how ideas get scored, and what provider tools are coming next.",
       "moments": [
         {
           "t": 635,
@@ -1629,7 +1629,7 @@
         },
         {
           "t": 2321,
-          "point": "How technology moves: find a functional sponsor, then take it through the Warfighter Modernization Support Integration Board, co-chaired with acquisition and joined by finance. About two weeks to a leadership decision."
+          "point": "How technology moves: find a functional sponsor, then take it through the Warfighter Modernization Support Integration Board, co-chaired with Brett Scheideman's acquisition team and joined by finance. About two weeks to a leadership decision."
         },
         {
           "t": 2615,
@@ -1653,7 +1653,7 @@
       "video_id": "bAwhD-vh6nM",
       "title": "Transforming Medical Acquisition",
       "duration": 4635,
-      "speaker_note": null,
+      "speaker_note": "RDML Ivonne Arena, acting Assistant Director for Research, Development & Acquisition and Component Acquisition Executive, with Dr. Sean Biggerstaff (Science & Technology), COL Johnny Paul (DHA Research & Development), Madeleine Friedman (PAE Medical Services), COL Marcus Moss (PAE Medical Digital Solutions), Rob Bell III (for PAE Medical Products), Robert Brinkmann (DHA Contracting Activity), and Brett Scheideman (Principal Deputy RDA and Deputy CAE)",
       "deck_anchors": [
         "transforming-medical-acquisition-plenary-panel"
       ],
@@ -1685,7 +1685,7 @@
         },
         {
           "t": 1763,
-          "point": "Paul: R&D tracks a running technology estimate by readiness level, puts items in warfighters' hands at TRL 6, and shifts money when something does not work. The biggest challenge is the IT backbone."
+          "point": "COL Paul: R&D tracks a running technology estimate by readiness level, puts items in warfighters' hands at TRL 6, and shifts money when something does not work. The biggest challenge is the IT backbone."
         },
         {
           "t": 1960,
@@ -1730,7 +1730,7 @@
       "video_id": "CzErXxFrfcU",
       "title": "Dr. Paul Cordts' Plenary Session",
       "duration": 3544,
-      "speaker_note": null,
+      "speaker_note": "Dr. Paul R. Cordts, Deputy Assistant Director, Medical Affairs, and Chief Medical Officer, Defense Health Agency",
       "deck_anchors": [
         "dr-paul-cordts-plenary"
       ],
@@ -1803,7 +1803,7 @@
       "video_id": "pOu5_cZAXQ4",
       "title": "J-6 Division Chiefs Panel",
       "duration": 3728,
-      "speaker_note": "Pat Flanders with J-6's senior enlisted advisor, lead engineer, and division leads for engineering, infrastructure and operations, portfolio and resources, and risk management",
+      "speaker_note": "Pat Flanders, CIO (J-6), with SMSgt Gareth Price (Senior Enlisted Advisor), Aaron Rothberg (Lead Engineer), Nina Porter (Division Chief, Engineering, Solutions Architecture & IT Business Analytics, announced at the session as the new J-6 deputy), the Infrastructure and Operations Division's chief operating officer, Charles Moniz (Chief, Portfolio & Resource Management), and Richard Gasperoni (Chief Operating Officer, Risk Management Executive). Moderated by Rob Wilson, Chief, CIO Operations.",
       "deck_anchors": [],
       "deck_relation": "same",
       "summary": "An open Q&A with DHA's CIO and the J-6 division leads. It is the most practical session for MTF CIOs and vendors: what the reorganization changed for J-6, where CrowdStrike, zero trust, and continuous monitoring stand, why commercial internet is being pulled from MTFs, and what J-6 wants from industry on AI.",
@@ -1814,31 +1814,31 @@
         },
         {
           "t": 400,
-          "point": "Azure Virtual Desktop satisfaction surveys come back at about 96%."
+          "point": "Rothberg: Azure Virtual Desktop satisfaction surveys come back at about 96%."
         },
         {
           "t": 448,
-          "point": "Engineering: Ask Sage launched in December 2025, and the panel described it as still the only AI tool approved in DoD for PHI and PII."
+          "point": "Porter: Ask Sage launched in December 2025, and the panel described it as still the only AI tool approved in DoD for PHI and PII."
         },
         {
           "t": 547,
-          "point": "Resources: the roughly $1.2B J-6 portfolio executes at about 99.99%, tracked in a Power BI tool that pulls from Ektropy and other finance systems."
+          "point": "Moniz: the roughly $1.2B J-6 portfolio executes at about 99.99%, tracked in a Power BI tool that pulls from Ektropy and other finance systems."
         },
         {
           "t": 646,
-          "point": "Risk management: CrowdStrike is on about 220,000 endpoints, with full deployment targeted for December to replace Trellix. The team is hoping for a 10% to 15% performance boost."
+          "point": "Gasperoni: CrowdStrike is on about 220,000 endpoints, with full deployment targeted for December to replace Trellix. The team is hoping for a 10% to 15% performance boost."
         },
         {
           "t": 792,
-          "point": "A recent purple team assessment showed DHA well on its way to the 91 target-level zero trust activities."
+          "point": "Porter: a recent purple team assessment showed DHA well on its way to the 91 target-level zero trust activities."
         },
         {
           "t": 841,
-          "point": "Operations: SolarWinds and Splunk will feed ServiceNow tickets automatically based on incident criticality."
+          "point": "Infrastructure and Operations: SolarWinds and Splunk will feed ServiceNow tickets automatically based on incident criticality."
         },
         {
           "t": 1036,
-          "point": "Engineering found more than 400 AI development efforts across the enterprise that headquarters did not know about, and asks sites to report them so security can be applied."
+          "point": "Porter: engineering found more than 400 AI development efforts across the enterprise that headquarters did not know about, and asks sites to report them so security can be applied."
         },
         {
           "t": 1184,
@@ -1866,7 +1866,7 @@
         },
         {
           "t": 2653,
-          "point": "The draft campaign plan calls for every MTF to field the JOMIS suite as part of its continuity plan, in case MedCOI goes down."
+          "point": "Price: the draft campaign plan calls for every MTF to field the JOMIS suite as part of its continuity plan, in case MedCOI goes down."
         },
         {
           "t": 3151,
@@ -1878,7 +1878,7 @@
       "video_id": "BQOzO8zU4BM",
       "title": "Mr. Pat Flanders' Closing Remarks",
       "duration": 491,
-      "speaker_note": null,
+      "speaker_note": "Pat Flanders, Chief Information Officer (J-6), Defense Health Agency",
       "deck_anchors": [],
       "deck_relation": "same",
       "summary": "An eight-minute close. Flanders honored the longtime Defense Health Headquarters CIO at his last DHITS, shared the homework he is taking back from the week, and gave the final numbers.",
