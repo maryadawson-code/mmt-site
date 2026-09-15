@@ -63,6 +63,20 @@ const CORS_HEADERS = {
 // TEXT EXTRACTION (DOCX/PPTX — fast, < 1s)
 // ============================================================
 
+// Normalises whatever officeparser.parseOffice() resolves to into plain text.
+// Exported for tests: the contract this guards is "extractText always returns
+// a string or null", which is what every caller assumes.
+function officeparserText(parsed) {
+  if (parsed == null) return null;
+  if (typeof parsed === "string") return parsed;
+  if (typeof parsed.toText === "function") {
+    const t = parsed.toText();
+    return typeof t === "string" ? t : null;
+  }
+  if (typeof parsed.content === "string") return parsed.content;
+  return null;
+}
+
 async function extractText(base64Data, resolvedType) {
   const buffer = Buffer.from(base64Data, "base64");
 
@@ -74,7 +88,22 @@ async function extractText(base64Data, resolvedType) {
 
   if (resolvedType === "pptx") {
     const officeparser = require("officeparser");
-    return await officeparser.parseOffice(buffer);
+    // 2026-09-15: parseOffice() resolves to a RESULT OBJECT, not a string —
+    // on 6.0.7 (the version in production when this was found) and on 7.x.
+    // Returning it raw made every PPTX upload fail: the caller's guard runs
+    // `extractedText.trim()`, which threw "extractedText.trim is not a
+    // function", was swallowed by catch (parseErr), and answered the
+    // subscriber with HTTP 400 "Failed to read this PowerPoint. Make sure
+    // it's a valid file." on a perfectly valid deck. PPTX is the primary
+    // input to deck scoring, so ProposalPulse was rejecting its main file
+    // type. The docx branch above was always correct because it returns
+    // result.value.
+    //
+    // Unwrapped defensively so this cannot break again on either side of an
+    // officeparser upgrade: a plain string passes through, otherwise take
+    // toText() (6.x and 7.x) and fall back to content.
+    const parsed = await officeparser.parseOffice(buffer);
+    return officeparserText(parsed);
   }
 
   return null;
@@ -501,3 +530,5 @@ exports.handler = wrapHandler(async (event) => {
     };
   }
 });
+
+exports.officeparserText = officeparserText;
