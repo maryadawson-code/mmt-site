@@ -7,7 +7,8 @@
     "sponsor": "Defense Health Agency (DHA)",
     "event_url": "https://web.cvent.com/event/64c5b9b4-3c7e-4806-a3ac-5b516724430b/summary",
     "slides_page_url": "https://web.cvent.com/event/64c5b9b4-3c7e-4806-a3ac-5b516724430b/2025-presentation-slides",
-    "retrieved": "2026-09-15"
+    "retrieved": "2026-09-15",
+    "recordings_page_url": "https://web.cvent.com/event/64c5b9b4-3c7e-4806-a3ac-5b516724430b/2025-plenary-recordings"
   },
   "tracks": [
     {
@@ -1301,6 +1302,610 @@
             "pages": 10,
             "bytes": 1860537
           }
+        }
+      ]
+    }
+  ],
+  "recordings": [
+    {
+      "video_id": "hGbZ2GRhPs8",
+      "title": "VADM Via's Opening Remarks",
+      "duration": 1228,
+      "speaker_note": "Delivered by video from Washington, DC",
+      "deck_anchors": [],
+      "deck_relation": "same",
+      "summary": "DHA's Director opened the symposium by video with the theme \"from data to dominance, forging a warfighter health advantage.\" He argued health IT is a warfighting function, showed what DHA's data could do for a cancer patient and a battlefield casualty, and laid out how DHA is changing the way it buys: clearer acquisition lanes, a new Office of Warfighter Health Advantage, and faster CSO and OTA pathways built on live testing.",
+      "moments": [
+        {
+          "t": 49,
+          "point": "Points to operations in the Middle East, Europe, and the Pacific, where adversaries use AI, autonomous drones, and sensor saturation, and says health IT is part of that fight."
+        },
+        {
+          "t": 244,
+          "point": "DHA cares for 9.5 million Americans and holds lifelong records, a serum repository, the Joint Pathology Center repository, and growing genomic data."
+        },
+        {
+          "t": 296,
+          "point": "His assessment of today: almost none of that data is synthesized. Silos, point solutions, and people bridging gaps by hand."
+        },
+        {
+          "t": 678,
+          "point": "The fix is not one software system. It is feeding clinical and tactical sensor data into the War Data Platform and using AI to turn it into decisions."
+        },
+        {
+          "t": 727,
+          "point": "To industry: specific IT solutions come second to outcomes, and capabilities that cannot be operationalized are not what DHA is looking for."
+        },
+        {
+          "t": 775,
+          "point": "Acquisition lanes: RDML Arena as acting Component Acquisition Executive, with portfolio executives for software, medical devices, and service contracts including TRICARE."
+        },
+        {
+          "t": 823,
+          "point": "A new Office of Warfighter Health Advantage will set strategy and recommend which technologies DHA invests in, with final decisions resting with the Director."
+        },
+        {
+          "t": 872,
+          "point": "More CSOs and OTAs are coming. The first PARATUS area of interest covers the periodic health exam, and offerors must pass live tests in DHA environments."
+        },
+        {
+          "t": 921,
+          "point": "DHA is finalizing market research on the ARMOR RFI for workforce and readiness modernization, starting with credentialing, risk management, and an API-first data baseline."
+        },
+        {
+          "t": 1020,
+          "point": "Asks the Services to field deployable products with units and backs standardizing medical profile durations across Services."
+        }
+      ]
+    },
+    {
+      "video_id": "dLly3ZY6cu8",
+      "title": "Mr. Pat Flanders' Plenary & Awards",
+      "duration": 3443,
+      "speaker_note": null,
+      "deck_anchors": [
+        "mr-pat-flanders-opening-plenary"
+      ],
+      "deck_relation": "same",
+      "summary": "Flanders walked the room through the network, then the four fronts of Operation Spartan Alloy, then program updates. The recording adds what the slides leave out: how Spartan Alloy started, the deadlines sites are working against, how DHA decided to orchestrate its data, and a Q&A on ATO timelines, CMMC, cloud authorization, and circuit redundancy.",
+      "moments": [
+        {
+          "t": 202,
+          "point": "IT workforce turnover runs about 25% a year, and he put last year closer to 35%."
+        },
+        {
+          "t": 500,
+          "point": "Operation Spartan Alloy began about eight weeks before the symposium with no-notice classified meetings called over a weekend."
+        },
+        {
+          "t": 597,
+          "point": "DHA sites are downstream customers of TDM copper circuits they do not own. A cyber tasking order will eventually shut those circuits off, so sites need to move to VoIP first."
+        },
+        {
+          "t": 792,
+          "point": "Forward-deployed CIOs should have continuity plans now for MedCOI going down, including which Service network they would plug into."
+        },
+        {
+          "t": 840,
+          "point": "DHA's ICAM system was approved in October, work started in March after two shutdowns, and it has to be done by December 31.",
+          "featured": true
+        },
+        {
+          "t": 1034,
+          "point": "Operation Spartan Alloy gave 54 sites 30 days to shut down or secure rogue circuits such as guest wireless."
+        },
+        {
+          "t": 1133,
+          "point": "He expects MTF CIO billets standardized at GS-13 by October 1. Later in Q&A: about 32 billets, 25 of them Air Force."
+        },
+        {
+          "t": 1330,
+          "point": "DHA decided not to build its own data orchestration layer. General-purpose data goes through the War Data Platform, and operational data flows through JOMIS into Maven for the combatant commands.",
+          "featured": true
+        },
+        {
+          "t": 1578,
+          "point": "Ask Sage is now connected to SharePoint for document search, and a segmented space for sensitive data such as contracting and IG cases is in the works."
+        },
+        {
+          "t": 1676,
+          "point": "GSP is consolidating more than 200 small MTF touch-labor contracts. The last 39 are what remain."
+        },
+        {
+          "t": 1724,
+          "point": "LogiCole: the first value capability is done, the second phase starts by January, and he estimated finishing around summer 2028."
+        },
+        {
+          "t": 2512,
+          "point": "On ATOs: the timeline is risk-based, AI tools have not sped it up yet, and the DoW CIO paused CMMC Phase 2 for a 60-day analysis.",
+          "featured": true
+        },
+        {
+          "t": 2659,
+          "point": "The DHA cyber workforce is about 80% contractors."
+        },
+        {
+          "t": 2955,
+          "point": "Vendors adding AI to cloud products need a DISA provisional authorization before DHA can buy and accredit them. DHA sponsoring one would take a call from DHA leadership."
+        },
+        {
+          "t": 3290,
+          "point": "Major sites have at least two circuits, but some share one trunk. Twentynine Palms will be DHA's first Starshield experiment for alternate connectivity.",
+          "featured": true
+        }
+      ]
+    },
+    {
+      "video_id": "TVOwEXZf1kI",
+      "title": "Surgeons General Round Table",
+      "duration": 3464,
+      "speaker_note": "Panel: the Joint Staff Surgeon, the Navy Bureau of Medicine and Surgery's Executive Director, the Army Medical Command's Deputy Commanding General (Support), and the Air Force Nurse Corps Chief, moderated by the Office of Warfighter Health Advantage Director",
+      "deck_anchors": [],
+      "deck_relation": "same",
+      "summary": "Service and Joint Staff medical leaders on turning health IT into a warfighting capability. The through-line: get the JOMIS tools into units and exercises now, treat the medical record and wearables as sensors, and fix the digital backbone before anything else. Each leader brought field examples, from a Maven Smart System medical picture to wastewater surveillance at RIMPAC.",
+      "moments": [
+        {
+          "t": 105,
+          "point": "Navy: the goal is to use the medical record as a sensor in the decision chain, moving from an archive to a data-centric model."
+        },
+        {
+          "t": 200,
+          "point": "Navy: ships sometimes cut communications on purpose for defensive reasons, so medical systems have to work disconnected."
+        },
+        {
+          "t": 251,
+          "point": "Navy: focused on fielding JOMIS products at Role 1 and Role 2 through a rapid test cycle with DHA, with fleet commanders involved in setting priorities."
+        },
+        {
+          "t": 400,
+          "point": "Air Force: operational medicine comes first, without duplicating enterprise functions. An electronic deployment waiver tool is already speeding deployment decisions."
+        },
+        {
+          "t": 546,
+          "point": "Army: four priorities, namely time, networks, people, and making data accessible across systems. Get ATOs worked early so data can move from Service networks into the joint environment."
+        },
+        {
+          "t": 787,
+          "point": "Joint Staff: the Chairman's top focus areas include the digital environment and AI. In a recent operation, the crisis room's Maven Smart System showed medical posture, evacuation coverage, blood across the theater, and casualty flow."
+        },
+        {
+          "t": 888,
+          "point": "Joint Staff: the tactical edge is still invisible, and much of the medical picture is still someone retyping spreadsheets."
+        },
+        {
+          "t": 1032,
+          "point": "Army: testing the JOMIS suite at the Joint Readiness Training Center and fielding CDP on Europe's eastern flank. Next step is joint exercises."
+        },
+        {
+          "t": 1275,
+          "point": "Joint Staff: BATDOK-J scales from one patient to a company view and hands data off by web, QR code, or device touch. Air Mobility Command chose CDP as its platform."
+        },
+        {
+          "t": 1370,
+          "point": "Joint Staff: planning is moving from a chain of evacuation toward a sensor-based mesh for expanded maneuver."
+        },
+        {
+          "t": 1668,
+          "point": "Air Force: a deployed team in Micronesia linked to satellite, pulled patient records from MHS GENESIS, and coordinated aeromedical evacuation through jammed or unavailable networks."
+        },
+        {
+          "t": 1808,
+          "point": "Air Force: independent duty medical technicians are prototyping an AI medical preceptor app, now being reviewed with Air Force Research Laboratory for security."
+        },
+        {
+          "t": 2099,
+          "point": "Navy: Navy Medicine moves under PAE Maritime as the Navy shifts acquisition authority from systems commands to portfolio executives with more room to move funds."
+        },
+        {
+          "t": 2292,
+          "point": "Navy: acquisition needs to move from requirements documents and analyses of alternatives to stated gaps, commercial products, and minimum viable products."
+        },
+        {
+          "t": 2535,
+          "point": "Navy: using a DIU other transaction, wastewater surveillance went from nothing to a hub-and-spoke network across the Pacific, including on ships, in under two years."
+        },
+        {
+          "t": 2683,
+          "point": "Joint Staff: missile attacks produced mass concussion exposures and a behavioral health surge. About half the behavioral health cases were Air Force."
+        },
+        {
+          "t": 2875,
+          "point": "Air Force: working with Johns Hopkins APL on predictive analytics that flag high-risk service members from individual medical readiness data."
+        },
+        {
+          "t": 3070,
+          "point": "Navy: RIMPAC combined wastewater testing, syndromic surveillance, OpMed CDP data, and sleep-tracking wearables. It was also the first time in that exercise that a Canadian trauma team was credentialed to treat US forces."
+        },
+        {
+          "t": 3264,
+          "point": "Closing milestones: Navy says the next-generation medical record is the backbone everything depends on. The Joint Staff asks that systems plan for handoffs to allies, the VA, and civilian care."
+        }
+      ]
+    },
+    {
+      "video_id": "xVdsBU3K4qE",
+      "title": "Mr. Michael R. Emerson's Plenary",
+      "duration": 3447,
+      "speaker_note": null,
+      "deck_anchors": [
+        "mr-michael-emersons-plenary"
+      ],
+      "deck_relation": "same",
+      "summary": "Emerson framed the budget around one word, credibility: requirements, numbers, and execution that leadership can trust. The recording adds his reasons for the COMP and PSCP split, what BAG 4 money actually buys, his ask of industry, and a long Q&A on manpower models, equipment funding, and hiring.",
+      "moments": [
+        {
+          "t": 147,
+          "point": "His first day was April 20, the day the reorganization was announced. His directorate now includes J-6, J-4, facilities, and a budget justification cell shared with Health Affairs."
+        },
+        {
+          "t": 391,
+          "point": "DHA cannot automate its way out of bad processes, and that includes AI. For any modernization investment, he asks what it lets DHA stop doing."
+        },
+        {
+          "t": 880,
+          "point": "Why split COMP and PSCP: when the two sat together, direct care money was often pulled mid-year to cover private sector care shortfalls.",
+          "featured": true
+        },
+        {
+          "t": 977,
+          "point": "Information management is about 6% of the $40.9B FY27 O&M request."
+        },
+        {
+          "t": 1028,
+          "point": "About 79% of BAG 4 goes to contracts, mostly contract labor supporting MTFs, systems, the service desk, and cyber.",
+          "featured": true
+        },
+        {
+          "t": 1076,
+          "point": "To industry: do not bring technology looking for a requirement. Show how it improves readiness, access, or clinical burden, and what DHA can stop paying for.",
+          "featured": true
+        },
+        {
+          "t": 1273,
+          "point": "The FY27 digital growth also funds DHA's enterprise data work. The increase ramps up for a couple of years, then comes back down."
+        },
+        {
+          "t": 1856,
+          "point": "Metrics for DHA's four lines of effort will be laid out in the campaign order, which he expects in October."
+        },
+        {
+          "t": 1904,
+          "point": "New direction to MTFs: hire against funded authorizations, and headquarters will stop pulling civilian pay early in the year to cover other shortfalls.",
+          "featured": true
+        },
+        {
+          "t": 2246,
+          "point": "The FY26 POM build was the first with about 80% visibility into spending down to the MTF level, modeled on the J-6 Ektropy approach."
+        },
+        {
+          "t": 2539,
+          "point": "DHA recently won additional topline for a clearly defined new requirement, which he described as a first, by bringing credible data."
+        },
+        {
+          "t": 2691,
+          "point": "The DM2 manpower model was a bridge, not the final answer. An MTF-by-MTF review with the networks is coming, and it will take time."
+        },
+        {
+          "t": 2937,
+          "point": "Equipment dollars have been used to pay other bills. The goal is to get equipment funding to sites in the first quarter instead of the fourth."
+        }
+      ]
+    },
+    {
+      "video_id": "BMpHatGQ-so",
+      "title": "What is the Office of Warfighter Health Advantage?",
+      "duration": 3504,
+      "speaker_note": "Presented by the Director of the Office of Warfighter Health Advantage",
+      "deck_anchors": [
+        "the-office-of-warfighter-health-advantage-owha-engine-driving",
+        "fail-fast-field-faster-driving-dha-combat-innovation-at"
+      ],
+      "deck_relation": "related",
+      "summary": "The OWHA Director explained what the new office is: DHA's lead for data-driven decisions, performance, and innovation, pulling formerly separate strategy, analytics, informatics, and innovation cells into one team. The most useful parts for industry and MTF staff are in the Q&A: how a new technology moves through governance in about two weeks, how ideas get scored, and what provider tools are coming next.",
+      "moments": [
+        {
+          "t": 635,
+          "point": "OWHA is DHA's lead for data-driven decision-making, performance optimization, and innovation."
+        },
+        {
+          "t": 734,
+          "point": "It combines strategy, data and analytics, health informatics and the digital platform, and emerging technology and innovation teams that used to work separately."
+        },
+        {
+          "t": 1332,
+          "point": "Every breakout description had to state the problem, the solution, and the call to action, by the Director's direction."
+        },
+        {
+          "t": 1629,
+          "point": "DHA now has an enterprise-wide CSO that supports rapid awards of both OTAs and FAR contracts."
+        },
+        {
+          "t": 2026,
+          "point": "Coming for providers: automated coding for less complex encounters, order suggestions drawn from ambient listening, and a chart review summary capability."
+        },
+        {
+          "t": 2126,
+          "point": "She expects a newer, interactive version of the EHR by the end of 2027, though implementation details were not set."
+        },
+        {
+          "t": 2321,
+          "point": "How technology moves: find a functional sponsor, then take it through the Warfighter Modernization Support Integration Board, co-chaired with acquisition and joined by finance. About two weeks to a leadership decision."
+        },
+        {
+          "t": 2615,
+          "point": "Ideas are scored against Department criteria nested with DHA's lines of effort, including risk to mission and outcome, then reviewed by people before a decision."
+        },
+        {
+          "t": 2812,
+          "point": "Defense Health Networks are invited to every governance board and bring field experience that often changes the discussion."
+        },
+        {
+          "t": 3053,
+          "point": "For MTF innovations: work through your Defense Health Network, find a functional sponsor, and bring a stated outcome, not a shiny object."
+        },
+        {
+          "t": 3249,
+          "point": "On acquisition risk: \"embrace the red.\" Acquisition and legal partners sit in every discussion so speed stays legal and ethical."
+        }
+      ]
+    },
+    {
+      "video_id": "bAwhD-vh6nM",
+      "title": "Transforming Medical Acquisition",
+      "duration": 4635,
+      "speaker_note": null,
+      "deck_anchors": [
+        "transforming-medical-acquisition-plenary-panel"
+      ],
+      "deck_relation": "same",
+      "summary": "RDML Arena walked through DHA's reorganized acquisition enterprise, then each portfolio lead explained their lane. The recording adds details the slides do not: what moved into the new digital portfolio, how decisions are delegated and governed, how much S&T money is in play, contracting's growth, and a frank admission that industry cannot see what DHA will buy next year.",
+      "moments": [
+        {
+          "t": 395,
+          "point": "Arena: a new industry engagement function sits in the deputy CAE office. The goal for FY27 is to tell industry when DHA will share requirements and hold industry days.",
+          "featured": true
+        },
+        {
+          "t": 692,
+          "point": "Arena: the former J-6 Solution Delivery Division's acquisition work and the program executive office for DHA's health record systems now form one portfolio, PAE Medical Digital Solutions, with integration work planned for FY27.",
+          "featured": true
+        },
+        {
+          "t": 793,
+          "point": "Arena: milestone decision authority is delegated to the PAEs within thresholds, governed by new Capability Trade Councils, with decisions reported up to the CAE."
+        },
+        {
+          "t": 1278,
+          "point": "Biggerstaff: S&T manages roughly $500M to $800M a year in science and technology funding across nine research portfolios, now planned top-down against Joint Staff and Service priorities."
+        },
+        {
+          "t": 1522,
+          "point": "Biggerstaff: the science base has to deliver a 30% or 40% solution within 12 months, instead of an 80% solution in 10 years.",
+          "featured": true
+        },
+        {
+          "t": 1763,
+          "point": "Paul: R&D tracks a running technology estimate by readiness level, puts items in warfighters' hands at TRL 6, and shifts money when something does not work. The biggest challenge is the IT backbone."
+        },
+        {
+          "t": 1960,
+          "point": "Friedman: PAE Medical Services runs enterprise medical staffing, the Reserve Health Readiness Program, and Virtual Health, and is standing up an acquisition of services center of excellence in six to eight months."
+        },
+        {
+          "t": 2010,
+          "point": "Friedman: about 40% of the reserve readiness community lives more than 50 miles from an MTF."
+        },
+        {
+          "t": 2456,
+          "point": "Moss: Medical Digital Solutions is sharing blood, medical logistics, DOEHRS-IH environmental health, VSIMS food and water, and military working dog health data with the War Data Platform, Army Vantage, and Maven."
+        },
+        {
+          "t": 2913,
+          "point": "Bell: fielding medical devices often means site-specific ATOs rather than a type ATO, which slows delivery."
+        },
+        {
+          "t": 3163,
+          "point": "Brinkmann: DHA contracting took over the Army's medical contracting missions in Europe and the Pacific and is absorbing its stateside medical readiness offices, growing from about 200 to more than 600 people."
+        },
+        {
+          "t": 3850,
+          "point": "Scheideman: Capability Trade Councils prioritize within mission threads, name a program manager, identify funding, right-size the requirement, and recommend up through governance."
+        },
+        {
+          "t": 3998,
+          "point": "Scheideman: industry does not know what DHA will buy next year, and that is the problem. Expect better forecasts, industry days, and reverse industry days.",
+          "featured": true
+        },
+        {
+          "t": 4344,
+          "point": "Q&A: acquisition has embedded a person in OWHA to catch innovation requirements early, and PAEs work with the new J-9 requirements function."
+        },
+        {
+          "t": 4490,
+          "point": "Q&A: contracting is writing procedures to verify CMMC self-certification levels in solicitations, even with third-party assessments suspended."
+        }
+      ]
+    },
+    {
+      "video_id": "CzErXxFrfcU",
+      "title": "Dr. Paul Cordts' Plenary Session",
+      "duration": 3544,
+      "speaker_note": null,
+      "deck_anchors": [
+        "dr-paul-cordts-plenary"
+      ],
+      "deck_relation": "same",
+      "summary": "Cordts made a direct ask of the IT community: the next step in patient safety depends on complete data and tools clinicians actually adopt. The recording adds the reasons behind his slides: the data DHA cannot see, why screening kits go to patients who are already screened, where ambient listening is and is not catching on, and how he wants AI to predict harm before it happens.",
+      "moments": [
+        {
+          "t": 341,
+          "point": "Goal for the portal: patients get their actual images, not only the reports, plus their legacy health record data."
+        },
+        {
+          "t": 390,
+          "point": "Few clinicians open the VA/DoD guideline care pathways built into MHS GENESIS. He wants the evidence suggested inside the workflow instead."
+        },
+        {
+          "t": 437,
+          "point": "Nursing clinical support protocols show high use in the first 60 days of data, a bright spot for adoption."
+        },
+        {
+          "t": 537,
+          "point": "Colon cancer screening performance is above the 90th percentile, but DHA mails FIT kits to patients already screened elsewhere because it cannot see VA, other insurance, or CMS data. An agreement with the VA is in the works.",
+          "featured": true
+        },
+        {
+          "t": 729,
+          "point": "Cervical cancer screening sits between the 50th and 75th percentile. Patient self-collection for HPV testing is starting in clinics, with at-home collection to follow."
+        },
+        {
+          "t": 824,
+          "point": "Lab and radiology results have been released to the portal immediately since January under the Cures Act, turned on at the same time as the VA."
+        },
+        {
+          "t": 969,
+          "point": "DHA does mass patient messaging through the Virtual Education Center outside MHS GENESIS, because the portal cannot schedule messages at intervals. Only 115,000 patients used the portal's health library."
+        },
+        {
+          "t": 1115,
+          "point": "Patient safety data systems do not talk to each other. He wants AI to predict where harm is likely, using staffing data and fall-risk assessments, and send teams before events happen.",
+          "featured": true
+        },
+        {
+          "t": 1408,
+          "point": "DHA barcodes over 95% of medications given. Blood bank and nuclear medicine are next."
+        },
+        {
+          "t": 1504,
+          "point": "Leapfrog safety grades: 75% of DHA hospitals earned an A in spring 2026, against a 39% national average.",
+          "featured": true
+        },
+        {
+          "t": 1552,
+          "point": "Technologies in work: point-of-care EEG read by remote neurologists, digital pathology with AI and routing to the Joint Pathology Center, and remote telementoring."
+        },
+        {
+          "t": 1990,
+          "point": "Ambient listening adoption by specialty: pediatrics leads at 41%, with oncology, primary care, and otolaryngology near 27%. Behavioral health is in single digits, citing legal and privacy concerns.",
+          "featured": true
+        },
+        {
+          "t": 2327,
+          "point": "Too much unwarranted variation: some DHA hospitals rank among the nation's best on a given measure, others sit more than two standard deviations below the benchmark."
+        },
+        {
+          "t": 2568,
+          "point": "Ambient listening barriers: it needs a government iPhone app or desktop, about an hour of training, and fits best with SOAP-format notes."
+        }
+      ]
+    },
+    {
+      "video_id": "pOu5_cZAXQ4",
+      "title": "J-6 Division Chiefs Panel",
+      "duration": 3728,
+      "speaker_note": "Pat Flanders with J-6's senior enlisted advisor, lead engineer, and division leads for engineering, infrastructure and operations, portfolio and resources, and risk management",
+      "deck_anchors": [],
+      "deck_relation": "same",
+      "summary": "An open Q&A with DHA's CIO and the J-6 division leads. It is the most practical session for MTF CIOs and vendors: what the reorganization changed for J-6, where CrowdStrike, zero trust, and continuous monitoring stand, why commercial internet is being pulled from MTFs, and what J-6 wants from industry on AI.",
+      "moments": [
+        {
+          "t": 95,
+          "point": "Reorg: DHA's software programs now sit together under the new digital portfolio, and J-6 now works for SP&FO. Flanders says the structure now mirrors how the Services separate acquisition from IT operations."
+        },
+        {
+          "t": 400,
+          "point": "Azure Virtual Desktop satisfaction surveys come back at about 96%."
+        },
+        {
+          "t": 448,
+          "point": "Engineering: Ask Sage launched in December 2025, and the panel described it as still the only AI tool approved in DoD for PHI and PII."
+        },
+        {
+          "t": 547,
+          "point": "Resources: the roughly $1.2B J-6 portfolio executes at about 99.99%, tracked in a Power BI tool that pulls from Ektropy and other finance systems."
+        },
+        {
+          "t": 646,
+          "point": "Risk management: CrowdStrike is on about 220,000 endpoints, with full deployment targeted for December to replace Trellix. The team is hoping for a 10% to 15% performance boost."
+        },
+        {
+          "t": 792,
+          "point": "A recent purple team assessment showed DHA well on its way to the 91 target-level zero trust activities."
+        },
+        {
+          "t": 841,
+          "point": "Operations: SolarWinds and Splunk will feed ServiceNow tickets automatically based on incident criticality."
+        },
+        {
+          "t": 1036,
+          "point": "Engineering found more than 400 AI development efforts across the enterprise that headquarters did not know about, and asks sites to report them so security can be applied."
+        },
+        {
+          "t": 1184,
+          "point": "Flanders: funding restorals DHA won twice run out in 2029, and manpower came up in about a third of the conference's questions."
+        },
+        {
+          "t": 1334,
+          "point": "To industry on AI: understand DHA's mission, bring security and governance in early, and build for the enterprise, not one site. Self-healing AI agents will not run without governance."
+        },
+        {
+          "t": 1528,
+          "point": "Hypori's 2,000 pilot licenses all went to clinical staff. Expansion depends on clinicians saying it works, then governance and funding."
+        },
+        {
+          "t": 2068,
+          "point": "Continuous monitoring is about 60% done. The goal: bring low-cost medical devices into an accredited enclave and document only the added risk, instead of a full ATO package."
+        },
+        {
+          "t": 2214,
+          "point": "The Department no longer allows commercial internet at MTFs and revoked the exceptions. About 80% of what used it can move to guest wireless, but coverage and wired-only devices are problems."
+        },
+        {
+          "t": 2555,
+          "point": "Prompt engineering training for Ask Sage is offered through the J-6 Academy, and GenAI.mil is also available."
+        },
+        {
+          "t": 2653,
+          "point": "The draft campaign plan calls for every MTF to field the JOMIS suite as part of its continuity plan, in case MedCOI goes down."
+        },
+        {
+          "t": 3151,
+          "point": "Spartan Alloy's hardest part: embedded components in FDA-approved medical devices cannot be patched on the same timeline as everything else."
+        }
+      ]
+    },
+    {
+      "video_id": "BQOzO8zU4BM",
+      "title": "Mr. Pat Flanders' Closing Remarks",
+      "duration": 491,
+      "speaker_note": null,
+      "deck_anchors": [],
+      "deck_relation": "same",
+      "summary": "An eight-minute close. Flanders honored the longtime Defense Health Headquarters CIO at his last DHITS, shared the homework he is taking back from the week, and gave the final numbers.",
+      "moments": [
+        {
+          "t": 0,
+          "point": "Recognized Dave Mills, the Defense Health Headquarters CIO, whose tenure goes back to the TRICARE Management Activity, at his last DHITS."
+        },
+        {
+          "t": 198,
+          "point": "His homework from the week: standardize position descriptions across IT roles, a response to the manpower concerns he heard."
+        },
+        {
+          "t": 245,
+          "point": "He also plans to look at concerns attendees raised about CHRIP."
+        },
+        {
+          "t": 297,
+          "point": "He is interested in shared pools of charged government phones at clinic desks, possibly paired with Hypori. CAC and accreditation are the obstacles."
+        },
+        {
+          "t": 345,
+          "point": "The Armed Services Blood Program drive reached 142 against a goal of 175, about 81%."
+        },
+        {
+          "t": 395,
+          "point": "Official attendance was 2,275. He asked attendees to fill out the app surveys and CIOs to give feedback through the CIO work group."
         }
       ]
     }
