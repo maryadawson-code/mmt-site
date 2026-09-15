@@ -59,3 +59,19 @@ on `premium_chat_turn`.
 
 Follow-up flagged, not done: USASpending's `agency/<cgac>/budgetary_resources`
 answers 404 for Army (021), and likely Navy and Air Force, on every question.
+
+## Shipped after (same day)
+
+PR #208 merged and deployed (production published 18:54 UTC). Deploy preview
+dry run first: `usaspending-prewarm-background` answered 202, finished a DHITUC
+question in 26s ("fetched") and answered the repeat from the saved copy in 2ms
+with zero USASpending calls.
+
+`lib/usaspending-alert.js`, called from the hourly `api-health-cron`: reads the
+last hour of `premium_chat_turn` and `ask_mmt_free_turn`; a turn lost
+USASpending when it is on the not-reached list and was not answered from a
+saved copy. Emails Mary when at least 2 turns lost it and they are at least
+half the hour's turns. One email per UTC day, claimed first
+(`usaspending_outage_alert`, `lib/cron-claim.js`); a failed send is recorded
+`send_failed`. The probe itself cannot see this: MMT's corpus keeps its
+context long, and its vehicle question is pre-warmed.
