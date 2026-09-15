@@ -6,7 +6,7 @@
 // results") was rendered to a paid subscriber inside the Verification
 // Notes block.
 
-// `test` is vitest's injected global (vitest.config.js globals:true). This
+// `test` is vitest's injected global (vitest.config.mjs globals:true). This
 // file previously required node:test, which vitest cannot collect — it
 // reported "No test suite found" and failed `npm run test:unit` for the whole
 // suite. Kept as CJS (require) so we don't force ESM mode on the requires below.

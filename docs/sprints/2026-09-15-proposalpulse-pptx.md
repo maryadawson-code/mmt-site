@@ -45,7 +45,7 @@ Hard rules (do not regress):
 
 Verified 2026-09-15 on `main` after merge: `npm ci` clean; officeparser 7.8.0
 and mammoth 1.12.2 installed; the pptx path returns `typeof "string"`; unit
-suite **1173/1173**; build exit 0.
+suite **1107/1107** (83 files); build exit 0 (705 pages).
 
 Related, same day: `main`'s test job was briefly reported red. It was not. A
 stale local `node_modules` from the 2026-09-11 lockfile was missing
