@@ -1020,6 +1020,8 @@ function guardedObligations(plan, ms) {
   return usaGuarded("obligations", [name, agency || "", since], () => searchRecipientObligationsByYear({ name, agency, since, today }), { ms, emptyShape: { years: [], total: 0 }, today });
 }
 
+const warmStatus = (r) => (!r ? "none" : r.cached ? "cached" : r.stale ? `stale (${r.live_error})` : r.error ? `error (${r.error})` : r.skipped ? "skipped" : "fetched");
+
 /**
  * Nightly pre-warm: run only the USASpending queries a fan-out with these
  * args would send (never SAM.gov, whose quota is for subscribers), under a
@@ -1030,13 +1032,23 @@ function guardedObligations(plan, ms) {
 async function warmUSASpending(args, { ms = 60000 } = {}) {
   const plan = federalPlan(args);
   const budget = { used: 0, rungs: 0, max: MAX_AWARD_CALLS };
-  const status = (r) => (!r ? "none" : r.cached ? "cached" : r.stale ? `stale (${r.live_error})` : r.error ? `error (${r.error})` : r.skipped ? "skipped" : "fetched");
   const [awards, agencyTotals, categories] = await Promise.all([
     guardedAwards(plan, budget, ms),
     guardedAgencyTotals(plan, ms),
     bounded(getSpendingByCategory({ agency: plan.agency, naics: plan.naics, fiscal_year: 2026 }), ms, { categories: [] }),
   ]);
-  return { awards: status(awards), award_rows: awards && Array.isArray(awards.awards) ? awards.awards.length : 0, award_calls: budget.used, agency_totals: status(agencyTotals), categories: categories && categories.error ? `error (${categories.error})` : "ok" };
+  return { awards: warmStatus(awards), award_rows: awards && Array.isArray(awards.awards) ? awards.awards.length : 0, award_calls: budget.used, agency_totals: warmStatus(agencyTotals), categories: categories && categories.error ? `error (${categories.error})` : "ok" };
+}
+
+/**
+ * Nightly pre-warm of one department's spending totals, under the same key
+ * a subscriber's question reads (toptier code + FY, UTC day). The vehicle
+ * warm reaches only departments a known vehicle belongs to; DHS and SSA
+ * totals were never warm, so their first ask each day was cold, and the
+ * totals call gets 3s against a measured 0.5s to 18s (2026-09-15).
+ */
+async function warmAgencyTotals(agency, { ms = 60000, today } = {}) {
+  return { agency, code: usaspendingToptierCode(agency), agency_totals: warmStatus(await guardedAgencyTotals({ agency, today }, ms)) };
 }
 
 async function enrichWithFederalData(args) {
@@ -1366,6 +1378,7 @@ module.exports = {
   enrichWithFederalData,
   federalPlan,
   warmUSASpending,
+  warmAgencyTotals,
   usaGuarded,
   formatFederalDataContext,
   deriveAcquisitionState,
