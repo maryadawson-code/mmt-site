@@ -717,6 +717,10 @@
   from = "/premium/cr-exposure"
   to = "/premium/cr-exposure.html"
   status = 200
+[[redirects]]
+  from = "/premium/dhits-2026"
+  to = "/premium/dhits-2026.html"
+  status = 200
 
 # Bare /premium and /premium/ — canonical lands on the premium dashboard.
 # Authed users see their dashboard; unauthed get bounced to /dashboard.html
@@ -1265,6 +1269,11 @@
 [[redirects]]
   from = "/pipeline"
   to = "/premium/pipeline.html"
+  status = 200
+
+[[redirects]]
+  from = "/dhits-2026"
+  to = "/premium/dhits-2026.html"
   status = 200
 
 [[redirects]]
