@@ -1,0 +1,1308 @@
+{
+  "event": {
+    "name": "2026 Defense Health Information Technology Symposium (DHITS)",
+    "dates": "August 11-13, 2026",
+    "venue": "Hyatt Regency New Orleans",
+    "theme": "Combat Support: Ready, Resilient, Lethal",
+    "sponsor": "Defense Health Agency (DHA)",
+    "event_url": "https://web.cvent.com/event/64c5b9b4-3c7e-4806-a3ac-5b516724430b/summary",
+    "slides_page_url": "https://web.cvent.com/event/64c5b9b4-3c7e-4806-a3ac-5b516724430b/2025-presentation-slides",
+    "retrieved": "2026-09-15"
+  },
+  "tracks": [
+    {
+      "name": "Plenary Sessions",
+      "room": "Celestin Ballroom",
+      "note": "The four Celestin Ballroom plenaries cover DHA's AI-era cyber defense and identity push, the FY27 budget restructuring into COMP and PSCP, the AD-RDA acquisition transformation framework, and clinical quality and health IT adoption metrics.",
+      "sessions": [
+        {
+          "block": null,
+          "title": "Mr. Pat Flanders' Opening Plenary",
+          "presenters": [
+            "Pat Flanders, Chief Information Officer, Defense Health Agency"
+          ],
+          "summary": "Flanders lays out \"Operation Spartan Alloy,\" DHA's push against AI-driven cyberattacks across routing, authentication, encryption, and hygiene, alongside CIO workforce upgrades, the Ask Sage AI platform, the Geographic Service Providers IDIQ, LogiCole rollout, and ECVC/Hypori device modernization. He closes by naming CIO Achievement Award winners.",
+          "key_points": [
+            "ICAM push: $19M automated identity onboarding, goal 31 DEC 2026, key Zero Trust enabler.",
+            "MyAuth replaces DSLOGON by October 2026 for Patient Portal, myPay, and other apps.",
+            "GSP IDIQ: $2.4B ceiling, 10 years, 33 contract holders, 100% small business set-aside.",
+            "Ask Sage AI platform launched 8 Dec 2025, reached 32,000 users, authorized for CUI, PII, PHI.",
+            "Goal: get all MTF CIOs to GS-13 level, with standardized GS-13 and GS-12 PDs already completed."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/b02e4ffb38c94363bee2d5a84bbb2a7b.pdf",
+            "anchor": "mr-pat-flanders-opening-plenary",
+            "pages": 34,
+            "bytes": 5501021
+          }
+        },
+        {
+          "block": null,
+          "title": "Mr. Michael Emerson's Plenary",
+          "presenters": [
+            "Michael Emerson, SES, Assistant Director for Support, Personnel, & Financial Operations (SP&FO), Defense Health Agency"
+          ],
+          "summary": "Emerson traces a decade of budget pressure on the Defense Health Program and unveils the FY27 restructuring that splits DHP into the Combat and Operational Medicine Program (COMP) and Private Sector Care Program (PSCP), detailing COMP's $40.9B request and the information management and pharmaceutical, blood, and JTS investments inside it.",
+          "key_points": [
+            "FY27 splits DHP into COMP ($40.9B) and PSCP for direct care vs private sector TRICARE funding.",
+            "BAG 4 Information Management FY27 request: $2.6B, up $40M on price growth alone.",
+            "Digital health and telehealth funding up $200.4M, IM/IT infrastructure modernization up $93.3M.",
+            "FY15-22 cuts topped $23B. FY23-26 structural deficits of $9B to $13B carried into POM cycles.",
+            "Since 2019: about 14,000 fewer military medical personnel, about 10,000 fewer civilian staff, 20% fewer MTF patients."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/403d514c576a49019e8408b2410d702b.pdf",
+            "anchor": "mr-michael-emersons-plenary",
+            "pages": 16,
+            "bytes": 2374420
+          }
+        },
+        {
+          "block": null,
+          "title": "Transforming Medical Acquisition Plenary Panel",
+          "presenters": [
+            "RDML Ivonne Arena, Acting Assistant Director for Research, Development & Acquisition (AD-RDA) / Component Acquisition Executive (CAE), Defense Health Agency",
+            "COL Marcus Moss, Deputy Portfolio Acquisition Executive, Medical Digital Solutions",
+            "Ms. Madeleine Friedman, Acting Portfolio Acquisition Executive, Medical Services",
+            "Dr. Sean Biggerstaff, Deputy Assistant Director, Science & Technology",
+            "COL Johnny Paul, Deputy Commanding Officer, DHA Research & Development",
+            "Mr. Rob Bell III, Project Manager, Medical Simulation & Training Program Management Office, Portfolio Acquisition Executive for Medical Products",
+            "Mr. Robert Brinkmann, Deputy Director, DHA Contracting Activity",
+            "Mr. Brett Scheideman, Acting Principal Deputy, Research, Development, and Acquisition/Deputy Component Acquisition Executive"
+          ],
+          "summary": "Arena outlines AD-RDA's cradle-to-grave acquisition framework built on five DHA Acquisition Transformation Pillars (industrial base revitalization, workforce empowerment, flexible acquisition, technical excellence, disciplined lifecycle risk management), then a panel of portfolio and contracting leaders walks through operational cases: point-of-injury research, the ADVISOR teleconsultation portal, BATDOK-J, and the Analyzer TBI blood test.",
+          "key_points": [
+            "Five Acquisition Transformation Pillars: industrial base revitalization, workforce empowerment, flexible acquisition, technical excellence, risk management.",
+            "DHA Research & Development runs six globally postured institutes, including WRAIR, ISR, USARIEM, and USAARL.",
+            "ADVISOR, a Global Teleconsultation Portal, delivers remote emergency and specialty consults to deployed medical teams.",
+            "Analyzer TBI is a blood test PAE Medical Products delivers for rapid traumatic brain injury assessment.",
+            "BATDOK-J moves medical data across evacuation and treatment levels from point of injury onward."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/583cbea204ed422f9d4af11168c5a163.pdf",
+            "anchor": "transforming-medical-acquisition-plenary-panel",
+            "pages": 33,
+            "bytes": 4141909
+          }
+        },
+        {
+          "block": null,
+          "title": "Dr. Paul Cordts' Plenary",
+          "presenters": [
+            "Paul R. Cordts, MD, MSS, FACS, Deputy Assistant Director, Medical Affairs and Chief Medical Officer, Defense Health Agency"
+          ],
+          "summary": "Cordts ties DHITS themes and DHA's Lines of Effort to the Chief Medical Officer's role in health IT, then walks through MHS GENESIS Patient Portal usage, VA-DoD Clinical Practice Guideline adoption, cancer screening program results, patient safety indicator work, and Clinical AI Agent ambient listening adoption rates.",
+          "key_points": [
+            "MHS GENESIS Patient Portal: 1.3M of 3.4M enrolled patients active (37.5%), within civilian system norms.",
+            "FIT cancer screening mailed 92,000+ kits, 21% return rate, 3.8% positive, 70% follow-up colonoscopy within 270 days.",
+            "FIT program covers 295 MTFs, aiming for 100% of US-based MTFs by FY27 Q1.",
+            "Clinical AI Agent ambient listening enterprise adoption is 10.94% as of 10 Aug 2026.",
+            "65% of patients surveyed prefer to hear life-changing diagnoses from their clinician first."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/748ea94a27474e7490f15a74e9503e11.pdf",
+            "anchor": "dr-paul-cordts-plenary",
+            "pages": 22,
+            "bytes": 1744538
+          }
+        }
+      ]
+    },
+    {
+      "name": "Precision Intelligence: Leveraging AI and Data for the Mission",
+      "room": "Empire B",
+      "note": "These decks span DHA's AI strategy and workforce readiness, MHS GENESIS and LNLP AI tools, dashboard proliferation and a data quality failure case study, and FEHRM's technical governance of the Federal EHR infrastructure.",
+      "sessions": [
+        {
+          "block": 1,
+          "title": "From Data to Decisions: How AI in MHS GENESIS Improves Outcomes & Readiness",
+          "presenters": [
+            "Isaac Callicrate, Deputy Program Manager, DHMSM"
+          ],
+          "summary": "The deck frames provider burnout and administrative burden as the problem AI in MHS GENESIS is meant to solve, treating security (isolated government AI tenancies, Zero Trust, RMF) as the prerequisite for clinical AI. Among active providers using the Clinical AI Agent, 89% reported an immediate improvement in patient care quality. It closes with a call for staff to champion secure, ethical AI adoption.",
+          "key_points": [
+            "Clinical AI Agent tied to 89% of active providers reporting improved patient care quality (Jan-June 2026).",
+            "AI engines like Azure run in isolated, secure government tenancies with encrypted data boundaries.",
+            "Call to action: champion secure, ethical AI, support security fundamentals, and maximize AI adoption ROI."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/15bc2e2b11fe409b90c5c4a69426392a.pdf",
+            "anchor": "from-data-to-decisions-how-ai-in-mhs-genesis",
+            "pages": 17,
+            "bytes": 2851492
+          }
+        },
+        {
+          "block": 2,
+          "title": "Data Literacy: Discharged to Hospice: How a Two-Letter Change Broke Our Data",
+          "presenters": [
+            "Lt Col David Alt, MD, Enterprise Intelligence & Data Solutions, DHA",
+            "Dr. Daniel Brooks, PhD, DAD-Medical Affairs, DHA"
+          ],
+          "summary": "A VA/DoD recoding of the Discharge Disposition Code Set to CMS values meant typing 'H' from habit selected hospice, not home care, driving hospice discharges from 507 in 2025 to 16,775 in Q1 2026, a 3,209% jump. The deck ties the fallout to broken registries and calls for shared data governance across IT, informatics, and clinical staff.",
+          "key_points": [
+            "Discharge miscoding jumped 3,209 percent: 507 hospice discharges in 2025 versus 16,775 in Q1 2026.",
+            "Spike first surfaced through a TJC ORYX electronic quality measure tracking newborn outcomes.",
+            "Miscoded records disenrolled patients from clinical and hospice registries, breaking downstream vaccination tracking too."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/ad0fdd5428de42da841f3f6460f1cf90.pdf",
+            "anchor": "data-literacy-discharged-to-hospice-how-a-two-letter",
+            "pages": 46,
+            "bytes": 2860857
+          }
+        },
+        {
+          "block": 3,
+          "title": "Technical Governance & Infrastructure: Operating the Federal EHR Ecosystem",
+          "presenters": [
+            "MAJ Nathan Wu, Deputy Director, Systems Integration, FEHRM",
+            "James Edison, Chief Engineer, FEHRM",
+            "Brandon Lowe, Operations Support Lead, FEHRM",
+            "Marc Waterloo, IAM and Informatics SME (CTR), FEHRM"
+          ],
+          "summary": "FEHRM speakers cover technical governance of the Federal EHR: Configuration Management through three boards (VP CCB, JSaAB, FCCB), and Identity and Access Management via Microsoft Entra ID Guest Identities, illustrated by the joint DoW/VA site at Lovell FHCC. It also covers the multi-year Oracle Cloud Infrastructure migration by tranches and a DICOM radiology fix between BAMC and OKC VAMC completed June 5, 2026.",
+          "key_points": [
+            "Federal EHR status (July 2026): 223,000+ users, 8.8M+ unique patients, 14 of 170 VA Medical Centers complete (8%).",
+            "Oracle Cloud migration runs in tranches: Tranche 0 complete in 2025, Tranche 3 targeted for 2028.",
+            "BAMC/OKC DICOM radiology connection between DoW and VA reestablished June 5, 2026 after repeated testing rounds."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/d6595cfd26234f2c8ea581b329b01733.pdf",
+            "anchor": "technical-governance-and-infrastructure-operating-the-federal-ehr",
+            "pages": 21,
+            "bytes": 6684145
+          }
+        },
+        {
+          "block": 4,
+          "title": "Enterprise Dashboards for Real-Time Decision-Making",
+          "presenters": [
+            "Dr. Jesus Caban, Chief Data & Analytics Officer, DHA",
+            "Ms. Beatrice Collazo, Lead, Analytics and Insights, DHA",
+            "Ms. Dawn Herman, Chief, Readiness, Strategy, & Business Innovation, DHA"
+          ],
+          "summary": "A DHA panel maps dashboard sprawl: 70 BITAB/Tableau projects with 10,000 workbooks, and a MED365 Power Platform with 23,000 assets (April 2026). It describes DHA's response: a Data Strategy, a Value Assessment scoring each dashboard 0-100 to keep, consolidate, or retire, and Lines of Effort targets like raising inpatient satisfaction from 76% to 90%.",
+          "key_points": [
+            "Dashboard sprawl: BITAB/Tableau has 10,000 workbooks across 70 projects, MED365 Power Platform has 23,000 assets (April 2026).",
+            "Value Assessment scores each dashboard 0-100 to recommend keep, consolidate, or retire.",
+            "LOE 4 targets: raise inpatient satisfaction from 76% to 90%, see 98% of specialty patients within 28 days."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/51c6758b87554a72aca9e2d272884b11.pdf",
+            "anchor": "enterprise-dashboards-for-real-time-decision-making",
+            "pages": 33,
+            "bytes": 5474226
+          }
+        },
+        {
+          "block": 5,
+          "title": "Building the Foundations for Responsible AI: From Data Strategy to Decision Advantage",
+          "presenters": [
+            "Dr. Jesus Caban, Chief Data and Analytics Officer, Defense Health Agency (DHA)"
+          ],
+          "summary": "Dr. Caban lays out the DoW AI strategy ('speed over perfection,' 136 total Fast-Following Projects) alongside DHA's own numbers: 400+ AI use cases, 58,949 users, and a 34.53% adoption rate across 170,738 health.mil addresses. He covers five AI-readiness dimensions (workforce, operating model, technology, data, adoption), governance gaps in the FY26 inventory, and DHA's approved AI platforms under a 'no shadow AI' policy.",
+          "key_points": [
+            "DHA AI adoption: 400+ use cases, 58,949 users, 34.53% adoption rate across 170,738 health.mil addresses.",
+            "Governance gap: only 3.5% of 401 use cases have a Data Card, 2.7% a Model Card.",
+            "Only DHA AskSage is approved for PII/PHI chatbot use, with a stated bottom line of 'no shadow AI.'"
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/2ab898d456e04f08bdbcf2704c3f5d52.pdf",
+            "anchor": "building-the-foundations-for-responsible-ai-from-data-strategy",
+            "pages": 58,
+            "bytes": 6024431
+          }
+        },
+        {
+          "block": 6,
+          "title": "Longitudinal Natural Language Processing in Action: Driving Smarter, More Efficient Workflows Through AI",
+          "presenters": [
+            "Crystal Baum, Data Integration Solutions Director, FEHRM",
+            "James Metoyer, DOW JLV/LNLP Product Manager, FEHRM",
+            "Dr. Gary Fagin, Chief Medical Officer, Product Management, USMEPCOM J-3",
+            "Jeffrey Engel, Chief, Product Management Branch and Chief Health Informatics Officer, USMEPCOM J-3"
+          ],
+          "summary": "LNLP has run in DOW JLV since January 2023, drawing on six data sources and about 1.4 million clinical concepts across 16 vocabularies to generate LLM narrative summaries linked to source records. At USMEPCOM, it cut authorization time from over 10 days to under 1 day and roughly doubled monthly prescreens, from about 20,000 to about 40,000.",
+          "key_points": [
+            "LNLP live in DOW JLV since January 2023, searching about 1.4 million clinical concepts across 16 vocabularies.",
+            "USMEPCOM authorization time dropped from over 10 days to under 1 day using LNLP.",
+            "FY2025 recruitment goals ran ahead of schedule, the first time since MHS GENESIS rolled out."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/d2bef58a39e84426a5102ec29de207c8.pdf",
+            "anchor": "longitudinal-natural-language-processing-in-action-driving-smarter",
+            "pages": 28,
+            "bytes": 3328324
+          }
+        },
+        {
+          "block": 7,
+          "title": "AI First: Preparing the DHIA Workforce for Responsible AI Adoption",
+          "presenters": [
+            "Jesus J Caban, PhD, Chief Data & Analytics Officer (CDAO), DHA",
+            "CDR Darshan Thota, Chief Medical Informatics Officer, Joint Trauma System",
+            "Lt Col David Alt, Chief, Data & Analytics Advisory, EIDS PMO, PEO DHMS"
+          ],
+          "summary": "Caban, Thota, and Alt frame the DoW AI Strategy's push for DHA to become 'AI-first,' then walk through 12 reasons healthcare AI projects fail, from poor data foundations to model sprawl, citing research that fewer than 1 in 10 published healthcare AI models reach sustained clinical deployment. They teach a Role, Task, Format, Tone prompt structure and note only DHA AskSage is approved for PHI/PII.",
+          "key_points": [
+            "Fewer than 1 in 10 published healthcare AI models reach sustained clinical deployment (Nature, 2024).",
+            "Only DHA AskSage is approved for PII/PHI, commercial LLMs are barred from patient information.",
+            "Prompt structure taught: Role, Task, Format, Tone, demonstrated live generating a SOAP note in real time."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/9cc66e4959cf46efaa53aa00f951466c.pdf",
+            "anchor": "ai-first-preparing-the-dhia-workforce-for-responsible-ai",
+            "pages": 43,
+            "bytes": 3146837
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mission Sustainment: Enterprise Agility & Operations",
+      "room": "Strand 11",
+      "note": "These seven sessions cover DHA operations and compliance topics: injury cause coding, Section 508 accessibility in procurement, the FAR overhaul, DOW-VA training reciprocity, MTF disaster recovery, MCART readiness tracking, and EHRu training evolution.",
+      "sessions": [
+        {
+          "block": 1,
+          "title": "Transforming Military Injury Cause Coding: Solutions for Readiness & Prevention",
+          "presenters": [
+            "Michelle Chervak, PhD, MPH, Military Injury Prevention Division Chief, Defense Centers for Public Health-Aberdeen",
+            "CherylAnn Kraft, RN, BSN, RM, CPM, Capability Portfolio Manager, Capability Requirements Management Division",
+            "Esther Dada, MPH, Epidemiologist, Injury Prevention Division, Defense Centers for Public Health-Aberdeen",
+            "Jerilyn Smith, MPH, Epidemiologist, Injury Prevention Branch, Defense Centers for Public Health-Aberdeen"
+          ],
+          "summary": "This DHA briefing covers military injury cause coding: injury's toll on medical readiness, a Quick Reference Tool pilot at six sites, the 2025 Military Injuries Working Group subgroup's ranked courses of action, and an AI-enabled cause coding workflow in capability requirements development. Pilot gains were modest. Weekly gap-analysis meetings start June 2026.",
+          "key_points": [
+            "Injuries cost about $7 billion in 2019: $5.66B limited duty, $1.25B direct medical, $0.14B lost duty.",
+            "2021 outpatient encounters had only 7% mechanism codes, 3% activity codes, 2% place of occurrence codes.",
+            "Pilot's two-page Quick Reference Tool cut 7,500+ ICD-10 codes to under 90, tested at six sites.",
+            "Weekly gap-analysis meetings on next steps start June 2026 with Health Informatics, Medical Coding, JOMIS, J-8, J-5."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/4d56893a065f4291b819b64cc382cefe.pdf",
+            "anchor": "transforming-military-injury-cause-coding-solutions-for-readiness-and",
+            "pages": 38,
+            "bytes": 3284436
+          }
+        },
+        {
+          "block": 2,
+          "title": "Required Deliverables for Section 508 Compliance in Procurement",
+          "presenters": [
+            "Ameenah Ghoston, Section 508 Program Manager, Defense Health Agency (DHA)",
+            "Mike Henry, Front End Web Developer"
+          ],
+          "summary": "Covers Section 508 accessibility law and how it applies to DHA procurement, plus the DHA Section 508 Program Management Office's scope, WCAG 2.0/2.1 conformance requirements, common accessibility pitfalls in web development, and how to read a VPAT/ACR when evaluating vendor products. Cites DHA's own Section508.gov maturity report and Health.mil/Tricare.mil traffic data as evidence of where the program stands.",
+          "key_points": [
+            "DHA's Section508.gov maturity report rates Acquisition and Procurement \"very low,\" the lowest bracket.",
+            "Section 508's legal floor is WCAG 2.0 A/AA, but DHA and HHS require WCAG 2.1 A/AA.",
+            "In 2025 Health.mil logged 4,441,882 active users (rank 5) and Tricare.mil 3,582,580 (rank 9).",
+            "Fixing accessibility late costs 20 to 100 times more than fixing it at design stage."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/798971826d3f418bae746f225f9606b1.pdf",
+            "anchor": "required-deliverables-for-section-508-compliance-in-procurement",
+            "pages": 35,
+            "bytes": 1550315
+          }
+        },
+        {
+          "block": 3,
+          "title": "Revolutionary Federal Acquisition Regulation (FAR) Overhaul",
+          "presenters": [
+            "Melissa Oliva, Chief, Enterprise Medical Services Contract Division, Defense Health Agency Contracting Activity",
+            "Raul Garcia, Chief, Enterprise Medical Services Contract Division, Defense Health Agency Contracting Activity"
+          ],
+          "summary": "Walks through the Revolutionary FAR Overhaul (RFO), driven by Executive Order 14275 and OMB Memo M-25-26, and DoW's rollout via class deviations, covering part-by-part impacts on commercial thresholds, IDIQ/BPA rules, and small business sourcing. Phase 1 is complete. Phase 2 rulemaking runs through 2026, and the deck tells program stakeholders to engage early via market research, demos, and pilots.",
+          "key_points": [
+            "Phase 1 of the RFO finished 1 Feb 2026. Phase 2 formal rulemaking runs through 2026.",
+            "DoW issued 37 class deviations effective 1 Feb 2026, plus more in Feb and Mar 2026.",
+            "FAR Part 12's commercial simplified-procedures ceiling rises from $9 million to $15 million in some cases.",
+            "The RFO instructs program stakeholders to engage early via market research, demos, and pilots."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/9782d254cbb744d1819562f42dd41fdb.pdf",
+            "anchor": "revolutionary-federal-acquisition-regulation-far-overhaul",
+            "pages": 21,
+            "bytes": 2251049
+          }
+        },
+        {
+          "block": 4,
+          "title": "Accelerating Workforce Readiness: Eliminating Duplicative EHR Training",
+          "presenters": [
+            "Dr. Valerie Seabaugh, MD, MBA, MSISM, Deputy Chief Health Informatics Officer (CHIO), Federal Electronic Health Record Modernization (FEHRM)",
+            "Pamela Carvalho, MSN, RN, NI-BC, Content and Configuration (C&C) Lead, FEHRM",
+            "Deborah Smith, MHA, BSN, RN, NI-BC, Applied Health Informatics (AHI) Lead, FEHRM"
+          ],
+          "summary": "Presents FEHRM's pilot on training reciprocity for shared DOW-VA clinical roles under 38 U.S. Code section 8111, comparing EHR user privileges, computer-based and instructor-led training, and workflows across three rounds (LPN/Med Tech, ED LPN, and Ambulatory roles) run October 2024 through April 2025. No patient safety incidents occurred, and the team recommends continuing to field test the role-mapping methodology at Lovell FHCC for wider adoption.",
+          "key_points": [
+            "Privilege alignment between DOW and VA roles ran 85% to 96% across three pilot rounds.",
+            "No patient safety incidents, clinical errors, or near-misses occurred in any of the three rounds.",
+            "Workflow alignment rates were 89%, 72%, and 77% for the three DOW-VA role pairs tested.",
+            "Next step: continue field testing the role-mapping methodology at Lovell FHCC for wider adoption."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/75a3510254154b7d80457a80d87a478f.pdf",
+            "anchor": "accelerating-workforce-readiness-eliminating-duplicative-ehr-training",
+            "pages": 33,
+            "bytes": 3249277
+          }
+        },
+        {
+          "block": 5,
+          "title": "Information Technology Disaster Recovery (ITDR) Mini-Course",
+          "presenters": [
+            "Luis Ofray, J-6 Academy Deputy Chief, CIO J-6, Defense Health Agency",
+            "LT Arion J Mccartney, USN, Chief, Global Service Operations, Defense Health Agency",
+            "Gautham Ravichandran, PMP, Consultant/Trainer, CIO J-6, Defense Health Agency"
+          ],
+          "summary": "A training mini-course from the DHA J-6 Academy walking MTF CIOs through a five-phase disaster recovery framework (prepare, respond, recover, restore, learn) and applying it to a scenario where a broken fire sprinkler destroys core network routers and triggers a campus-wide outage. It stresses that IT failure is clinical risk and that the CIO's job in a crisis is to advise, decide, and communicate.",
+          "key_points": [
+            "Five phases: prepare, respond, recover, restore, and learn from lessons learned.",
+            "Scenario: a broken sprinkler destroyed primary and secondary core routers, causing a campus-wide outage.",
+            "Only the Fire Department could authorize the water shutdown, and the UPS vendor needed 4 hours to respond.",
+            "Recovery priority order: identity/access management, then core clinical systems, then ancillary, then admin systems."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/0dfbe4a8f12e4b989e04766fe2edd177.pdf",
+            "anchor": "information-technology-disaster-recovery-itdr-mini-course",
+            "pages": 17,
+            "bytes": 1105657
+          }
+        },
+        {
+          "block": 6,
+          "title": "Medical Communication and Reporting (MCART) Modernization: Enhancing Medical Readiness Through Technology",
+          "presenters": [
+            "Jeremey Covington, PMP, ITIL 4, CSM, Sec+, Section Chief, Operations & Sustainment, DHA Program Executive Office for Medical Systems (PEO MS)",
+            "Lt Col Benjamin Pass, DDS, MPH, MA, International Health Specialist, USU, Air Combat Command Office of the Command Surgeon",
+            "David Adams, PMP, Sec+, CCNP, NCIE, NIWC LANT Project Lead, DHA PEO MS/NIWC",
+            "Eric Wright, M.S., Lead Engineer, DHA PEO MS/NIWC",
+            "Gustavo Silva, M.S., Mobile Innovation Lead, DHA PEO MS"
+          ],
+          "summary": "Traces MCART (Medical Currency & Readiness Tracking) from scattered pen-and-paper and spreadsheet tracking to a MCART 2.0 pilot dashboard and a proposed AI-driven MCART 3.0, moved along by an Engineering Response Team Process. Argues AI prototyping lets stakeholders validate screens and workflows faster than traditional requirements gathering, and says the completed LOE analysis is headed to the Healthcare Integration Board (HCB).",
+          "key_points": [
+            "MCART 3.0 concepts include 15-second quick-log entries, AI dictation with CPT/ICD suggestions, and passive detection.",
+            "LOE analysis for enterprise MCART is complete and headed to the Healthcare Integration Board (HCB).",
+            "Grassroots tracking used pen and paper, Excel, Tableau, Power BI, Google Forms, and Survey Monkey.",
+            "DHA CIO/J-6 Mr. Flanders appointed a PMO to determine the level of effort to scale MCART."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/0a365264f1564650b7e4513f30ec0ba6.pdf",
+            "anchor": "medical-communication-and-reporting-mcart-modernization-enhancing",
+            "pages": 39,
+            "bytes": 3503402
+          }
+        },
+        {
+          "block": 7,
+          "title": "Building Competency with Innovative Learning and Technology Integration",
+          "presenters": [
+            "Cindy Sacra, MBA, MSN, RN, Health Informatics and Digital Integration, Office of the Warfighter Health Advantage",
+            "Mike Ross, PMP, Health Informatics and Digital Integration, Office of the Warfighter Health Advantage"
+          ],
+          "summary": "Describes EHRu's (EHR University) evolution through three stages: building a single foundational training platform, adding team-focused Healthcare Delivery Pathways that map nine steps from registration to coding and billing across clinical roles, and personalizing the experience with AI that flags new material and efficiency tools like Favorites and Quick Orders using MHS GENESIS and Oracle Lights On Network data. EHRu 2.0 is due late 2026.",
+          "key_points": [
+            "EHRu 2.0, with Healthcare Delivery Pathways mapping nine steps role by role, is due late 2026.",
+            "Pathway steps run Registration/Scheduling through Check-in, Provider Visit, Clinical Tasks, to Coding/Billing.",
+            "AI will flag new role-relevant material and suggest efficiency tools like Favorites and Quick Orders.",
+            "Personalization draws on data from MHS GENESIS and the Oracle Lights On Network."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/6101ea03a9c249c49f83dec13ddea850.pdf",
+            "anchor": "building-competency-with-innovative-learning-and-technology",
+            "pages": 16,
+            "bytes": 1565583
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tactical Mastery: Practical Leadership for the MTF CIO",
+      "room": "Empire C",
+      "note": "These decks cover the practical toolkit of an MTF CIO: conflict-resolution frameworks, the MED365 tenant, managing shadow IT, DHA's Cloud Center of Excellence, the DHA Global Service Center and GNOC, and STARRS resource dashboards.",
+      "sessions": [
+        {
+          "block": 1,
+          "title": "Leading Information Technology (IT) Teams Effectively",
+          "presenters": [
+            "Kristine Peluso, J-6 Academy Chief, Chief Information Office (CIO)/J-6 DHA",
+            "Angie Hewitt, PMP, Training Lead, Chief Information Office (CIO)/J-6 DHA",
+            "Tina Gustafson, CMP, Trainer, Chief Information Office (CIO)/J-6 DHA"
+          ],
+          "summary": "This session teaches two conflict-resolution tools for IT leaders: the EASE framework (Engage, Absorb, Share, End) for difficult conversations, and the Six Thinking Hats method for group problem-solving. Two practice scenarios apply the tools to a ransomware response and a scheduling conflict over folding the Information Technology Disaster Recovery (ITDR) course into the CIO Lifeline Course (CLC).",
+          "key_points": [
+            "EASE framework for difficult conversations: Engage, Absorb, Share, End.",
+            "Six Thinking Hats assigns White (facts), Red (feelings), Black (risk), Yellow (benefits), Green (creativity), Blue (process).",
+            "Scenario 2 covers attaching a 1-hour ITDR briefing to the 20-minute CIO Lifeline Course slot."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/706f60b62f6548b7a06d086d1e6617ce.pdf",
+            "anchor": "leading-information-technology-it-teams-effectively",
+            "pages": 20,
+            "bytes": 2223015
+          }
+        },
+        {
+          "block": 2,
+          "title": "MED365: Sparking Innovation and Secure Collaboration in DHA",
+          "presenters": [
+            "Dwayne Mutz, CISSP, IT Specialist & Identity Engineering Team Lead, Infrastructure & Operations Division, CIO J-6",
+            "Kelly Turner, MBA, MED365 Product Manager, Infrastructure & Operations Division, CIO J-6"
+          ],
+          "summary": "Covers the MED365 tenant, DHA's Microsoft 365 IL5 environment, and its Power Platform tools (Power Apps, Power Automate, Power BI) for automating administrative work, plus identity management, Microsoft Purview data protection, collaboration tools like the DIPS phone system and Bookings, mobile device management, and early Copilot pilots. It closes with a plan to audit inactive apps, assign app ownership, and formalize Power Platform support roles.",
+          "key_points": [
+            "About 10,000 active Power Platform apps and flows save an estimated 20,000 labor hours a month.",
+            "Purview sensitivity labels went agency-wide in January 2026; DLP policies for sensitive data types since October 2025.",
+            "DIPS pilot adds 3,300 Teams soft phone lines, raising concurrent call licenses from 200 to 300."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/3332c9d3face471e8b1bac85f1c756c5.pdf",
+            "anchor": "med365-sparking-innovation-and-secure-collaboration-in-dha",
+            "pages": 48,
+            "bytes": 2087871
+          }
+        },
+        {
+          "block": 3,
+          "title": "Managing Shadow IT: Understanding the Why and Work Towards the \"Yes\"",
+          "presenters": [
+            "MAJ(P) Daniel H. Lister, MSN, BSN, BC, Chief of Medical Management, Evans Army Community Hospital",
+            "MAJ(P) Adam O. Rich, MS, RN, CHIO, Womack Army Medical Center",
+            "Yolanda J. Farmer, CIO, Womack Army Medical Center",
+            "Kirby J. Lyford, CIO, Landstuhl Regional Medical Center"
+          ],
+          "summary": "A panel of Army and DHA clinical and IT leaders on shadow IT in military hospitals: personal devices and consumer apps like Signal and Google Drive that clinicians adopt when systems like MHS GENESIS have workflow gaps. It covers IT's cybersecurity, HIPAA, and data-integrity concerns, real MTF examples, and the 80 Percent Solution path to bring tools into compliance instead of banning them.",
+          "key_points": [
+            "Real example: clinicians in Poland logged MHS GENESIS encounters under a stateside MTF, creating false records.",
+            "The 80 Percent Solution favors meeting most user needs over demanding perfection before acting.",
+            "Warrior Eye Clinic ran an unapproved Access database for screening and appointments outside system oversight."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/e938c659eb93442fab2f0172d7ee2bf8.pdf",
+            "anchor": "managing-shadow-it-understanding-the-why-and-work-towards",
+            "pages": 25,
+            "bytes": 2476090
+          }
+        },
+        {
+          "block": 4,
+          "title": "Candid Conversation with an MTF CIO",
+          "presenters": [
+            "2d Lt Jorge Bravo, CIO, 10th Medical Group, US Air Force Academy",
+            "Victoria Burke, CIO, Navy Medicine Operational Training Command (NMOTC), NAS Pensacola",
+            "MAJ Jason Dick, DCIO, Martin Army Community Hospital (MACH)",
+            "LCDR Asa Schaefer, CIO, NMRTC Great Lakes",
+            "Daniel L. Winske Jr., Geographic Service Lead (GSL), DHA J-6 CIO"
+          ],
+          "summary": "A panel of five MTF and DHA CIOs poses discussion questions with no recorded answers: sustaining degraded-mode operations in a cyber incident, funding a local VoIP transition ahead of enterprise dollars, and the risk to OCONUS on-site support if the coming Network Enterprise & Services (NE&S) rebid moves to a 'Remote-First' LAN model. Beyond bios, it is five prompts with no stated findings.",
+          "key_points": [
+            "Panel questions whether the NE&S contract rebid's 'Remote-First' LAN model risks OCONUS on-site support.",
+            "Raises how to fund a local VoIP transition before enterprise DHA funding is available.",
+            "Asks how to restructure local IT/cybersecurity workforce under DHA's Cybersecurity Service Authority (CSA)."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/ff91fcc089084197b5fdf5d2c14babc8.pdf",
+            "anchor": "candid-conversation-with-an-mtf-cio",
+            "pages": 15,
+            "bytes": 2020281
+          }
+        },
+        {
+          "block": 5,
+          "title": "Hosting Made Easy: Enterprise Cloud Services to Better Serve the Warfighter",
+          "presenters": [
+            "Ronald Jones, Cloud Broker Service Program Manager",
+            "Major Victoria Williams, Deputy Cloud Broker Service Program Manager",
+            "Patrick Leitner, Datacenter Operations Branch Chief, Authorizing Official Designated Representative (AODR), DSO & Cloud",
+            "Mark Ponce, Datacenter Operations Platforms Lead",
+            "Cody Schmidt, Security Control Assessor (Cloud & AI), Lead, Team Poseidon"
+          ],
+          "summary": "Explains DHA's Cloud Center of Excellence (CCoE) governance model: the Cloud Broker Service is the front door, RMED keeps cybersecurity authority, and DCOPS keeps operational responsibility for the hybrid cloud environment (DHA Private Cloud, Azure, AWS). It covers the SaaS onboarding path by impact level and RMED's RMF authorization steps, noting DHA IMIT guidance directs MTF CIOs to use DHA's enterprise cloud services.",
+          "key_points": [
+            "DHA IMIT guidance directs DHA IT managers and MTF CIOs to use DHA Enterprise Cloud Services.",
+            "IL2 workloads follow a standard path to go live; IL4/IL5 CUI needs an enhanced engineering path.",
+            "A FedRAMP Authorization alone does not authorize a cloud solution for use within DHA."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/2a3133c49c84486ab0f425cff90578f3.pdf",
+            "anchor": "hosting-made-easy-enterprise-cloud-services-to-better-serve",
+            "pages": 28,
+            "bytes": 3846916
+          }
+        },
+        {
+          "block": 6,
+          "title": "Global Service Center (DHAGSC) and Global Network Operations Center (GNOC) Highlights",
+          "presenters": [
+            "Joseph (Joe) Nystel, II, Chief, Global Network Operations Branch (GNOB)",
+            "James (Mike) Effingham, Chief, DHA Global Service Center (DHAGSC)",
+            "Arion (Mac) McCartney, Chief, DHA Global Service Center (DHAGSC) Operations",
+            "Maj Jason Walker, Chief Information Officer, 59th Medical Wing"
+          ],
+          "summary": "Covers the DHA Global Service Center's IT service management work: knowledge management, service request cataloging, and a monthly MTF Operational Summary Dashboard, plus the Global Network Operations Center's Major Incident Management and root-cause process. A 59th Medical Wing case study shows two new service catalog items built with DHAGSC and overall ticket wait time cut by 70 hours for request tickets within three months.",
+          "key_points": [
+            "59th MDW's CPI project with DHAGSC cut overall ticket wait time by 70 hours in three months.",
+            "DHAGSC-to-MIM incidents average 33 hours to resolve versus 62 hours for direct input.",
+            "59th MDW built two new Service Catalog items: Telephone Service Request and Cyber Security SAAR DD 2875."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/dbab126956904e20a0765d17f49804c1.pdf",
+            "anchor": "global-service-center-dhagsc-and-global-network-operations-center",
+            "pages": 23,
+            "bytes": 4530557
+          }
+        },
+        {
+          "block": 7,
+          "title": "Strategic, Technology, Analytics, Resources, & Reporting Solutions (STARRS)",
+          "presenters": [
+            "Nestor E. Seda, Branch Chief, Investment Management (IMB), DHA, J-6, PRMD",
+            "Jacob Felty, Budget Analyst, Investment Management (IMB), DHA, J-6, PRMD",
+            "Edward Frazier, Section Chief, Financial Report & Analytical Solutions, DHA, J-6, PRMD"
+          ],
+          "summary": "Introduces STARRS, DHA's investment-management dashboard suite: the Ektropy Spend Plan (program and acquisition-package level pay and non-pay spend, integrated with FMIS DMIS naming and GSP tracking) and the Unit Manning Document dashboard, which cross-references Ektropy Positions and Personnel against UMD data to find IM/IT staffing disconnects. Several 'Technological Approaches' and 'Future State' slides carry only headers and diagrams, with no further detail printed.",
+          "key_points": [
+            "Ektropy Spend Plan tracks program and acquisition-package level pay and non-pay spend, integrated with FMIS DMIS naming.",
+            "UMD dashboard cross-references Ektropy Positions and Personnel against UMD data to find IM/IT staffing disconnects.",
+            "Deck is thin: several 'Future State' and approach slides carry only headers, no further printed detail."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/df950239cf3c46db99af4e55f546e417.pdf",
+            "anchor": "strategic-technology-analytics-resources-and-reporting-solutions",
+            "pages": 19,
+            "bytes": 3584834
+          }
+        }
+      ]
+    },
+    {
+      "name": "A Single Strand: Connecting the Federal Health Ecosystem",
+      "room": "Strand 13",
+      "note": "These decks trace how DHA's MHS Information Platform, EIDS, and FEHRM are connecting and securing federal health data, from AI-driven data tools and TEFCA interoperability to dental-medical integration and standardized exposure records through ILER.",
+      "sessions": [
+        {
+          "block": 1,
+          "title": "MHS Information Platform: Advancing Data Access and Innovation Through AI to Deliver Timely, Mission-Critical Insight",
+          "presenters": [
+            "Chris Nichols, MHA, BSN, LSSBB, Program Manager, Enterprise Intelligence & Data Solutions (EIDS), PEO DHMS"
+          ],
+          "summary": "Chris Nichols, program manager for Enterprise Intelligence & Data Solutions (EIDS) at PEO DHMS, walks through the MHS Information Platform's shift toward AI-driven data tools, an agentic data catalog and agentic code conversion. He details three case studies: MEPCOM's AI-assisted accessions medical review, the SAFEGUARD suicide-risk detection models, and a Pharmacy Data Warehouse natural-language tool built from concept to demo in 24 hours.",
+          "key_points": [
+            "MIP holds more than 8 petabytes of data from 130+ sources across 60+ applications.",
+            "SAFEGUARD's machine learning models scan 130+ data sources to flag suicide risk in service members.",
+            "Pharmacy Data Warehouse LLM prototype went from phone call to live demo in 24 hours."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/03b56137dbb544a2b01fbde8632f693d.pdf",
+            "anchor": "mhs-information-platform-advancing-data-access-and-innovation-through",
+            "pages": 34,
+            "bytes": 3766176
+          }
+        },
+        {
+          "block": 2,
+          "title": "Secure Interoperability Products: Protecting Those Who Serve",
+          "presenters": [
+            "Chris Wallace, Chief Cybersecurity, PEO DHMS",
+            "Crystal Baum, Data Integration Solutions Director, FEHRM",
+            "Antonnete Namai, Cybersecurity Director, FEHRM",
+            "Shawn Brody, ISSM, EIDS",
+            "Christopher Inman, ISSE, JOMIS"
+          ],
+          "summary": "Cybersecurity and data leads from PEO DHMS, FEHRM, EIDS and JOMIS explain how medical data is secured in transit with mTLS and FIPS-required TLS 1.2/1.3, and how the Joint Health Information Exchange reaches more than 90% of U.S. hospitals. They cover the Trusted Exchange Framework and Common Agreement (TEFCA), which federal partners are weighing joining around 2026.",
+          "key_points": [
+            "mTLS and FIPS-required TLS 1.2 or 1.3 protect medical data in transit across systems.",
+            "Joint HIE connects to networks reaching over 90% of U.S. hospitals for data exchange.",
+            "Federal partners are analyzing when to join TEFCA, targeting around 2026."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/99ded739b7684294a042fec53f1ea36b.pdf",
+            "anchor": "secure-interoperability-products-protecting-those-who-serve",
+            "pages": 19,
+            "bytes": 4754149
+          }
+        },
+        {
+          "block": 3,
+          "title": "The Future of the Federal Electronic Health Record (EHR)",
+          "presenters": [
+            "Kimberly Hranowsky, Deputy Chief Technology Officer, FEHRM (moderator)",
+            "Lance Scott, Chief Technology Officer, FEHRM",
+            "Dr. Francisco Rhein, Chief Health Informatics Officer, FEHRM",
+            "John Short, Chief Data Interoperability Officer, FEHRM"
+          ],
+          "summary": "FEHRM's CTO, chief health informatics officer and chief data interoperability officer, moderated by Deputy CTO Kimberly Hranowsky, cover the office's mandate for one common DOW-VA electronic health record, joint sharing site collaboration levels, federal partner onboarding, and governance through the Joint Sustainment and Adoption Board. As of July 6, 2026, 15,298 JSaAB tickets have moved into production since 2020.",
+          "key_points": [
+            "15,298 JSaAB tickets moved into production from 2020 through 2026, as of July 6, 2026.",
+            "FEHRM submitted 55 exposure concepts to SNOMED-CT: 45 accepted, 10 pending NLM approval.",
+            "FEHRM is working to enable Cloud Tenant Trust for cross-agency Teams and SharePoint access at JBER, Alaska."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/73fd805ca25c45df9b473717a532850c.pdf",
+            "anchor": "the-future-of-the-federal-electronic-health-record-ehr",
+            "pages": 20,
+            "bytes": 5991215
+          }
+        },
+        {
+          "block": 4,
+          "title": "Bridging Medicine and Dentistry: The Future of Federal Health Is Data Integration",
+          "presenters": [
+            "John Short, Chief Data Interoperability Officer, FEHRM",
+            "Dr. Ryan Lee, Dental Subject Matter Expert (SME) (CTR), FEHRM"
+          ],
+          "summary": "FEHRM's John Short and dental SME Dr. Ryan Lee make the case for connecting dental and medical records, linking oral health data to cardiology, radiology, nephrology and head and neck oncology through work with HHS/ONC, HL7 and the American Dental Association. They cite dental emergencies running 15.4% (Air Force) to 26.4% (Army) in theater and invite the field to the September 19-25, 2026 HL7 Connectathon.",
+          "key_points": [
+            "Dental emergencies occur in 15.4% (Air Force) to 26.4% (Army) in theater.",
+            "Medical evacuation for a dental emergency or pain can cost upward of $200K per soldier.",
+            "FEHRM is testing dental-medical data exchange at the September 19-25, 2026 HL7 Connectathon."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/b212bff90fd149f39d5bd133a5cf303e.pdf",
+            "anchor": "bridging-medicine-and-dentistry-the-future-of-federal-health",
+            "pages": 13,
+            "bytes": 4623367
+          }
+        },
+        {
+          "block": 5,
+          "title": "Don't Forget the Coast Guard",
+          "deck": null
+        },
+        {
+          "block": 6,
+          "title": "Unlocking Enterprise Intelligence: Engineering & Product Management for All",
+          "presenters": [
+            "Maj Benjiman P. Jennings, DHA EIDS Portfolio Manager",
+            "Dr. Pauline A. Swiger, DHA MEDWERX Innovation Director",
+            "Mr. Michael E. Bromley, DHA EIDS Chief Engineer",
+            "Col Kristen L. DeWilde, DHA AI & Human Performance Innovation Director"
+          ],
+          "summary": "DHA's EIDS portfolio manager, chief engineer, and innovation directors from MEDWERX and AI & Human Performance argue that limited awareness, fragmented processes, and weak technical literacy keep enterprise data tools from reaching end users. They describe an EIDS delivery model built on Applications, Platforms, and Data as a Service, moving from requirement to working code on an hourly cadence with builds delivered to SMEs daily.",
+          "key_points": [
+            "EIDS offers Applications, Platforms, and Data as a Service to any DHA stakeholder.",
+            "Approved requirements become working code hourly, with new builds reaching SMEs daily.",
+            "Named tools include Agentic Data Catalogue, MARS PRP, MTF AI Dashboarding, PRIME, and Project Bifrost."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/6afab66e7d3b4b909f12c248b6e13a87.pdf",
+            "anchor": "unlocking-enterprise-intelligence-engineering-and-product-management",
+            "pages": 13,
+            "bytes": 2242915
+          }
+        },
+        {
+          "block": 7,
+          "title": "From Point of Exposure to Actionable Insight: Standardizing and Modernizing Exposure Data Through the ILER",
+          "presenters": [
+            "Mr. John Short, Chief Data Interoperability Officer, FEHRM",
+            "Mr. Steve Jones, Director, Comprehensive Health and Exposure Monitoring Policy, Office of the Assistant Secretary of War (OASW) for Health Affairs (HA)",
+            "CDR Raben Talvo, Officer in Charge, Navy Medicine Readiness and Training Unit (NMRTU) and Navy Nurse Corps Assistant Specialty Leader, Healthcare and Business Analytics (HBA)",
+            "Mr. Larry Vandergrift, Project Controller, Individual Longitudinal Exposure Record (ILER), PEO MS DHA"
+          ],
+          "summary": "FEHRM's John Short, exposure-policy director Steve Jones, and Navy and ILER program leads describe how DOEHRS-IH captures occupational and environmental exposure data and how FEHRM standardizes it into SNOMED-CT and ICD-10-CM codes for the Individual Longitudinal Exposure Record (ILER). FEHRM has submitted 55 concepts to SNOMED-CT, with 45 accepted, and 20 codes to ICD-10-CM pending NCHS approval.",
+          "key_points": [
+            "DOEHRS-IH is the authoritative repository for deployment exposure surveillance data, per DoD Instruction 6490.03.",
+            "FEHRM submitted 55 exposure concepts to SNOMED-CT: 45 accepted, 10 pending NLM approval.",
+            "ILER's 2027-2028 plan adds cloud migration and a modernized, 508-compliant ILER 3.0 code stack."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/e0cb3a23ea23445d960fdae27c381e83.pdf",
+            "anchor": "from-point-of-exposure-to-actionable-insight-standardizing-and",
+            "pages": 22,
+            "bytes": 3979549
+          }
+        }
+      ]
+    },
+    {
+      "name": "Digital Armor: Zero Trust and Cyber Defense",
+      "room": "Empire A",
+      "note": "These decks cover DHA's zero trust rollout, ICAM identity management, risk management framework transitions to continuous authorization (CHRIP, OA, eCM), CMMC contractor requirements, mission assurance planning, and cyber incident response procedures.",
+      "sessions": [
+        {
+          "block": 1,
+          "title": "Risk Management Executive (RME) Leadership Panel",
+          "presenters": [
+            "Mr. Marc Shelton, Risk Management Executive, Division Chief, Defense Health Agency",
+            "Ms. Maria Cante, Risk Management Executive, ERM Branch Chief, Defense Health Agency",
+            "LCDR Kerry Miller, USN, Risk Management Executive, Cyber Health and Readiness Inspection Program (CHRIP) Section Chief, Cyber Security RMF Operations Support Services (CROSS) Section Chief, Defense Health Agency",
+            "Mr. David Lima, Risk Management Executive, Cyber Operations Center (CyOC) Branch Chief, Defense Health Agency",
+            "Mr. Richard Gasperoni, Risk Management Executive, Chief Operations Officer, Defense Health Agency (moderator)"
+          ],
+          "summary": "This RME Leadership Panel outlines the division's vision for cybersecurity within DHA's combat support mission, previews the CrowdStrike platform replacing DHA's fragmented HBSS and Defender tools, and covers Cybersecurity Maturity Model Certification (CMMC) phases now enforced for the Defense Industrial Base. It also lays out a plan to speed cybersecurity approvals through workflow standardization and control automation.",
+          "key_points": [
+            "CrowdStrike platform will consolidate ESS, EDR, and vulnerability management into a single sensor across DHA.",
+            "CMMC final rules enacted late 2025 require 180-day remediation for non-critical deficiencies on a POA&M.",
+            "Goal is an 80% first-pass approval yield, with full workflow documentation done by end of September 2026."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/6035ffb0113f42688b46b6f0f196538e.pdf",
+            "anchor": "risk-management-executive-rme-leadership-panel",
+            "pages": 27,
+            "bytes": 2119369
+          }
+        },
+        {
+          "block": 2,
+          "title": "From Checklists to Check-Ins: Building an RMF-Ready CI/CD Pipeline",
+          "presenters": [
+            "Maria Cante, ERM Chief, RMED DHA (moderator)",
+            "Cody Schmidt, Cloud SCA, RMED DHA",
+            "Nataliya Maas, Cloud SCAR & OT SCA, RMED DHA",
+            "Brandon Hayes, Cloud SCAR, RMED DHA"
+          ],
+          "summary": "This session on an RMF-ready CI/CD pipeline contrasts traditional RMF practices, periodic assessments, manual evidence, point-in-time compliance, with modern DevSecOps: continuous integration and deployment, automated evidence, continuous risk visibility. Its one concrete proposal is centralizing approved container images in a PMO Harbor Repository so multiple ATO boundaries can reuse validated images under Type Authorization. Most other slides are section headers or infographics with no text captured.",
+          "key_points": [
+            "Contrasts traditional RMF (periodic, manual, static) with continuous DevSecOps evidence and risk visibility.",
+            "Proposes a PMO Harbor Repository of pre-approved container images reusable across ATO boundaries via Type Authorization."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/230ce41596394da2bb110dcfe1a36eb5.pdf",
+            "anchor": "from-checklists-to-check-ins-building-an-rmf-ready",
+            "pages": 24,
+            "bytes": 4751674
+          }
+        },
+        {
+          "block": 3,
+          "title": "Driving Ongoing Authorization (OA) with Good Cyber Practices",
+          "presenters": [
+            "LCDR K. Neill Miller, US Navy: RME Cybersecurity Lead, CHRIP Section Chief, CROSS Section Chief",
+            "Mr. Robert Beady, DHA: SCA",
+            "Mr. Robert Talbot, NIWC: CHRIP Execution Lead, OA Execution Lead"
+          ],
+          "summary": "This session distinguishes CHRIP, a three-year assessment covering 1,700-plus Measures of Performance (MOPs), from Ongoing Authorization (OA), which scores 20 of 33 MOPs, and Enhanced Continuous Monitoring (eCM), which automates all 15 MOPs on a rolling 7-day basis. Six MOPs, including ACAS-12 through 14, CND-08, and DHA-EOL03/04, account for 92 of 252 raw points. A List-Assign-Monitor-Pursue (LAMP) cycle is recommended to sustain scores.",
+          "key_points": [
+            "CHRIP: full assessment every 3 years, 5 weeks plus 90 days, covers over 1,700 MOPs.",
+            "OA has 33 MOPs (20 scored); eCM has 15 MOPs, all automated, scored daily on a 7-day window.",
+            "Six hardest MOPs (ACAS-12/13/14, CND-08, DHA-EOL03/04) cost 92 of 252 raw points, 28.75 scale points."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/1fe67ac5ab4241cf8e00d283f654c727.pdf",
+            "anchor": "driving-ongoing-authorization-oa-with-good-cyber-practices",
+            "pages": 39,
+            "bytes": 2041090
+          }
+        },
+        {
+          "block": 4,
+          "title": "Trust Evolution: Achieving Target State & Beyond",
+          "presenters": [
+            "Ms. Megan Morales, Zero Trust Program Manager, Engineering, Solutions Architecture & IT Business Analytics Division (ESA-BAD), Defense Health Agency"
+          ],
+          "summary": "This session covers DHA's Zero Trust progress: the DoW strategy calls for 91 activities to reach Target level by end of FY27, out of 152 total for Maximum level, plus results and lessons learned from a recent Purple Team assessment. It also covers next steps for extending Zero Trust to Operational Technology, including facility-related control systems and medical devices, tracking a tentative 2032 deadline.",
+          "key_points": [
+            "DoW Zero Trust strategy: 91 activities needed for Target level, 152 total for Maximum level.",
+            "Goal is to reach Target level Zero Trust (91 activities) by the end of FY27.",
+            "OT Zero Trust work on facility-related control systems and medical devices tracks a tentative 2032 deadline."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/fe637d70acc34e4296c06cd9e76a67ed.pdf",
+            "anchor": "trust-evolution-achieving-target-state-and-beyond",
+            "pages": 18,
+            "bytes": 4316276
+          }
+        },
+        {
+          "block": 5,
+          "title": "Mission Assurance: Coordination and Collaboration for CSA Mission Success",
+          "presenters": [
+            "CDR Janette Arencibia, Chief J6 CSI, J6 Chief Information Office Operations, Combat Support Integration (moderator)",
+            "CDR Jacob Cole, MD, MBA, MPH, Director Health Informatics, BUMED, Navy Bureau of Medicine and Surgery",
+            "Mrs. Tara Holm, SME, J6 CSI, J6 Chief Information Office Operations, Combat Support Integration",
+            "Mr. Kirby Lyford, Chief Information Officer (CIO), Landstuhl Regional Medical Center"
+          ],
+          "summary": "This panel defines DHA's Mission Assurance construct under DODI 3020.45: Mission Decomposition maps a clinical mission back to its Task Critical Assets, recorded in MADSS as Baseline Elements of Information. It distinguishes Asset Owners, who track Time to Reconstitute, from Mission Owners, who track Time to Impact Mission. A blood transfusion scenario shows dependency on CAC, DNS, MHS GENESIS, PACS, LAN, telemedicine, and cloud systems.",
+          "key_points": [
+            "Mission Decomposition traces a clinical mission back to Task Critical Assets recorded in MADSS.",
+            "Asset Owners track Time to Reconstitute (TTR) and Mission Owners track Time to Impact Mission (TTIM).",
+            "Blood transfusion scenario shows dependency on CAC, DNS, MHS GENESIS, PACS, LAN, telemedicine, and cloud systems."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/40a468aba792469bb69a4a68e7a733e9.pdf",
+            "anchor": "mission-assurance-coordination-and-collaboration-for-csa-mission",
+            "pages": 14,
+            "bytes": 2372224
+          }
+        },
+        {
+          "block": 6,
+          "title": "Identity, Credential, and Access Management (ICAM): The Keystone for Mission-Ready Care and Command",
+          "presenters": [
+            "Mr. Joshua Zamarripa, E-MBA, CISSP, S+, ITIL, Infrastructure & Operations Division, Defense Health Agency (DDSB Branch Chief, ICAM Program Manager)",
+            "Mr. Bryan Scott, CISSP, Infrastructure & Operations Division, Defense Health Agency (DDSB Lead Engineer, ICAM Lead Engineer)"
+          ],
+          "summary": "This session frames ICAM as the foundation of DHA's Zero Trust program, built on four components: Ping Identity Suite for authentication, SailPoint for identity governance, Radiant Logic as the Master Entitlement Record, and BeyondTrust for privileged access. Onboarding local applications follows a four-phase process and requires an active Authority to Operate of at least 12 months plus a passed NIST 800-53 assessment.",
+          "key_points": [
+            "Four ICAM components: Ping Identity Suite (IdP), SailPoint (IGA), Radiant Logic (Master Entitlement Record), BeyondTrust (PIM/PAM).",
+            "App onboarding needs an active ATO of 12+ months and a passed NIST 800-53 assessment.",
+            "Four onboarding phases: Planning and Preparation, Commitment and Connectivity, Implementation, Deployment and Sustainment."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/80eeaaff40f5498cbdaadef0f10a8682.pdf",
+            "anchor": "identity-credential-and-access-management-icam-the-keystone-for",
+            "pages": 17,
+            "bytes": 1948631
+          }
+        },
+        {
+          "block": 7,
+          "title": "Day in the Life of a Cyber Event in DHA: Bridging Cyber Defense & Clinical Mission Assurance",
+          "presenters": [
+            "Mr. Davin Evans, DHA CyOC Operations Lead, Risk Management Executive (RME) Division, Defense Health Agency",
+            "Mr. David Eaton, DHA CyOC Operations Tool Team Lead, Risk Management Executive (RME) Division, Defense Health Agency"
+          ],
+          "summary": "This session walks through the lifecycle of a cyber incident at a DHA Military Treatment Facility, from CyOC/CSSP detection through the ISSM's 'First 15 Minutes' checklist and the CIO's risk-based containment decision matrix, which weighs security risk against clinical mission impact. Two scenarios, an active Radiology PACS threat and a post-threat check-in kiosk, show the matrix producing different decisions, followed by eradication, recovery, and a post-incident report.",
+          "key_points": [
+            "ISSM 'First 15 Minutes' checklist: Acknowledge, Identify, Locate, Contact, Brief.",
+            "CIO decision matrix has four outcomes: Act Decisively, Consult and Decide, Contain and Monitor, Scheduled Action.",
+            "Five incident phases: Detection and Validation, Notification and Coordination, Containment, Eradication and Recovery, Post-Incident Close-Out."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/5c8df36b11904f3cba719d6d6e560447.pdf",
+            "anchor": "day-in-the-life-of-a-cyber-event-in",
+            "pages": 23,
+            "bytes": 1782528
+          }
+        }
+      ]
+    },
+    {
+      "name": "Blueprint for Care: Advancing Health Informatics",
+      "room": "Strand 10",
+      "note": "These sessions cover health informatics in the MHS: an ambient listening AI pilot, the OEHSR PMO's readiness systems, Clinical Informatics team structure and challenges, the informatics fellowship pipeline, and the OWHA performance and innovation framework.",
+      "sessions": [
+        {
+          "block": 1,
+          "title": "Piloting the MHS's First Ambient Listening Product: Lessons Learned",
+          "presenters": [
+            "Lt Col Scott Hulse, Program Director, Clinical Informatics Fellowship",
+            "LTC Victoria A. Mahar, Chief, Clinical Informatics",
+            "Maj Ryan Collier, Clinical Informatics Fellow",
+            "LCDR Jacqueline Clerc, Clinical Informatics Fellow",
+            "Lt Col Zachary Sonnier, Deputy Chief Health Informatics Officer, DHA",
+            "Dr. Christina Sheets, Program Manager, DoD Healthcare Management System Modernization (DHMSM)"
+          ],
+          "summary": "This panel from the Clinical Informatics Fellowship and DHMSM previews lessons from piloting the MHS's first ambient listening AI product across a multi-site MTF implementation. The deck itself contains only speaker introductions, learning objectives, and contact information: no pilot results, sites, or vendor names are given in the slides.",
+          "key_points": [
+            "Learning objectives cover challenges of multi-site MTF execution, pilot outcomes, and hardware's role in implementation",
+            "The deck lists six presenters but gives no pilot outcomes, site names, or product details in the text"
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/ef50ed4a503d484483c084640009e839.pdf",
+            "anchor": "piloting-the-mhss-first-ambient-listening-product-lessons-learned",
+            "pages": 8,
+            "bytes": 876030
+          }
+        },
+        {
+          "block": 2,
+          "title": "Optimizing Warfighter Medical Readiness: Meet the Program Management Office (PMO)",
+          "presenters": [
+            "Ms. Madeleine Friedman, Program Manager, OEHSR PMO/DHA",
+            "LTC James Pak, Deputy Program Manager, PEO MS/DHA",
+            "Ms. Evelyne Headen-Haywood, Navy Medicine Online Project Manager, PEO MS/DHA",
+            "Mr. Terence Zelek, Project Manager, Veterinary Service Information Management System, PEO MS/DHA"
+          ],
+          "summary": "This session introduces the Occupational and Environmental Health Surveillance Readiness (OEHSR) Program Management Office, its mission to integrate health, occupational, environmental, and veterinary data for Department of War readiness, and how its work aligns to DHA Director's Lines of Effort 1, 3, and 4. It profiles the seven systems the PMO manages.",
+          "key_points": [
+            "OEHSR PMO manages seven systems: ASIMS, DOEHRS-HC, DOEHRS-IH, ILER, NMO, VSIMS, and WCMP",
+            "ILER links an individual to occupational hazards, environmental monitoring data, and medical encounters for DoW and VA",
+            "PMO vision: Lifelong Warfighter and DoW readiness, powered by data-driven health intelligence, ALWAYS"
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/54dd2007eeba41df945b133f4a5a558f.pdf",
+            "anchor": "optimizing-warfighter-medical-readiness-meet-the-program-management",
+            "pages": 19,
+            "bytes": 2321382
+          }
+        },
+        {
+          "block": 3,
+          "title": "All Hands on Deck: Clinical Informatics in the MHS: Structure, Challenges and Recommendations",
+          "presenters": [
+            "CDR Isaac E. Schwartz, MD, FACS, Chief Health Informatics Officer, Defense Health Network - National Capital Region",
+            "CDR Lillian W. White, MSEd, BSN, CNOR, Deputy Chief End User Engagement, DHA DHIO",
+            "LTC Jimmedda L. Mills, MSHI, BSN, Deputy Chief Informatics Officer, Defense Health Network East",
+            "LTC Victoria Mahar, MD, MS, Chief Medical Information Officer, Joint Base Lewis McChord",
+            "MAJ Tamara Johnson-Caswell, MHA/MBA, Chief Informatics Officer, Nurse Methods Analyst, Defense Health Network Europe",
+            "Mr. Loran M. Bather, Issue Resolution Lead, Defense Health Network Pacific Rim, Naval Base San Diego"
+          ],
+          "summary": "This panel argues Military Treatment Facilities lack a standardized Clinical Informatics structure, causing slow issue resolution, inconsistent training, clinician burnout, and communication gaps between clinical staff and decision makers. It recommends a standardized MTF billet structure, governance representation, direct DHA-Service escalation pathways, joint professional development, and peer expert networks, then opens a live poll on facility CI staffing.",
+          "key_points": [
+            "Recommends a standardized MTF billet structure, governance representation, and direct DHA-Service escalation pathways",
+            "Large MTFs run full CI departments under a physician CMIO, while small MTFs share a part-time CMIO",
+            "Cites clinician burnout and technology 'viewed as a barrier' as risks to patient safety and readiness"
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/afa5a182c5014e43b0a9dca5e4f43f7e.pdf",
+            "anchor": "all-hands-on-deck-clinical-informatics-in-the-mhs",
+            "pages": 21,
+            "bytes": 2165772
+          }
+        },
+        {
+          "block": 4,
+          "title": "Lessons From Leading the Sole Informatics Training Platform in the MHS",
+          "presenters": [
+            "Lt Col Scott Hulse, MD, MS, MPH, MS, Program Director, Clinical Informatics Fellowship, and Staff Preventive Medicine Physician, Joint Base Lewis McChord",
+            "LTC Victoria Mahar, MD, MS, Chief Medical Informatics Officer, Associate Program Director, Clinical Informatics Fellowship, and Staff Pathologist, Joint Base Lewis McChord"
+          ],
+          "summary": "This session from the Clinical Informatics Fellowship at Joint Base Lewis-McChord explains the medical education pipeline behind a clinical informaticist and the field's broad competency scope, from enterprise systems to data governance and leadership. It also flags the challenge of meeting five separate accrediting and organizational requirements at once. The deck stays high level, with no named platform or outcomes given.",
+          "key_points": [
+            "Informatics Fellowship is a 2-year ACGME-accredited program following a 3 to 7 year residency",
+            "Training must satisfy five separate requirement sets at once: ACGME, AMIA, MAMC, DHA, and Service",
+            "Competency scope spans enterprise information systems, data governance, care delivery outcomes, and leadership"
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/75d4fe107f464db2b097a8b953ef58a7.pdf",
+            "anchor": "lessons-from-leading-the-sole-informatics-training-platform-in",
+            "pages": 9,
+            "bytes": 1897570
+          }
+        },
+        {
+          "block": 5,
+          "title": "The Office of Warfighter Health Advantage (OWHA) Engine: Driving Performance and Innovation for a Decisive Edge",
+          "presenters": [
+            "Mr. Matthew Motley, DHA Office of Warfighter Health Advantage, Performance to Plan Lead",
+            "CDR John de Geus, MD, DHA Office of Warfighter Health Advantage, Information & Innovation Lead"
+          ],
+          "summary": "This session introduces the DHA Office of Warfighter Health Advantage's Advantage Engine framework, pairing a Performance Engine that uses Performance to Plan (P2P) methods to cascade the Campaign Plan and DHA's four Lines of Effort into KPI boards and tiered huddles, with an Innovation Engine that uses a Scout, Build, Buy portfolio model and modern acquisition pathways to speed new capabilities to the joint force.",
+          "key_points": [
+            "Advantage Engine pairs a Performance Engine and Innovation Engine to align strategy with execution",
+            "Innovation Engine uses a Scout, Build, Buy portfolio model and modern acquisition pathways",
+            "P2P cascades the Campaign Plan and four Lines of Effort into KPI boards and tiered huddles"
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/2a1e709dfc3b441d8d7eb04e85c7065f.pdf",
+            "anchor": "the-office-of-warfighter-health-advantage-owha-engine-driving",
+            "pages": 12,
+            "bytes": 4547511
+          }
+        }
+      ]
+    },
+    {
+      "name": "Powering the Mission: Infrastructure at the Edge",
+      "room": "Strand 12",
+      "note": "This track covers DHA's physical and virtual infrastructure: medical device and equipment procurement, network modernization, virtual desktops, mobile device management, clinical voice communications, medical device integration support, and the Med-COI extension request process.",
+      "sessions": [
+        {
+          "block": 1,
+          "title": "Medical Devices and Equipment Program Management Office (PMO)",
+          "presenters": [
+            "Terri L. Pryor, Program Manager, Medical Device and Equipment PMO",
+            "Cory D. Martynski, Deputy Program Manager, Medical Device and Equipment PMO",
+            "Quincy J. Martin, Assistant Program Manager, Image Management Services, Medical Device and Equipment PMO",
+            "Dustin Reed, Assistant Program Manager, Clinical Systems, Medical Device and Equipment PMO",
+            "Erica Smith, Assistant Program Manager, Planning, Programming, Budgeting, and Execution (PPBE), Medical Device and Equipment PMO",
+            "Andrew McGraw, Assistant Program Manager, Cybersecurity (Non-Centrally Managed Devices), Medical Device and Equipment PMO",
+            "Terrell McCaa, Assistant Program Manager, Cybersecurity (Centrally Managed Devices), Medical Device and Equipment PMO"
+          ],
+          "summary": "The Medical Device and Equipment (MDE) PMO, chartered as a DHA PMO in March 2026, manages the life cycle of imaging, high-dollar surgical, and radiation oncology equipment, plus cybersecurity for centrally managed (CM) and non-centrally managed (NCM) devices. It covers Image Management Services, Clinical Support, and PPBE, the NER/LogiCole procurement process, and new rules: quarterly execution reviews and mandatory LogiCole entry for equipment buys.",
+          "key_points": [
+            "MDE PMO chartered as a DHA PMO in March 2026, covering imaging and radiation oncology equipment.",
+            "Centrally managed equipment can only be procured by the MDE PMO using OP dollars, no exceptions except VET.",
+            "Cyber ATO timelines for centrally managed devices: A&I 6-8 months, A&A 8-12 months."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/8ae42ff6df3346ca84eee7416ffa6934.pdf",
+            "anchor": "medical-devices-and-equipment-program-management-office-pmo",
+            "pages": 34,
+            "bytes": 3988130
+          }
+        },
+        {
+          "block": 2,
+          "title": "Future-Ready Networks: Modernizing the Enterprise for Tomorrow's Challenges",
+          "presenters": [
+            "Rahul Shrotriya, Chief, Engineering & Architecture Branch (ESA-BAD)",
+            "Austin Kennedy, Deputy, Solutions Architecture Section",
+            "John \"Mike\" Wright, Lead, Engineering & Design Section",
+            "John Robbs, Chief Architect, DHA Network & Security"
+          ],
+          "summary": "Covers DHA network modernization toward Zero Trust: Software-Defined WAN (SD-WAN) adoption for direct, secure cloud access to EHRs and healthcare SaaS, and upgraded Meet Me Point routing serving about 400 worldwide locations. Also details the Genesis EHR's migration to two new Oracle Cloud Infrastructure (OCI) locations and the Armis platform for device visibility, dynamic network mapping, and asset discovery across the Med-COI.",
+          "key_points": [
+            "SD-WAN gives direct, secure cloud access to EHRs, bypassing gateway backhaul latency.",
+            "Two new Genesis EHR locations added migrating to Oracle Cloud Infrastructure (OCI), with MTFs getting direct OCI access.",
+            "Meet Me Point modernization targets about 400 locations with direct paths, lower latency, and fewer inspection points."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/efeaad464bd44020bb86eb2e7f3832e4.pdf",
+            "anchor": "future-ready-networks-modernizing-the-enterprise-for-tomorrows",
+            "pages": 21,
+            "bytes": 4919452
+          }
+        },
+        {
+          "block": 3,
+          "title": "Brought to You by AVD and Hypori: DHA Virtual Desktops and Apps",
+          "presenters": [
+            "Patrick Leitner, Datacenter Operations Branch Chief",
+            "Bobby Brady, Desktop and App Virtualization Team Lead"
+          ],
+          "summary": "Introduces DHA's Azure Virtual Desktop (AVD), hosted in Azure GovCloud, giving CAC-enabled devices access to the DHA desktop and apps like MHS GENESIS, and Hypori Mobile, its DISA Purebred-based mobile equivalent for Outlook, Teams, and CAA/Ambient Dictation on personal Android or iOS phones. AVD is open to all MED365 users; Hypori's 2,000-user pilot could save DHA over $4M a year replacing 14k GFE iPhones.",
+          "key_points": [
+            "Hypori Mobile pilot has 2,000 users; DHA app access via DISA Purebred certificates on personal Android or iOS.",
+            "Replacing 14k GFE iPhones with Hypori Mobile could save DHA more than $4M annually.",
+            "AVD is permissioned for all MED365 account holders; connection issues go to the DCOPS Service Availability (T3) queue."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/2ec54eb7815142ada68ebc52fb281084.pdf",
+            "anchor": "brought-to-you-by-avd-and-hypori-dha-virtual",
+            "pages": 16,
+            "bytes": 4424769
+          }
+        },
+        {
+          "block": 4,
+          "title": "Enabling Secure Mobility at Scale: DHA's Mobile Device Management (DHA-MDM) Transformation & What's Next",
+          "presenters": [
+            "Ayodeji Adedeji, Cloud Architect, MDM, DDSB, IOD",
+            "Hector Garcia, Manager, Identity & Access Management / MDM, DDSB, IOD",
+            "Jeremey Covington, Section Chief, Web & Mobile Tech PMO, SDD",
+            "Bryan Scott, Lead Engineer, DDSB, IOD",
+            "Allen (AJ) Hall, Jr., Sr. PM, MDM, DDSB, IOD"
+          ],
+          "summary": "Details DHA's transition from the legacy DISA DMUC mobile platform to an in-house, Intune-based DHA-MDM system, covering Zero Trust enhancements (Menlo Safari isolation, per-app VPN), application vetting through Company Portal/VADER, and change governance via CAB, ERB, and ARB. The roadmap covers macOS integration, a Vision Pro proof of concept, CarPlay and Android/BYOD exploration, and Wi-Fi Assisted Calling testing with the three main carriers.",
+          "key_points": [
+            "DHA transitioned mobility management from DISA DMUC to an in-house Intune-based enterprise platform.",
+            "Menlo Zero Trust isolation layer for Safari now supports iOS/iPadOS device check-ins and integrates with Intune policies.",
+            "Wi-Fi Assisted Calling test plans complete for three main carriers; DISA still resolving blocked ports before ERB/ARB approval."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/2a25afe41df84a9aaa9d011f813324a8.pdf",
+            "anchor": "enabling-secure-mobility-at-scale-dhas-mobile-device-management",
+            "pages": 33,
+            "bytes": 1699239
+          }
+        },
+        {
+          "block": 5,
+          "title": "Enterprise Clinical Voice Communications (ECVC) Migration to Vocera V5x with Messaging",
+          "presenters": [
+            "Kenneth E. Ross, Product Manager, Program Executive Office, Medical Systems, Defense Health Agency"
+          ],
+          "summary": "Covers migrating ECVC Vocera badges to V5x with Messaging in the DHA Private Cloud (DPC), including the V5.11.2 HF2 stability fix and site prep like inactive-user cleanup and Active Directory ID linking. Flags user impacts (2-3 weeks of intermittent telephony disruption, a 2-3 day database freeze) and next sites: Fort Hood, Fort Sill, Fort Carson, and the Air Force Academy's 10th Medical Group.",
+          "key_points": [
+            "Vocera V5.11.2 HF2 deployed to fix system performance issues; gateway upgrades completed for version parity.",
+            "Next migration sites: Fort Hood, Fort Sill, Fort Carson, and the Air Force Academy's 10th Medical Group.",
+            "Migration causes an estimated 2-3 weeks of intermittent telephony disruption and a 2-3 day database freeze."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/6868dbca7dab4399af2ff8ccca5a2ef2.pdf",
+            "anchor": "enterprise-clinical-voice-communications-ecvc-migration-to-vocera-v5x",
+            "pages": 24,
+            "bytes": 2512918
+          }
+        },
+        {
+          "block": 6,
+          "title": "Unifying Medical Device Integration Support within DHNs to Enhance Readiness",
+          "presenters": [
+            "Dr. Saad Khan, Chief, Medical Device Integration Branch, Health Informatics and Digital Integration, OWHA",
+            "Col W. Gunnar Conrow, Commanding Officer, Grand Forks MDG (former Chief of Lab Operations, CLMS)",
+            "James Vaughn, Chief Health Informatics Officer, DHN Indo-Pacific",
+            "Jodie O'Neil, Deputy Chief Health Informatics Officer, DHN Central"
+          ],
+          "summary": "A panel on Medical Device Integration (MDI) across Defense Health Networks, covering the MDI Network Support Program's regional Tier 0 hub model for ticket misrouting, and LMDI Program Reviews of lab instruments not interfaced with MHS GENESIS and PathNet. Cites ticket data from DHN Continental, West, and Central, CLMS's 617 CLIP-registered lab sites, and each DHN's readiness and staffing pain points.",
+          "key_points": [
+            "DHN Continental, West, and Central program reviews logged 392, 330, and 869 total support tickets.",
+            "CLMS oversees 617 CLIP-registered laboratory testing sites across Air Force, Army, Navy, Joint/CSA, and deployed/fleet.",
+            "FY2022 pain point: over 180 devices in the integration queue, a 1 to 1.5 year backlog."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/a3b255b2e9594c49a1a1abbb80b2bb88.pdf",
+            "anchor": "unifying-medical-device-integration-support-within-dhns-to-enhance",
+            "pages": 27,
+            "bytes": 2507494
+          }
+        },
+        {
+          "block": 7,
+          "title": "Opening the Gateway to New Technologies and Enterprise Standardization",
+          "presenters": [
+            "Matt Wimpee, Moderator, Chief Operations Officer, ESA-BAD",
+            "Bruce Tuckerman, Section Chief, Program & Project Management Section, ESA-BAD",
+            "Travis Hall, Section Chief/Program Manager, Med-COI, ESA-BAD",
+            "Morgan Valentine, Network Engineer, ERB/ARB, ESA-BAD"
+          ],
+          "summary": "Explains DHA's Med-COI extension request process for new technologies: submit a service request, pass review against business-rule requirements (over 10 users, a documented clinical tie, and proof that alternatives like VPN, AVHE, or AVD won't work), gain ERB/ARB approval, then implement with the Med-COI Program. Notes over 244 extension requests were submitted through the service portal in FY26.",
+          "key_points": [
+            "Over 244 Med-COI extension requests were submitted through the service portal in FY26.",
+            "Requests must show over 10 users and that VPN, AVHE, and AVD alternatives will not meet the need.",
+            "Approved requests go from ERB/ARB review to implementation with the Med-COI Program."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/69b581dd230c4d7a961c8ff06ddfa606.pdf",
+            "anchor": "opening-the-gateway-to-new-technologies-and-enterprise-standardization",
+            "pages": 16,
+            "bytes": 2327196
+          }
+        }
+      ]
+    },
+    {
+      "name": "Empowering the Frontline: IT Support for the Warfighter",
+      "room": "Empire D",
+      "note": "This track centers on JOMIS: portfolio priorities, BATDOK-J to OpMed CDP handoffs, MedHub/MEDIX health intelligence, JMPT/MPTk planning modernization, and deployment pilots, plus LogiCole's DMLSS replacement and OWHA's rapid acquisition pathway.",
+      "sessions": [
+        {
+          "block": 1,
+          "title": "Integrating and Modernizing Healthcare for the Joint Force",
+          "presenters": [
+            "Ms. Sandy McIntyre, Program Manager, Joint Operational Medicine Information Systems, Defense Health Agency",
+            "LCDR Chris Charles, Assistant Program Manager, Operational Medicine Care Delivery Platform (OpMed CDP), JOMIS PMO",
+            "LTC Elaine Kirish, Chief, Nursing Informatics Officer, Office of the Army Surgeon General",
+            "LCDR Julia Olson, Assistant Program Manager, Battlefield Assisted Trauma Distributed Observation Kit-Joint (BATDOK-J), JOMIS PMO"
+          ],
+          "summary": "Sandy McIntyre, JOMIS program manager, walks through the JOMIS portfolio and its three 2026 priorities: See the Battlefield, Trust the Data, and Predict and Prepare. The session includes a live demo of a digital handoff from BATDOK-J to OpMed CDP, and cites General Mahoney's Heroes of Military Medicine speech framing the mission.",
+          "key_points": [
+            "Live demo shows a digital handoff from BATDOK-J to OpMed CDP.",
+            "Three 2026 JOMIS priorities: See the Battlefield, Trust the Data, Predict and Prepare.",
+            "Predict and Prepare priority covers cloud migration and model modernization for JMPT and MPTk."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/9b78fcfd8e4341e48a2fc7b09cd7ff10.pdf",
+            "anchor": "integrating-and-modernizing-healthcare-for-the-joint-force",
+            "pages": 13,
+            "bytes": 2941278
+          }
+        },
+        {
+          "block": 2,
+          "title": "From Data to Decisions: Forging a Health Intelligence Common Operating Picture",
+          "presenters": [
+            "Ronald Williams, Jr., PMP, Assistant Program Manager, Joint Operational Medicine Information Systems, Defense Health Agency"
+          ],
+          "summary": "Ronald Williams, assistant program manager for JOMIS infrastructure integration, explains how JOMIS Priority 2 turns three initial data domains, blood, beds, and patient movement, into a single health intelligence common operating picture. The deck walks through MedHub and MEDIX capabilities, the VAULTIS framework, and how MEDIX pulls War Data Platform data into both MedHub and the MAVEN Smart System.",
+          "key_points": [
+            "JOMIS Priority 2 unifies blood, beds, and patient movement data into one operating picture.",
+            "MedHub capabilities include ClinOps, MedReports, Patient Tracker, Blood Reports, and Health Surveillance Explorer.",
+            "MEDIX aggregates War Data Platform data to feed both MedHub and MAVEN Smart System."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/bdec5e567c49494f8088e07d3a8b1390.pdf",
+            "anchor": "from-data-to-decisions-forging-a-health-intelligence-common",
+            "pages": 14,
+            "bytes": 3112778
+          }
+        },
+        {
+          "block": 3,
+          "title": "Fail Fast, Field Faster: Driving DHA Combat Innovation at the Speed of Relevance",
+          "presenters": [
+            "CDR John de Geus, MD, OWHA",
+            "Ms. Christine Sordillo, Strategic Acquisition Advisor",
+            "CPT Dylon Bowman, RN, OWHA",
+            "LTJG James Owens, MSC, OWHA"
+          ],
+          "summary": "CDR John de Geus and the Office of Warfighting Health Advantage (OWHA) argue that flexible contracting tools like OTAs and CSOs are necessary but not enough without a fast bureaucratic pathway. The deck proposes OWHA as a standing test and fail cell, illustrated by the ARMOR initiative's 90 day data fabric prototypes, and asks industry to partner on high impact readiness solutions.",
+          "key_points": [
+            "OWHA aims to scope, award, and test pilots in months, not years.",
+            "ARMOR connects workforce, qualification, and medical clearance data through 90 day prototypes.",
+            "Pilots move through ideation, OWHA testing, validation, then enterprise transition if scaled."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/3ba7a5b839ed42e5a3ef6b87d763e33d.pdf",
+            "anchor": "fail-fast-field-faster-driving-dha-combat-innovation-at",
+            "pages": 13,
+            "bytes": 2057580
+          }
+        },
+        {
+          "block": 4,
+          "title": "Applying Health Intelligence: The Future of Joint Medical Planning",
+          "presenters": [
+            "Dr. Matthew Kilboy, DNP, FNP-C, Assistant Program Manager for Medical Planning, Modeling, and Simulation Capabilities and Chief Health Informatics Officer, Joint Operational Medicine Information Systems, Defense Health Agency"
+          ],
+          "summary": "Dr. Matthew Kilboy presents JOMIS Priority 3, using health intelligence to modernize the Joint Medical Planning Tool and Medical Planners' Toolkit. The deck maps the full JOMIS product suite, from BATDOK-J and OpMed CDP at the point of injury to MedHub for command and control, and names legacy planning tools like EMedKW, CREsT, EMRE, and ESP.",
+          "key_points": [
+            "JMPT and MPTk are DoD-accredited tools now being modernized with health intelligence.",
+            "BATDOK-J replaces paper charting; OpMed CDP replaces AHLTA-T/TC2 at Roles 1 and 2.",
+            "Legacy tools EMedKW, PCOF, CREsT, EMRE, and ESP forecast casualties and medical supply needs."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/b3c734b2876c4c9497f162ef4451f4d3.pdf",
+            "anchor": "applying-health-intelligence-the-future-of-joint-medical-planning",
+            "pages": 29,
+            "bytes": 3576114
+          }
+        },
+        {
+          "block": 5,
+          "title": "Deploying JOMIS to Power Health Intelligence",
+          "presenters": [
+            "Ms. Kristina Bolland, Program Delivery Director, Joint Operational Medicine Information Systems (JOMIS)",
+            "Mr. Shawn Belcher, PMP, Defense Health Readiness Engineering IPT Lead, NIWC, US Navy",
+            "Ms. Ami Bryant, Project Manager, Soldier Medical Devices, OMIS-A, US Army",
+            "Mr. Justice Sakyi, MBA, MS, Chief, AFOMIS Medical Information Operations, Office of the Air Force Surgeon General"
+          ],
+          "summary": "Kristina Bolland and service representatives from the Navy, Army, and Air Force cover the JOMIS deployment strategy, including pilots of the HCD, TBLD-M, and MedHub suite integrated with Maven Smart System, running November 2025 through March 2026. The panel reports pilot performance is assessed against a rubric coordinated with OJSS and the Services, and outlines the Fielding Summit's goal of a coordinated cross-Service deployment strategy.",
+          "key_points": [
+            "Pilots ran November 2025 to March 2026 for HCD, TBLD-M, and MedHub with Maven.",
+            "Pilot performance assessed with a rubric coordinated with OJSS and the Services.",
+            "Fielding Summit aims to align Service-level deployment and sustainment of the JOMIS suite."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/3cb5df2de9294f29bef6430c1626f15e.pdf",
+            "anchor": "deploying-jomis-to-power-health-intelligence",
+            "pages": 15,
+            "bytes": 3093731
+          }
+        },
+        {
+          "block": 6,
+          "title": "LogiCole: Delivering Capabilities for the Warfighter",
+          "presenters": [
+            "Ms. Jennifer Kuntz, MBA, MHA, MSEd, Program Manager, DHA MEDLOG IT PMO",
+            "Ms. Donna Totten, Development Center Lead, DHA MEDLOG IT PMO",
+            "Mr. Bobby Hill, LogiCole Product Manager, DHA MEDLOG IT PMO",
+            "Mr. Jason Miller, Branch Chief, Data & Info Mgt, DHA J-4 MEDLOG",
+            "Mr. Jimmy Flanders, MBA, PMP, Configuration Manager, DHA MEDLOG IT PMO"
+          ],
+          "summary": "Jennifer Kuntz and the DHA MEDLOG IT PMO present the Defense Medical Logistics Enterprise Solution program's technical refresh from the aging DMLSS system to a single-instance, cloud-hosted LogiCole application. The deck lays out a three-stage Minimum Viable Capability roadmap running from May 2026 through Full Operating Capability, with DMLSS decommissioned no later than May 2028.",
+          "key_points": [
+            "MVC1 Customer Ordering and Inventory Management runs May to September 2026.",
+            "DMLSS runs on PowerBuilder and C+ with 172 independent instances to manage.",
+            "DMLSS must be fully decommissioned no later than May 2028."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/19e6efb0d68948318f2f1e8688bf8444.pdf",
+            "anchor": "logicole-delivering-capabilities-for-the-warfighter",
+            "pages": 19,
+            "bytes": 3383869
+          }
+        },
+        {
+          "block": 7,
+          "title": "Operational Medicine: Chasm of EHR Modernization and Way Ahead Panel Discussion",
+          "presenters": [
+            "COL Peter V. Huynh, G-6 Director, U.S. Army Office of the Surgeon General",
+            "Mr. Matthew F. Brumley, Chief of Staff, Joint Operational Medicine Information Systems (JOMIS)",
+            "Mr. Justice M. Sakyi, Chief, Air Force Operational Medicine Information Systems (AFOMIS)",
+            "CDR Jacob H. Cole, Director, Health Informatics, US Navy Bureau of Medicine and Surgery",
+            "LTC Pablo A. Cercenia Jr, Assistant Chief of Staff G6, 18th Theater Medical Command"
+          ],
+          "summary": "This panel brings together G-6 and health informatics leaders from the Army, Navy, and Air Force, plus JOMIS's chief of staff, to discuss the operational medicine EHR chasm and modernization roadmap named in the title. The deck itself holds only the agenda, panelist bios, and learning objectives, with no content slides on findings, gaps, or the roadmap itself.",
+          "key_points": [
+            "Deck is agenda, panelist bios, and learning objectives only, no findings slides.",
+            "Panelists represent Army G-6, JOMIS, Air Force AFOMIS, and Navy Health Informatics."
+          ],
+          "deck": {
+            "url": "https://custom.cvent.com/6C73CFFFCC664B4D8DAF9D6668542C41/files/72a692b21c5a4d3ea76d1a79e11a4bc5.pdf",
+            "anchor": "operational-medicine-chasm-of-ehr-modernization-and-way-ahead",
+            "pages": 10,
+            "bytes": 1860537
+          }
+        }
+      ]
+    }
+  ]
+}
