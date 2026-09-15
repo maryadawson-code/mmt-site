@@ -290,6 +290,7 @@ describe("turn telemetry and turn_id", () => {
     expect(turn.details.unlisted_link_count).toBe(1);
     expect(turn.details.unsupported_dollar_count).toBe(2);
     expect(turn.details.unavailable).toEqual(["sam_opportunities"]);
+    expect(turn.details.unavailable_reasons).toEqual(["sam_opportunities: daily quota spent"]);
   });
 
   it("the free turn event carries the same columns and the response returns turn_id alongside the sources", async () => {
