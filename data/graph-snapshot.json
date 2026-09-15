@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-08-20T23:45:22.756Z",
-  "node_count": 463,
-  "edge_count": 678,
+  "generated_at": "2026-09-15T19:22:16.435Z",
+  "node_count": 469,
+  "edge_count": 687,
   "nodes": [
     {
       "id": "peo-dhms-deployment",
@@ -248,6 +248,40 @@
       "properties": {
         "_inferred": true
       }
+    },
+    {
+      "id": "nitaac-cio-sp3",
+      "type": "Vehicle",
+      "canonical_name": "NITAAC CIO-SP3 and CIO-SP3 Small Business",
+      "properties": {
+        "contract_number": "",
+        "ceiling_usd": null,
+        "pop_start": "",
+        "pop_end": "2028-12-31",
+        "set_aside": "Multi-tier GWAC",
+        "vehicle_type": "GWAC",
+        "status": "Sunsetting: last new order Oct 29 2026"
+      }
+    },
+    {
+      "id": "nitaac-cio-cs",
+      "type": "Vehicle",
+      "canonical_name": "NITAAC CIO-CS",
+      "properties": {
+        "contract_number": "",
+        "ceiling_usd": null,
+        "pop_start": "",
+        "pop_end": "2028-12-31",
+        "set_aside": "Multiple Award",
+        "vehicle_type": "GWAC Commodities",
+        "status": "Sunsetting: last new order Oct 29 2026"
+      }
+    },
+    {
+      "id": "naics-541519",
+      "type": "Topic",
+      "canonical_name": "NAICS 541519",
+      "properties": {}
     },
     {
       "id": "nitaac-ecs-iii",
@@ -615,7 +649,7 @@
       "canonical_name": "DHA Data Governance (WOSB Set-Aside)",
       "properties": {
         "classification": "Solicitation",
-        "status": "upcoming",
+        "status": "active",
         "naics": "541512",
         "last_verified": "2026-03-31"
       }
@@ -714,9 +748,9 @@
       "canonical_name": "CIO-CS Follow-On / The Store",
       "properties": {
         "classification": "Solicitation",
-        "status": "upcoming",
+        "status": "closed",
         "naics": "541512",
-        "last_verified": "2026-08-17"
+        "last_verified": "2026-09-10"
       }
     },
     {
@@ -2029,11 +2063,11 @@
       }
     },
     {
-      "id": "maj-gen-paula-lodi",
+      "id": "brig-gen-constance-l-jenkins",
       "type": "Person",
-      "canonical_name": "Maj. Gen. Paula Lodi",
+      "canonical_name": "Brig. Gen. Constance L. Jenkins",
       "properties": {
-        "title": "Commanding General, DHA Research & Development / Medical Research & Development Command (MRDC)"
+        "title": "Commander, DHA Research & Development / Medical Research & Development Command (MRDC); Director of Research & Development, DHA"
       }
     },
     {
@@ -2285,6 +2319,30 @@
       }
     },
     {
+      "id": "keith-martin",
+      "type": "Person",
+      "canonical_name": "Keith Martin",
+      "properties": {
+        "title": "Director, Administration and Management; Executive Officer"
+      }
+    },
+    {
+      "id": "neil-wyant",
+      "type": "Person",
+      "canonical_name": "Neil Wyant",
+      "properties": {
+        "title": "Director, Office of Commercialization"
+      }
+    },
+    {
+      "id": "benjamin-bryant",
+      "type": "Person",
+      "canonical_name": "Benjamin Bryant",
+      "properties": {
+        "title": "Deputy Director, Business Innovation Division; Acting Head of Contracting Activity"
+      }
+    },
+    {
       "id": "paul-lawrence",
       "type": "Person",
       "canonical_name": "Paul Lawrence",
@@ -2307,11 +2365,11 @@
       "properties": {}
     },
     {
-      "id": "michael-frueh",
+      "id": "margarita-devlin",
       "type": "Person",
-      "canonical_name": "Michael Frueh",
+      "canonical_name": "Margarita Devlin",
       "properties": {
-        "title": "Acting Under Secretary for Benefits"
+        "title": "Principal Deputy Under Secretary for Benefits, performing the duties of the Under Secretary"
       }
     },
     {
@@ -2321,7 +2379,7 @@
       "properties": {
         "slug": "were-official-introducing-fed-up",
         "type": "article",
-        "url": "/articles/were-official-introducing-fed-up/",
+        "url": "/newsletter/were-official-introducing-fed-up/",
         "published": "2025-01-01"
       }
     },
@@ -2332,7 +2390,7 @@
       "properties": {
         "slug": "mission-meets-tech-march-20-2025",
         "type": "article",
-        "url": "/articles/mission-meets-tech-march-20-2025/",
+        "url": "/newsletter/mission-meets-tech-march-20-2025/",
         "published": "2025-03-20"
       }
     },
@@ -2343,7 +2401,7 @@
       "properties": {
         "slug": "when-tech-lifts-the-load-a-vision-for-transforming-military-",
         "type": "article",
-        "url": "/articles/when-tech-lifts-the-load-a-vision-for-transforming-military-/",
+        "url": "/newsletter/when-tech-lifts-the-load-a-vision-for-transforming-military-/",
         "published": "2025-03-24"
       }
     },
@@ -2354,7 +2412,7 @@
       "properties": {
         "slug": "mission-meets-tech-ai-powered-symptom-triage-redefining-heal",
         "type": "article",
-        "url": "/articles/mission-meets-tech-ai-powered-symptom-triage-redefining-heal/",
+        "url": "/newsletter/mission-meets-tech-ai-powered-symptom-triage-redefining-heal/",
         "published": "2025-03-28"
       }
     },
@@ -2365,7 +2423,7 @@
       "properties": {
         "slug": "on-april-10-2025-the-dod-dropped-a-bombshell-51-billion-in-c",
         "type": "article",
-        "url": "/articles/on-april-10-2025-the-dod-dropped-a-bombshell-51-billion-in-c/",
+        "url": "/newsletter/on-april-10-2025-the-dod-dropped-a-bombshell-51-billion-in-c/",
         "published": "2025-04-11"
       }
     },
@@ -2376,7 +2434,7 @@
       "properties": {
         "slug": "ai-wearables-and-beyond-a-new-era-for-warfighter-care",
         "type": "article",
-        "url": "/articles/ai-wearables-and-beyond-a-new-era-for-warfighter-care/",
+        "url": "/newsletter/ai-wearables-and-beyond-a-new-era-for-warfighter-care/",
         "published": "2025-04-14"
       }
     },
@@ -2387,7 +2445,7 @@
       "properties": {
         "slug": "lead-or-lag-the-virtual-care-imperative-for-mhs-leadership",
         "type": "article",
-        "url": "/articles/lead-or-lag-the-virtual-care-imperative-for-mhs-leadership/",
+        "url": "/newsletter/lead-or-lag-the-virtual-care-imperative-for-mhs-leadership/",
         "published": "2025-04-17"
       }
     },
@@ -2398,7 +2456,7 @@
       "properties": {
         "slug": "amplify-the-blueprint-how-digital-first-can-turn-success-int",
         "type": "article",
-        "url": "/articles/amplify-the-blueprint-how-digital-first-can-turn-success-int/",
+        "url": "/newsletter/amplify-the-blueprint-how-digital-first-can-turn-success-int/",
         "published": "2025-04-21"
       }
     },
@@ -2409,7 +2467,7 @@
       "properties": {
         "slug": "squad-vibes-and-ai-scaling-mental-health-for-our-heroes",
         "type": "article",
-        "url": "/articles/squad-vibes-and-ai-scaling-mental-health-for-our-heroes/",
+        "url": "/newsletter/squad-vibes-and-ai-scaling-mental-health-for-our-heroes/",
         "published": "2025-04-28"
       }
     },
@@ -2420,7 +2478,7 @@
       "properties": {
         "slug": "digital-health-the-unbreakable-spine-of-military-readiness",
         "type": "article",
-        "url": "/articles/digital-health-the-unbreakable-spine-of-military-readiness/",
+        "url": "/newsletter/digital-health-the-unbreakable-spine-of-military-readiness/",
         "published": "2025-05-05"
       }
     },
@@ -2431,7 +2489,7 @@
       "properties": {
         "slug": "far-overhaul-unlocking-a-new-era-of-innovation-for-the-milit",
         "type": "article",
-        "url": "/articles/far-overhaul-unlocking-a-new-era-of-innovation-for-the-milit/",
+        "url": "/newsletter/far-overhaul-unlocking-a-new-era-of-innovation-for-the-milit/",
         "published": "2025-05-19"
       }
     },
@@ -2442,7 +2500,7 @@
       "properties": {
         "slug": "mhs-imaging-fragmented-foundation",
         "type": "article",
-        "url": "/articles/mhs-imaging-fragmented-foundation/",
+        "url": "/newsletter/mhs-imaging-fragmented-foundation/",
         "published": "2025-05-20"
       }
     },
@@ -2453,7 +2511,7 @@
       "properties": {
         "slug": "pixels-and-promises-the-fragmented-foundation-of-mhs-imaging",
         "type": "article",
-        "url": "/articles/pixels-and-promises-the-fragmented-foundation-of-mhs-imaging/",
+        "url": "/newsletter/pixels-and-promises-the-fragmented-foundation-of-mhs-imaging/",
         "published": "2025-05-20"
       }
     },
@@ -2464,7 +2522,7 @@
       "properties": {
         "slug": "can-we-trust-ai-with-soldiers-lives",
         "type": "article",
-        "url": "/articles/can-we-trust-ai-with-soldiers-lives/",
+        "url": "/newsletter/can-we-trust-ai-with-soldiers-lives/",
         "published": "2025-05-22"
       }
     },
@@ -2475,7 +2533,7 @@
       "properties": {
         "slug": "from-despair-to-hope-a-veterans-journey-with-ptsd",
         "type": "article",
-        "url": "/articles/from-despair-to-hope-a-veterans-journey-with-ptsd/",
+        "url": "/newsletter/from-despair-to-hope-a-veterans-journey-with-ptsd/",
         "published": "2025-05-26"
       }
     },
@@ -2486,7 +2544,7 @@
       "properties": {
         "slug": "from-silos-to-synergy-building-the-future-of-mhs-enterprise-",
         "type": "article",
-        "url": "/articles/from-silos-to-synergy-building-the-future-of-mhs-enterprise-/",
+        "url": "/newsletter/from-silos-to-synergy-building-the-future-of-mhs-enterprise-/",
         "published": "2025-05-27"
       }
     },
@@ -2497,7 +2555,7 @@
       "properties": {
         "slug": "mhs-imaging-future",
         "type": "article",
-        "url": "/articles/mhs-imaging-future/",
+        "url": "/newsletter/mhs-imaging-future/",
         "published": "2025-05-27"
       }
     },
@@ -2508,7 +2566,7 @@
       "properties": {
         "slug": "the-swift-breakthrough-redefining-possibilities",
         "type": "article",
-        "url": "/articles/the-swift-breakthrough-redefining-possibilities/",
+        "url": "/newsletter/the-swift-breakthrough-redefining-possibilities/",
         "published": "2025-05-29"
       }
     },
@@ -2519,7 +2577,7 @@
       "properties": {
         "slug": "data-chaos-the-hidden-threat-to-military-healthcare",
         "type": "article",
-        "url": "/articles/data-chaos-the-hidden-threat-to-military-healthcare/",
+        "url": "/newsletter/data-chaos-the-hidden-threat-to-military-healthcare/",
         "published": "2025-06-19"
       }
     },
@@ -2530,7 +2588,7 @@
       "properties": {
         "slug": "mhs-resilience-modernizing-forward",
         "type": "article",
-        "url": "/articles/mhs-resilience-modernizing-forward/",
+        "url": "/newsletter/mhs-resilience-modernizing-forward/",
         "published": "2025-06-26"
       }
     },
@@ -2541,7 +2599,7 @@
       "properties": {
         "slug": "ai-enters-the-ranks-scaling-big-tech-partnerships-for-health",
         "type": "article",
-        "url": "/articles/ai-enters-the-ranks-scaling-big-tech-partnerships-for-health/",
+        "url": "/newsletter/ai-enters-the-ranks-scaling-big-tech-partnerships-for-health/",
         "published": "2025-07-17"
       }
     },
@@ -2552,7 +2610,7 @@
       "properties": {
         "slug": "shadow-ai-risks-to-game-changing-wins-how-government-leaders",
         "type": "article",
-        "url": "/articles/shadow-ai-risks-to-game-changing-wins-how-government-leaders/",
+        "url": "/newsletter/shadow-ai-risks-to-game-changing-wins-how-government-leaders/",
         "published": "2025-07-21"
       }
     },
@@ -2563,7 +2621,7 @@
       "properties": {
         "slug": "mission-meets-tech-digital-health-20-beyond-the-basics",
         "type": "article",
-        "url": "/articles/mission-meets-tech-digital-health-20-beyond-the-basics/",
+        "url": "/newsletter/mission-meets-tech-digital-health-20-beyond-the-basics/",
         "published": "2025-07-24"
       }
     },
@@ -2574,7 +2632,7 @@
       "properties": {
         "slug": "the-digital-pulse-of-military-health-2025-milestones-reveale",
         "type": "article",
-        "url": "/articles/the-digital-pulse-of-military-health-2025-milestones-reveale/",
+        "url": "/newsletter/the-digital-pulse-of-military-health-2025-milestones-reveale/",
         "published": "2025-07-28"
       }
     },
@@ -2585,7 +2643,7 @@
       "properties": {
         "slug": "the-retrofit-trap-why-ai-in-health-demands-a-total-reinventi",
         "type": "article",
-        "url": "/articles/the-retrofit-trap-why-ai-in-health-demands-a-total-reinventi/",
+        "url": "/newsletter/the-retrofit-trap-why-ai-in-health-demands-a-total-reinventi/",
         "published": "2025-08-14"
       }
     },
@@ -2596,7 +2654,7 @@
       "properties": {
         "slug": "the-ripple-effect-dhas-innovation-fellowship-and-the-future-",
         "type": "article",
-        "url": "/articles/the-ripple-effect-dhas-innovation-fellowship-and-the-future-/",
+        "url": "/newsletter/the-ripple-effect-dhas-innovation-fellowship-and-the-future-/",
         "published": "2025-08-18"
       }
     },
@@ -2607,7 +2665,7 @@
       "properties": {
         "slug": "the-post-dhits-playbook-scaling-ai-ehr-and-readiness",
         "type": "article",
-        "url": "/articles/the-post-dhits-playbook-scaling-ai-ehr-and-readiness/",
+        "url": "/newsletter/the-post-dhits-playbook-scaling-ai-ehr-and-readiness/",
         "published": "2025-08-21"
       }
     },
@@ -2618,7 +2676,7 @@
       "properties": {
         "slug": "mission-meets-tech-the-merit-revolution",
         "type": "article",
-        "url": "/articles/mission-meets-tech-the-merit-revolution/",
+        "url": "/newsletter/mission-meets-tech-the-merit-revolution/",
         "published": "2025-08-25"
       }
     },
@@ -2629,7 +2687,7 @@
       "properties": {
         "slug": "think-data-sharing-is-optional-hhs-disagrees",
         "type": "article",
-        "url": "/articles/think-data-sharing-is-optional-hhs-disagrees/",
+        "url": "/newsletter/think-data-sharing-is-optional-hhs-disagrees/",
         "published": "2025-08-28"
       }
     },
@@ -2640,7 +2698,7 @@
       "properties": {
         "slug": "brain-on-the-frontlines-new-ai-sensors-redefine-troop-cognit",
         "type": "article",
-        "url": "/articles/brain-on-the-frontlines-new-ai-sensors-redefine-troop-cognit/",
+        "url": "/newsletter/brain-on-the-frontlines-new-ai-sensors-redefine-troop-cognit/",
         "published": "2025-09-11"
       }
     },
@@ -2651,7 +2709,7 @@
       "properties": {
         "slug": "from-pitch-to-enterprise-how-the-mhs-is-cutting-years-off-he",
         "type": "article",
-        "url": "/articles/from-pitch-to-enterprise-how-the-mhs-is-cutting-years-off-he/",
+        "url": "/newsletter/from-pitch-to-enterprise-how-the-mhs-is-cutting-years-off-he/",
         "published": "2025-09-15"
       }
     },
@@ -2662,7 +2720,7 @@
       "properties": {
         "slug": "a-unified-front-why-the-dows-cyber-strategy-is-now-mission-c",
         "type": "article",
-        "url": "/articles/a-unified-front-why-the-dows-cyber-strategy-is-now-mission-c/",
+        "url": "/newsletter/a-unified-front-why-the-dows-cyber-strategy-is-now-mission-c/",
         "published": "2025-09-18"
       }
     },
@@ -2673,7 +2731,7 @@
       "properties": {
         "slug": "ai-the-ultimate-change-management-challenge",
         "type": "article",
-        "url": "/articles/ai-the-ultimate-change-management-challenge/",
+        "url": "/newsletter/ai-the-ultimate-change-management-challenge/",
         "published": "2025-09-22"
       }
     },
@@ -2684,7 +2742,7 @@
       "properties": {
         "slug": "shutdown-survival-guide-transform-hhs-cpgs-into-your-mtfs-se",
         "type": "article",
-        "url": "/articles/shutdown-survival-guide-transform-hhs-cpgs-into-your-mtfs-se/",
+        "url": "/newsletter/shutdown-survival-guide-transform-hhs-cpgs-into-your-mtfs-se/",
         "published": "2025-09-25"
       }
     },
@@ -2695,7 +2753,7 @@
       "properties": {
         "slug": "fail-fast-win-the-war-how-a-leaked-memo-proves-the-pentagons",
         "type": "article",
-        "url": "/articles/fail-fast-win-the-war-how-a-leaked-memo-proves-the-pentagons/",
+        "url": "/newsletter/fail-fast-win-the-war-how-a-leaked-memo-proves-the-pentagons/",
         "published": "2025-09-29"
       }
     },
@@ -2706,7 +2764,7 @@
       "properties": {
         "slug": "algorithm-warfare-darpas-triage-revolution-and-the-global-ai",
         "type": "article",
-        "url": "/articles/algorithm-warfare-darpas-triage-revolution-and-the-global-ai/",
+        "url": "/newsletter/algorithm-warfare-darpas-triage-revolution-and-the-global-ai/",
         "published": "2025-10-16"
       }
     },
@@ -2717,7 +2775,7 @@
       "properties": {
         "slug": "ai-in-the-mhs-revolution-or-expensive-paperweight",
         "type": "article",
-        "url": "/articles/ai-in-the-mhs-revolution-or-expensive-paperweight/",
+        "url": "/newsletter/ai-in-the-mhs-revolution-or-expensive-paperweight/",
         "published": "2025-10-20"
       }
     },
@@ -2728,7 +2786,7 @@
       "properties": {
         "slug": "chaos-or-cure-ai-agents-storm-health-tech-and-warfare-dodgin",
         "type": "article",
-        "url": "/articles/chaos-or-cure-ai-agents-storm-health-tech-and-warfare-dodgin/",
+        "url": "/newsletter/chaos-or-cure-ai-agents-storm-health-tech-and-warfare-dodgin/",
         "published": "2025-10-24"
       }
     },
@@ -2739,7 +2797,7 @@
       "properties": {
         "slug": "the-real-goal-for-2026-how-user-centric-ai-can-transform-mhs",
         "type": "article",
-        "url": "/articles/the-real-goal-for-2026-how-user-centric-ai-can-transform-mhs/",
+        "url": "/newsletter/the-real-goal-for-2026-how-user-centric-ai-can-transform-mhs/",
         "published": "2025-10-27"
       }
     },
@@ -2750,7 +2808,7 @@
       "properties": {
         "slug": "special-issue-how-hegseths-arsenal-of-freedom-speech-unlocks",
         "type": "article",
-        "url": "/articles/special-issue-how-hegseths-arsenal-of-freedom-speech-unlocks/",
+        "url": "/newsletter/special-issue-how-hegseths-arsenal-of-freedom-speech-unlocks/",
         "published": "2025-10-31"
       }
     },
@@ -2761,7 +2819,7 @@
       "properties": {
         "slug": "introducing-fed-up",
         "type": "article",
-        "url": "/articles/introducing-fed-up/",
+        "url": "/newsletter/introducing-fed-up/",
         "published": "2025-11-01"
       }
     },
@@ -2772,7 +2830,7 @@
       "properties": {
         "slug": "audacious-innovator-or-forensic-auditor-the-impossible-choic",
         "type": "article",
-        "url": "/articles/audacious-innovator-or-forensic-auditor-the-impossible-choic/",
+        "url": "/newsletter/audacious-innovator-or-forensic-auditor-the-impossible-choic/",
         "published": "2025-11-17"
       }
     },
@@ -2783,7 +2841,7 @@
       "properties": {
         "slug": "beyond-the-cloud-the-governor-the-concierge-and-the-catalog",
         "type": "article",
-        "url": "/articles/beyond-the-cloud-the-governor-the-concierge-and-the-catalog/",
+        "url": "/newsletter/beyond-the-cloud-the-governor-the-concierge-and-the-catalog/",
         "published": "2025-11-20"
       }
     },
@@ -2794,7 +2852,7 @@
       "properties": {
         "slug": "the-42-trillion-ghost-in-the-machine-why-data-hygiene-is-the",
         "type": "article",
-        "url": "/articles/the-42-trillion-ghost-in-the-machine-why-data-hygiene-is-the/",
+        "url": "/newsletter/the-42-trillion-ghost-in-the-machine-why-data-hygiene-is-the/",
         "published": "2025-11-24"
       }
     },
@@ -2805,7 +2863,7 @@
       "properties": {
         "slug": "the-silent-crisis-and-the-digital-signal",
         "type": "article",
-        "url": "/articles/the-silent-crisis-and-the-digital-signal/",
+        "url": "/newsletter/the-silent-crisis-and-the-digital-signal/",
         "published": "2025-11-28"
       }
     },
@@ -2816,7 +2874,7 @@
       "properties": {
         "slug": "cots-products-mattress",
         "type": "article",
-        "url": "/articles/cots-products-mattress/",
+        "url": "/newsletter/cots-products-mattress/",
         "published": "2025-12-04"
       }
     },
@@ -2827,7 +2885,7 @@
       "properties": {
         "slug": "on-keeping-your-cots-products-in-the-mattress",
         "type": "article",
-        "url": "/articles/on-keeping-your-cots-products-in-the-mattress/",
+        "url": "/newsletter/on-keeping-your-cots-products-in-the-mattress/",
         "published": "2025-12-04"
       }
     },
@@ -2838,7 +2896,7 @@
       "properties": {
         "slug": "meet-mhs-triad",
         "type": "article",
-        "url": "/articles/meet-mhs-triad/",
+        "url": "/newsletter/meet-mhs-triad/",
         "published": "2025-12-11"
       }
     },
@@ -2849,7 +2907,7 @@
       "properties": {
         "slug": "meet-the-mhs-triad-keith-bass-emil-michael-and-the-silicon-v",
         "type": "article",
-        "url": "/articles/meet-the-mhs-triad-keith-bass-emil-michael-and-the-silicon-v/",
+        "url": "/newsletter/meet-the-mhs-triad-keith-bass-emil-michael-and-the-silicon-v/",
         "published": "2025-12-11"
       }
     },
@@ -2860,7 +2918,7 @@
       "properties": {
         "slug": "the-procurement-paradox-why-the-government-discourages-ai-in",
         "type": "article",
-        "url": "/articles/the-procurement-paradox-why-the-government-discourages-ai-in/",
+        "url": "/newsletter/the-procurement-paradox-why-the-government-discourages-ai-in/",
         "published": "2025-12-13"
       }
     },
@@ -2871,7 +2929,7 @@
       "properties": {
         "slug": "the-ai-civil-war-is-the-wrong-fight-why-the-battle-over-250m",
         "type": "article",
-        "url": "/articles/the-ai-civil-war-is-the-wrong-fight-why-the-battle-over-250m/",
+        "url": "/newsletter/the-ai-civil-war-is-the-wrong-fight-why-the-battle-over-250m/",
         "published": "2025-12-16"
       }
     },
@@ -2882,7 +2940,7 @@
       "properties": {
         "slug": "mhs-triad-appointment-means",
         "type": "article",
-        "url": "/articles/mhs-triad-appointment-means/",
+        "url": "/newsletter/mhs-triad-appointment-means/",
         "published": "2025-12-18"
       }
     },
@@ -2893,7 +2951,7 @@
       "properties": {
         "slug": "the-mhs-triad-what-their-appointment-actually-means",
         "type": "article",
-        "url": "/articles/the-mhs-triad-what-their-appointment-actually-means/",
+        "url": "/newsletter/the-mhs-triad-what-their-appointment-actually-means/",
         "published": "2025-12-18"
       }
     },
@@ -2904,7 +2962,7 @@
       "properties": {
         "slug": "the-governance-paradox-why-buying-the-platform-is-the-fastes",
         "type": "article",
-        "url": "/articles/the-governance-paradox-why-buying-the-platform-is-the-fastes/",
+        "url": "/newsletter/the-governance-paradox-why-buying-the-platform-is-the-fastes/",
         "published": "2025-12-20"
       }
     },
@@ -2915,7 +2973,7 @@
       "properties": {
         "slug": "dc-wants-ai-to-save-billions-but-a-single-san-diego-lawsuit-",
         "type": "article",
-        "url": "/articles/dc-wants-ai-to-save-billions-but-a-single-san-diego-lawsuit-/",
+        "url": "/newsletter/dc-wants-ai-to-save-billions-but-a-single-san-diego-lawsuit-/",
         "published": "2025-12-23"
       }
     },
@@ -2926,7 +2984,7 @@
       "properties": {
         "slug": "unlocking-the-vault-a-historic-turning-point-for-veteran-hea",
         "type": "article",
-        "url": "/articles/unlocking-the-vault-a-historic-turning-point-for-veteran-hea/",
+        "url": "/newsletter/unlocking-the-vault-a-historic-turning-point-for-veteran-hea/",
         "published": "2025-12-27"
       }
     },
@@ -2937,7 +2995,7 @@
       "properties": {
         "slug": "2026-the-genesis-of-federal-ai",
         "type": "article",
-        "url": "/articles/2026-the-genesis-of-federal-ai/",
+        "url": "/newsletter/2026-the-genesis-of-federal-ai/",
         "published": "2025-12-30"
       }
     },
@@ -2948,7 +3006,7 @@
       "properties": {
         "slug": "the-synchronization-gap-why-we-perfect-the-kill-chain-but-ne",
         "type": "article",
-        "url": "/articles/the-synchronization-gap-why-we-perfect-the-kill-chain-but-ne/",
+        "url": "/newsletter/the-synchronization-gap-why-we-perfect-the-kill-chain-but-ne/",
         "published": "2026-01-03"
       }
     },
@@ -2959,7 +3017,7 @@
       "properties": {
         "slug": "the-great-clawback-why-2026-marks-the-end-of-paper-performan",
         "type": "article",
-        "url": "/articles/the-great-clawback-why-2026-marks-the-end-of-paper-performan/",
+        "url": "/newsletter/the-great-clawback-why-2026-marks-the-end-of-paper-performan/",
         "published": "2026-01-06"
       }
     },
@@ -2970,7 +3028,7 @@
       "properties": {
         "slug": "somewhere-in-the-pacific-when-telehealth-routes-through-cont",
         "type": "article",
-        "url": "/articles/somewhere-in-the-pacific-when-telehealth-routes-through-cont/",
+        "url": "/newsletter/somewhere-in-the-pacific-when-telehealth-routes-through-cont/",
         "published": "2026-01-08"
       }
     },
@@ -2981,7 +3039,7 @@
       "properties": {
         "slug": "telehealth-contested-systems",
         "type": "article",
-        "url": "/articles/telehealth-contested-systems/",
+        "url": "/newsletter/telehealth-contested-systems/",
         "published": "2026-01-08"
       }
     },
@@ -2992,7 +3050,7 @@
       "properties": {
         "slug": "the-new-iron-triangle-meet-the-three-leaders-who-will-reshap",
         "type": "article",
-        "url": "/articles/the-new-iron-triangle-meet-the-three-leaders-who-will-reshap/",
+        "url": "/newsletter/the-new-iron-triangle-meet-the-three-leaders-who-will-reshap/",
         "published": "2026-01-10"
       }
     },
@@ -3003,7 +3061,7 @@
       "properties": {
         "slug": "the-mhs-triad-part-2-the-programs-the-platforms-the-playbook",
         "type": "article",
-        "url": "/articles/the-mhs-triad-part-2-the-programs-the-platforms-the-playbook/",
+        "url": "/newsletter/the-mhs-triad-part-2-the-programs-the-platforms-the-playbook/",
         "published": "2026-01-13"
       }
     },
@@ -3014,7 +3072,7 @@
       "properties": {
         "slug": "agentic-ai-reckoning",
         "type": "article",
-        "url": "/articles/agentic-ai-reckoning/",
+        "url": "/newsletter/agentic-ai-reckoning/",
         "published": "2026-01-15"
       }
     },
@@ -3025,7 +3083,7 @@
       "properties": {
         "slug": "healthcares-agentic-ai-reckoning-the-operating-model-shift-n",
         "type": "article",
-        "url": "/articles/healthcares-agentic-ai-reckoning-the-operating-model-shift-n/",
+        "url": "/newsletter/healthcares-agentic-ai-reckoning-the-operating-model-shift-n/",
         "published": "2026-01-15"
       }
     },
@@ -3036,7 +3094,7 @@
       "properties": {
         "slug": "the-90-billion-squeeze-what-the-triads-budget-really-means-f",
         "type": "article",
-        "url": "/articles/the-90-billion-squeeze-what-the-triads-budget-really-means-f/",
+        "url": "/newsletter/the-90-billion-squeeze-what-the-triads-budget-really-means-f/",
         "published": "2026-01-20"
       }
     },
@@ -3047,7 +3105,7 @@
       "properties": {
         "slug": "va-referral-care-coordination",
         "type": "article",
-        "url": "/articles/va-referral-care-coordination/",
+        "url": "/newsletter/va-referral-care-coordination/",
         "published": "2026-01-22"
       }
     },
@@ -3058,7 +3116,7 @@
       "properties": {
         "slug": "va-solicits-demos-for-next-gen-referral-and-care-coordinatio",
         "type": "article",
-        "url": "/articles/va-solicits-demos-for-next-gen-referral-and-care-coordinatio/",
+        "url": "/newsletter/va-solicits-demos-for-next-gen-referral-and-care-coordinatio/",
         "published": "2026-01-22"
       }
     },
@@ -3069,7 +3127,7 @@
       "properties": {
         "slug": "the-lethality-test-a-survival-guide-for-defense-health-contr",
         "type": "article",
-        "url": "/articles/the-lethality-test-a-survival-guide-for-defense-health-contr/",
+        "url": "/newsletter/the-lethality-test-a-survival-guide-for-defense-health-contr/",
         "published": "2026-01-24"
       }
     },
@@ -3080,7 +3138,7 @@
       "properties": {
         "slug": "why-vas-quiet-rfi-should-be-on-every-federal-health-contract",
         "type": "article",
-        "url": "/articles/why-vas-quiet-rfi-should-be-on-every-federal-health-contract/",
+        "url": "/newsletter/why-vas-quiet-rfi-should-be-on-every-federal-health-contract/",
         "published": "2026-01-27"
       }
     },
@@ -3091,7 +3149,7 @@
       "properties": {
         "slug": "the-va-is-executing-the-largest-healthcare-reorganization-si",
         "type": "article",
-        "url": "/articles/the-va-is-executing-the-largest-healthcare-reorganization-si/",
+        "url": "/newsletter/the-va-is-executing-the-largest-healthcare-reorganization-si/",
         "published": "2026-01-29"
       }
     },
@@ -3102,7 +3160,7 @@
       "properties": {
         "slug": "va-healthcare-reorganization",
         "type": "article",
-        "url": "/articles/va-healthcare-reorganization/",
+        "url": "/newsletter/va-healthcare-reorganization/",
         "published": "2026-01-29"
       }
     },
@@ -3113,7 +3171,7 @@
       "properties": {
         "slug": "episode-1-mission-meets-reality",
         "type": "article",
-        "url": "/articles/episode-1-mission-meets-reality/",
+        "url": "/newsletter/episode-1-mission-meets-reality/",
         "published": "2026-01-31"
       }
     },
@@ -3124,7 +3182,7 @@
       "properties": {
         "slug": "introducing-mission-meets-reality",
         "type": "article",
-        "url": "/articles/introducing-mission-meets-reality/",
+        "url": "/newsletter/introducing-mission-meets-reality/",
         "published": "2026-01-31"
       }
     },
@@ -3135,7 +3193,7 @@
       "properties": {
         "slug": "the-trillion-dollar-pivot-why-ccn-next-gen-is-the-mosa-ficat",
         "type": "article",
-        "url": "/articles/the-trillion-dollar-pivot-why-ccn-next-gen-is-the-mosa-ficat/",
+        "url": "/newsletter/the-trillion-dollar-pivot-why-ccn-next-gen-is-the-mosa-ficat/",
         "published": "2026-02-03"
       }
     },
@@ -3146,7 +3204,7 @@
       "properties": {
         "slug": "largest-healthcare-contract",
         "type": "article",
-        "url": "/articles/largest-healthcare-contract/",
+        "url": "/newsletter/largest-healthcare-contract/",
         "published": "2026-02-05"
       }
     },
@@ -3157,7 +3215,7 @@
       "properties": {
         "slug": "the-3-trillion-pivot-what-the-vas-rise-initiative-means-for-",
         "type": "article",
-        "url": "/articles/the-3-trillion-pivot-what-the-vas-rise-initiative-means-for-/",
+        "url": "/newsletter/the-3-trillion-pivot-what-the-vas-rise-initiative-means-for-/",
         "published": "2026-02-05"
       }
     },
@@ -3168,7 +3226,7 @@
       "properties": {
         "slug": "the-largest-healthcare-contract-in-american-history-just-hit",
         "type": "article",
-        "url": "/articles/the-largest-healthcare-contract-in-american-history-just-hit/",
+        "url": "/newsletter/the-largest-healthcare-contract-in-american-history-just-hit/",
         "published": "2026-02-05"
       }
     },
@@ -3179,7 +3237,7 @@
       "properties": {
         "slug": "the-elephant-in-the-waiting-room",
         "type": "article",
-        "url": "/articles/the-elephant-in-the-waiting-room/",
+        "url": "/newsletter/the-elephant-in-the-waiting-room/",
         "published": "2026-02-10"
       }
     },
@@ -3190,7 +3248,7 @@
       "properties": {
         "slug": "the-human-weapon-system-finally-gets-real",
         "type": "article",
-        "url": "/articles/the-human-weapon-system-finally-gets-real/",
+        "url": "/newsletter/the-human-weapon-system-finally-gets-real/",
         "published": "2026-02-12"
       }
     },
@@ -3201,7 +3259,7 @@
       "properties": {
         "slug": "the-forgotten-beneficiaries-why-the-glp-1-coverage-gap-is-a-",
         "type": "article",
-        "url": "/articles/the-forgotten-beneficiaries-why-the-glp-1-coverage-gap-is-a-/",
+        "url": "/newsletter/the-forgotten-beneficiaries-why-the-glp-1-coverage-gap-is-a-/",
         "published": "2026-02-14"
       }
     },
@@ -3212,7 +3270,7 @@
       "properties": {
         "slug": "the-ccn-next-gen-playbook-how-build-your-bid-type-company",
         "type": "article",
-        "url": "/articles/the-ccn-next-gen-playbook-how-build-your-bid-type-company/",
+        "url": "/newsletter/the-ccn-next-gen-playbook-how-build-your-bid-type-company/",
         "published": "2026-02-21"
       }
     },
@@ -3223,7 +3281,7 @@
       "properties": {
         "slug": "february-28-the-day-defense-health-contracting-changes-forev",
         "type": "article",
-        "url": "/articles/february-28-the-day-defense-health-contracting-changes-forev/",
+        "url": "/newsletter/february-28-the-day-defense-health-contracting-changes-forev/",
         "published": "2026-02-24"
       }
     },
@@ -3234,7 +3292,7 @@
       "properties": {
         "slug": "the-pentagon-is-trying-to-blacklist-the-ai-it-cant-live-with",
         "type": "article",
-        "url": "/articles/the-pentagon-is-trying-to-blacklist-the-ai-it-cant-live-with/",
+        "url": "/newsletter/the-pentagon-is-trying-to-blacklist-the-ai-it-cant-live-with/",
         "published": "2026-02-26"
       }
     },
@@ -3245,7 +3303,7 @@
       "properties": {
         "slug": "the-opening-act",
         "type": "article",
-        "url": "/articles/the-opening-act/",
+        "url": "/newsletter/the-opening-act/",
         "published": "2026-02-27"
       }
     },
@@ -3256,7 +3314,7 @@
       "properties": {
         "slug": "anthropic-ban-what-numbers-say",
         "type": "article",
-        "url": "/articles/anthropic-ban-what-numbers-say/",
+        "url": "/newsletter/anthropic-ban-what-numbers-say/",
         "published": "2026-02-28"
       }
     },
@@ -3267,7 +3325,7 @@
       "properties": {
         "slug": "the-anthropic-ban-what-the-numbers-actually-say",
         "type": "article",
-        "url": "/articles/the-anthropic-ban-what-the-numbers-actually-say/",
+        "url": "/newsletter/the-anthropic-ban-what-the-numbers-actually-say/",
         "published": "2026-02-28"
       }
     },
@@ -3278,7 +3336,7 @@
       "properties": {
         "slug": "cms-just-dropped-the-claimscore-rfp-the-last-time-they-tried",
         "type": "article",
-        "url": "/articles/cms-just-dropped-the-claimscore-rfp-the-last-time-they-tried/",
+        "url": "/newsletter/cms-just-dropped-the-claimscore-rfp-the-last-time-they-tried/",
         "published": "2026-03-07"
       }
     },
@@ -3289,7 +3347,7 @@
       "properties": {
         "slug": "hipaa-was-written-in-1996-the-hole-is-not-a-bug",
         "type": "article",
-        "url": "/articles/hipaa-was-written-in-1996-the-hole-is-not-a-bug/",
+        "url": "/newsletter/hipaa-was-written-in-1996-the-hole-is-not-a-bug/",
         "published": "2026-03-10"
       }
     },
@@ -3300,7 +3358,7 @@
       "properties": {
         "slug": "the-soap-note-they-wont-check",
         "type": "article",
-        "url": "/articles/the-soap-note-they-wont-check/",
+        "url": "/newsletter/the-soap-note-they-wont-check/",
         "published": "2026-03-14"
       }
     },
@@ -3311,7 +3369,7 @@
       "properties": {
         "slug": "we-launched-a-data-strategy-while-landstuhl-was-full",
         "type": "article",
-        "url": "/articles/we-launched-a-data-strategy-while-landstuhl-was-full/",
+        "url": "/newsletter/we-launched-a-data-strategy-while-landstuhl-was-full/",
         "published": "2026-03-17"
       }
     },
@@ -3322,7 +3380,7 @@
       "properties": {
         "slug": "i-dont-use-ai-i-deploy-it",
         "type": "article",
-        "url": "/articles/i-dont-use-ai-i-deploy-it/",
+        "url": "/newsletter/i-dont-use-ai-i-deploy-it/",
         "published": "2026-03-19"
       }
     },
@@ -3333,7 +3391,7 @@
       "properties": {
         "slug": "clinical-ai-jailbroken-three-prompts",
         "type": "article",
-        "url": "/articles/clinical-ai-jailbroken-three-prompts/",
+        "url": "/newsletter/clinical-ai-jailbroken-three-prompts/",
         "published": "2026-03-24"
       }
     },
@@ -3344,7 +3402,7 @@
       "properties": {
         "slug": "april-3-is-not-the-hard-deadline-ccn-next-gen-the-follow-up",
         "type": "article",
-        "url": "/articles/april-3-is-not-the-hard-deadline-ccn-next-gen-the-follow-up/",
+        "url": "/newsletter/april-3-is-not-the-hard-deadline-ccn-next-gen-the-follow-up/",
         "published": "2026-03-26"
       }
     },
@@ -3355,7 +3413,7 @@
       "properties": {
         "slug": "80-analysts-43000-contractors-no-one-at-the-door",
         "type": "article",
-        "url": "/articles/80-analysts-43000-contractors-no-one-at-the-door/",
+        "url": "/newsletter/80-analysts-43000-contractors-no-one-at-the-door/",
         "published": "2026-03-31"
       }
     },
@@ -3366,7 +3424,7 @@
       "properties": {
         "slug": "va-ai-scribe-contract-foreign-influence",
         "type": "article",
-        "url": "/articles/va-ai-scribe-contract-foreign-influence/",
+        "url": "/newsletter/va-ai-scribe-contract-foreign-influence/",
         "published": "2026-03-31"
       }
     },
@@ -3377,7 +3435,7 @@
       "properties": {
         "slug": "three-vehicles-ninety-days-50-billion-play",
         "type": "article",
-        "url": "/articles/three-vehicles-ninety-days-50-billion-play/",
+        "url": "/newsletter/three-vehicles-ninety-days-50-billion-play/",
         "published": "2026-04-03"
       }
     },
@@ -3388,7 +3446,7 @@
       "properties": {
         "slug": "fy2027-federal-health-budget-part-1",
         "type": "article",
-        "url": "/articles/fy2027-federal-health-budget-part-1/",
+        "url": "/newsletter/fy2027-federal-health-budget-part-1/",
         "published": "2026-04-07"
       }
     },
@@ -3399,7 +3457,7 @@
       "properties": {
         "slug": "gsa-mas-refresh-31-tdr-mandatory",
         "type": "article",
-        "url": "/articles/gsa-mas-refresh-31-tdr-mandatory/",
+        "url": "/newsletter/gsa-mas-refresh-31-tdr-mandatory/",
         "published": "2026-04-07"
       }
     },
@@ -3410,7 +3468,7 @@
       "properties": {
         "slug": "fy2027-military-health-budget-part-2",
         "type": "article",
-        "url": "/articles/fy2027-military-health-budget-part-2/",
+        "url": "/newsletter/fy2027-military-health-budget-part-2/",
         "published": "2026-04-10"
       }
     },
@@ -3421,7 +3479,7 @@
       "properties": {
         "slug": "the-pipeline-is-open-rule-of-two",
         "type": "article",
-        "url": "/articles/the-pipeline-is-open-rule-of-two/",
+        "url": "/newsletter/the-pipeline-is-open-rule-of-two/",
         "published": "2026-04-14"
       }
     },
@@ -3432,7 +3490,7 @@
       "properties": {
         "slug": "dow-cio-five-new-leadership-hires",
         "type": "article",
-        "url": "/articles/dow-cio-five-new-leadership-hires/",
+        "url": "/newsletter/dow-cio-five-new-leadership-hires/",
         "published": "2026-04-15"
       }
     },
@@ -3443,7 +3501,7 @@
       "properties": {
         "slug": "direct-care-system-outperforms-fy2027-restructures",
         "type": "article",
-        "url": "/articles/direct-care-system-outperforms-fy2027-restructures/",
+        "url": "/newsletter/direct-care-system-outperforms-fy2027-restructures/",
         "published": "2026-04-18"
       }
     },
@@ -3454,7 +3512,7 @@
       "properties": {
         "slug": "the-laboratory-trump-8a-dismantling",
         "type": "article",
-        "url": "/articles/the-laboratory-trump-8a-dismantling/",
+        "url": "/newsletter/the-laboratory-trump-8a-dismantling/",
         "published": "2026-04-22"
       }
     },
@@ -3465,7 +3523,7 @@
       "properties": {
         "slug": "the-architecture-va-asks-for",
         "type": "article",
-        "url": "/articles/the-architecture-va-asks-for/",
+        "url": "/newsletter/the-architecture-va-asks-for/",
         "published": "2026-05-01"
       }
     },
@@ -3476,7 +3534,7 @@
       "properties": {
         "slug": "what-anthropic-refused",
         "type": "article",
-        "url": "/articles/what-anthropic-refused/",
+        "url": "/newsletter/what-anthropic-refused/",
         "published": "2026-05-05"
       }
     },
@@ -3487,7 +3545,7 @@
       "properties": {
         "slug": "what-the-budget-is-catching-up-to",
         "type": "article",
-        "url": "/articles/what-the-budget-is-catching-up-to/",
+        "url": "/newsletter/what-the-budget-is-catching-up-to/",
         "published": "2026-05-08"
       }
     },
@@ -3498,7 +3556,7 @@
       "properties": {
         "slug": "the-warfighter-under-the-pendulum",
         "type": "article",
-        "url": "/articles/the-warfighter-under-the-pendulum/",
+        "url": "/newsletter/the-warfighter-under-the-pendulum/",
         "published": "2026-05-12"
       }
     },
@@ -3509,7 +3567,7 @@
       "properties": {
         "slug": "the-reorg-lives-or-dies-in-the-loading-dock",
         "type": "article",
-        "url": "/articles/the-reorg-lives-or-dies-in-the-loading-dock/",
+        "url": "/newsletter/the-reorg-lives-or-dies-in-the-loading-dock/",
         "published": "2026-05-15"
       }
     },
@@ -3520,7 +3578,7 @@
       "properties": {
         "slug": "the-fraud-was-in-the-workflow",
         "type": "article",
-        "url": "/articles/the-fraud-was-in-the-workflow/",
+        "url": "/newsletter/the-fraud-was-in-the-workflow/",
         "published": "2026-05-19"
       }
     },
@@ -3531,7 +3589,7 @@
       "properties": {
         "slug": "the-workflow-was-designed-to-deliver",
         "type": "article",
-        "url": "/articles/the-workflow-was-designed-to-deliver/",
+        "url": "/newsletter/the-workflow-was-designed-to-deliver/",
         "published": "2026-05-22"
       }
     },
@@ -3542,7 +3600,7 @@
       "properties": {
         "slug": "a-researcher-talked-a-clinical-ai-out-of-its-own-rules",
         "type": "article",
-        "url": "/articles/a-researcher-talked-a-clinical-ai-out-of-its-own-rules/",
+        "url": "/newsletter/a-researcher-talked-a-clinical-ai-out-of-its-own-rules/",
         "published": "2026-05-26"
       }
     },
@@ -3553,7 +3611,7 @@
       "properties": {
         "slug": "dha-is-replacing-how-it-buys",
         "type": "article",
-        "url": "/articles/dha-is-replacing-how-it-buys/",
+        "url": "/newsletter/dha-is-replacing-how-it-buys/",
         "published": "2026-05-29"
       }
     },
@@ -3564,7 +3622,7 @@
       "properties": {
         "slug": "industry-leader-out-of-scope",
         "type": "article",
-        "url": "/articles/industry-leader-out-of-scope/",
+        "url": "/newsletter/industry-leader-out-of-scope/",
         "published": "2026-06-02"
       }
     },
@@ -3575,7 +3633,7 @@
       "properties": {
         "slug": "the-honesty-premium",
         "type": "article",
-        "url": "/articles/the-honesty-premium/",
+        "url": "/newsletter/the-honesty-premium/",
         "published": "2026-06-09"
       }
     },
@@ -3586,7 +3644,7 @@
       "properties": {
         "slug": "the-expert-you-cannot-buy-off-the-shelf",
         "type": "article",
-        "url": "/articles/the-expert-you-cannot-buy-off-the-shelf/",
+        "url": "/newsletter/the-expert-you-cannot-buy-off-the-shelf/",
         "published": "2026-06-12"
       }
     },
@@ -3597,7 +3655,7 @@
       "properties": {
         "slug": "two-of-forty-six",
         "type": "article",
-        "url": "/articles/two-of-forty-six/",
+        "url": "/newsletter/two-of-forty-six/",
         "published": "2026-06-16"
       }
     },
@@ -3608,7 +3666,7 @@
       "properties": {
         "slug": "what-the-rural-hospital-knows",
         "type": "article",
-        "url": "/articles/what-the-rural-hospital-knows/",
+        "url": "/newsletter/what-the-rural-hospital-knows/",
         "published": "2026-06-19"
       }
     },
@@ -3619,7 +3677,7 @@
       "properties": {
         "slug": "the-interoperability-problem-va-already-solved",
         "type": "article",
-        "url": "/articles/the-interoperability-problem-va-already-solved/",
+        "url": "/newsletter/the-interoperability-problem-va-already-solved/",
         "published": "2026-06-22"
       }
     },
@@ -3630,7 +3688,7 @@
       "properties": {
         "slug": "whose-hands-were-on-it",
         "type": "article",
-        "url": "/articles/whose-hands-were-on-it/",
+        "url": "/newsletter/whose-hands-were-on-it/",
         "published": "2026-06-26"
       }
     },
@@ -3641,7 +3699,7 @@
       "properties": {
         "slug": "recruiting-was-the-easy-part",
         "type": "article",
-        "url": "/articles/recruiting-was-the-easy-part/",
+        "url": "/newsletter/recruiting-was-the-easy-part/",
         "published": "2026-06-30"
       }
     },
@@ -3652,7 +3710,7 @@
       "properties": {
         "slug": "the-operational-imperative-that-almost-wasnt",
         "type": "article",
-        "url": "/articles/the-operational-imperative-that-almost-wasnt/",
+        "url": "/newsletter/the-operational-imperative-that-almost-wasnt/",
         "published": "2026-07-03"
       }
     },
@@ -3663,7 +3721,7 @@
       "properties": {
         "slug": "the-casualty-record-that-starts-over-at-the-aid-station",
         "type": "article",
-        "url": "/articles/the-casualty-record-that-starts-over-at-the-aid-station/",
+        "url": "/newsletter/the-casualty-record-that-starts-over-at-the-aid-station/",
         "published": "2026-07-07"
       }
     },
@@ -3674,7 +3732,7 @@
       "properties": {
         "slug": "the-government-bought-frontier-ai-for-a-dollar",
         "type": "article",
-        "url": "/articles/the-government-bought-frontier-ai-for-a-dollar/",
+        "url": "/newsletter/the-government-bought-frontier-ai-for-a-dollar/",
         "published": "2026-07-10"
       }
     },
@@ -3685,7 +3743,7 @@
       "properties": {
         "slug": "health-net-never-had-a-cmmc-deadline",
         "type": "article",
-        "url": "/articles/health-net-never-had-a-cmmc-deadline/",
+        "url": "/newsletter/health-net-never-had-a-cmmc-deadline/",
         "published": "2026-07-17"
       }
     },
@@ -3696,7 +3754,7 @@
       "properties": {
         "slug": "the-memo-never-says-veteran",
         "type": "article",
-        "url": "/articles/the-memo-never-says-veteran/",
+        "url": "/newsletter/the-memo-never-says-veteran/",
         "published": "2026-07-24"
       }
     },
@@ -3707,7 +3765,7 @@
       "properties": {
         "slug": "seven-steps-to-a-magnet",
         "type": "article",
-        "url": "/articles/seven-steps-to-a-magnet/",
+        "url": "/newsletter/seven-steps-to-a-magnet/",
         "published": "2026-07-31"
       }
     },
@@ -3718,7 +3776,7 @@
       "properties": {
         "slug": "ten-years-to-build-it-ten-months-to-field-it",
         "type": "article",
-        "url": "/articles/ten-years-to-build-it-ten-months-to-field-it/",
+        "url": "/newsletter/ten-years-to-build-it-ten-months-to-field-it/",
         "published": "2026-08-04"
       }
     },
@@ -3729,7 +3787,7 @@
       "properties": {
         "slug": "the-pentagon-asked",
         "type": "article",
-        "url": "/articles/the-pentagon-asked/",
+        "url": "/newsletter/the-pentagon-asked/",
         "published": "2026-08-07"
       }
     },
@@ -3740,7 +3798,7 @@
       "properties": {
         "slug": "a-plate-read-launches-an-aircraft",
         "type": "article",
-        "url": "/articles/a-plate-read-launches-an-aircraft/",
+        "url": "/newsletter/a-plate-read-launches-an-aircraft/",
         "published": "2026-08-11"
       }
     },
@@ -3751,19 +3809,52 @@
       "properties": {
         "slug": "the-marine-corps-answered-him-first",
         "type": "article",
-        "url": "/articles/the-marine-corps-answered-him-first/",
+        "url": "/newsletter/the-marine-corps-answered-him-first/",
         "published": "2026-08-18"
       }
     },
     {
-      "id": "article-replace-with-url-slug",
+      "id": "article-filed-under-document-drafting",
       "type": "Article",
-      "canonical_name": "Headline that makes the reader mad and motivated at the same time",
+      "canonical_name": "Filed Under Document Drafting",
       "properties": {
-        "slug": "replace-with-url-slug",
+        "slug": "filed-under-document-drafting",
         "type": "article",
-        "url": "/articles/replace-with-url-slug/",
-        "published": "2026-04-27"
+        "url": "/newsletter/filed-under-document-drafting/",
+        "published": "2026-08-25"
+      }
+    },
+    {
+      "id": "article-the-keystone",
+      "type": "Article",
+      "canonical_name": "The Keystone",
+      "properties": {
+        "slug": "the-keystone",
+        "type": "article",
+        "url": "/newsletter/the-keystone/",
+        "published": "2026-08-28"
+      }
+    },
+    {
+      "id": "article-the-man-who-publishes-his-plan",
+      "type": "Article",
+      "canonical_name": "The Man Who Publishes His Plan",
+      "properties": {
+        "slug": "the-man-who-publishes-his-plan",
+        "type": "article",
+        "url": "/newsletter/the-man-who-publishes-his-plan/",
+        "published": "2026-09-04"
+      }
+    },
+    {
+      "id": "article-the-scorecard-dha-already-publishes",
+      "type": "Article",
+      "canonical_name": "The Scorecard DHA Already Publishes",
+      "properties": {
+        "slug": "the-scorecard-dha-already-publishes",
+        "type": "article",
+        "url": "/newsletter/the-scorecard-dha-already-publishes/",
+        "published": "2026-09-11"
       }
     },
     {
@@ -3774,7 +3865,7 @@
         "slug": "capture-corner-2026-04-29",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-04-29.html",
-        "published": "capture-corner-2026-04-29"
+        "published": "2026-04-29"
       }
     },
     {
@@ -3785,7 +3876,7 @@
         "slug": "capture-corner-2026-05-01",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-05-01.html",
-        "published": "capture-corner-2026-05-01"
+        "published": "2026-05-01"
       }
     },
     {
@@ -3796,7 +3887,7 @@
         "slug": "capture-corner-2026-05-05",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-05-05.html",
-        "published": "capture-corner-2026-05-05"
+        "published": "2026-05-05"
       }
     },
     {
@@ -3807,7 +3898,7 @@
         "slug": "capture-corner-2026-05-08",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-05-08.html",
-        "published": "capture-corner-2026-05-08"
+        "published": "2026-05-08"
       }
     },
     {
@@ -3818,18 +3909,18 @@
         "slug": "capture-corner-2026-05-12",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-05-12.html",
-        "published": "capture-corner-2026-05-12"
+        "published": "2026-05-12"
       }
     },
     {
       "id": "article-capture-corner-2026-05-15",
       "type": "Article",
-      "canonical_name": "SCMDSO Intelligence Brief &mdash; Solicitation 36C10B26Q0376",
+      "canonical_name": "SCMDSO Intelligence Brief — Solicitation 36C10B26Q0376",
       "properties": {
         "slug": "capture-corner-2026-05-15",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-05-15.html",
-        "published": "capture-corner-2026-05-15"
+        "published": "2026-05-15"
       }
     },
     {
@@ -3840,7 +3931,7 @@
         "slug": "capture-corner-2026-05-17",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-05-17.html",
-        "published": "capture-corner-2026-05-17"
+        "published": "2026-05-17"
       }
     },
     {
@@ -3851,7 +3942,7 @@
         "slug": "capture-corner-2026-05-19",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-05-19.html",
-        "published": "capture-corner-2026-05-19"
+        "published": "2026-05-19"
       }
     },
     {
@@ -3862,7 +3953,7 @@
         "slug": "capture-corner-2026-05-22",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-05-22.html",
-        "published": "capture-corner-2026-05-22"
+        "published": "2026-05-22"
       }
     },
     {
@@ -3873,7 +3964,7 @@
         "slug": "capture-corner-2026-05-26",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-05-26.html",
-        "published": "capture-corner-2026-05-26"
+        "published": "2026-05-26"
       }
     },
     {
@@ -3884,7 +3975,7 @@
         "slug": "capture-corner-2026-05-27",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-05-27.html",
-        "published": "capture-corner-2026-05-27"
+        "published": "2026-05-27"
       }
     },
     {
@@ -3895,7 +3986,7 @@
         "slug": "capture-corner-2026-05-29",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-05-29.html",
-        "published": "capture-corner-2026-05-29"
+        "published": "2026-05-29"
       }
     },
     {
@@ -3906,7 +3997,7 @@
         "slug": "capture-corner-2026-06-02",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-06-02.html",
-        "published": "capture-corner-2026-06-02"
+        "published": "2026-06-02"
       }
     },
     {
@@ -3917,7 +4008,7 @@
         "slug": "capture-corner-2026-06-09",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-06-09.html",
-        "published": "capture-corner-2026-06-09"
+        "published": "2026-06-09"
       }
     },
     {
@@ -3928,7 +4019,7 @@
         "slug": "capture-corner-2026-06-12",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-06-12.html",
-        "published": "capture-corner-2026-06-12"
+        "published": "2026-06-12"
       }
     },
     {
@@ -3939,7 +4030,7 @@
         "slug": "capture-corner-2026-06-16",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-06-16.html",
-        "published": "capture-corner-2026-06-16"
+        "published": "2026-06-16"
       }
     },
     {
@@ -3950,7 +4041,7 @@
         "slug": "capture-corner-2026-06-19",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-06-19.html",
-        "published": "capture-corner-2026-06-19"
+        "published": "2026-06-19"
       }
     },
     {
@@ -3961,7 +4052,7 @@
         "slug": "capture-corner-2026-06-22",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-06-22.html",
-        "published": "capture-corner-2026-06-22"
+        "published": "2026-06-22"
       }
     },
     {
@@ -3972,7 +4063,7 @@
         "slug": "capture-corner-2026-06-26",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-06-26.html",
-        "published": "capture-corner-2026-06-26"
+        "published": "2026-06-26"
       }
     },
     {
@@ -3983,7 +4074,7 @@
         "slug": "capture-corner-2026-06-30",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-06-30.html",
-        "published": "capture-corner-2026-06-30"
+        "published": "2026-06-30"
       }
     },
     {
@@ -3994,7 +4085,7 @@
         "slug": "capture-corner-2026-07-03",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-07-03.html",
-        "published": "capture-corner-2026-07-03"
+        "published": "2026-07-03"
       }
     },
     {
@@ -4005,7 +4096,7 @@
         "slug": "capture-corner-2026-07-07",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-07-07.html",
-        "published": "capture-corner-2026-07-07"
+        "published": "2026-07-07"
       }
     },
     {
@@ -4016,7 +4107,7 @@
         "slug": "capture-corner-2026-07-10",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-07-10.html",
-        "published": "capture-corner-2026-07-10"
+        "published": "2026-07-10"
       }
     },
     {
@@ -4027,7 +4118,7 @@
         "slug": "capture-corner-2026-07-17",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-07-17.html",
-        "published": "capture-corner-2026-07-17"
+        "published": "2026-07-17"
       }
     },
     {
@@ -4038,7 +4129,7 @@
         "slug": "capture-corner-2026-07-24",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-07-24.html",
-        "published": "capture-corner-2026-07-24"
+        "published": "2026-07-24"
       }
     },
     {
@@ -4049,7 +4140,7 @@
         "slug": "capture-corner-2026-07-31",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-07-31.html",
-        "published": "capture-corner-2026-07-31"
+        "published": "2026-07-31"
       }
     },
     {
@@ -4060,7 +4151,7 @@
         "slug": "capture-corner-2026-08-04",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-08-04.html",
-        "published": "capture-corner-2026-08-04"
+        "published": "2026-08-04"
       }
     },
     {
@@ -4071,7 +4162,7 @@
         "slug": "capture-corner-2026-08-07",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-08-07.html",
-        "published": "capture-corner-2026-08-07"
+        "published": "2026-08-07"
       }
     },
     {
@@ -4082,7 +4173,7 @@
         "slug": "capture-corner-2026-08-11",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-08-11.html",
-        "published": "capture-corner-2026-08-11"
+        "published": "2026-08-11"
       }
     },
     {
@@ -4093,7 +4184,51 @@
         "slug": "capture-corner-2026-08-18",
         "type": "premium_brief",
         "url": "/premium/briefs/capture-corner-2026-08-18.html",
-        "published": "capture-corner-2026-08-18"
+        "published": "2026-08-18"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-08-25",
+      "type": "Article",
+      "canonical_name": "Which File Your Product Lands In",
+      "properties": {
+        "slug": "capture-corner-2026-08-25",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-08-25.html",
+        "published": "2026-08-25"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-08-28",
+      "type": "Article",
+      "canonical_name": "The Eligibility Field",
+      "properties": {
+        "slug": "capture-corner-2026-08-28",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-08-28.html",
+        "published": "2026-08-28"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-09-04",
+      "type": "Article",
+      "canonical_name": "The Calendar Under the Seat",
+      "properties": {
+        "slug": "capture-corner-2026-09-04",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-09-04.html",
+        "published": "2026-09-04"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-09-11",
+      "type": "Article",
+      "canonical_name": "Designated or Retired",
+      "properties": {
+        "slug": "capture-corner-2026-09-11",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-09-11.html",
+        "published": "2026-09-11"
       }
     },
     {
@@ -4213,7 +4348,7 @@
       "properties": {
         "slug": "community-care-network-next-gen-ccn-ng-",
         "type": "contract_intel",
-        "url": "https://sam.gov/opp/7b2734002e4048bfa2ac4cc5b0479930/view",
+        "url": "/contracts/community-care-network-next-gen-ccn-ng/",
         "published": "2026-08-17"
       }
     },
@@ -4224,7 +4359,7 @@
       "properties": {
         "slug": "ccn-dental-36c10g26r0004-",
         "type": "contract_intel",
-        "url": "https://sam.gov",
+        "url": "/contracts/ccn-dental-36c10g26r0004/",
         "published": "2026-08-17"
       }
     },
@@ -4235,7 +4370,7 @@
       "properties": {
         "slug": "va-ambient-scribe-idiq-36c10b26r0006-",
         "type": "contract_intel",
-        "url": "https://www.highergov.com/contract-opportunity/da10-ambient-scribe-enterprise-idiq-va-26-000129-36c10b26r0006-k-3749d/",
+        "url": "/contracts/va-ambient-scribe-idiq-36c10b26r0006/",
         "published": "2026-08-17"
       }
     },
@@ -4246,7 +4381,7 @@
       "properties": {
         "slug": "dha-data-governance-wosb-set-aside-",
         "type": "contract_intel",
-        "url": "https://sam.gov",
+        "url": "/contracts/dha-data-governance-wosb-set-aside/",
         "published": "2026-03-31"
       }
     },
@@ -4257,7 +4392,7 @@
       "properties": {
         "slug": "peo-dhms-deployment-solutions-new-idiq-",
         "type": "contract_intel",
-        "url": "https://sam.gov",
+        "url": "/contracts/peo-dhms-deployment-solutions-new-idiq/",
         "published": "2026-08-17"
       }
     },
@@ -4268,7 +4403,7 @@
       "properties": {
         "slug": "va-enterprise-imaging-neis-multi-visn-pacs-bi-directional-",
         "type": "contract_intel",
-        "url": "https://sam.gov",
+        "url": "/contracts/va-enterprise-imaging-neis-multi-visn-pacs-bi-directional/",
         "published": "2026-03-30"
       }
     },
@@ -4279,7 +4414,7 @@
       "properties": {
         "slug": "hhs-hopss-hhs-one-professional-services-solutions",
         "type": "contract_intel",
-        "url": "https://sam.gov",
+        "url": "/contracts/hhs-hopss-hhs-one-professional-services-solutions/",
         "published": "2026-08-17"
       }
     },
@@ -4290,7 +4425,7 @@
       "properties": {
         "slug": "hcds-health-care-delivery-solutions-mhs-genesis-follow-on-",
         "type": "contract_intel",
-        "url": "https://sam.gov/opp/hcds",
+        "url": "/contracts/hcds-health-care-delivery-solutions-mhs-genesis-follow-on/",
         "published": "2026-08-17"
       }
     },
@@ -4301,7 +4436,7 @@
       "properties": {
         "slug": "fda-sentinel-3-0",
         "type": "contract_intel",
-        "url": "https://www.highergov.com/contract-opportunity/sentinel-3-0-2026-updated-market-research-75f40126ssn00100-r-43567/",
+        "url": "/contracts/fda-sentinel-3-0/",
         "published": "2026-08-17"
       }
     },
@@ -4312,7 +4447,7 @@
       "properties": {
         "slug": "va-health-services-devsecops",
         "type": "contract_intel",
-        "url": "https://www.highergov.com/contract-opportunity/da01-health-services-devsecops-new-contract-va-36c10b26q0163-r-4a060/",
+        "url": "/contracts/va-health-services-devsecops/",
         "published": "2026-08-17"
       }
     },
@@ -4323,7 +4458,7 @@
       "properties": {
         "slug": "va-data-center-and-telecommunications-modernization",
         "type": "contract_intel",
-        "url": "https://sam.gov",
+        "url": "/contracts/va-data-center-and-telecommunications-modernization/",
         "published": "2026-08-17"
       }
     },
@@ -4334,7 +4469,7 @@
       "properties": {
         "slug": "va-helm-scmdso-healthcare-environment-and-logistics-management-",
         "type": "contract_intel",
-        "url": "https://sam.gov/opp/7f1dab9449984bc6aff2fe595831be62/view",
+        "url": "/contracts/va-supply-chain-devsecops-helm/",
         "published": "2026-08-17"
       }
     },
@@ -4345,8 +4480,8 @@
       "properties": {
         "slug": "cio-cs-follow-on-the-store",
         "type": "contract_intel",
-        "url": "https://sam.gov",
-        "published": "2026-08-17"
+        "url": "/contracts/cio-cs-follow-on-the-store/",
+        "published": "2026-09-10"
       }
     },
     {
@@ -4356,7 +4491,7 @@
       "properties": {
         "slug": "va-ehrm-electronic-health-record-modernization-",
         "type": "contract_intel",
-        "url": "https://digital.va.gov/ehr-modernization/ehr-deployment-schedule/",
+        "url": "/contracts/va-ehrm-electronic-health-record-modernization/",
         "published": "2026-08-17"
       }
     },
@@ -4367,7 +4502,7 @@
       "properties": {
         "slug": "mhs-genesis-dhmsm-bridge-",
         "type": "contract_intel",
-        "url": "https://www.health.mil/Military-Health-Topics/Technology/MHS-GENESIS",
+        "url": "/contracts/mhs-genesis-dhmsm-bridge/",
         "published": "2026-08-17"
       }
     },
@@ -4378,7 +4513,7 @@
       "properties": {
         "slug": "federal-electronic-health-record-modernization-fehrm-",
         "type": "contract_intel",
-        "url": "https://www.fehrm.gov",
+        "url": "/contracts/federal-electronic-health-record-modernization-fehrm/",
         "published": "2026-08-17"
       }
     },
@@ -4389,7 +4524,7 @@
       "properties": {
         "slug": "t4ng2-va-it-services-",
         "type": "contract_intel",
-        "url": "https://sam.gov",
+        "url": "/contracts/t4ng2-va-it-services/",
         "published": "2026-08-17"
       }
     },
@@ -4400,7 +4535,7 @@
       "properties": {
         "slug": "dha-enterprise-wide-cso-ht003826sc005-",
         "type": "contract_intel",
-        "url": "/documents/dha-enterprise-wide-cso-ht003826sc005.pdf",
+        "url": "/contracts/dha-enterprise-wide-cso-ht003826sc005/",
         "published": "2026-08-20"
       }
     },
@@ -4411,7 +4546,7 @@
       "properties": {
         "slug": "peo-dhms-cso-competitive-solutions-opening-",
         "type": "contract_intel",
-        "url": "https://sam.gov",
+        "url": "/contracts/peo-dhms-cso-competitive-solutions-opening/",
         "published": "2026-08-17"
       }
     },
@@ -4422,7 +4557,7 @@
       "properties": {
         "slug": "va-health-connect-iht-2-0",
         "type": "contract_intel",
-        "url": "https://www.va.gov",
+        "url": "/contracts/va-health-connect-iht-2-0/",
         "published": "2026-08-17"
       }
     },
@@ -4433,85 +4568,8 @@
       "properties": {
         "slug": "enterprise-intelligence-data-solutions-eids-",
         "type": "contract_intel",
-        "url": "https://sam.gov",
+        "url": "/contracts/enterprise-intelligence-data-solutions-eids/",
         "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-dha-enterprise-generative-ai",
-      "type": "Article",
-      "canonical_name": "DHA Enterprise Generative AI",
-      "properties": {
-        "slug": "dha-enterprise-generative-ai",
-        "type": "contract_intel",
-        "url": "https://sam.gov",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-cms-rural-health-transformation",
-      "type": "Article",
-      "canonical_name": "CMS Rural Health Transformation",
-      "properties": {
-        "slug": "cms-rural-health-transformation",
-        "type": "contract_intel",
-        "url": "https://www.cms.gov/priorities/rural-health-transformation-rht-program/overview",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-ihs-health-it-modernization-rpms-replacement",
-      "type": "Article",
-      "canonical_name": "IHS Health IT Modernization (RPMS Replacement)",
-      "properties": {
-        "slug": "ihs-health-it-modernization-rpms-replacement-",
-        "type": "contract_intel",
-        "url": "https://sam.gov",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-mhs-genesis-theater-jomis-operational-medicine-systems",
-      "type": "Article",
-      "canonical_name": "MHS GENESIS-Theater + JOMIS (Operational Medicine Systems)",
-      "properties": {
-        "slug": "mhs-genesis-theater-jomis-operational-medicine-systems-",
-        "type": "contract_intel",
-        "url": "https://sam.gov",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-dha-telehealth-programs",
-      "type": "Article",
-      "canonical_name": "DHA Telehealth Programs",
-      "properties": {
-        "slug": "dha-telehealth-programs",
-        "type": "contract_intel",
-        "url": "https://www.health.mil/Military-Health-Topics/Technology/Telehealth",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-cms-cloud-infrastructure-oci",
-      "type": "Article",
-      "canonical_name": "CMS Cloud Infrastructure (OCI)",
-      "properties": {
-        "slug": "cms-cloud-infrastructure-oci-",
-        "type": "contract_intel",
-        "url": "https://www.oracle.com/news/announcement/oracle-cloud-infrastructure-to-support-centers-for-medicare-and-medicaids-modernization-initiative-2026-02-11/",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-cdm-defend-health-data-cybersecurity",
-      "type": "Article",
-      "canonical_name": "CDM DEFEND (Health Data Cybersecurity)",
-      "properties": {
-        "slug": "cdm-defend-health-data-cybersecurity-",
-        "type": "contract_intel",
-        "url": "https://sam.gov",
-        "published": "2026-04-29"
       }
     }
   ],
@@ -4714,6 +4772,38 @@
       "from_id": "nitaac-cio-sp4",
       "to_id": "nitaac-cio-sp-3",
       "relation": "succeeds",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "hhs",
+      "to_id": "nitaac-cio-sp3",
+      "relation": "manages",
+      "properties": {
+        "sub_agency": "NIH NITAAC (Govtwide)"
+      },
+      "weight": 1
+    },
+    {
+      "from_id": "nitaac-cio-sp3",
+      "to_id": "naics-541512",
+      "relation": "covers_naics",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "hhs",
+      "to_id": "nitaac-cio-cs",
+      "relation": "manages",
+      "properties": {
+        "sub_agency": "NIH NITAAC (Govtwide)"
+      },
+      "weight": 1
+    },
+    {
+      "from_id": "nitaac-cio-cs",
+      "to_id": "naics-541519",
+      "relation": "covers_naics",
       "properties": {},
       "weight": 1
     },
@@ -6297,11 +6387,11 @@
       "weight": 1
     },
     {
-      "from_id": "maj-gen-paula-lodi",
+      "from_id": "brig-gen-constance-l-jenkins",
       "to_id": "dha",
       "relation": "leads",
       "properties": {
-        "title": "Commanding General, DHA Research & Development / Medical Research & Development Command (MRDC)"
+        "title": "Commander, DHA Research & Development / Medical Research & Development Command (MRDC); Director of Research & Development, DHA"
       },
       "weight": 1
     },
@@ -6567,6 +6657,33 @@
       "weight": 1
     },
     {
+      "from_id": "keith-martin",
+      "to_id": "arpa-h",
+      "relation": "leads",
+      "properties": {
+        "title": "Director, Administration and Management; Executive Officer"
+      },
+      "weight": 1
+    },
+    {
+      "from_id": "neil-wyant",
+      "to_id": "arpa-h",
+      "relation": "leads",
+      "properties": {
+        "title": "Director, Office of Commercialization"
+      },
+      "weight": 1
+    },
+    {
+      "from_id": "benjamin-bryant",
+      "to_id": "arpa-h",
+      "relation": "leads",
+      "properties": {
+        "title": "Deputy Director, Business Innovation Division; Acting Head of Contracting Activity"
+      },
+      "weight": 1
+    },
+    {
       "from_id": "paul-lawrence",
       "to_id": "va-oit",
       "relation": "leads",
@@ -6585,11 +6702,11 @@
       "weight": 1
     },
     {
-      "from_id": "michael-frueh",
+      "from_id": "margarita-devlin",
       "to_id": "vba",
       "relation": "leads",
       "properties": {
-        "title": "Acting Under Secretary for Benefits"
+        "title": "Principal Deputy Under Secretary for Benefits, performing the duties of the Under Secretary"
       },
       "weight": 1
     },
@@ -7427,6 +7544,111 @@
       "weight": 1
     },
     {
+      "from_id": "article-filed-under-document-drafting",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-keystone",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-keystone",
+      "to_id": "dmdc",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-keystone",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-keystone",
+      "to_id": "asw-ha",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-keystone",
+      "to_id": "rhrp-4",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-man-who-publishes-his-plan",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-man-who-publishes-his-plan",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-man-who-publishes-his-plan",
+      "to_id": "food-and-drug-administration",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-man-who-publishes-his-plan",
+      "to_id": "asw-ha",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-scorecard-dha-already-publishes",
+      "to_id": "advana",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-scorecard-dha-already-publishes",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-scorecard-dha-already-publishes",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-scorecard-dha-already-publishes",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-scorecard-dha-already-publishes",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-capture-corner-2026-04-29",
       "to_id": "dhmsm",
       "relation": "mentions",
@@ -7506,6 +7728,13 @@
     {
       "from_id": "article-capture-corner-2026-05-01",
       "to_id": "vista",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-05-08",
+      "to_id": "federal-ehr",
       "relation": "mentions",
       "properties": {},
       "weight": 1
@@ -7751,13 +7980,6 @@
     {
       "from_id": "article-capture-corner-2026-05-29",
       "to_id": "dhmsm",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-capture-corner-2026-05-29",
-      "to_id": "dhp",
       "relation": "mentions",
       "properties": {},
       "weight": 1
@@ -8057,6 +8279,13 @@
       "weight": 1
     },
     {
+      "from_id": "article-capture-corner-2026-07-31",
+      "to_id": "fedramp",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-capture-corner-2026-08-04",
       "to_id": "jomis",
       "relation": "mentions",
@@ -8115,6 +8344,76 @@
     {
       "from_id": "article-capture-corner-2026-08-18",
       "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-08-25",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-08-28",
+      "to_id": "dhp",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-08-28",
+      "to_id": "rhrp-4",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-04",
+      "to_id": "dhmsm",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-04",
+      "to_id": "jomis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-04",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-04",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-04",
+      "to_id": "peo-dhms",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-11",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-11",
+      "to_id": "gsa-alliant-2",
       "relation": "mentions",
       "properties": {},
       "weight": 1
@@ -8639,7 +8938,28 @@
     },
     {
       "from_id": "article-cio-cs-follow-on-the-store",
+      "to_id": "alliant-3",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-cio-cs-follow-on-the-store",
       "to_id": "cio-cs-follow-on-the-store",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-cio-cs-follow-on-the-store",
+      "to_id": "cio-sp4",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-cio-cs-follow-on-the-store",
+      "to_id": "polaris",
       "relation": "mentions",
       "properties": {},
       "weight": 1
@@ -8885,195 +9205,6 @@
     {
       "from_id": "article-enterprise-intelligence-data-solutions-eids",
       "to_id": "peo-dhms",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dha-enterprise-generative-ai",
-      "to_id": "dha-enterprise-generative-ai",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dha-enterprise-generative-ai",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dha-enterprise-generative-ai",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cms-rural-health-transformation",
-      "to_id": "cms-rural-health-transformation",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cms-rural-health-transformation",
-      "to_id": "centers-for-medicare-medicaid-services",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-ihs-health-it-modernization-rpms-replacement",
-      "to_id": "fedramp",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-ihs-health-it-modernization-rpms-replacement",
-      "to_id": "ihs-health-it-modernization-rpms-replacement",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-ihs-health-it-modernization-rpms-replacement",
-      "to_id": "indian-health-service",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-ihs-health-it-modernization-rpms-replacement",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-ihs-health-it-modernization-rpms-replacement",
-      "to_id": "mhs-genesis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-theater-jomis-operational-medicine-systems",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-theater-jomis-operational-medicine-systems",
-      "to_id": "jomis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-theater-jomis-operational-medicine-systems",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-theater-jomis-operational-medicine-systems",
-      "to_id": "mhs-genesis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-theater-jomis-operational-medicine-systems",
-      "to_id": "mhs-genesis-theater-jomis-operational-medicine-systems",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-theater-jomis-operational-medicine-systems",
-      "to_id": "peo-dhms",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dha-telehealth-programs",
-      "to_id": "dha-telehealth-programs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dha-telehealth-programs",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dha-telehealth-programs",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dha-telehealth-programs",
-      "to_id": "mhs-genesis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cms-cloud-infrastructure-oci",
-      "to_id": "cms-cloud-infrastructure-oci",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cms-cloud-infrastructure-oci",
-      "to_id": "centers-for-medicare-medicaid-services",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cms-cloud-infrastructure-oci",
-      "to_id": "fedramp",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cms-cloud-infrastructure-oci",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cms-cloud-infrastructure-oci",
-      "to_id": "mhs-genesis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cms-cloud-infrastructure-oci",
-      "to_id": "va-ehrm",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cdm-defend-health-data-cybersecurity",
-      "to_id": "cdm-defend-health-data-cybersecurity",
       "relation": "mentions",
       "properties": {},
       "weight": 1
