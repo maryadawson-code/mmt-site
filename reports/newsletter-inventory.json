@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-08-25T18:00:35.178Z",
+  "generated_at": "2026-09-15T20:55:33.241Z",
   "source_dir": "content/newsletter",
-  "source_count": 132,
+  "source_count": 136,
   "newest_in_source": {
-    "file": "2026-08-25-filed-under-document-drafting.md",
-    "title": "Filed Under Document Drafting",
-    "date": "2026-08-25T00:00:00.000Z",
-    "slug": "filed-under-document-drafting",
+    "file": "2026-09-15-vas-manual-tells-raters-to-enter-service-that-never-happened.md",
+    "title": "VA's Manual Tells Raters to Enter Service That Never Happened",
+    "date": "2026-09-15T00:00:00.000Z",
+    "slug": "vas-manual-tells-raters-to-enter-service-that-never-happened",
     "future_dated": false
   },
   "newest_in_dist_latest": {
-    "slug": "filed-under-document-drafting",
-    "title": "Filed Under Document Drafting"
+    "slug": "vas-manual-tells-raters-to-enter-service-that-never-happened",
+    "title": "VA's Manual Tells Raters to Enter Service That Never Happened"
   },
   "in_sync": true,
   "imported_in_this_run": [],
