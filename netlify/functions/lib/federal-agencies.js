@@ -38,8 +38,9 @@
 //                   answer.
 //   samDept         SAM.gov `deptname` value (uppercase, their spelling).
 //   federalRegister Federal Register agency slug(s).
-//   cgac            CGAC/toptier code for agency spending totals and the
-//                   IT Dashboard.
+//   cgac            the agency's own CGAC (SAM.gov assistance, Regulations.gov).
+//                   USASpending's agency endpoints take the department's
+//                   code instead: see usaspendingToptierCode().
 // ============================================================
 
 const HHS_TOPTIER = "Department of Health and Human Services";
@@ -416,10 +417,29 @@ function federalRegisterSlugs(codeOrName) {
   return (a && a.federalRegister) || [];
 }
 
-/** CGAC toptier code for agency spending totals and the IT Dashboard. */
+/** The agency's own CGAC (SAM.gov assistance, Regulations.gov, the DoD delay note). */
 function agencyCgac(codeOrName) {
   const a = agencyFor(codeOrName);
   return (a && a.cgac) || null;
+}
+
+/**
+ * Toptier code USASpending's `/api/v2/agency/<code>/` endpoints accept: the
+ * CGAC of the department whose toptier filter this agency uses, not the
+ * agency's own `cgac`. The military departments carry a real CGAC (Army
+ * 021, Navy 017, Air Force 057), but USASpending files them under DoD:
+ * `/agency/021/budgetary_resources/` answers 404 "Agency with a toptier code
+ * of '021' does not exist", and none of the three is in
+ * `/references/toptier_agencies/` (checked live 2026-09-15; every Army
+ * question spent the whole totals timeout on a call that could not answer).
+ * Army resolves to 097, the whole department, which the context block says.
+ */
+function usaspendingToptierCode(codeOrName) {
+  const a = agencyFor(codeOrName);
+  const toptier = a && a.usaspending && a.usaspending.toptier;
+  if (!toptier) return null;
+  const dept = AGENCIES.find((r) => r.usaspending && r.usaspending.toptier === toptier && !r.usaspending.subtier);
+  return (dept && dept.cgac) || null;
 }
 
 /** Display name for prompts and logs. */
@@ -434,6 +454,7 @@ module.exports = {
   agencyFor,
   agencyName,
   agencyCgac,
+  usaspendingToptierCode,
   detectAgencies,
   stripAgencyWording,
   usaspendingAgencyFilter,

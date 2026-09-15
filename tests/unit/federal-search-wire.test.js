@@ -755,3 +755,77 @@ describe("2026-09-14 review: match counts, real award fields, topic-word obligat
     expect(out.set_aside_codes.length).toBe(14);
   });
 });
+
+// Measured live 2026-09-15: every Army question ("Who are the incumbents on
+// ITES-3H?") asked /agency/021/budgetary_resources/ and got 404 on every
+// turn (539ms and 992ms in production, up to 18s from curl), because
+// USASpending has no Army, Navy or Air Force toptier. Bodies below are the
+// live responses from that day, trimmed to the fields the reader uses.
+describe("agency spending totals: the code USASpending's agency endpoint accepts", () => {
+  const ARMY_404 = { detail: "Agency with a toptier code of '021' does not exist" };
+  const DOD_FY2026 = { toptier_code: "097", agency_data_by_year: [{ fiscal_year: 2026, agency_budgetary_resources: 2631408222827.34, agency_total_obligated: 1363585241420.8, agency_total_outlayed: 1212232405414.67, total_budgetary_resources: 15495311418794.12 }] };
+  // The toptier codes /agency/<code>/budgetary_resources/ answered 200 for on
+  // 2026-09-15; 021, 017 and 057 answered 404 and are absent from
+  // /references/toptier_agencies/.
+  const ACCEPTED_2026_09_15 = ["097", "075", "036", "070", "047", "080", "028"];
+
+  const budgetCalls = () => calls.filter((c) => c.url.includes("/budgetary_resources/"));
+  function totalsFetch(onBudget) {
+    const base = makeFetch({ toptierResults: [] });
+    return async (url, opts = {}) => {
+      const u = String(url);
+      if (!u.includes("/budgetary_resources/")) return base(url, opts);
+      calls.push({ url: u, body: null });
+      return onBudget(u);
+    };
+  }
+
+  it("every registry agency resolves to a toptier code the endpoint accepted, and the military departments resolve to DoD 097", async () => {
+    const reg = cjsRequire("../../netlify/functions/lib/federal-agencies.js");
+    for (const a of reg.AGENCIES) {
+      expect(ACCEPTED_2026_09_15, `${a.code} -> ${reg.usaspendingToptierCode(a.code)}`).toContain(reg.usaspendingToptierCode(a.code));
+    }
+    for (const code of ["Army", "Navy", "AirForce"]) expect(reg.usaspendingToptierCode(code)).toBe("097");
+    // The agency's own CGAC is unchanged: SAM.gov assistance and
+    // Regulations.gov read it, and they do know the Army.
+    expect(reg.agencyCgac("Army")).toBe("021");
+    expect(reg.agencyCgac("Navy")).toBe("017");
+    expect(reg.agencyCgac("AirForce")).toBe("057");
+  });
+
+  it("'Who are the incumbents on ITES-3H?' asks for DoD 097, never 021, and the block says it is the whole department", async () => {
+    globalThis.fetch = totalsFetch((u) => (u.includes("/agency/097/") ? jsonRes(DOD_FY2026) : jsonRes(ARMY_404, 404)));
+    const out = await api.enrichWithFederalData({ topic: "Who are the incumbents on ITES-3H?", agency: "Army", today: TODAY });
+    expect(budgetCalls().map((c) => new URL(c.url).pathname)).toEqual(["/api/v2/agency/097/budgetary_resources/"]);
+    expect(out.agency_spending.error).toBeUndefined();
+    expect(out.agency_spending.spending).toMatchObject({ agency_code: "097", agency_name: "Department of Defense", fiscal_year: 2026, obligated: 1363585241420.8 });
+    const ctx = api.formatFederalDataContext(out);
+    expect(ctx).toContain("DEPARTMENT-LEVEL SPENDING TOTALS for Department of Defense (CGAC 097), FY2026 to date");
+    expect(ctx).toContain("(the whole department, not the sub-agency asked about)");
+    expect(ctx).toContain("- Obligated: $1363.6B");
+    expect(ctx).not.toContain("CGAC 021");
+  });
+
+  it("a 404 'does not exist' is a permanent skip, not an error, not a timeout, and the code is never requested again", async () => {
+    globalThis.fetch = totalsFetch(() => jsonRes(ARMY_404, 404));
+    const first = await api.getAgencySpendingTotals({ agency_code: "021", fiscal_year: 2026 });
+    expect(first).toEqual({ spending: null, skipped: "CGAC 021 is not a USASpending toptier agency" });
+    expect(first.error).toBeUndefined();
+    const second = await api.getAgencySpendingTotals({ agency_code: "021", fiscal_year: 2026 });
+    expect(second).toEqual(first);
+    expect(budgetCalls().length).toBe(1);
+
+    const pa = cjsRequire("../../netlify/functions/lib/premium-assistant.js");
+    const unavailable = pa.collectUnavailable({ federalData: { usaspending_awards: { awards: [], total: 0 }, agency_spending: second }, systemBlocks: [] });
+    expect(unavailable).toEqual([]);
+  });
+
+  it("any other failure stays an error and is not remembered: a 503, or a 404 without the does-not-exist detail", async () => {
+    let status = 503;
+    globalThis.fetch = totalsFetch(() => (status === 503 ? jsonRes({ detail: "Service Unavailable" }, 503) : jsonRes({ detail: "Not Found" }, 404)));
+    expect(await api.getAgencySpendingTotals({ agency_code: "097", fiscal_year: 2026 })).toEqual({ spending: null, error: "USASpending Agency API 503" });
+    status = 404;
+    expect(await api.getAgencySpendingTotals({ agency_code: "097", fiscal_year: 2026 })).toEqual({ spending: null, error: "USASpending Agency API 404" });
+    expect(budgetCalls().length).toBe(2);
+  });
+});

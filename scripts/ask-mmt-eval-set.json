@@ -248,6 +248,14 @@
       "allowed_unavailable": [
         "sam_opportunities"
       ]
+    },
+    {
+      "id": "fail-2026-09-15-army-ites-3h",
+      "source": "Mary's live measurement 2026-09-15: every turn asked USASpending for Army toptier 021 budgetary resources and got 404 (Army, Navy and Air Force are not USASpending toptier agencies)",
+      "question": "Who are the incumbents on ITES-3H?",
+      "required": [
+        "ITES-3H"
+      ]
     }
   ]
 }
