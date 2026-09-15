@@ -310,6 +310,12 @@ const DEFAULT_DEPS = {
 
 const { connectEvent: connectBlobs } = require("./lib/fetch-cache");
 
+// Why each system was not reached ("usaspending: timeout"). The ids alone
+// could not tell a slow USASpending from a SAM.gov gateway 404 (2026-09-15).
+function unavailableReasons(unavailable) {
+  return unavailable.map((u) => `${u.id}: ${u.reason || "no answer"}`);
+}
+
 /** The telemetry columns and details shared by both turn events. */
 function turnTelemetry(result, startedAt) {
   const timings = result.timings || {};
@@ -480,7 +486,7 @@ function makeHandler(overrides = {}) {
       details: {
         email, tier, question, answer: result.answer, agency: result.agency, has_data: result.hasData,
         ...telemetry.details,
-        source_ids: sources.map((s) => s.id), unavailable: unavailable.map((u) => u.id), shapes: result.shapes || [], routed: result.routed || [],
+        source_ids: sources.map((s) => s.id), unavailable: unavailable.map((u) => u.id), unavailable_reasons: unavailableReasons(unavailable), shapes: result.shapes || [], routed: result.routed || [],
         search_phrase: result.searchPhrase, history_turns: history.length,
         submitted_at: now.toISOString(), month,
       },
@@ -495,7 +501,7 @@ function makeHandler(overrides = {}) {
     ...telemetry.columns,
     details: {
       turn_id: turnId, email, ip_hash: ipHash, question, answer: result.answer, agency: result.agency,
-      has_data: result.hasData, ...telemetry.details, sources, unavailable: unavailable.map((u) => u.id), shapes: result.shapes || [], routed: result.routed || [],
+      has_data: result.hasData, ...telemetry.details, sources, unavailable: unavailable.map((u) => u.id), unavailable_reasons: unavailableReasons(unavailable), shapes: result.shapes || [], routed: result.routed || [],
       search_phrase: result.searchPhrase, history_turns: history.length,
       submitted_at: now.toISOString(), month, hint,
     },
