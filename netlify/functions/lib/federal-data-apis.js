@@ -36,6 +36,7 @@ const { cached, cacheKey, cacheGet, cacheSet } = require("./fetch-cache");
 const { searchGaoFeed } = require("./gao-feed");
 const { filterRelevant } = require("./relevance");
 const SAM_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
+const TOPTIER_REJECTION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 // ONE agency registry for every filter below (27 agencies). Before it, each
 // API had its own hand-typed table covering 5 to 8 agencies, so a question
 // about FDA, CDC, HRSA, ARPA-H, ONC, the Army or NASA got no agency filter
@@ -45,7 +46,7 @@ const {
   hasSubtier,
   samDeptName,
   federalRegisterSlugs,
-  agencyCgac,
+  usaspendingToptierCode,
 } = require("./federal-agencies");
 
 /**
@@ -856,8 +857,24 @@ async function searchSAMEntities({ vendorName, limit = 5 }) {
  */
 async function getAgencySpendingTotals({ agency_code, fiscal_year, agency_name }) {
   const fy = fiscal_year || new Date().getFullYear();
+  // A code the endpoint rejects is remembered and never requested again
+  // within the TTL. The rejection is a skip, not an error: nothing was down.
+  const rejectedKey = cacheKey("usaspending-toptier-rejected", String(agency_code));
+  const rejected = await cacheGet(rejectedKey);
+  if (rejected) return { spending: null, skipped: rejected };
   try {
     const res = await fetch(`https://api.usaspending.gov/api/v2/agency/${agency_code}/budgetary_resources/?fiscal_year=${fy}`);
+    if (res.status === 404) {
+      // "Agency with a toptier code of '021' does not exist" (live
+      // 2026-09-15) is a permanent fact about the code, not an outage.
+      // Any other 404 body is treated as a failure.
+      const body = await res.json().catch(() => null);
+      if (body && /does not exist/i.test(String(body.detail || ""))) {
+        const reason = `CGAC ${agency_code} is not a USASpending toptier agency`;
+        await cacheSet(rejectedKey, reason, TOPTIER_REJECTION_TTL_MS);
+        return { spending: null, skipped: reason };
+      }
+    }
     if (!res.ok) return { spending: null, error: `USASpending Agency API ${res.status}` };
 
     const data = await res.json();
@@ -983,7 +1000,9 @@ function guardedAwards(plan, budget, ms) {
   return usaGuarded("awards", parts, () => runAwardLadder(plan, budget), { ms, emptyShape: { awards: [], total: 0 }, today: plan.today });
 }
 function guardedAgencyTotals(plan, ms) {
-  const code = plan.agency ? agencyCgac(plan.agency) : null;
+  // The department's code, never the agency's own CGAC: USASpending has no
+  // Army (021), Navy (017) or Air Force (057) toptier (2026-09-15).
+  const code = plan.agency ? usaspendingToptierCode(plan.agency) : null;
   if (!code) return Promise.resolve({ spending: null });
   const name = (usaspendingAgencyFilter(plan.agency, { tier: "toptier" }) || {}).name || null;
   return usaGuarded("agency-totals", [code, 2026], () => getAgencySpendingTotals({ agency_code: code, fiscal_year: 2026, agency_name: name }), { ms, emptyShape: { spending: null }, today: plan.today });
