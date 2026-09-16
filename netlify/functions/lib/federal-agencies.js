@@ -442,6 +442,19 @@ function usaspendingToptierCode(codeOrName) {
   return (dept && dept.cgac) || null;
 }
 
+/**
+ * One agency code per USASpending toptier code (the department records), so
+ * a job that must cover every department's totals asks each code once.
+ */
+function usaspendingDepartments() {
+  const byCode = new Map();
+  for (const a of AGENCIES) {
+    const code = a.usaspending && !a.usaspending.subtier ? usaspendingToptierCode(a.code) : null;
+    if (code && !byCode.has(code)) byCode.set(code, a.code);
+  }
+  return [...byCode.values()];
+}
+
 /** Display name for prompts and logs. */
 function agencyName(codeOrName) {
   const a = agencyFor(codeOrName);
@@ -455,6 +468,7 @@ module.exports = {
   agencyName,
   agencyCgac,
   usaspendingToptierCode,
+  usaspendingDepartments,
   detectAgencies,
   stripAgencyWording,
   usaspendingAgencyFilter,
