@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-15T20:55:17.893Z",
+  "generated_at": "2026-09-18T11:45:34.962Z",
   "total": 277,
   "note": "Public subset of mmt-content-corpus.json (premium=false items only). For unauthenticated endpoints. Per Sprint C 2026-05-14.",
   "counts": {
@@ -4136,7 +4136,7 @@
       "type": "idiq_vehicle",
       "title": "PEO DHMS Deployment Solutions IDIQ",
       "slug": "peo-dhms-deployment",
-      "date": "2026-06-01",
+      "date": "2026-08-01",
       "description": "DHA DHA / PEO DHMS — Multiple Award IDIQ · $0.30B ceiling",
       "tags": [
         "idiq",
@@ -4144,11 +4144,11 @@
         "DHA / PEO DHMS",
         "Unrestricted",
         "Multiple Award IDIQ",
-        "Solicitation-stage / upcoming"
+        "Active / Awarded"
       ],
       "url": "/idiq-tracker.html",
       "source_url": "https://sam.gov/workspace/contract/opp/111847a96d214505b4d398a931dfdf1d/view",
-      "excerpt": "Vehicle: PEO DHMS Deployment Solutions IDIQ\nAgency: DHA / DHA / PEO DHMS\nContract number: HT003826RE001\nCeiling: $0.30B\nPeriod of performance: 2026-06-01 to 2031-05-31\nSet-aside: Unrestricted\nType: Multiple Award IDIQ\nStatus: Solicitation-stage / upcoming\nPrimes: 6-9 expected\nNAICS primary: 541512\nPSC: DA01\nMMT burn status: New\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: Proposals due Apr 21 2026 (2026-04-21 to 2026-09-30) — 70% confidence\nMMT note: Solicitation HT003826RE001; proposals due 2026-04-21\nPrimary source: https://sam.gov/workspace/contract/opp/111847a96d214505b4d398a931dfdf1d/view",
+      "excerpt": "Vehicle: PEO DHMS Deployment Solutions IDIQ\nAgency: DHA / DHA / PEO DHMS\nContract number: HT003826RE001\nCeiling: $0.30B\nPeriod of performance: 2026-08-01 to 2031-08-31\nSet-aside: Unrestricted\nType: Multiple Award IDIQ\nStatus: Active / Awarded\nPrimes: 12 (from 29 offers)\nNAICS primary: 541512\nPSC: DA01\nMMT burn status: New\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: Awarded Aug 2026; task order phase (2026-08-01 to 2031-08-31)\nMMT note: Awarded Aug 2026: 12 primes from 29 offers, $300M combined ceiling, one base year plus four option years. Ordering Aug 2026 to Aug 2031 at the month precision MMT published. Sources: contracts.json peo-dhms-deployment-solutions-new-idiq (verified 2026-08-17); MMT brief 2026-08-18.\nPrimary source: https://sam.gov/workspace/contract/opp/111847a96d214505b4d398a931dfdf1d/view",
       "premium": false
     },
     {
@@ -4217,17 +4217,17 @@
       "title": "DHA Medical Support Services IDIQ",
       "slug": "dha-mss",
       "date": "",
-      "description": "DoD DHA — IDIQ · $0.97B ceiling",
+      "description": "DoD DHA — Multiple Award IDIQ · $0.97B ceiling",
       "tags": [
         "idiq",
         "DoD",
         "DHA",
         "Multiple Award IDIQ",
-        "614000000"
+        "Winding Down"
       ],
       "url": "/idiq-tracker.html",
-      "source_url": "Clinical/medical support at MTFs",
-      "excerpt": "Vehicle: DHA Medical Support Services IDIQ\nAgency: DoD / DHA\nCeiling: $0.97B\nPeriod of performance: ? to 2025-10-31\nSet-aside: Multiple Award IDIQ\nStatus: 614000000\nPrimes: Winding Down\nMMT burn status: 5\nMMT forecast: 2026-10-01 to 2027-03-31 (65) — ?% confidence\nPrimary source: Clinical/medical support at MTFs",
+      "source_url": "https://www.highergov.com/vehicle/dha-medical-support-services-mss-2007/",
+      "excerpt": "Vehicle: DHA Medical Support Services IDIQ\nAgency: DoD / DHA\nCeiling: $0.97B\nPeriod of performance: ? to 2025-10-31\nType: Multiple Award IDIQ\nStatus: Winding Down\nMMT burn status: Saturating\nMMT Incumbent Vulnerability Score: 5/5\nMMT forecast: Successor vehicle RFP (2026-10-01 to 2027-03-31) — 65% confidence\nMMT note: Clinical/medical support at MTFs\nPrimary source: https://www.highergov.com/vehicle/dha-medical-support-services-mss-2007/",
       "premium": false
     },
     {
@@ -4556,17 +4556,18 @@
       "title": "DLA MedSurg Prime Vendor Gen VI",
       "slug": "dla-mspv-gen-vi",
       "date": "",
-      "description": "DoD DLA Troop Support Medical — Unrestricted + regional · $5.00B ceiling",
+      "description": "DoD DLA Troop Support Medical — Multiple Award IDIQ · $5.00B ceiling",
       "tags": [
         "idiq",
         "DoD",
         "DLA Troop Support Medical",
         "Unrestricted + regional",
-        "TBD"
+        "Multiple Award IDIQ",
+        "In Evaluation"
       ],
       "url": "/idiq-tracker.html",
-      "source_url": "70",
-      "excerpt": "Vehicle: DLA MedSurg Prime Vendor Gen VI\nAgency: DoD / DLA Troop Support Medical\nContract number: SPE2DV25R0001\nCeiling: $5.00B\nType: Unrestricted + regional\nStatus: TBD\nPrimes: Commercial distribution\nNAICS secondary: 339113\nPSC: 424210\nMMT forecast: 2 (Award decisions) — ?% confidence\nMMT note: https://www.highergov.com/contract-opportunity/dla-medsurg-prime-vendor-gen-vi-spe2dv25r0001-o-daa0a/\nPrimary source: 70",
+      "source_url": "https://www.highergov.com/contract-opportunity/dla-medsurg-prime-vendor-gen-vi-spe2dv25r0001-o-daa0a/",
+      "excerpt": "Vehicle: DLA MedSurg Prime Vendor Gen VI\nAgency: DoD / DLA Troop Support Medical\nContract number: SPE2DV25R0001\nCeiling: $5.00B\nSet-aside: Unrestricted + regional\nType: Multiple Award IDIQ\nStatus: In Evaluation\nPrimes: TBD\nNAICS primary: 339113\nNAICS secondary: 424210\nMMT burn status: New\nMMT Incumbent Vulnerability Score: 2/5\nMMT forecast: Award decisions (2026-06-01 to 2026-09-30) — 70% confidence\nMMT note: 3 Global Regions primary + backup PVs\nPrimary source: https://www.highergov.com/contract-opportunity/dla-medsurg-prime-vendor-gen-vi-spe2dv25r0001-o-daa0a/",
       "premium": false
     },
     {

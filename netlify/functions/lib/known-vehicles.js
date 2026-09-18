@@ -25,6 +25,13 @@
 // weigh it, lib/data-freshness.js ages every entry on a 90-day cadence,
 // and tests/unit/known-vehicles.test.js fails when a note contradicts the
 // dataset's status. A note never carries an undated future claim.
+//
+// 2026-09-18: HITDSS and DHITUC still described HITDSS as a planned DHA J6
+// follow-on five months after MMT published the opposite. The March 2026
+// monthly, revised 2026-04-19, withdrew the HITDSS figure as an internal
+// working name and named the live vehicle: PEO DHMS Deployment Solutions
+// (HT003826RE001), since awarded. MMT's own published briefs are an in-repo
+// source, so both notes now carry the correction.
 // ============================================================
 
 /**
@@ -171,9 +178,9 @@ const VEHICLES = [
     naics: ["541512"],
     search_terms: ["DHITUC", "Defense Health Information Technology Universal Contract"],
     owners: ["DHA J6"],
-    notes: "DHITUC is a DHA J6 IT services vehicle, listed as an open vehicle in MMT's DHA agency profile. HITDSS (Health IT Deployment Support Services) is the follow-on name from earlier planning; MMT's datasets record no HITDSS solicitation or award as of the verified date.",
-    verified: "2026-07-09",
-    source: "data/premium/agency-profiles/agencies.json (dha, openVehicles)",
+    notes: "DHITUC is a DHA J6 IT services vehicle, listed as an open vehicle in MMT's DHA agency profile. HITDSS (Health IT Deployment Support Services) was an internal working name from earlier planning rather than a posted follow-on solicitation; MMT withdrew that framing on April 19 2026 and MMT's datasets record no HITDSS solicitation or award.",
+    verified: "2026-09-18",
+    source: "data/premium/agency-profiles/agencies.json (dha, openVehicles); scripts/seed-data/premium-monthly-2026-03.html (MMT correction published 2026-04-19)",
   },
   {
     aliases: ["hitdss", "health it deployment support services"],
@@ -182,9 +189,9 @@ const VEHICLES = [
     naics: ["541512"],
     search_terms: ["HITDSS", "Health IT Deployment Support Services"],
     owners: ["DHA J6"],
-    notes: "HITDSS (Health IT Deployment Support Services) was planned as the DHA J6 follow-on to DHITUC for clinical system deployment, integration and sustainment support, with a multi-tier set-aside structure (SDVOSB, 8(a), full and open) discussed in early planning. MMT's datasets record no HITDSS solicitation or award as of the verified date; check SAM.gov for a current notice before citing any timeline.",
-    verified: "2026-04-17",
-    source: "this file (no other in-repo source names the vehicle)",
+    notes: "HITDSS (Health IT Deployment Support Services) is an internal working name from early DHA J6 planning, not a posted solicitation. MMT published that correction on April 19 2026, withdrawing an earlier HITDSS ceiling figure of about $2.4B: the live DHA deployment vehicle in that window is PEO DHMS Deployment Solutions (HT003826RE001), a $300M multiple-award IDIQ awarded in August 2026 to 12 primes out of 29 offers, with ordering through August 2031. MMT's datasets record no HITDSS solicitation or award. Answer a HITDSS question from the PEO DHMS Deployment Solutions record.",
+    verified: "2026-09-18",
+    source: "scripts/seed-data/premium-monthly-2026-03.html (MMT correction published 2026-04-19); contracts.json (peo-dhms-deployment-solutions-new-idiq, verified 2026-08-17); data/idiq-vehicles.json",
   },
   {
     aliases: ["vets 2", "vets ii", "vets-2"],
