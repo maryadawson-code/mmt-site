@@ -138,11 +138,17 @@ describe("registered in lib/data-freshness.js on a 90-day cadence", () => {
     expect(t4.date).toBe("2026-09-10");
     expect(t4.age_days).toBe(8);
     expect(t4.stale).toBe(false);
-    // the entries whose only in-repo source is still this file's April commit are honestly stale.
+    // DHITSC is the last entry whose only in-repo source is still this file's April commit, and it
+    // stays honestly stale: a 2026-09-18 public-source check did not resolve the acronym against a
+    // DHA or SAM.gov notice, so there is nothing to bump `verified` against.
+    expect(rows.find((r) => r.label === "DHITSC").stale, "DHITSC").toBe(true);
     // HITDSS left this list on 2026-09-18: MMT's own published correction of 2026-04-19 named it an
     // internal working name and named the real vehicle, so the note finally has a source to cite.
-    for (const label of ["DHITSC", "ITES-SW2"]) expect(rows.find((r) => r.label === label).stale, label).toBe(true);
     expect(rows.find((r) => r.label === "HITDSS").stale).toBe(false);
+    // ITES-SW2 left it too: re-checked 2026-09-18 against the Army CHESS program page, which shows
+    // the vehicle live with its current holders. The note asserts no ceiling or end date, because
+    // CHESS does not publish them there.
+    expect(rows.find((r) => r.label === "ITES-SW2").stale, "ITES-SW2").toBe(false);
     // and past 90 days every row would go stale
     const later = evaluate({ root: REPO, today: "2026-12-31" });
     expect(later.datasets.filter((r) => r.id === "known-vehicles").every((r) => r.stale)).toBe(true);
