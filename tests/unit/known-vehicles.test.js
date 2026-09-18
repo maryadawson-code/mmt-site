@@ -24,7 +24,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "..", "..");
 const DATASET = JSON.parse(readFileSync(join(REPO, "data", "idiq-vehicles.json"), "utf8"));
 const ROWS = DATASET.vehicles;
-const TODAY = "2026-09-14";
+const TODAY = "2026-09-18";
 const BANNED = ["pivotal", "comprehensive", "robust", "transformative", "delve", "leverage", "synergy", "paradigm", "holistic", "streamline", "actionable", "ecosystem"];
 
 describe("baseline integrity", () => {
@@ -66,6 +66,14 @@ describe("baseline integrity", () => {
     expect(by["ITES-3H"].notes).toMatch(/February 19 2026/);
     expect(by["HITDSS"].notes).not.toMatch(/mid-2026|June 2026/);
     expect(by["SEWP VI"].notes).not.toMatch(/not yet been awarded/);
+    // 2026-09-18: HITDSS was still described as a planned DHA follow-on five months after
+    // MMT published (2026-04-19) that it is an internal working name and that the live
+    // vehicle is PEO DHMS Deployment Solutions. Both entries that mention it now say so.
+    expect(by["HITDSS"].notes).toMatch(/internal working name/i);
+    expect(by["HITDSS"].notes).toMatch(/PEO DHMS Deployment Solutions/);
+    expect(by["HITDSS"].notes).toMatch(/HT003826RE001/);
+    expect(by["HITDSS"].notes).not.toMatch(/follow-on to DHITUC/);
+    expect(by["DHITUC"].notes).toMatch(/internal working name/i);
   });
 
   it("mutation: reverting the CIO-SP4 note to the pre-correction text makes the reconciliation fail", () => {
@@ -128,12 +136,21 @@ describe("registered in lib/data-freshness.js on a 90-day cadence", () => {
     for (const r of rows) expect(r.error, r.label).toBe(null);
     const t4 = rows.find((r) => r.label === "T4NG2");
     expect(t4.date).toBe("2026-09-10");
-    expect(t4.age_days).toBe(4);
+    expect(t4.age_days).toBe(8);
     expect(t4.stale).toBe(false);
-    // the entries whose only in-repo source is this file's April commit are honestly stale
-    for (const label of ["HITDSS", "DHITSC", "ITES-SW2"]) expect(rows.find((r) => r.label === label).stale, label).toBe(true);
+    // DHITSC is the last entry whose only in-repo source is still this file's April commit, and it
+    // stays honestly stale: a 2026-09-18 public-source check did not resolve the acronym against a
+    // DHA or SAM.gov notice, so there is nothing to bump `verified` against.
+    expect(rows.find((r) => r.label === "DHITSC").stale, "DHITSC").toBe(true);
+    // HITDSS left this list on 2026-09-18: MMT's own published correction of 2026-04-19 named it an
+    // internal working name and named the real vehicle, so the note finally has a source to cite.
+    expect(rows.find((r) => r.label === "HITDSS").stale).toBe(false);
+    // ITES-SW2 left it too: re-checked 2026-09-18 against the Army CHESS program page, which shows
+    // the vehicle live with its current holders. The note asserts no ceiling or end date, because
+    // CHESS does not publish them there.
+    expect(rows.find((r) => r.label === "ITES-SW2").stale, "ITES-SW2").toBe(false);
     // and past 90 days every row would go stale
-    const later = evaluate({ root: REPO, today: "2026-12-15" });
+    const later = evaluate({ root: REPO, today: "2026-12-31" });
     expect(later.datasets.filter((r) => r.id === "known-vehicles").every((r) => r.stale)).toBe(true);
   });
 

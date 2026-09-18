@@ -1435,15 +1435,16 @@
     "status": "active",
     "classification": "Solicitation",
     "naics": "541714",
-    "description": "Update Aug 17, 2026: NIH (NIAID) opened bidding on the ~$3B multiple-award PSTSS recompete in March 2026 with proposals due April 27, 2026; solicitation closed and in source selection, no award yet. NIH's largest multi-award IDIQ in the current pipeline (solicitation 75N98026R00042), Full and Open. Covers bioinformatics, computational biology, BSL 2-4 lab research support, and clinical research across all NIH institutes. Proposals were due April 27, 2026 — that deadline has passed, placing the procurement in evaluation/award-pending status (not open for new bids). Multiple awards expected; period of performance 9/15/2026–9/14/2031. NAICS 541714 primary (541511 secondary). Small-business eligible at the task-order level. Track for award announcement and prepare task-order teaming with awardees.",
+    "description": "Update Sep 18, 2026: GAO sustained LJR Solutions' protest of this solicitation on August 14, 2026 (B-424487), finding NIH's decision not to set the work aside for small business unreasonable and internally inconsistent. GAO faulted the April 2026 market research memo for not explaining why three small businesses found capable in 2024 could no longer meet the requirement, faulted NIH for requiring small businesses to perform the entire scope without subcontractors when no firm could, and found NIH never documented consideration of a partial set-aside. GAO recommended new market research if appropriate and a determination on a full or partial set-aside. LJR raised the same objection in December 2024 and NIH took corrective action then. The 9/15/2026 performance start did not hold; award timing now depends on the corrective action. Update Aug 17, 2026: NIH (NIAID) opened bidding on the ~$3B multiple-award PSTSS recompete in March 2026 with proposals due April 27, 2026; solicitation closed and in source selection, no award yet. NIH's largest multi-award IDIQ in the current pipeline (solicitation 75N98026R00042), Full and Open. Covers bioinformatics, computational biology, BSL 2-4 lab research support, and clinical research across all NIH institutes. Proposals were due April 27, 2026 — that deadline has passed, placing the procurement in evaluation/award-pending status (not open for new bids). Multiple awards expected; period of performance 9/15/2026–9/14/2031. NAICS 541714 primary (541511 secondary). Small-business eligible at the task-order level. Track for award announcement and prepare task-order teaming with awardees.",
     "link": "https://www.govconwire.com/articles/nih-rfp-scientific-technical-support",
     "small_business_eligible": true,
     "source": "https://www.govconwire.com/articles/nih-rfp-scientific-technical-support",
     "source_urls": [
+      "https://www.gao.gov/products/b-424487",
       "https://www.washingtontechnology.com/contracts/2026/03/nih-opens-bidding-3b-professional-services-recompete/412493/",
       "https://www.govconwire.com/articles/nih-rfp-scientific-technical-support"
     ],
-    "last_verified": "2026-08-17",
+    "last_verified": "2026-09-18",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Award-pending $3B NIH IDIQ; proposals closed Apr 2026",

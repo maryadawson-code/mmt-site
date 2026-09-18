@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-15T20:55:17.893Z",
+  "generated_at": "2026-09-18T21:34:32.553Z",
   "total": 594,
   "counts": {
     "articles": 136,
@@ -3858,8 +3858,8 @@
       "type": "contract_intel",
       "title": "NIH Scientific & Technical Support Services IDIQ ($3B)",
       "slug": "nih-scientific-technical-support-services-idiq-3b-",
-      "date": "2026-08-17",
-      "description": "Update Aug 17, 2026: NIH (NIAID) opened bidding on the ~$3B multiple-award PSTSS recompete in March 2026 with proposals due April 27, 2026; solicitation closed and in source selection, no award yet. NIH's largest multi-award IDIQ in the cur",
+      "date": "2026-09-18",
+      "description": "Update Sep 18, 2026: GAO sustained LJR Solutions' protest of this solicitation on August 14, 2026 (B-424487), finding NIH's decision not to set the work aside for small business unreasonable and internally inconsistent. GAO faulted the Apri",
       "tags": [
         "National Institutes of Health (NIH)",
         "active",
@@ -3867,7 +3867,7 @@
       ],
       "url": "/contracts/nih-scientific-technical-support-services-idiq-3b/",
       "source_url": "https://www.govconwire.com/articles/nih-rfp-scientific-technical-support",
-      "excerpt": "Update Aug 17, 2026: NIH (NIAID) opened bidding on the ~$3B multiple-award PSTSS recompete in March 2026 with proposals due April 27, 2026; solicitation closed and in source selection, no award yet. NIH's largest multi-award IDIQ in the current pipeline (solicitation 75N98026R00042), Full and Open. Covers bioinformatics, computational biology, BSL 2-4 lab research support, and clinical research across all NIH institutes. Proposals were due April 27, 2026 — that deadline has passed, placing the procurement in evaluation/award-pending status (not open for new bids). Multiple awards expected; period of performance 9/15/2026–9/14/2031. NAICS 541714 primary (541511 secondary). Small-business eligible at the task-order level. Track for award announcement and prepare task-order teaming with awardees.\nAgency: National Institutes of Health (NIH)\nVendor: TBD — award-pending; proposals closed April 27, 2026\nValue: $3B ceiling (5-year); perf. 9/15/2026–9/14/2031\nStatus: active\nNAICS: 541714\nMMT verdict: WATCH — Award-pending $3B NIH IDIQ; proposals closed Apr 2026\nFactors: vehicle_fit: pass — Multi-award IDIQ — task-order bench access | agency_alignment: pass — NIH biomedical R&D support — core lane | timeline: watch — Proposals closed Apr 27 2026; awaiting award decision | competition: watch — Full-and-open; large biomedical-support field | scope_fit: pass — 541714/541511 scope; SB eligible at TO level",
+      "excerpt": "Update Sep 18, 2026: GAO sustained LJR Solutions' protest of this solicitation on August 14, 2026 (B-424487), finding NIH's decision not to set the work aside for small business unreasonable and internally inconsistent. GAO faulted the April 2026 market research memo for not explaining why three small businesses found capable in 2024 could no longer meet the requirement, faulted NIH for requiring small businesses to perform the entire scope without subcontractors when no firm could, and found NIH never documented consideration of a partial set-aside. GAO recommended new market research if appropriate and a determination on a full or partial set-aside. LJR raised the same objection in December 2024 and NIH took corrective action then. The 9/15/2026 performance start did not hold; award timing now depends on the corrective action. Update Aug 17, 2026: NIH (NIAID) opened bidding on the ~$3B multiple-award PSTSS recompete in March 2026 with proposals due April 27, 2026; solicitation closed and in source selection, no award yet. NIH's largest multi-award IDIQ in the current pipeline (solicitation 75N98026R00042), Full and Open. Covers bioinformatics, computational biology, BSL 2-4 lab research support, and clinical research across all NIH institutes. Proposals were due April 27, 2026 — that deadline has passed, placing the procurement in evaluation/award-pending status (not open for new bids). Multiple awards expected; period of performance 9/15/2026–9/14/2031. NAICS 541714 primary (541511 secondary). Small-business eligible at the task-order level. Track for award announcement and prepare task-order teaming with awardees.\nAgency: National Institutes of Health (NIH)\nVendor: TBD — award-pending; proposals closed April 27, 2026\nValue: $3B ceiling (5-year); perf. 9/15/2026–9/14/2031\nStatus: active\nNAICS: 541714\nMMT verdict: WATCH — Award-pending $3B NIH IDIQ; proposals closed Apr 2026\nFactors: vehicle_fit: pass — Multi-award IDIQ — task-order bench access | agency_alignment: pass — NIH biomedical R&D support — core lane | timeline: watch — Proposals closed Apr 27 2026; awaiting award decision | competition: watch — Full-and-open; large biomedical-support field | scope_fit: pass — 541714/541511 scope; SB eligible at TO level",
       "premium": false
     },
     {
@@ -4154,7 +4154,7 @@
         "VA"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s1\nagency: VA\nprogram: CCN Next Gen Medical (36C10G26R0003)\nsignal: ~$88.9B est. contract value; ~$700B statutory IDIQ ceiling; $56.2B FY2027 community care account (+17%). Value-based payments and utilization management enter the contract — neither exists in current CCN.\nconfidence: verified\naction_window: In evaluation. IDIQ award targeted August 2026; orals October; Regional TOPRs January 2027.\nurgent: true\nwhat_to_do: If you bid: no action but prep for orals and early VBP-model task orders — the firm that proposes the next payment model shapes the contract's economics. If you are a specialty sub (network analytics, utilization review, rural telehealth, clinical AI): the MOSA/No-Bid bench structure is your entry — confirm teaming with a regional prime now, before award.\nfree_preview: true",
+      "excerpt": "id: s1\nagency: VA\nprogram: CCN Next Gen Medical (36C10G26R0003)\ncontract_ref: community-care-network-next-gen-ccn-ng\nsignal: ~$88.9B est. contract value; ~$700B statutory IDIQ ceiling; $56.2B FY2027 community care account (+17%). Value-based payments and utilization management enter the contract — neither exists in current CCN.\nconfidence: verified\nverified_at: 2026-07-26\naction_window: In evaluation. IDIQ award targeted August 2026; orals October; Regional TOPRs January 2027.\nurgent: true\nwhat_to_do: If you bid: no action but prep for orals and early VBP-model task orders — the firm that proposes the next payment model shapes the contract's economics. If you are a specialty sub (network analytics, utilization review, rural telehealth, clinical AI): the MOSA/No-Bid bench structure is your entry — confirm teaming with a regional prime now, before award.\nfree_preview: true",
       "premium": true
     },
     {
@@ -4169,7 +4169,7 @@
         "DHA"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s2\nagency: DHA\nprogram: HCDS — Health Care Delivery Solutions (MHS GENESIS follow-on)\nsignal: Competitive Federal EHR follow-on modernizing MHS GENESIS across 4,386 locations / 9.6M beneficiaries. Sole-source bridge to the incumbent, then open competition; scope spans integration, product management, help desk, deployment, end-user support.\nconfidence: verified\naction_window: Planning / RFI stage. Industry input deadline August 30, 2026 — last structured window before the solicitation.\nurgent: true\nwhat_to_do: This is the biggest DoD health-IT recompete on the board. Submit substantive RFI feedback by August 30 — it shapes the eval criteria. Build past-performance narrative around VA interoperability and large-scale deployment. Incumbent (Leidos) holds the bridge; challengers must show a faster commercial-tech refresh cycle.\nfree_preview: true",
+      "excerpt": "id: s2\nagency: DHA\nprogram: HCDS — Health Care Delivery Solutions (MHS GENESIS follow-on)\ncontract_ref: hcds-health-care-delivery-solutions-mhs-genesis-follow-on\nsignal: Competitive Federal EHR follow-on modernizing MHS GENESIS across 4,386 locations / 9.6M beneficiaries. Sole-source bridge to the incumbent, then open competition; scope spans integration, product management, help desk, deployment, end-user support.\nconfidence: verified\nverified_at: 2026-07-26\naction_window: Planning / RFI stage. Industry input deadline August 30, 2026 — last structured window before the solicitation.\nurgent: true\nwhat_to_do: This is the biggest DoD health-IT recompete on the board. Submit substantive RFI feedback by August 30 — it shapes the eval criteria. Build past-performance narrative around VA interoperability and large-scale deployment. Incumbent (Leidos) holds the bridge; challengers must show a faster commercial-tech refresh cycle.\nfree_preview: true",
       "premium": true
     },
     {
@@ -4184,7 +4184,7 @@
         "DHA"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s3\nagency: DHA\nprogram: PEO DHMS Deployment Solutions IDIQ (HT003826RE001)\nsignal: $300M multiple-award IDIQ, 5-year, 6-9 expected primes; CONUS/OCONUS deployment including austere/limited-connectivity sites. CMMC Level 2, strict data-rights and OCI terms.\nconfidence: verified\naction_window: Proposals closed April 21, 2026; June 2026 start. Awards imminent — the task-order specialty-sub window opens on award.\nurgent: true\nwhat_to_do: If you proposed: hold. If not: this is a multiple-award bench, so target the task orders, not the base — identify deployment/training/hardware niches and approach the winning primes as award lands. Get CMMC Level 2 in motion now if you don't hold it; it gates participation.\nfree_preview: true",
+      "excerpt": "id: s3\nagency: DHA\nprogram: PEO DHMS Deployment Solutions IDIQ (HT003826RE001)\ncontract_ref: peo-dhms-deployment-solutions-new-idiq\nsignal: $300M multiple-award IDIQ, 5-year, 6-9 expected primes; CONUS/OCONUS deployment including austere/limited-connectivity sites. CMMC Level 2, strict data-rights and OCI terms.\nconfidence: verified\nverified_at: 2026-09-18\naction_window: Awarded August 2026. DHA selected 12 firms from 29 offers; the ordering period runs roughly August 2026 to August 2031. The task-order window is open now.\nurgent: true\nwhat_to_do: The bid window is closed. If you hold a seat, the competition is now task orders, so get in front of PEO DHMS deployment requirements early. If you do not, approach the 12 awardees as a specialty sub in deployment, training, change management or data migration. CMMC Level 2 still gates participation.\nfree_preview: true",
       "premium": true
     },
     {
@@ -4199,7 +4199,7 @@
         "VA"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s4\nagency: VA\nprogram: EHRM / Oracle Health (Federal EHR)\nsignal: VA awarded Oracle Health its second option period on the Federal EHR contract. 13 sites go live in 2026 (Michigan April, Chillicothe June); 26 more scheduled for 2027; full deployment as early as 2031.\nconfidence: verified\naction_window: Active. FY2027 go-live wave scheduling now; watch the site list and appropriations gates.\nurgent: false\nwhat_to_do: Subcontractors: map your past performance to specific 2026-2027 go-live sites and open teaming conversations with the prime now, not at task-order release. New entrants: this is a sustainment-and-deployment market, not a prime-capture window — position for the FY2028 wave.\nfree_preview: true",
+      "excerpt": "id: s4\nagency: VA\nprogram: EHRM / Oracle Health (Federal EHR)\nsignal: VA awarded Oracle Health its second option period on the Federal EHR contract. 13 sites go live in 2026 (Michigan April, Chillicothe June); 26 more scheduled for 2027; full deployment as early as 2031.\nconfidence: verified\nverified_at: 2026-07-26\naction_window: Active. FY2027 go-live wave scheduling now; watch the site list and appropriations gates.\nurgent: false\nwhat_to_do: Subcontractors: map your past performance to specific 2026-2027 go-live sites and open teaming conversations with the prime now, not at task-order release. New entrants: this is a sustainment-and-deployment market, not a prime-capture window — position for the FY2028 wave.\nfree_preview: true",
       "premium": true
     },
     {
@@ -4214,7 +4214,7 @@
         "VA"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s5\nagency: VA\nprogram: FY2027 OIT Recompete Wave (EDGE, Cloud Broker, ERP, HTMSS, CSOC, OMEGA, App Hosting)\nsignal: A stacked wave of VA Office of Information Technology recompetes and new starts — EDGE ($1B-$1.9B), Cloud Broker ($1B-$1.9B), ERP ($1B-$1.7B), HTMSS ($300M-$500M), CSOC ($332M), OMEGA ($500M-$999M), App Hosting Compute/Storage — several billion in aggregate TCV.\nconfidence: directional\naction_window: Solicitations rolling across FY2027 (begins Oct 1, 2026). Draft RFPs and industry days are the near-term signals.\nurgent: true\nwhat_to_do: Pick your two or three best-fit vehicles and commit capture resources now — these overlap in timing and you cannot chase all of them. Incumbency matters; if you're defending, lock your team early. If you're challenging, the FY2026 close is your last window to build the past-performance and relationship case.\nfree_preview: true",
+      "excerpt": "id: s5\nagency: VA\nprogram: FY2027 OIT Recompete Wave (EDGE, Cloud Broker, ERP, HTMSS, CSOC, OMEGA, App Hosting)\nsignal: A stacked wave of VA Office of Information Technology recompetes and new starts — EDGE ($1B-$1.9B), Cloud Broker ($1B-$1.9B), ERP ($1B-$1.7B), HTMSS ($300M-$500M), CSOC ($332M), OMEGA ($500M-$999M), App Hosting Compute/Storage — several billion in aggregate TCV.\nconfidence: directional\nverified_at: 2026-07-26\naction_window: Solicitations rolling across FY2027 (begins Oct 1, 2026). Draft RFPs and industry days are the near-term signals.\nurgent: true\nwhat_to_do: Pick your two or three best-fit vehicles and commit capture resources now — these overlap in timing and you cannot chase all of them. Incumbency matters; if you're defending, lock your team early. If you're challenging, the FY2026 close is your last window to build the past-performance and relationship case.\nfree_preview: true",
       "premium": true
     },
     {
@@ -4229,7 +4229,7 @@
         "SBA / Gov-wide"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s6\nagency: SBA / Gov-wide\nprogram: 8(a) Restructuring & Set-Aside Vehicle Migration\nsignal: Race-neutral eligibility determinations and continued pressure on 8(a) sole-source positions are pushing small-business work toward vehicle-based competition (OASIS+ SB, SEWP VI, GSA MAS). ANC/tribally-owned firms positioned to capture a larger share of remaining 8(a) dollars.\nconfidence: mmt_projection\naction_window: Ongoing audit + migration window through FY2026 close and into FY2027.\nurgent: true\nwhat_to_do: Run the pipeline audit against every 8(a) position: constitutional vulnerability, subcontracting exposure, vehicle dependency, termination contingency. If you are not ANC/tribally owned, begin race-neutral documentation and vehicle migration now. If you are, position for market-share capture as individual firms exit.\nfree_preview: true",
+      "excerpt": "id: s6\nagency: SBA / Gov-wide\nprogram: 8(a) Restructuring & Set-Aside Vehicle Migration\nsignal: Race-neutral eligibility determinations and continued pressure on 8(a) sole-source positions are pushing small-business work toward vehicle-based competition (OASIS+ SB, SEWP VI, GSA MAS). ANC/tribally-owned firms positioned to capture a larger share of remaining 8(a) dollars.\nconfidence: mmt_projection\nverified_at: 2026-07-26\naction_window: Ongoing audit + migration window through FY2026 close and into FY2027.\nurgent: true\nwhat_to_do: Run the pipeline audit against every 8(a) position: constitutional vulnerability, subcontracting exposure, vehicle dependency, termination contingency. If you are not ANC/tribally owned, begin race-neutral documentation and vehicle migration now. If you are, position for market-share capture as individual firms exit.\nfree_preview: true",
       "premium": true
     },
     {
@@ -4244,7 +4244,7 @@
         "VA"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s7\nagency: VA\nprogram: CCN Next Gen Dental (36C10G26R0004)\nsignal: ~$47M companion national dental-network MA-IDIQ to the CCN Medical vehicle; multi-year, firm-fixed-price plus incentives.\nconfidence: verified\naction_window: In evaluation; award tracks the Medical vehicle timeline.\nurgent: false\nwhat_to_do: Dental network primes with VA past performance should confirm proposal status. Specialty subs (credentialing, claims, tele-dentistry) should line up teaming with the likely awardees.\nfree_preview: false",
+      "excerpt": "id: s7\nagency: VA\nprogram: CCN Next Gen Dental (36C10G26R0004)\ncontract_ref: ccn-dental-36c10g26r0004\nsignal: ~$47M companion national dental-network MA-IDIQ to the CCN Medical vehicle; multi-year, firm-fixed-price plus incentives.\nconfidence: verified\nverified_at: 2026-07-26\naction_window: In evaluation; award tracks the Medical vehicle timeline.\nurgent: false\nwhat_to_do: Dental network primes with VA past performance should confirm proposal status. Specialty subs (credentialing, claims, tele-dentistry) should line up teaming with the likely awardees.\nfree_preview: false",
       "premium": true
     },
     {
@@ -4259,7 +4259,7 @@
         "VA"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s8\nagency: VA\nprogram: Enterprise Imaging (NEIS) + NTP NextGen PACS\nsignal: National Enterprise Imaging System plus National Teleradiology Program NextGen PACS. Est. $365M-$620M combined. VA is running Industry Days / market research to shape the acquisition strategy.\nconfidence: directional\naction_window: Pre-solicitation. RFP release window late FY2026 / early FY2027.\nurgent: false\nwhat_to_do: Engage the market-research Industry Days now — this is where the eval criteria get shaped. Imaging vendors should stress MOSA/interoperability and enterprise-scale migration. Clinical-AI imaging partners should initiate teaming before the draft RFP.\nfree_preview: false",
+      "excerpt": "id: s8\nagency: VA\nprogram: Enterprise Imaging (NEIS) + NTP NextGen PACS\ncontract_ref: va-enterprise-imaging-neis-multi-visn-pacs-bi-directional\nsignal: National Enterprise Imaging System plus National Teleradiology Program NextGen PACS. Est. $365M-$620M combined. VA is running Industry Days / market research to shape the acquisition strategy.\nconfidence: directional\nverified_at: 2026-07-26\naction_window: Pre-solicitation. RFP release window late FY2026 / early FY2027.\nurgent: false\nwhat_to_do: Engage the market-research Industry Days now — this is where the eval criteria get shaped. Imaging vendors should stress MOSA/interoperability and enterprise-scale migration. Clinical-AI imaging partners should initiate teaming before the draft RFP.\nfree_preview: false",
       "premium": true
     },
     {
@@ -4274,7 +4274,7 @@
         "DHA"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s9\nagency: DHA\nprogram: Medical Q-Coded Support Staffing Recompete\nsignal: DHA selected 11 companies for the unrestricted pool of a potential 10-year, ~$43B follow-on for medical staffing support across military health facilities.\nconfidence: verified\naction_window: Pool established; task-order competition ahead over the POP.\nurgent: false\nwhat_to_do: If you made the pool: build your task-order capture engine now — awards concentrate among the fastest, best-priced responders. If you didn't: pursue subcontracting with pool primes; clinical-staffing niches (behavioral health, specialty providers) are the entry.\nfree_preview: false",
+      "excerpt": "id: s9\nagency: DHA\nprogram: Medical Q-Coded Support Staffing Recompete\nsignal: DHA selected 11 companies for the unrestricted pool of a potential 10-year, ~$43B follow-on for medical staffing support across military health facilities.\nconfidence: verified\nverified_at: 2026-07-26\naction_window: Pool established; task-order competition ahead over the POP.\nurgent: false\nwhat_to_do: If you made the pool: build your task-order capture engine now — awards concentrate among the fastest, best-priced responders. If you didn't: pursue subcontracting with pool primes; clinical-staffing niches (behavioral health, specialty providers) are the entry.\nfree_preview: false",
       "premium": true
     },
     {
@@ -4289,7 +4289,7 @@
         "VA"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s10\nagency: VA\nprogram: Financial Services Center Software Support (recompete)\nsignal: Tria Federal (via subsidiary Softrams) won a 5-year, $174M recompete for expanded software engineering support at VA's Financial Services Center; full-and-open with 15 offers.\nconfidence: verified\naction_window: Awarded (July 2026). Subcontracting and adjacent-scope positioning now.\nurgent: false\nwhat_to_do: The 14 unsuccessful offerors: expect a possible protest window and look for adjacent FSC modernization scope. New entrants: approach the winner for niche subcontracting in AI-enabled financial operations.\nfree_preview: false",
+      "excerpt": "id: s10\nagency: VA\nprogram: Financial Services Center Software Support (recompete)\nsignal: Tria Federal (via subsidiary Softrams) won a 5-year, $174M recompete for expanded software engineering support at VA's Financial Services Center; full-and-open with 15 offers.\nconfidence: verified\nverified_at: 2026-07-26\naction_window: Awarded (July 2026). Subcontracting and adjacent-scope positioning now.\nurgent: false\nwhat_to_do: The 14 unsuccessful offerors: expect a possible protest window and look for adjacent FSC modernization scope. New entrants: approach the winner for niche subcontracting in AI-enabled financial operations.\nfree_preview: false",
       "premium": true
     },
     {
@@ -4304,7 +4304,7 @@
         "HHS/ONC"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s11\nagency: HHS/ONC\nprogram: TEFCA Interoperability & Information-Blocking Enforcement\nsignal: QHIN participation is now de facto required; information-blocking enforcement and the HTI rule series continue to tighten. Governance authority sits at HHS.\nconfidence: verified\naction_window: Enforcement expanding; January 1, 2027 as a practical lock date for QHIN alignment.\nurgent: false\nwhat_to_do: HIE and EHR vendors: confirm FHIR endpoints and TEFCA/QHIN posture; update capability statements to reference compliance. Non-alignment is becoming a disqualifier in health-data procurements.\nfree_preview: false",
+      "excerpt": "id: s11\nagency: HHS/ONC\nprogram: TEFCA Interoperability & Information-Blocking Enforcement\nsignal: QHIN participation is now de facto required; information-blocking enforcement and the HTI rule series continue to tighten. Governance authority sits at HHS.\nconfidence: verified\nverified_at: 2026-07-26\naction_window: Enforcement expanding; January 1, 2027 as a practical lock date for QHIN alignment.\nurgent: false\nwhat_to_do: HIE and EHR vendors: confirm FHIR endpoints and TEFCA/QHIN posture; update capability statements to reference compliance. Non-alignment is becoming a disqualifier in health-data procurements.\nfree_preview: false",
       "premium": true
     },
     {
@@ -4319,7 +4319,7 @@
         "DHA"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s12\nagency: DHA\nprogram: MHS GENESIS Sustainment / DHMSM Bridge\nsignal: Sole-source bridge to the incumbent ($1.131B IDIQ + $263.34M nine-month transition option) sustains deployed MHS GENESIS sites while HCDS competes the follow-on.\nconfidence: verified\naction_window: Bridge active; the competitive follow-on (HCDS) is the real prize — see signal #2.\nurgent: false\nwhat_to_do: Current subs: lock teaming-agreement portability into the HCDS competition now. New entrants: build relationships with the deployed-site PMOs during the bridge period.\nfree_preview: false",
+      "excerpt": "id: s12\nagency: DHA\nprogram: MHS GENESIS Sustainment / DHMSM Bridge\ncontract_ref: mhs-genesis-dhmsm-bridge\nsignal: Sole-source bridge to the incumbent ($1.131B IDIQ + $263.34M nine-month transition option) sustains deployed MHS GENESIS sites while HCDS competes the follow-on.\nconfidence: verified\nverified_at: 2026-07-26\naction_window: Bridge active; the competitive follow-on (HCDS) is the real prize — see signal #2.\nurgent: false\nwhat_to_do: Current subs: lock teaming-agreement portability into the HCDS competition now. New entrants: build relationships with the deployed-site PMOs during the bridge period.\nfree_preview: false",
       "premium": true
     },
     {
@@ -4334,7 +4334,7 @@
         "ARPA-H"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s13\nagency: ARPA-H\nprogram: ADVOCATE (Agentic AI-Enabled Cardiovascular Care)\nsignal: Program to produce the first FDA-authorized clinical agentic AI. Three Technical Areas; the TA2 winner owns the oversight layer for subsequent clinical agentic AI. Funded from FY2026 appropriations regardless of the FY2027 budget outcome.\nconfidence: verified\naction_window: Awards expected mid-2026; monitor for follow-on solicitations and the oversight-layer build-out.\nurgent: false\nwhat_to_do: Research-oriented and clinical-AI firms should track the award announcements and position for the validation-framework build. Expect cooperative agreements and OTAs, not a traditional IDIQ.\nfree_preview: false",
+      "excerpt": "id: s13\nagency: ARPA-H\nprogram: ADVOCATE (Agentic AI-Enabled Cardiovascular Care)\nsignal: Program to produce the first FDA-authorized clinical agentic AI. Three Technical Areas; the TA2 winner owns the oversight layer for subsequent clinical agentic AI. Funded from FY2026 appropriations regardless of the FY2027 budget outcome.\nconfidence: verified\nverified_at: 2026-07-26\naction_window: Awards expected mid-2026; monitor for follow-on solicitations and the oversight-layer build-out.\nurgent: false\nwhat_to_do: Research-oriented and clinical-AI firms should track the award announcements and position for the validation-framework build. Expect cooperative agreements and OTAs, not a traditional IDIQ.\nfree_preview: false",
       "premium": true
     },
     {
@@ -4349,7 +4349,7 @@
         "NIH"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s14\nagency: NIH\nprogram: Scientific & Technical Support Services IDIQ\nsignal: $3B ceiling, 5-year vehicle; performance period 9/15/2026-9/14/2031.\nconfidence: verified\naction_window: Solicitation stage; POP starts September 15, 2026 — a fast runway.\nurgent: true\nwhat_to_do: Scientific/technical services firms with NIH past performance should be in final proposal prep. Subs: line up teaming with likely primes before the POP start compresses task-order competition.\nfree_preview: false",
+      "excerpt": "id: s14\nagency: NIH\nprogram: Scientific & Technical Support Services IDIQ\ncontract_ref: nih-scientific-technical-support-services-idiq-3b\nsignal: $3B ceiling, 5-year vehicle; performance period 9/15/2026-9/14/2031.\nconfidence: verified\nverified_at: 2026-09-18\naction_window: Award delayed by protest. GAO sustained LJR Solutions' small-business set-aside protest on August 14, 2026 (B-424487). NIH must revisit market research and decide whether to set the work aside fully or partially. The September 15, 2026 performance start did not hold.\nurgent: true\nwhat_to_do: Small businesses in bioinformatics, computational biology, BSL 2-4 lab support or clinical research support get a second entry here. Get a capability statement in front of the NIAID contracting shop while market research is redone. Large primes that bid should reforecast the revenue and watch for a re-solicitation.\nfree_preview: false",
       "premium": true
     },
     {
@@ -4364,7 +4364,7 @@
         "CMS"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s15\nagency: CMS\nprogram: SPARC II (Strategic Partners Acquisition Readiness — recompete)\nsignal: Recompete of the $25B-ceiling SPARC vehicle for CMS enterprise systems and data work; SPARC II ceiling TBD.\nconfidence: directional\naction_window: Solicitation stage; a foundational CMS IT vehicle for the next decade.\nurgent: false\nwhat_to_do: If CMS is core to your pipeline, a SPARC II seat is close to table stakes — commit capture resources. Assess whether you compete as a prime or align with a likely primes' team.\nfree_preview: false",
+      "excerpt": "id: s15\nagency: CMS\nprogram: SPARC II (Strategic Partners Acquisition Readiness — recompete)\ncontract_ref: cms-sparc-ii-strategic-partners-acquisition-readiness-contract-recompete\nsignal: CMS has confirmed there is no SPARC II. The SPARC ordering period ends in early 2027 with no new task orders after that, and no replacement vehicle is in development.\nconfidence: verified\nverified_at: 2026-09-18\naction_window: Closed as a pursuit. CMS stated there is no plan to replace the SPARC IDIQ.\nurgent: false\nwhat_to_do: Do not commit capture resources to a SPARC II. If CMS is core to your pipeline, move that effort onto the vehicles CMS is actually buying through and plan for SPARC-funded work to wind down by early 2027.\nfree_preview: false",
       "premium": true
     },
     {
@@ -4379,7 +4379,7 @@
         "CMS"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s16\nagency: CMS\nprogram: RMADA 3 (Research, Measurement, Assessment, Design & Analysis)\nsignal: ~$5B ceiling recompete (5-year ordering once open) for CMS research, measurement, and model-evaluation work.\nconfidence: directional\naction_window: Solicitation stage.\nurgent: false\nwhat_to_do: Health-services research and analytics firms should prep RMADA 3 proposals; past performance on CMS model evaluation and measurement is the differentiator.\nfree_preview: false",
+      "excerpt": "id: s16\nagency: CMS\nprogram: RMADA 3 (Research, Measurement, Assessment, Design & Analysis)\ncontract_ref: cms-rmada-3-research-measurement-assessment-design-analysis\nsignal: Awarded July 2026 to 17 firms from 34 offers. Five-year vehicle, shared ceiling about $3.5B, solicitation 75FCMC25RJ018. The $5B figure belonged to RMADA 2.\nconfidence: verified\nverified_at: 2026-09-18\naction_window: Awarded July 2026. The base competition is over; task orders are the remaining route in.\nurgent: false\nwhat_to_do: Health-services research and analytics firms that did not win a seat should target teaming with the 17 awardees on model-evaluation and measurement task orders. A RMADA 3 prime seat is not available again until the next recompete.\nfree_preview: false",
       "premium": true
     },
     {
@@ -4394,7 +4394,7 @@
         "IHS"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s17\nagency: IHS\nprogram: Health IT Modernization / PATH EHR (RPMS replacement)\nsignal: $2.5B IDIQ ceiling through ~2033; commercial-EHR migration off RPMS via per-task-order deployment (e.g., TO #9 at $325.7M).\nconfidence: verified\naction_window: Task-order pipeline (sustainment + deployment) rolling through the POP.\nurgent: false\nwhat_to_do: EHR vendors and integrators with tribal/rural health experience should target the deployment and sustainment task orders. Past performance in underserved settings is critical to evaluation.\nfree_preview: false",
+      "excerpt": "id: s17\nagency: IHS\nprogram: Health IT Modernization / PATH EHR (RPMS replacement)\nsignal: $2.5B IDIQ ceiling through ~2033; commercial-EHR migration off RPMS via per-task-order deployment (e.g., TO #9 at $325.7M).\nconfidence: verified\nverified_at: 2026-07-26\naction_window: Task-order pipeline (sustainment + deployment) rolling through the POP.\nurgent: false\nwhat_to_do: EHR vendors and integrators with tribal/rural health experience should target the deployment and sustainment task orders. Past performance in underserved settings is critical to evaluation.\nfree_preview: false",
       "premium": true
     },
     {
@@ -4409,7 +4409,7 @@
         "FDA"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s18\nagency: FDA\nprogram: SIRCE II (Inspection, Recalls, Compliance & Enforcement Systems)\nsignal: Est. ~$218M+ (floor; full scope may approach $400M) to modernize FDA inspection/recall/compliance systems.\nconfidence: directional\naction_window: Solicitation stage.\nurgent: false\nwhat_to_do: Regulatory-systems integrators should position now; case-management and data-integration past performance carries the evaluation.\nfree_preview: false",
+      "excerpt": "id: s18\nagency: FDA\nprogram: SIRCE II (Inspection, Recalls, Compliance & Enforcement Systems)\nsignal: Est. ~$218M+ (floor; full scope may approach $400M) to modernize FDA inspection/recall/compliance systems.\nconfidence: directional\nverified_at: 2026-07-26\naction_window: Solicitation stage.\nurgent: false\nwhat_to_do: Regulatory-systems integrators should position now; case-management and data-integration past performance carries the evaluation.\nfree_preview: false",
       "premium": true
     },
     {
@@ -4424,7 +4424,7 @@
         "HHS"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s19\nagency: HHS\nprogram: HOPSS — HHS One Professional Services Solutions\nsignal: Reported ~$3.6B ceiling department-wide professional-services vehicle consolidating HHS advisory and support work.\nconfidence: directional\naction_window: Solicitation stage.\nurgent: false\nwhat_to_do: Professional-services firms across the HHS operating divisions should assess a HOPSS seat as a multi-year gateway; decide prime vs. teamed strategy early.\nfree_preview: false",
+      "excerpt": "id: s19\nagency: HHS\nprogram: HOPSS — HHS One Professional Services Solutions\nsignal: Reported ~$3.6B ceiling department-wide professional-services vehicle consolidating HHS advisory and support work.\nconfidence: directional\nverified_at: 2026-07-26\naction_window: Solicitation stage.\nurgent: false\nwhat_to_do: Professional-services firms across the HHS operating divisions should assess a HOPSS seat as a multi-year gateway; decide prime vs. teamed strategy early.\nfree_preview: false",
       "premium": true
     },
     {
@@ -4439,7 +4439,7 @@
         "TRICARE"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s20\nagency: TRICARE\nprogram: T-5 Managed Care Support (MCS) + TPharm5\nsignal: Humana (East) $7.34B CY2026 option and Evernorth pharmacy $719.4M executing; TPharm5 pharmacy award reported ~$4.29B. Option-year execution across the T-5 portfolio.\nconfidence: verified\naction_window: Option years in execution; recompete positioning is a longer-cycle play.\nurgent: false\nwhat_to_do: Subcontractors and specialty networks: confirm scope under the CY2026 option years. Watch for utilization shifts as care-reattraction policy moves volume between MTFs and the networks.\nfree_preview: false",
+      "excerpt": "id: s20\nagency: TRICARE\nprogram: T-5 Managed Care Support (MCS) + TPharm5\nsignal: Humana (East) $7.34B CY2026 option and Evernorth pharmacy $719.4M executing; TPharm5 pharmacy award reported ~$4.29B. Option-year execution across the T-5 portfolio.\nconfidence: verified\nverified_at: 2026-07-26\naction_window: Option years in execution; recompete positioning is a longer-cycle play.\nurgent: false\nwhat_to_do: Subcontractors and specialty networks: confirm scope under the CY2026 option years. Watch for utilization shifts as care-reattraction policy moves volume between MTFs and the networks.\nfree_preview: false",
       "premium": true
     },
     {
@@ -4454,7 +4454,7 @@
         "CMS"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s21\nagency: CMS\nprogram: Rural Health Transformation Program\nsignal: $50B FY2026-FY2030 program routing funds through states for rural health delivery and infrastructure, including health IT and telehealth.\nconfidence: verified\naction_window: State awards rolling; sub-award and vendor opportunities follow state plans.\nurgent: false\nwhat_to_do: Telehealth, RPM, and rural-delivery vendors should track state award plans and position with state agencies and grantees — the money moves through states, not a single federal buy.\nfree_preview: false",
+      "excerpt": "id: s21\nagency: CMS\nprogram: Rural Health Transformation Program\nsignal: $50B FY2026-FY2030 program routing funds through states for rural health delivery and infrastructure, including health IT and telehealth.\nconfidence: verified\nverified_at: 2026-07-26\naction_window: State awards rolling; sub-award and vendor opportunities follow state plans.\nurgent: false\nwhat_to_do: Telehealth, RPM, and rural-delivery vendors should track state award plans and position with state agencies and grantees — the money moves through states, not a single federal buy.\nfree_preview: false",
       "premium": true
     },
     {
@@ -4469,7 +4469,7 @@
         "HHS"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s22\nagency: HHS\nprogram: NGITS BPA Recompete (Hosting, Operations, Engineering)\nsignal: Est. ~$485M+ aggregate across three BPAs (application hosting ~$139M, operations ~$207M, engineering ~$139M).\nconfidence: directional\naction_window: Program watch; recompete approaching.\nurgent: false\nwhat_to_do: Infrastructure and managed-services firms should prep for the three-lane recompete; cloud-migration and 24x7 operations past performance is the differentiator.\nfree_preview: false",
+      "excerpt": "id: s22\nagency: HHS\nprogram: NGITS BPA Recompete (Hosting, Operations, Engineering)\nsignal: Est. ~$485M+ aggregate across three BPAs (application hosting ~$139M, operations ~$207M, engineering ~$139M).\nconfidence: directional\nverified_at: 2026-07-26\naction_window: Program watch; recompete approaching.\nurgent: false\nwhat_to_do: Infrastructure and managed-services firms should prep for the three-lane recompete; cloud-migration and 24x7 operations past performance is the differentiator.\nfree_preview: false",
       "premium": true
     },
     {
@@ -4484,7 +4484,7 @@
         "CMS"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s23\nagency: CMS\nprogram: NITAAC sunset (CIO-SP3 / CIO-CS) & MPSM\nsignal: The reported CIO-CS follow-on is off: NITAAC's June 9, 2026 notice sunsets CIO-SP3, CIO-SP3 SB and CIO-CS on October 29, 2026 (last day to award new orders; performance ends by December 31, 2028), with no successor. Medicare Payment Systems Modernization task orders continue, but the commodity-plus-services backbone they rode moves to GSA paper.\nconfidence: confirmed\naction_window: Orders under CIO-SP3 / CIO-CS must be awarded by Oct 29, 2026.\nurgent: true\nwhat_to_do: Resellers and claims-systems integrators holding NITAAC seats: get pending orders awarded before Oct 29, 2026, then position the same scope on Alliant 3, Polaris, or GSA MAS. Stop building capture plans around a CIO-CS successor; the official notice says there is none.\nfree_preview: false",
+      "excerpt": "id: s23\nagency: CMS\nprogram: NITAAC sunset (CIO-SP3 / CIO-CS) & MPSM\nsignal: The reported CIO-CS follow-on is off: NITAAC's June 9, 2026 notice sunsets CIO-SP3, CIO-SP3 SB and CIO-CS on October 29, 2026 (last day to award new orders; performance ends by December 31, 2028), with no successor. Medicare Payment Systems Modernization task orders continue, but the commodity-plus-services backbone they rode moves to GSA paper.\nconfidence: confirmed\nverified_at: 2026-07-26\naction_window: Orders under CIO-SP3 / CIO-CS must be awarded by Oct 29, 2026.\nurgent: true\nwhat_to_do: Resellers and claims-systems integrators holding NITAAC seats: get pending orders awarded before Oct 29, 2026, then position the same scope on Alliant 3, Polaris, or GSA MAS. Stop building capture plans around a CIO-CS successor; the official notice says there is none.\nfree_preview: false",
       "premium": true
     },
     {
@@ -4499,7 +4499,7 @@
         "Gov-wide"
       ],
       "url": "/intel/capture-intelligence-this-issue/",
-      "excerpt": "id: s24\nagency: Gov-wide\nprogram: FY2026 Close (Sep 30) & FY2027 Start (Oct 1)\nsignal: The end-of-year obligation push runs now through September 30. FY2027 begins October 1 and opens the recompete pipeline above; a continuing-resolution scenario would delay new-start awards and stretch bridge contracts.\nconfidence: analytical\naction_window: Q4 FY2026 obligation window is open now; watch the FY2027 appropriations/CR track.\nurgent: true\nwhat_to_do: Chase in-scope task orders and mods against expiring FY2026 money now — this is the last obligation window. Model a CR scenario into your FY2027 forecast: new-starts slip, incumbents get bridged, and the fast-obligation task orders move first.\nfree_preview: false",
+      "excerpt": "id: s24\nagency: Gov-wide\nprogram: FY2026 Close (Sep 30) & FY2027 Start (Oct 1)\nsignal: The end-of-year obligation push runs now through September 30. FY2027 begins October 1 and opens the recompete pipeline above; a continuing-resolution scenario would delay new-start awards and stretch bridge contracts.\nconfidence: analytical\nverified_at: 2026-07-26\naction_window: Q4 FY2026 obligation window is open now; watch the FY2027 appropriations/CR track.\nurgent: true\nwhat_to_do: Chase in-scope task orders and mods against expiring FY2026 money now — this is the last obligation window. Model a CR scenario into your FY2027 forecast: new-starts slip, incumbents get bridged, and the fast-obligation task orders move first.\nfree_preview: false",
       "premium": true
     },
     {
@@ -5179,7 +5179,7 @@
       "type": "idiq_vehicle",
       "title": "PEO DHMS Deployment Solutions IDIQ",
       "slug": "peo-dhms-deployment",
-      "date": "2026-06-01",
+      "date": "2026-08-01",
       "description": "DHA DHA / PEO DHMS — Multiple Award IDIQ · $0.30B ceiling",
       "tags": [
         "idiq",
@@ -5187,11 +5187,11 @@
         "DHA / PEO DHMS",
         "Unrestricted",
         "Multiple Award IDIQ",
-        "Solicitation-stage / upcoming"
+        "Active / Awarded"
       ],
       "url": "/idiq-tracker.html",
       "source_url": "https://sam.gov/workspace/contract/opp/111847a96d214505b4d398a931dfdf1d/view",
-      "excerpt": "Vehicle: PEO DHMS Deployment Solutions IDIQ\nAgency: DHA / DHA / PEO DHMS\nContract number: HT003826RE001\nCeiling: $0.30B\nPeriod of performance: 2026-06-01 to 2031-05-31\nSet-aside: Unrestricted\nType: Multiple Award IDIQ\nStatus: Solicitation-stage / upcoming\nPrimes: 6-9 expected\nNAICS primary: 541512\nPSC: DA01\nMMT burn status: New\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: Proposals due Apr 21 2026 (2026-04-21 to 2026-09-30) — 70% confidence\nMMT note: Solicitation HT003826RE001; proposals due 2026-04-21\nPrimary source: https://sam.gov/workspace/contract/opp/111847a96d214505b4d398a931dfdf1d/view",
+      "excerpt": "Vehicle: PEO DHMS Deployment Solutions IDIQ\nAgency: DHA / DHA / PEO DHMS\nContract number: HT003826RE001\nCeiling: $0.30B\nPeriod of performance: 2026-08-01 to 2031-08-31\nSet-aside: Unrestricted\nType: Multiple Award IDIQ\nStatus: Active / Awarded\nPrimes: 12 (from 29 offers)\nNAICS primary: 541512\nPSC: DA01\nMMT burn status: New\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: Awarded Aug 2026; task order phase (2026-08-01 to 2031-08-31)\nMMT note: Awarded Aug 2026: 12 primes from 29 offers, $300M combined ceiling, one base year plus four option years. Ordering Aug 2026 to Aug 2031 at the month precision MMT published. Sources: contracts.json peo-dhms-deployment-solutions-new-idiq (verified 2026-08-17); MMT brief 2026-08-18.\nPrimary source: https://sam.gov/workspace/contract/opp/111847a96d214505b4d398a931dfdf1d/view",
       "premium": false
     },
     {
@@ -5260,17 +5260,17 @@
       "title": "DHA Medical Support Services IDIQ",
       "slug": "dha-mss",
       "date": "",
-      "description": "DoD DHA — IDIQ · $0.97B ceiling",
+      "description": "DoD DHA — Multiple Award IDIQ · $0.97B ceiling",
       "tags": [
         "idiq",
         "DoD",
         "DHA",
         "Multiple Award IDIQ",
-        "614000000"
+        "Winding Down"
       ],
       "url": "/idiq-tracker.html",
-      "source_url": "Clinical/medical support at MTFs",
-      "excerpt": "Vehicle: DHA Medical Support Services IDIQ\nAgency: DoD / DHA\nCeiling: $0.97B\nPeriod of performance: ? to 2025-10-31\nSet-aside: Multiple Award IDIQ\nStatus: 614000000\nPrimes: Winding Down\nMMT burn status: 5\nMMT forecast: 2026-10-01 to 2027-03-31 (65) — ?% confidence\nPrimary source: Clinical/medical support at MTFs",
+      "source_url": "https://www.highergov.com/vehicle/dha-medical-support-services-mss-2007/",
+      "excerpt": "Vehicle: DHA Medical Support Services IDIQ\nAgency: DoD / DHA\nCeiling: $0.97B\nPeriod of performance: ? to 2025-10-31\nType: Multiple Award IDIQ\nStatus: Winding Down\nMMT burn status: Saturating\nMMT Incumbent Vulnerability Score: 5/5\nMMT forecast: Successor vehicle RFP (2026-10-01 to 2027-03-31) — 65% confidence\nMMT note: Clinical/medical support at MTFs\nPrimary source: https://www.highergov.com/vehicle/dha-medical-support-services-mss-2007/",
       "premium": false
     },
     {
@@ -5599,17 +5599,18 @@
       "title": "DLA MedSurg Prime Vendor Gen VI",
       "slug": "dla-mspv-gen-vi",
       "date": "",
-      "description": "DoD DLA Troop Support Medical — Unrestricted + regional · $5.00B ceiling",
+      "description": "DoD DLA Troop Support Medical — Multiple Award IDIQ · $5.00B ceiling",
       "tags": [
         "idiq",
         "DoD",
         "DLA Troop Support Medical",
         "Unrestricted + regional",
-        "TBD"
+        "Multiple Award IDIQ",
+        "In Evaluation"
       ],
       "url": "/idiq-tracker.html",
-      "source_url": "70",
-      "excerpt": "Vehicle: DLA MedSurg Prime Vendor Gen VI\nAgency: DoD / DLA Troop Support Medical\nContract number: SPE2DV25R0001\nCeiling: $5.00B\nType: Unrestricted + regional\nStatus: TBD\nPrimes: Commercial distribution\nNAICS secondary: 339113\nPSC: 424210\nMMT forecast: 2 (Award decisions) — ?% confidence\nMMT note: https://www.highergov.com/contract-opportunity/dla-medsurg-prime-vendor-gen-vi-spe2dv25r0001-o-daa0a/\nPrimary source: 70",
+      "source_url": "https://www.highergov.com/contract-opportunity/dla-medsurg-prime-vendor-gen-vi-spe2dv25r0001-o-daa0a/",
+      "excerpt": "Vehicle: DLA MedSurg Prime Vendor Gen VI\nAgency: DoD / DLA Troop Support Medical\nContract number: SPE2DV25R0001\nCeiling: $5.00B\nSet-aside: Unrestricted + regional\nType: Multiple Award IDIQ\nStatus: In Evaluation\nPrimes: TBD\nNAICS primary: 339113\nNAICS secondary: 424210\nMMT burn status: New\nMMT Incumbent Vulnerability Score: 2/5\nMMT forecast: Award decisions (2026-06-01 to 2026-09-30) — 70% confidence\nMMT note: 3 Global Regions primary + backup PVs\nPrimary source: https://www.highergov.com/contract-opportunity/dla-medsurg-prime-vendor-gen-vi-spe2dv25r0001-o-daa0a/",
       "premium": false
     },
     {
@@ -10287,20 +10288,20 @@
       "premium": true
     },
     {
-      "id": "gao-sustain-2026-05",
+      "id": "gao-sustain-2026-09",
       "type": "gao_sustain",
-      "title": "GovCIO TIS recompete sustained — what it means for federal IT services protests",
-      "slug": "2026-05",
-      "date": "2026-05-06",
-      "description": "The GovCIO loss on the GSA TIS recompete is the kind of outcome that should change how mid-market IT services primes structure their next federal pursuit. The teaching moment isn't the protest itself — it's that an incumbent with active per",
+      "title": "NIH sends a $3B services recompete back to market research after a small-business sustain",
+      "slug": "2026-09",
+      "date": "2026-09-18",
+      "description": "A small business just forced NIH to redo its homework on a $3 billion recompete. If you sell scientific or technical services to the government, the reasoning in this decision is worth more to you than the outcome. On August 14, GAO sustain",
       "tags": [
         "premium",
         "gao-sustain",
-        "GSA",
-        "Multi-agency"
+        "HHS",
+        "NIH"
       ],
       "url": "/premium/gao-sustain",
-      "excerpt": "The GovCIO loss on the GSA TIS recompete is the kind of outcome that should change how mid-market IT services primes structure their next federal pursuit. The teaching moment isn't the protest itself — it's that an incumbent with active performance still got displaced when the source-selection record didn't defend the agency's evaluation against a credible challenge. If your capture playbook assumes incumbency is a moat, this decision is the counter-evidence. Two specific traps to watch for in your next IT services recompete: past-performance relevance gaps (citing prior work the agency can't link to the SOW's actual scope is a known sustain pathway), and thin source-selection rationale (when the SSEB consensus narrative doesn't show why the offeror's proposal beat the others on the stated factors, GAO will sustain even on a generally well-run procurement). Both are fixable in your proposal — but only if you've read enough sustained decisions to know what evaluators trip on. Why this matters for your capture timing: sustained protests at GAO are rare (historically 10–15% of decisions). When an agency reopens an acquisition after a sustain, the do-over evaluation typically runs 60–120 days behind the original schedule, sometimes longer if the corrective action requires a re-solicit. That's your window. If you were originally a sub or a no-bid, a sustain is one of the few honest second chances the federal market gives you. Read the decision, map the agency's identified errors to your own past-performance citations, and have a revised proposal ready before the corrective-action announcement hits SAM.",
+      "excerpt": "A small business just forced NIH to redo its homework on a $3 billion recompete. If you sell scientific or technical services to the government, the reasoning in this decision is worth more to you than the outcome. On August 14, GAO sustained LJR Solutions' protest of RFP 75N98026R00042 (B-424487), the NIH Scientific and Technical Support Services IDIQ we track. Proposals closed April 27. The performance period was supposed to start September 15. That date is gone. What NIH got wrong was not the evaluation. It was the decision to run the work full and open in the first place. GAO found three problems with that call. First, NIH wrote a market research memo in April 2026 that never explained why three small businesses it had itself found capable in 2024 could no longer meet the requirement. The memo asserted it and did not show the work. Second, NIH held small businesses to a standard no company could clear, which was performing the entire scope without subcontractors. No large business could have done that either. Third, NIH never documented that it considered a partial set-aside, which the rules require before an agency goes full and open with a small business reserve. GAO recommended that NIH conduct new market research if appropriate, then decide whether the solicitation should be set aside fully or partially. Here is the part that should get your attention. This was the second time. LJR raised the same objection in December 2024 against the earlier version of this RFP. NIH took corrective action and GAO dismissed that protest as academic. NIH came back in 2026, made the same call again, and put thin documentation behind it. What this means for your capture timing. GAO sustains are not common. In fiscal 2025 it decided 380 protests on the merits and sustained 53, about 14 percent (GAO's annual report to Congress). When a sustain lands on a set-aside determination instead of an evaluation, the delay usually runs longer than a re-evaluation, because the agency may have to redo market research and possibly re-solicit. If you are a small business in bioinformatics, computational biology, BSL 2-4 lab research support, or clinical research support, the door you were locked out of is open again. Get your capability statement in front of the NIAID contracting shop while the market research is being redone. That is the moment when being on the list changes the outcome. If you bid as a large prime, your September start slipped and you should reforecast the revenue. If you were a no-bid because the full and open structure made the teaming math impossible, watch for the new market research notice. This is one of the few honest second chances federal procurement hands out.",
       "premium": true
     }
   ]
