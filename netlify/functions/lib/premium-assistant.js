@@ -38,6 +38,11 @@ const { searchCorpus, formatCorpusContext, loadCorpus } = require("./content-ind
 const { classifyQuestion, systemsFor } = require("./question-shape");
 const { acronymReference, setGlossaryLoader } = require("./acronyms");
 const { detectVehicles, formatVehiclesContext, expandedSearchTerms } = require("./known-vehicles");
+// 2026-09-20: the market-entry reference baseline (state Medicaid, security
+// authorization, innovation doors, compliance rules, buying routes), dated
+// per record. Routed through lib/question-shape.js like the other optional
+// systems, so /ask/sources says when it is consulted.
+const { detectReferenceTopics, formatReferenceContext } = require("./reference-context");
 // 2026-09-10: per-answer `sources` array. The catalog in ask-mmt-sources.js is
 // the same list build.js renders on /ask/sources, so the page and the code
 // cannot drift.
@@ -318,6 +323,11 @@ async function runEnrichment(question, { now = new Date() } = {}) {
   const { shapes } = classifyQuestion(question);
   const routed = systemsFor(shapes);
   const optional = (id, fn) => (routed.has(id) ? instrument(id, fn, metricsSb) : Promise.resolve({ skipped: "not_relevant" }));
+  // The reference baseline is local JSON, so it runs inline: no timeout, no
+  // circuit. It is a source only when a topic matched and a block rendered.
+  const referenceContext = routed.has("mmt_reference")
+    ? formatReferenceContext(detectReferenceTopics(question), { question })
+    : { text: "", data: { topics: [], records: [] } };
 
   const [
     federalData,
@@ -406,6 +416,7 @@ async function runEnrichment(question, { now = new Date() } = {}) {
     { id: "sam_wage_determinations", text: formatWageDeterminationsContext(wageDetData),   data: wageDetData },
     { id: "sec_edgar",               text: formatEDGARContext(edgarData),                  data: edgarData },
     { id: "web_federal",             text: formatWebFederalContext(webData),               data: webData },
+    { id: "mmt_reference",           text: referenceContext.text,                          data: referenceContext.data },
   ].map((b) => ({ ...b, text: b.text || "", used: b.used !== undefined ? b.used : (b.text || "").length > 0 }));
 
   // Systems that were queried but did not answer (timeout, quota, HTTP
@@ -420,6 +431,7 @@ async function runEnrichment(question, { now = new Date() } = {}) {
   const delayText = awardDelayNote(agencyCode, now);
   const baseContext = [
     formatVehiclesContext(matchedVehicles),
+    referenceContext.text,
     formatCorpusContext(corpusMatches, terms.corrected || question, terms.phrase),
     recencyText,
     federalText,

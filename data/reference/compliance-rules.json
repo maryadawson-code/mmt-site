@@ -1,0 +1,128 @@
+{
+  "_schema": {
+    "version": "1.0",
+    "last_verified": "2026-09-20",
+    "owner": "hand-maintained; docs/market-entry-coverage-spec.md section 4.5",
+    "research_method": "Web search on 2026-09-20; direct fetch blocked by the session proxy. Regulation and statute citations are high confidence; status notes on pending rulemakings are medium.",
+    "disclaimer": "These are reference rules and trigger phrases for a principal's review. They are not legal advice."
+  },
+  "rules": [
+    {
+      "id": "far_3_4_contingent_fees",
+      "name": "Contingent fees (FAR Subpart 3.4)",
+      "citation": "FAR 3.400 to 3.409; clause 52.203-5, Covenant Against Contingent Fees; 10 U.S.C. 3901 and 41 U.S.C. 3901",
+      "status": "In force. The FAR overhaul proposed rule for Parts 3 and 49 (Federal Register 2026-06-23, FAR Case 2026-007, comments closed 2026-07-23) retains the contingent-fee provisions.",
+      "summary": "Every negotiated contract carries the contractor's warranty that no person or agency was employed or retained to solicit or obtain the contract on a contingent fee, except a bona fide employee or a bona fide agency. Breach lets the Government annul the contract or recover the fee.",
+      "thresholds": [],
+      "trigger_signals": [
+        "success fee", "fee payable on award", "percentage of contract value", "commission on award",
+        "finder's fee", "paid only if we win", "contingent on award", "retainer plus win bonus"
+      ],
+      "what_it_means_for_an_advisor": "An advisory firm paid a fee contingent on a client winning a federal contract has to fit the bona fide agency exception (FAR 3.408: an established commercial or selling agency that neither exerts nor proposes to exert improper influence and does not hold itself out as able to obtain contracts through improper influence). Fixed-fee or time-based engagement pricing avoids the question.",
+      "action": "Flag any pricing term contingent on award for principal review before the engagement letter is signed. Not legal advice.",
+      "sources": [
+        { "label": "eCFR 48 CFR Part 3 Subpart 3.4", "url": "https://www.ecfr.gov/current/title-48/chapter-1/subchapter-A/part-3/subpart-3.4/", "retrieved": "2026-09-20" },
+        { "label": "Federal Register 2026-06-23: RFO Parts 3 and 49 proposed rule", "url": "https://www.federalregister.gov/documents/2026/06/23/2026-12562/federal-acquisition-regulation-revolutionary-federal-acquisition-regulation-overhaul-parts-3-and-49", "retrieved": "2026-09-20" },
+        { "label": "Acquisition.gov FAR overhaul, Part 3 deviation guide", "url": "https://www.acquisition.gov/far-overhaul/far-part-deviation-guide/far-overhaul-part-3", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": ["final rule for FAR Case 2026-007"]
+    },
+    {
+      "id": "far_9_5_oci",
+      "name": "Organizational and consultant conflicts of interest (FAR Subpart 9.5)",
+      "citation": "FAR 9.500 to 9.508; Preventing Organizational Conflicts of Interest in Federal Acquisition Act, Pub. L. 117-324 (2022-12-27)",
+      "status": "Subpart 9.5 in force. A proposed rule published 2025-01-15 would move OCI coverage into FAR Part 3, add definitions and examples, and add two solicitation provisions and three clauses (disclosure and representation, postaward disclosure). FAR Case 2023-006 was still on the open FAR cases list dated 2026-09-11; no final rule found as of 2026-09-20.",
+      "summary": "Two situations: impaired objectivity (a contractor evaluating itself or a competitor) and unfair competitive advantage (biased ground rules from writing the requirement, or unequal access to nonpublic information). FAR 9.505-1 through 9.505-4 give the standing examples: systems engineering and technical direction, preparing specifications or work statements, providing evaluation services, and access to proprietary information.",
+      "thresholds": [],
+      "trigger_signals": [
+        "helped write the requirement", "drafted the statement of work", "supports the program office and bids the follow-on",
+        "evaluation support", "IV&V on a system we also build", "source selection support", "access to competitor proprietary data",
+        "concurrent clients pursuing the same requirement"
+      ],
+      "what_it_means_for_an_advisor": "An advisor with concurrent clients chasing the same program, or one who supported the agency on the requirement, needs a documented mitigation plan or a decision not to take the second engagement. The proposed rule would make disclosure a contract representation.",
+      "action": "Flag concurrent-client overlap on any agency, program or vehicle, and any prior work for the buying office on that requirement. Not legal advice.",
+      "sources": [
+        { "label": "Acquisition.gov FAR Subpart 9.5", "url": "https://www.acquisition.gov/far/subpart-9.5", "retrieved": "2026-09-20" },
+        { "label": "Federal Register 2025-01-15: Preventing Organizational Conflicts of Interest in Federal Acquisition (proposed rule)", "url": "https://www.federalregister.gov/documents/2025/01/15/2024-31561/federal-acquisition-regulation-preventing-organizational-conflicts-of-interest-in-federal", "retrieved": "2026-09-20" },
+        { "label": "Open FAR cases as of 2026-09-11 (DPC)", "url": "https://www.acq.osd.mil/dpap/dars/opencases/farcasenum/far.pdf", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": ["final OCI rule and its effective date"]
+    },
+    {
+      "id": "lda_registration",
+      "name": "Lobbying Disclosure Act registration and reporting",
+      "citation": "2 U.S.C. 1601 et seq.; House and Senate LDA guidance",
+      "status": "In force. Thresholds adjusted 2025-01-01; next adjustment 2029-01-01.",
+      "summary": "A lobbyist is an individual employed or retained for compensation whose services include more than one lobbying contact and whose lobbying activities are 20 percent or more of their time for that client over a three-month period. A lobbying firm registers (LD-1) within 45 days of the second contact or of being retained to make it, unless income from that client for lobbying is not expected to exceed $3,500 in the quarter. An organization with in-house lobbyists registers unless lobbying expenses are not expected to exceed $16,000 in the quarter. LD-2 quarterly activity reports are due within 20 days of quarter end; LD-203 contribution reports are semiannual.",
+      "thresholds": [
+        { "label": "Lobbying firm, per client, per quarter", "value": 3500, "currency": "USD", "effective": "2025-01-01" },
+        { "label": "Organization with in-house lobbyists, per quarter", "value": 16000, "currency": "USD", "effective": "2025-01-01" },
+        { "label": "Time test", "value": "20 percent of time for the client over any three-month period" },
+        { "label": "Registration deadline", "value": "45 days after the second lobbying contact or after being retained to make it" }
+      ],
+      "trigger_signals": [
+        "meet with the program office on our behalf", "set up a meeting with the CIO", "advocate with the agency",
+        "talk to the Hill", "congressional outreach", "influence the requirement", "represent us to the government"
+      ],
+      "what_it_means_for_an_advisor": "Communications with covered executive branch officials about formulating or modifying a federal program or the awarding of a contract can be lobbying contacts. Market research conversations and responses to agency-initiated requests generally are not. Track time and contacts per client against the 20 percent test and the quarterly dollar threshold.",
+      "action": "Flag any engagement where the advisor, not the client, will contact covered officials about a program, contract or requirement. Not legal advice.",
+      "sources": [
+        { "label": "Senate Office of Public Records: new LDA thresholds", "url": "https://www.senate.gov/legislative/Public_Disclosure/new_thresholds.htm", "retrieved": "2026-09-20" },
+        { "label": "Federal Register 2025-01-30, LDA threshold adjustment (2025-01941)", "url": "https://www.govinfo.gov/content/pkg/FR-2025-01-30/html/2025-01941.htm", "retrieved": "2026-09-20" },
+        { "label": "Lobbying Disclosure Act guidance (House Clerk and Senate)", "url": "https://lda.congress.gov/Guidance/ldaguidance.pdf", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": []
+    },
+    {
+      "id": "procurement_integrity_act",
+      "name": "Procurement Integrity Act (procurement-sensitive information)",
+      "citation": "41 U.S.C. 2101 to 2107; FAR 3.104",
+      "status": "In force. The 2026-06-23 RFO proposed rule for Part 3 retains the procurement integrity provisions and would clarify marking procedures for bid or proposal information and source selection information.",
+      "summary": "No person may knowingly obtain, and no covered official may knowingly disclose, contractor bid or proposal information or source selection information before award of the procurement it relates to. Covered officials who take specified actions on a procurement over $10 million face a one-year ban on accepting compensation from that contractor.",
+      "thresholds": [
+        { "label": "One-year compensation ban trigger", "value": 10000000, "currency": "USD", "note": "Applies to officials who served in specified roles on a contract or payment or claim in excess of $10 million." }
+      ],
+      "trigger_signals": [
+        "competitor pricing", "evaluation scores before award", "draft technical evaluation", "source selection plan",
+        "we have a copy of their proposal", "someone inside shared", "unreleased independent government cost estimate"
+      ],
+      "what_it_means_for_an_advisor": "A relationship record must never hold source selection information or another offeror's bid or proposal information obtained before award. Publicly released information (posted solicitations, award notices, USASpending records) is fine.",
+      "action": "Flag any nonpublic pre-award information about a live procurement and stop its use. Not legal advice.",
+      "sources": [
+        { "label": "Acquisition.gov FAR 3.104-3", "url": "https://www.acquisition.gov/far/3.104-3", "retrieved": "2026-09-20" },
+        { "label": "DOJ JMD: Procurement Integrity Act", "url": "https://www.justice.gov/jmd/procurement-integrity", "retrieved": "2026-09-20" },
+        { "label": "Federal Register 2026-06-23: RFO Parts 3 and 49 proposed rule", "url": "https://www.federalregister.gov/documents/2026/06/23/2026-12562/federal-acquisition-regulation-revolutionary-federal-acquisition-regulation-overhaul-parts-3-and-49", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": []
+    },
+    {
+      "id": "byrd_amendment",
+      "name": "Byrd Amendment (limitation on use of appropriated funds to influence federal transactions)",
+      "citation": "31 U.S.C. 1352; FAR Subpart 3.8; provision 52.203-11 and clause 52.203-12",
+      "status": "In force.",
+      "summary": "A recipient of a federal contract, grant, loan or cooperative agreement may not use appropriated funds to pay any person to influence an officer or employee of an agency, a Member of Congress or congressional staff in connection with that covered federal action. Offerors certify and disclose (SF-LLL) under 52.203-11; 52.203-12 carries the prohibition and flows down to subcontracts above the threshold in 52.203-12(g), currently $150,000.",
+      "thresholds": [
+        { "label": "Subcontract flow-down threshold (52.203-12(g))", "value": 150000, "currency": "USD" }
+      ],
+      "trigger_signals": [
+        "bill the advisor's outreach to the contract", "charge lobbying to the task order", "use grant funds for advocacy"
+      ],
+      "what_it_means_for_an_advisor": "A client who pays an advisor from contract or grant funds to influence an agency on a covered action has a Byrd problem even where LDA registration is not triggered. Keep advisory fees on the client's own funds and outside covered actions.",
+      "action": "Flag advisory fees charged to a federal award where the work includes influencing officials on that award. Not legal advice.",
+      "sources": [
+        { "label": "Federal Register 2007-08-17, FAR Case 2005-035, Changes to Lobbying Restrictions", "url": "https://www.federalregister.gov/documents/2007/08/17/07-3807/federal-acquisition-regulation-far-case-2005-035-changes-to-lobbying-restrictions", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": ["re-verify the 52.203-12(g) threshold against the current FAR text after the October 2025 inflation adjustment"]
+    }
+  ]
+}

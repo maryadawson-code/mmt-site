@@ -26,9 +26,13 @@ const SHAPE_PATTERNS = {
   budget: /\b(budget\w*|appropriat\w*|fy ?20\d\d|fy\d\d|justification|j-?book|funding line|omnibus|continuing resolution|topline|request(?:ed)?)\b/i,
   workforce: /\b(hiring|hires?|jobs?|positions?|workforce|staffing|billets?|usajobs|vacanc\w*|headcount)\b/i,
   data: /\b(datasets?|open data|statistics|adoption|interoperab\w*|market share|ehr|electronic health records?|certified|chpl|dashboards?)\b/i,
+  // 2026-09-20: market-entry questions read MMT's hand-maintained reference
+  // (lib/reference-context.js): state Medicaid programs and funding rules,
+  // security authorization paths, innovation doors, compliance rules, routes.
+  market_entry: /\b(state medicaid|medicaid agenc\w*|mmis|medicaid enterprise|advance planning document|\bapd\b|streamlined modular|t-msis|naspo|valuepoint|cooperative purchas\w*|govramp|stateramp|tx-ramp|work requirement|enhanced (?:ffp|match|funding)|90\/10|mars-e|fedramp|20x|rapid cloud review|\brcr\b|impact level|\bil ?[2456]\b|cc srg|authoriz\w+ to operate|\bato\b|health it certification|hti-[1-5]|sbir|sttr|phase iii|broad agency announcement|\bbaa\b|innovative solution opening|arpa-h|barda|ez-baa|commercial solutions opening|\bcso\b|other transaction|\bota\b|\bmtec\b|pathfinder|wiser|innovation center|contingent fee|success fee|organizational conflict|\boci\b|far 9\.5|far 3\.4|lobbying disclosure|lobbyist|byrd amendment|procurement integrity|source selection information|buying route|entry route|route to market|sole[- ]source|8\(a\)|simplified acquisition|micro-?purchase|reseller|market entry|federal entry|which vehicles?|what vehicles?|contract vehicles?|sell (?:to|into)|how (?:do|can|would) (?:we|i|a vendor|a company) (?:sell|get on|enter|break in))\b/i,
 };
 
-const SHAPE_ORDER = ["procurement", "budget", "policy", "research", "grants", "workforce", "data"];
+const SHAPE_ORDER = ["procurement", "budget", "policy", "research", "grants", "workforce", "data", "market_entry"];
 
 /**
  * Optional systems and the shapes that switch them on. "general" is the
@@ -44,6 +48,7 @@ const OPTIONAL_SYSTEMS = {
   usajobs:         { shapes: ["workforce"],               label: "hiring and staffing questions" },
   hhs_open:        { shapes: ["data", "research"],        label: "data and research questions" },
   onc_healthit:    { shapes: ["data"],                    label: "health IT adoption and interoperability questions" },
+  mmt_reference:   { shapes: ["market_entry"],            label: "market-entry questions: state Medicaid programs and funding rules, security authorization paths, innovation doors, compliance rules and buying routes" },
 };
 
 /**

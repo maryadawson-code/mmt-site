@@ -21,6 +21,9 @@ const SOURCE_CATALOG = [
   { id: "mmt_archive", name: "MMT article archive", url: "https://missionmeetstech.com/latest", mode: "index",
     provides: "Every published MMT analysis, Friday brief, monthly brief, Contract Tracker note, and IDIQ analyst note",
     use: "Context: what Mary has already worked out about the vehicle, agency, or program. Cited by article, with the link." },
+  { id: "mmt_reference", name: "MMT market-entry reference", url: "https://missionmeetstech.com/premium/market-entry", mode: "index",
+    provides: "Federal health buyers, buying routes, vehicle ordering status, security authorization paths (FedRAMP, CMS Rapid Cloud Review, DoD impact levels, VA, ONC, GovRAMP, TX-RAMP, MARS-E), the 56 state Medicaid agencies with the federal funding and certification rules, innovation doors and compliance rules. Hand-maintained, each record dated and sourced",
+    use: "The dated baseline for a market-entry question, cited with its verified date; a field it marks not yet covered is unknown, never zero" },
   { id: "usaspending", name: "USASpending.gov", url: "https://www.usaspending.gov", mode: "live",
     provides: "Federal obligations, awards, recipients, spending by agency and NAICS",
     use: "Who won what, for how much, and how the money has moved" },
@@ -100,7 +103,7 @@ const SOURCE_CATALOG = [
     provides: "Public-company filings",
     use: "What a public competitor has told its investors about a contract" },
   { id: "web_federal", name: "Web search of federal sites", url: "https://missionmeetstech.com/ask/sources#fallback", mode: "fallback",
-    note: "Runs when USASpending, SAM.gov Opportunities and the contract-award client all return nothing for the question, or when SAM.gov or USASpending could not be reached on a contract, vehicle or budget question. Restricted to .gov and .mil domains (sam.gov, usaspending.gov, health.mil, va.gov, hhs.gov, cms.gov, gsa.gov, gao.gov, congress.gov, govinfo.gov, federalregister.gov, nih.gov, arpa-h.gov, healthit.gov, defense.gov).",
+    note: "Runs when USASpending, SAM.gov Opportunities and the contract-award client all return nothing for the question, or when SAM.gov or USASpending could not be reached on a contract, vehicle or budget question. Restricted to .gov and .mil domains (sam.gov, usaspending.gov, health.mil, va.gov, hhs.gov, cms.gov, medicaid.gov, gsa.gov, gao.gov, congress.gov, govinfo.gov, federalregister.gov, acquisition.gov, fedramp.gov, sbir.gov, nih.gov, arpa-h.gov, healthit.gov, hrsa.gov, cdc.gov, fda.gov, ihs.gov, samhsa.gov, defense.gov, cyber.mil).",
     provides: "Pages on federal sites the structured APIs did not surface",
     use: "A lead when the structured sources are silent, labeled as a web-search lead in the answer, never a primary citation" },
 ];

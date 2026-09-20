@@ -27,6 +27,9 @@ function makeRoot(mutate) {
   write("data/forecast-portals.json", { _schema: { last_verified: "2026-09-01" } });
   write("capture-intelligence.json", { published_at: "2026-09-01T12:00:00Z" });
   write("data/premium/pursuit-calendar-seed.json", { _meta: { last_curated_at: "2026-09-08" } });
+  for (const f of ["buyers", "authorization-paths", "state-medicaid", "innovation-pathways", "compliance-rules", "buying-routes"]) {
+    write(`data/reference/${f}.json`, { _schema: { last_verified: "2026-09-01" } });
+  }
   write("content/gao-sustain/2026-09.md", "---\ndate: 2026-09-02\ntitle: t\n---\n\nbody\n");
   write("premium/gao-sustain.html", "<p><!-- BUILD:GAO_SUSTAIN_FRESHNESS --></p><!-- BUILD:GAO_SUSTAIN_LATEST --><!-- BUILD:GAO_SUSTAIN_ARCHIVE -->");
   if (mutate) mutate(dir, write);

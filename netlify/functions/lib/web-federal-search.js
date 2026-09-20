@@ -34,6 +34,11 @@ const FEDERAL_DOMAINS = [
   "sam.gov", "usaspending.gov", "health.mil", "defense.gov", "va.gov", "hhs.gov", "cms.gov",
   "gsa.gov", "gao.gov", "congress.gov", "govinfo.gov", "federalregister.gov", "nih.gov",
   "arpa-h.gov", "healthit.gov",
+  // 2026-09-20 market-entry coverage: state Medicaid rules, authorization
+  // programs, SBIR and the FAR live on these; the other HHS operating
+  // divisions the reference layer covers get their own hosts.
+  "medicaid.gov", "acquisition.gov", "fedramp.gov", "sbir.gov",
+  "hrsa.gov", "cdc.gov", "fda.gov", "ihs.gov", "samhsa.gov", "cyber.mil",
 ];
 const NO_RESULTS = "NO_RESULTS";
 

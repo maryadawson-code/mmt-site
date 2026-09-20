@@ -539,6 +539,37 @@
       "freshness_sla_hours": null,
       "smoke_test_url": "/login",
       "noindex": true
+    },
+    {
+      "feature_name": "Market Entry Reference",
+      "public_marketing_urls": [
+        "/market-entry"
+      ],
+      "member_url": "/premium/market-entry.html",
+      "backing_function": "netlify/functions/agent-reference.js (API, scope reference:read); build.js copies data/reference/*.json to dist",
+      "entitlement_required": "premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
+      "expected_data_source": "data/reference/{buyers,buying-routes,authorization-paths,innovation-pathways,compliance-rules}.json plus data/idiq-vehicles.json (hand-maintained, dated per record; docs/market-entry-coverage-spec.md)",
+      "freshness_sla_hours": null,
+      "title_signature": "Market entry reference",
+      "smoke_test_url": "/premium/market-entry.html",
+      "noindex": true
+    },
+    {
+      "feature_name": "State Medicaid Coverage",
+      "public_marketing_urls": [
+        "/state-medicaid",
+        "/agencies/states"
+      ],
+      "member_url": "/premium/state-medicaid.html",
+      "backing_function": "netlify/functions/agent-reference.js (API, /api/v1/states); build.js copies data/reference/*.json to dist",
+      "entitlement_required": "premium|founding|institutional|admin",
+      "public_locked_preview_behavior": "redirect to dashboard.html (sign-in gate)",
+      "expected_data_source": "data/reference/state-medicaid.json (56 jurisdictions, funding rules, certification, cooperative purchasing, demand signals; hand-maintained, dated per record)",
+      "freshness_sla_hours": null,
+      "title_signature": "State Medicaid coverage",
+      "smoke_test_url": "/premium/state-medicaid.html",
+      "noindex": true
     }
   ]
 }

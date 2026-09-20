@@ -1,0 +1,197 @@
+{
+  "_schema": {
+    "version": "1.0",
+    "last_verified": "2026-09-20",
+    "owner": "hand-maintained; docs/market-entry-coverage-spec.md section 4.4",
+    "research_method": "Web search on 2026-09-20; direct fetch blocked by the session proxy. Statute and official program pages are high confidence; budget figures and vendor lists from secondary reporting are medium.",
+    "note": "A pathway is a door, not a purchase. Each record says what it leads to and what it does not."
+  },
+  "pathways": [
+    {
+      "id": "sbir_sttr",
+      "name": "SBIR and STTR (including Phase III)",
+      "owner": "SBA policy directive; 11 participating agencies including HHS (NIH), DoD and VA-adjacent DoD medical",
+      "applies_to": ["NIH", "ARPA-H", "CDC", "FDA", "DHA", "Army", "Navy", "AirForce"],
+      "mechanism": "Competitive Phase I and Phase II awards from agency SBIR set-asides; Phase III work that derives from, extends or completes prior SBIR effort is funded with non-SBIR funds and may be awarded sole source to the awardee that developed the technology, to the greatest extent practicable. No J&A is required for a Phase III sole-source award.",
+      "authority": "15 U.S.C. 638; SBA SBIR/STTR Policy Directive",
+      "status": "Statutory authority lapsed 2025-10-01 and was restored by the Small Business Innovation and Economic Security Act (S. 3971), passed by the Senate 2026-03-03 and the House 2026-03-17 (345 to 41), signed 2026-04-13, extending the programs through 2031-09-30. New law adds foreign-adversary due diligence and annual application limits per firm.",
+      "leads_to": "Non-dilutive R&D funding and data rights; a Phase III award where an agency or prime chooses to buy.",
+      "does_not_lead_to": "A reliable purchase route at HHS. NIH does not position itself as the eventual customer, and HHS has described Phase III awards as not typical (HHS SBIR contract solicitation webinar transcript, cited in the Echelon proposal). A federal plan that depends on an HHS Phase III step needs a replacement route, not optimization.",
+      "key_dates": [
+        { "date": "2025-10-01", "event": "SBIR and STTR authority lapsed; new awards paused across the 11 agencies." },
+        { "date": "2026-04-13", "event": "S. 3971 signed; programs reauthorized through 2031-09-30." }
+      ],
+      "how_to_engage": ["Agency SBIR solicitations (sbir.gov and each agency's SEED or SBIR office)", "Phase III conversations with the program office that funded Phase II and with primes on relevant vehicles"],
+      "sources": [
+        { "label": "S. 3971, Small Business Innovation and Economic Security Act (GovTrack)", "url": "https://www.govtrack.us/congress/bills/119/s3971", "retrieved": "2026-09-20" },
+        { "label": "Crowell and Moring: SBIR/STTR programs reauthorized after six-month lapse", "url": "https://www.crowell.com/en/insights/client-alerts/sbirsttr-programs-reauthorized-after-six-month-lapse", "retrieved": "2026-09-20" },
+        { "label": "SBA SBIR/STTR policy directives", "url": "https://www.sbir.gov/about/policies", "retrieved": "2026-09-20" },
+        { "label": "SBIR.gov tutorial: Phase III", "url": "https://www.sbir.gov/tutorials/data-rights/tutorial-4", "retrieved": "2026-09-20" },
+        { "label": "HHS SBIR contract solicitation webinar transcript (PHS 2023-1), cited by the Echelon proposal; not re-fetched", "url": "https://seed.nih.gov/sites/default/files/HHS-SBIR-Contract-Solicitation-Webinar-PHS-2023-1-Transcript.pdf", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": ["per-agency FY2026 and FY2027 solicitation calendars after the reauthorization"]
+    },
+    {
+      "id": "arpa_h",
+      "name": "ARPA-H solicitations (Open BAA, Mission Office ISOs, Sprints)",
+      "owner": "Advanced Research Projects Agency for Health",
+      "applies_to": ["ARPA-H"],
+      "mechanism": "Program opportunities are Innovative Solution Openings (ISOs), open for a limited time. Four Mission Office ISOs stay open: Health Science Futures (ARPA-H-SOL-24-104), Proactive Health (ARPA-H-SOL-24-106), Resilient Systems (ARPA-H-SOL-24-103) and Scalable Solutions (ARPA-H-SOL-24-105). A Solution Summary is required first and a full proposal needs written ARPA-H feedback. The Open BAA takes ideas outside existing programs. Awards use contracts, other transactions and prizes; 42 U.S.C. 290c(n)(1) directs the Director to prioritize work performed in the United States.",
+      "authority": "42 U.S.C. 290c",
+      "status": "Active. FY2027 President's budget requests $945 million, $555 million below FY2026's $1.5 billion.",
+      "leads_to": "Program awards for high-risk research and development; connection to ARPANET-H hubs (Investor Catalyst Hub, Customer Experience Hub).",
+      "does_not_lead_to": "A services contract or an enterprise IT procurement. ARPA-H funds research programs, not operations.",
+      "key_dates": [
+        { "date": "2026-04", "event": "FY2027 budget request: $945 million for ARPA-H." }
+      ],
+      "how_to_engage": ["Review the program portfolio so the idea falls outside existing programs", "Pick the Mission Office ISO that fits and submit a Solution Summary", "Sprint for Women's Health runs with the Investor Catalyst Hub"],
+      "sources": [
+        { "label": "ARPA-H Open Broad Agency Announcement", "url": "https://arpa-h.gov/research-and-funding/open-baa", "retrieved": "2026-09-20" },
+        { "label": "ARPA-H open funding opportunities", "url": "https://arpa-h.gov/explore-funding/open-funding-opportunities", "retrieved": "2026-09-20" },
+        { "label": "ARPA-H Sprint for Women's Health", "url": "https://arpa-h.gov/news-and-events/arpa-h-announces-sprint-womens-health", "retrieved": "2026-09-20" },
+        { "label": "42 U.S.C. 290c", "url": "https://uscode.house.gov/view.xhtml?req=granuleid%3AUSC-prelim-title42-section290c&num=0&edition=prelim", "retrieved": "2026-09-20" },
+        { "label": "CRA roundup of FY2027 research agency requests", "url": "https://cra.org/govaffairs/blog/2026/05/nist-nih-nasa-fy2027-pbr/", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": ["FY2027 enacted appropriation"]
+    },
+    {
+      "id": "barda",
+      "name": "BARDA partnering (BAA, DRIVe EZ-BAA, other transactions)",
+      "owner": "Biomedical Advanced Research and Development Authority, within ASPR",
+      "applies_to": ["ASPR"],
+      "mechanism": "The BARDA Broad Agency Announcement (posted on SAM.gov) funds advanced research and development of medical countermeasures for CBRN threats, pandemic influenza and emerging infectious diseases. DRIVe runs the EZ-BAA (EZ-BAA-22-100-SOL-00003) for awards under $750,000 and BAA Special Instructions for larger projects. BARDA holds other transaction authority under 42 U.S.C. 247d-7e(c)(5).",
+      "authority": "42 U.S.C. 247d-7e",
+      "status": "Active. Congress provided $3.7 billion for ASPR in FY2026 including $1 billion for BARDA (secondary reporting). The 2025 HHS reorganization proposed moving ASPR functions to CDC and BARDA to a new office; Congress's FY2026 bill requires a plan before CDC functions move and rejected the large-scale restructuring.",
+      "leads_to": "Cost-shared development awards and other transactions for countermeasures, diagnostics and devices.",
+      "does_not_lead_to": "Enterprise health IT procurement. BARDA buys development of products, not systems integration.",
+      "key_dates": [
+        { "date": "2025-04-22", "event": "EZ-BAA Amendment 037 issued." }
+      ],
+      "how_to_engage": ["BARDA BAA on SAM.gov", "DRIVe EZ-BAA for early-stage awards under $750,000", "BARDA TechWatch meeting requests through medicalcountermeasures.gov"],
+      "sources": [
+        { "label": "Medical Countermeasures: partner with BARDA", "url": "https://medicalcountermeasures.gov/barda/partnering", "retrieved": "2026-09-20" },
+        { "label": "BARDA DRIVe EZ-BAA", "url": "https://drive.hhs.gov/ezbaa.html", "retrieved": "2026-09-20" },
+        { "label": "BARDA BAA on SAM.gov", "url": "https://sam.gov/opp/8cdd54823bce4db5814e0b9a0fe63fac/view", "retrieved": "2026-09-20" },
+        { "label": "42 U.S.C. 247d-7e", "url": "https://uscode.house.gov/view.xhtml?req=42+USC+247d-7e", "retrieved": "2026-09-20" },
+        { "label": "ACEP: 2026 HHS funding update", "url": "https://www.acep.org/news/acep-newsroom-articles/2-3-26-2026-hhs-funding-update", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": ["BARDA Industry Day 2026 date", "outcome of the proposed ASPR and BARDA reorganization"]
+    },
+    {
+      "id": "dha_cso",
+      "name": "DHA Enterprise-Wide Commercial Solutions Opening",
+      "owner": "DHA Contracting Activity, Defense Healthcare Management Systems Contracting Division",
+      "applies_to": ["DHA"],
+      "mechanism": "A standing framework (HT003826SC005, active 2026-08-07 through 2027-08-06) under which Areas of Interest carry the actual scope, NAICS, evaluation criteria and due dates. MMT tracks each AoI in data/cso-aois.json; a CSO carries no ceiling or due date of its own.",
+      "authority": "10 U.S.C. 3458 (made permanent by section 803 of the FY2022 NDAA); DFARS 212.70",
+      "status": "Active framework. Check data/cso-aois.json for open AoIs and their response dates.",
+      "leads_to": "FAR-based contracts or other transactions for innovative commercial products and services selected through a general solicitation and peer review.",
+      "does_not_lead_to": "A multi-year enterprise services award by itself.",
+      "key_dates": [
+        { "date": "2026-08-07", "event": "HT003826SC005 active from." },
+        { "date": "2027-08-06", "event": "HT003826SC005 active through." }
+      ],
+      "how_to_engage": ["Watch the AoIs under the CSO (MMT Contract Tracker and data/cso-aois.json)", "Respond to the AoI, not the CSO"],
+      "sources": [
+        { "label": "MMT data/cso-aois.json (in-repo, hand-maintained, last_reviewed 2026-08-20)", "url": "https://missionmeetstech.com/contract-tracker", "retrieved": "2026-09-20" },
+        { "label": "DFARS Case 2022-D006, Defense Commercial Solutions Opening (Federal Register 2023-08-17)", "url": "https://www.federalregister.gov/documents/2023/08/17/2023-17557/defense-federal-acquisition-regulation-supplement-defense-commercial-solutions-opening-dfars-case", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": []
+    },
+    {
+      "id": "mtec_ota",
+      "name": "Medical Technology Enterprise Consortium (MTEC) other transaction agreement",
+      "owner": "MTEC under OTA W81XWH-15-9-0001 with the U.S. Army Medical Research Acquisition Activity",
+      "applies_to": ["DHA", "Army", "Navy", "AirForce", "USU", "ASPR"],
+      "mechanism": "A 10-year renewable other transaction agreement. MTEC issues requests for project proposals to its members; DoD funds the projects and MTEC manages them. Government participants include USAMRDC, DHA, the Naval Medical Research Center, ONR, DTRA, BARDA, USU, the National Guard Bureau and AFRL. Membership is required to receive an award and for the award's duration; over 370 members as of mid-2025.",
+      "authority": "10 U.S.C. 4021 and 4022 (other transactions)",
+      "status": "Active.",
+      "leads_to": "Prototype project awards in military infectious disease, combat casualty care, operational medicine, clinical and rehabilitative medicine, medical training and health information science, and CBRN threats.",
+      "does_not_lead_to": "A DHA enterprise IT services contract. Follow-on production is possible under OT authority but is not automatic.",
+      "key_dates": [],
+      "how_to_engage": ["Join MTEC (mtec-sc.org/join)", "Respond to member-only requests for project proposals"],
+      "sources": [
+        { "label": "MTEC home", "url": "https://mtec-sc.org/", "retrieved": "2026-09-20" },
+        { "label": "USAMRDC: partner with us", "url": "https://mrdc.health.mil/index.cfm/collaborate/doing_business_with_us/partner", "retrieved": "2026-09-20" },
+        { "label": "Georgia Tech Research: introduction to MTEC", "url": "https://research.gatech.edu/introduction-medical-technology-enterprise-consortium-mtec", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": ["current member count"]
+    },
+    {
+      "id": "va_pathfinder",
+      "name": "VA Pathfinder and the VHA Innovation Ecosystem",
+      "owner": "Department of Veterans Affairs",
+      "applies_to": ["VA", "VHA"],
+      "mechanism": "Pathfinder (pathfinder.va.gov) is VA's front door for vendors and innovators: a company proposes an idea, VA researches whether it can become a solution, and the site routes to the right procurement or innovation channel. VHA runs the All-Employee Innovation Program and Spark-Seed-Spread across medical centers. VA has no single procurement pathway and tells vendors to watch SAM.gov and answer RFIs and sources sought.",
+      "authority": "VA procurement authority; VHA Innovation Ecosystem programs",
+      "status": "Active. VA OIT held an industry day on 2026-03-27.",
+      "leads_to": "A routed conversation with a VA program office; sometimes a pilot at a medical center.",
+      "does_not_lead_to": "An award. Every VA purchase still runs through a contracting activity (TAC, SAC, NAC, VISN contracting) and usually a vehicle such as T4NG2 or VECTOR.",
+      "key_dates": [
+        { "date": "2026-03-27", "event": "VA OIT Industry Day." }
+      ],
+      "how_to_engage": ["Submit through pathfinder.va.gov", "Answer VA RFIs and sources sought on SAM.gov", "Team with T4NG2 and VECTOR primes for delivery"],
+      "sources": [
+        { "label": "VA News: VA launches Pathfinder", "url": "https://news.va.gov/press-room/va-launches-pathfinder-a-virtual-concierge-to-streamline-procurement-and-innovation/", "retrieved": "2026-09-20" },
+        { "label": "VA Pathfinder community page", "url": "https://pathfinder.va.gov/community/", "retrieved": "2026-09-20" },
+        { "label": "VA OIT Industry Day, 2026-03-27 (VOA document)", "url": "https://www.voa.va.gov/DocumentView.aspx?DocumentID=5038", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": ["Pathfinder launch year"]
+    },
+    {
+      "id": "cms_innovation_center_models",
+      "name": "CMS Innovation Center models with technology vendor roles (WISeR)",
+      "owner": "CMS Center for Medicare and Medicaid Innovation",
+      "applies_to": ["CMS"],
+      "mechanism": "The Innovation Center tests payment and delivery models under 42 U.S.C. 1315a. The Wasteful and Inappropriate Service Reduction (WISeR) model, announced June 2025 and started 2026-01-01, runs six years in New Jersey, Ohio, Oklahoma, Texas, Arizona and Washington and tests whether technology including AI speeds prior authorization for 17 outpatient services vulnerable to fraud, waste and abuse in traditional Medicare. Selected technology vendors: Cohere Health, Genzeon, Humata Health, Innovaccer, Virtix Health and Zyter. The Senate rejected a resolution to overturn the model.",
+      "authority": "42 U.S.C. 1315a",
+      "status": "WISeR active since 2026-01-01.",
+      "leads_to": "A vendor role inside a model test, paid under the model's terms.",
+      "does_not_lead_to": "A CMS IT contract. Model participation is separate from SPARC-style task orders.",
+      "key_dates": [
+        { "date": "2025-06", "event": "WISeR model announced." },
+        { "date": "2026-01-01", "event": "WISeR model start." }
+      ],
+      "how_to_engage": ["Watch innovation.cms.gov for model announcements with vendor application windows", "Track prior authorization and program integrity models"],
+      "sources": [
+        { "label": "DLA Piper: CMS launches WISeR model", "url": "https://www.dlapiper.com/en/insights/publications/2026/01/cms-wiser-model", "retrieved": "2026-09-20" },
+        { "label": "Georgetown CHIR: new CMS WISeR model", "url": "https://medicare.chir.georgetown.edu/new-cms-wiser-model-revives-concerns-of-prior-authorization-and-artificial-intelligence/", "retrieved": "2026-09-20" },
+        { "label": "Fierce Healthcare: Senate strikes down move to overturn WISeR", "url": "https://www.fiercehealthcare.com/regulatory/legislators-introduce-resolution-seek-congressional-disapproval-cms-wiser-ai-prior-auth", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": ["vendor selection process for future model cohorts"]
+    },
+    {
+      "id": "unsolicited_proposal",
+      "name": "Unsolicited proposals (FAR Subpart 15.6)",
+      "owner": "Each agency's unsolicited proposal coordinator",
+      "applies_to": ["VA", "DHA", "CMS", "HHS", "NIH", "CDC", "HRSA", "IHS", "FDA"],
+      "mechanism": "A written proposal for a new or innovative idea submitted on the offeror's initiative, not in response to a solicitation. The agency evaluates it and may negotiate a contract only when the idea is unique and not available to the Government another way.",
+      "authority": "FAR Subpart 15.6 (status under the FAR overhaul not verified this session)",
+      "status": "In force as of the last verified FAR text; the overhaul's Part 15 rewrite was not checked.",
+      "leads_to": "Rarely, a sole-source contract for a unique idea.",
+      "does_not_lead_to": "A commercial product sale. Agencies reject unsolicited proposals that describe commercial items available elsewhere.",
+      "key_dates": [],
+      "how_to_engage": ["Find the agency's unsolicited proposal coordinator", "Confirm the idea is not covered by an existing or planned solicitation"],
+      "sources": [
+        { "label": "Acquisition.gov FAR Part 15 (citation from the FAR's standing structure; not re-fetched this session)", "url": "https://www.acquisition.gov/far/part-15", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": ["FAR overhaul treatment of Subpart 15.6"]
+    }
+  ]
+}

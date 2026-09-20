@@ -8,7 +8,14 @@ import {
   dispatch, listToolsForScopes, negotiateProtocol, protectedResourceMetadata, TOOLS,
 } from "../../netlify/functions/agent-mcp.js";
 
-const ALL_SCOPES = ["opportunities:read", "tracker:read", "intel:read"];
+const ALL_SCOPES = ["opportunities:read", "tracker:read", "intel:read", "reference:read"];
+const OPPORTUNITY_TOOL_NAMES = ["mmt_get_opportunity", "mmt_list_opportunities", "mmt_list_recommended", "mmt_list_tracker"];
+// 2026-09-20: the market-entry reference layer (data/reference/*, idiq-vehicles).
+const REFERENCE_TOOL_NAMES = [
+  "mmt_get_buyer", "mmt_get_state_medicaid", "mmt_get_vehicle", "mmt_list_authorization_paths",
+  "mmt_list_buyers", "mmt_list_buying_routes", "mmt_list_compliance_rules", "mmt_list_innovation_pathways",
+  "mmt_list_org_charts", "mmt_list_state_medicaid", "mmt_list_vehicles",
+];
 const ctxWith = (scopes) => ({ token: { scopes }, email: "buyer@fhas.com", userId: "u-1", db: {} });
 
 describe("protocol negotiation", () => {
@@ -42,11 +49,11 @@ describe("notifications never produce a response", () => {
 });
 
 describe("tools/list is scoped to the token", () => {
-  it("full-scope token sees all four tools", async () => {
+  it("full-scope token sees all fifteen tools", async () => {
     const { rpc } = await dispatch({ jsonrpc: "2.0", id: 2, method: "tools/list" }, ctxWith(ALL_SCOPES));
-    expect(rpc.result.tools.map((t) => t.name).sort()).toEqual([
-      "mmt_get_opportunity", "mmt_list_opportunities", "mmt_list_recommended", "mmt_list_tracker",
-    ]);
+    expect(rpc.result.tools.map((t) => t.name).sort()).toEqual(
+      [...OPPORTUNITY_TOOL_NAMES, ...REFERENCE_TOOL_NAMES].sort(),
+    );
     // every advertised tool is read-only
     expect(rpc.result.tools.every((t) => t.annotations.readOnlyHint === true)).toBe(true);
   });
@@ -56,6 +63,11 @@ describe("tools/list is scoped to the token", () => {
     expect(tools).toContain("mmt_get_opportunity");
     expect(tools).not.toContain("mmt_list_tracker");
     expect(tools).not.toContain("mmt_list_recommended");
+    for (const name of REFERENCE_TOOL_NAMES) expect(tools).not.toContain(name);
+  });
+  it("a reference-only token sees the eleven reference tools and nothing else", () => {
+    const tools = listToolsForScopes(["reference:read"]).map((t) => t.name).sort();
+    expect(tools).toEqual(REFERENCE_TOOL_NAMES);
   });
 });
 
@@ -119,6 +131,64 @@ describe("tools/call", () => {
     );
     expect(rpc.result.isError).toBe(true);
     expect(rpc.result.content[0].text).toMatch(/SERVER_ERROR/);
+  });
+});
+
+describe("reference tools run against the shipped data, no DB", () => {
+  const refCtx = ctxWith(["reference:read"]);
+  const call = (id, name, args) => dispatch(
+    { jsonrpc: "2.0", id, method: "tools/call", params: { name, arguments: args } }, refCtx,
+  );
+
+  it("mmt_get_vehicle returns a stamped record with a derived ordering_status", async () => {
+    const { rpc } = await call(20, "mmt_get_vehicle", { vehicle_id: "cms-sparc" });
+    expect(rpc.result.isError).toBe(false);
+    const out = JSON.parse(rpc.result.content[0].text);
+    expect(out.data.vehicle_id).toBe("cms-sparc");
+    expect(["open", "closing_soon", "pre_award", "closed", "cancelled", "unknown"]).toContain(out.data.ordering_status);
+    expect(out.data.as_of).toMatch(/^\d{4}-\d{2}-\d{2}/);
+    expect(out.retrieved_at).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    expect(out.dataset.id).toBe("vehicles");
+  });
+
+  it("mmt_get_buyer resolves the buyer's vehicles, paths and routes", async () => {
+    const { rpc } = await call(21, "mmt_get_buyer", { code: "CMS" });
+    expect(rpc.result.isError).toBe(false);
+    const out = JSON.parse(rpc.result.content[0].text);
+    expect(out.data.code).toBe("CMS");
+    expect(out.data.vehicles).toContain("cms-sparc");
+    expect(out.data.resolved.vehicles.some((v) => v.vehicle_id === "cms-sparc" && v.ordering_status)).toBe(true);
+    expect(out.data.resolved.authorization_paths.length).toBeGreaterThan(0);
+    expect(out.data.resolved.buying_routes.length).toBeGreaterThan(0);
+  });
+
+  it("unknown ids → NOT_FOUND tool error", async () => {
+    const { rpc } = await call(22, "mmt_get_buyer", { code: "NOPE" });
+    expect(rpc.result.isError).toBe(true);
+    expect(rpc.result.content[0].text).toMatch(/NOT_FOUND/);
+    const veh = await call(23, "mmt_get_vehicle", { vehicle_id: "no-such-vehicle" });
+    expect(veh.rpc.result.isError).toBe(true);
+    expect(veh.rpc.result.content[0].text).toMatch(/NOT_FOUND/);
+  });
+
+  it("mmt_list_vehicles rejects an unknown status as BAD_REQUEST (before any rows)", async () => {
+    const { rpc } = await call(24, "mmt_list_vehicles", { status: "sideways" });
+    expect(rpc.result.isError).toBe(true);
+    expect(rpc.result.content[0].text).toMatch(/BAD_REQUEST/);
+    const ok = await call(25, "mmt_list_vehicles", { status: "closing_soon", limit: 5 });
+    expect(ok.rpc.result.isError).toBe(false);
+    const out = JSON.parse(ok.rpc.result.content[0].text);
+    expect(out.data.every((v) => v.ordering_status === "closing_soon")).toBe(true);
+    expect(out.data.length).toBeLessThanOrEqual(5);
+  });
+
+  it("an opportunities-only token cannot call a reference tool", async () => {
+    const { rpc } = await dispatch(
+      { jsonrpc: "2.0", id: 26, method: "tools/call", params: { name: "mmt_list_org_charts", arguments: {} } },
+      ctxWith(["opportunities:read"]),
+    );
+    expect(rpc.result.isError).toBe(true);
+    expect(rpc.result.content[0].text).toMatch(/FORBIDDEN_SCOPE/);
   });
 });
 

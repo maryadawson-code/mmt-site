@@ -1,0 +1,330 @@
+{
+  "_schema": {
+    "version": "1.0",
+    "last_verified": "2026-09-20",
+    "owner": "hand-maintained; register changes in docs/market-entry-coverage-spec.md section 4.2",
+    "research_method": "Web search on 2026-09-20 returning each page's own statements. Direct fetch of every external domain was blocked by the session proxy, so `confidence` is `high` only where the fact is regulation text, statute, or an official page's statement returned verbatim, and `medium` where a secondary summary was the source.",
+    "types": ["federal_program", "agency_alternative", "dod_overlay", "agency_ato", "certification", "state_program", "cms_state_systems", "legal_baseline", "dod_contractor"],
+    "note": "Cost figures are never MMT estimates. GAO-24-106591 (January 2024) found FedRAMP cost estimates ranged from tens of thousands to millions of dollars with actual cost data limited; that statement is the only cost range this file carries."
+  },
+  "paths": [
+    {
+      "id": "fedramp_rev5_agency",
+      "name": "FedRAMP Rev5 agency authorization",
+      "type": "federal_program",
+      "owner": "FedRAMP PMO (GSA) and the FedRAMP Board",
+      "applies_to": ["VA", "CMS", "HHS", "NIH", "CDC", "HRSA", "IHS", "FDA", "SAMHSA", "AHRQ", "ONC", "ARPA-H", "ASPR", "GSA"],
+      "data_types": ["Federal data in a cloud service offering at the Low, Moderate or High baseline"],
+      "requirement": "A cloud service used by a federal agency needs a FedRAMP authorization. Since 2024 there is one agency-driven pathway; the Joint Authorization Board was replaced by the FedRAMP Board. The agency issues its own ATO on top of the FedRAMP package.",
+      "process": [
+        "Find an agency sponsor and agree the impact baseline (Low, Moderate, High).",
+        "Prepare the Rev5 package (System Security Plan and attachments) against NIST SP 800-53 Rev 5 controls.",
+        "Third-party assessment by a 3PAO.",
+        "Agency authorization decision, then FedRAMP Marketplace listing and continuous monitoring."
+      ],
+      "duration": null,
+      "cost": "GAO-24-106591: estimates from tens of thousands to millions of dollars; actual cost data limited.",
+      "key_dates": [
+        { "date": "2027-06-11", "event": "FedRAMP stops accepting new Rev5 applications (Consolidated Rules for 2026)." },
+        { "date": "2028-12-31", "event": "Planned sunset of existing Rev5 authorizations (Consolidated Rules for 2026)." },
+        { "date": "2026-06-25", "event": "FedRAMP launched its Consolidated Rules for 2026." }
+      ],
+      "relevance_to_entry_plan": "Still the path most agencies recognize in 2026, but a vendor starting now is starting on a runway that closes to new entrants in June 2027. Sequence Rev5 only where a buyer requires it before 20x is accepted.",
+      "sources": [
+        { "label": "FedRAMP 20x program page", "url": "https://www.fedramp.gov/20x", "retrieved": "2026-09-20" },
+        { "label": "Crowell and Moring on the Consolidated Rules for 2026", "url": "https://www.crowell.com/en/insights/client-alerts/time-for-a-change-fedramp-fundamentally-revamps-program-with-consolidated-rules-for-2026", "retrieved": "2026-09-20" },
+        { "label": "GAO-24-106591, Cloud Security: Federal Authorization Program Usage Increasing", "url": "https://www.gao.gov/products/gao-24-106591", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": ["duration: no official published range; agency-specific"]
+    },
+    {
+      "id": "fedramp_20x",
+      "name": "FedRAMP 20x (Low and Moderate)",
+      "type": "federal_program",
+      "owner": "FedRAMP PMO (GSA)",
+      "applies_to": ["VA", "CMS", "HHS", "NIH", "CDC", "HRSA", "IHS", "FDA", "SAMHSA", "AHRQ", "ONC", "ARPA-H", "ASPR", "GSA"],
+      "data_types": ["Cloud-native SaaS at the Low or Moderate impact level"],
+      "requirement": "The replacement path. Machine-readable key security indicators validated by a 3PAO, no agency sponsor needed to begin. Phase One (Low) ran in 2025; Phase Two (Moderate) ran late 2025 into early 2026 with 14 selected providers.",
+      "process": [
+        "Implement and continuously validate the 20x key security indicators.",
+        "3PAO assessment against the 20x standard for the target level.",
+        "Submit for 20x authorization; marketplace listing on approval."
+      ],
+      "duration": null,
+      "cost": "GAO-24-106591 statement applies; no 20x-specific official range published.",
+      "key_dates": [
+        { "date": "2025-12-10", "event": "FedRAMP announced the initial 20x Phase Two (Moderate) pilot participants." },
+        { "date": "2026-06-25", "event": "Consolidated Rules for 2026 made 20x a widely available path." }
+      ],
+      "relevance_to_entry_plan": "Moderate covers about 80 percent of federal authorizations, which is where health IT SaaS lands. For a vendor with no authorization today, 20x Moderate is the default sequence and Rev5 is the exception.",
+      "sources": [
+        { "label": "FedRAMP 20x program page", "url": "https://www.fedramp.gov/20x", "retrieved": "2026-09-20" },
+        { "label": "FedRAMP: initial 20x Phase 2 pilot participants", "url": "https://www.fedramp.gov/2025-12-10-announcing-the-initial-20x-phase-2-pilot-participants/", "retrieved": "2026-09-20" },
+        { "label": "Crowell and Moring on the Consolidated Rules for 2026", "url": "https://www.crowell.com/en/insights/client-alerts/time-for-a-change-fedramp-fundamentally-revamps-program-with-consolidated-rules-for-2026", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": ["duration", "exact date 20x Moderate opened to all applicants (secondary sources say Q2 2026)"]
+    },
+    {
+      "id": "cms_rcr",
+      "name": "CMS Rapid Cloud Review (RCR)",
+      "type": "agency_alternative",
+      "owner": "CMS Information Security and Privacy Group (ISPG), SaaS Governance team",
+      "applies_to": ["CMS"],
+      "data_types": ["Software as a service used at CMS that does not hold a current FedRAMP authorization"],
+      "requirement": "The June 2024 update to the CMS IS2P2 added clause CMS-CLD-1.1: a SaaS product without a current FedRAMP authorization needs a Rapid Cloud Review and a CMS-issued provisional ATO to assess FedRAMP readiness. The review runs through the HHS Risk-Based Decision process.",
+      "process": [
+        "The CMS system owner sponsors the SaaS product into the SaaS Governance intake.",
+        "SaaSG assesses the product's security posture (about 2 to 3 weeks) and issues a CMS provisional ATO.",
+        "Continuous monitoring review after 90 days."
+      ],
+      "duration": "About 2 to 3 weeks to a provisional ATO; continuous monitoring review after 90 days (CMS ISPG).",
+      "cost": null,
+      "key_dates": [
+        { "date": "2024-06", "event": "IS2P2 update adds CMS-CLD-1.1 and makes RCR mandatory for non-FedRAMP SaaS." }
+      ],
+      "relevance_to_entry_plan": "The coverage point that changes a CMS plan: absence of full FedRAMP authorization is not automatically disqualifying at CMS. A low-risk SaaS can enter through RCR while a FedRAMP path runs in parallel.",
+      "sources": [
+        { "label": "CMS ISPG: Rapid Cloud Review (RCR)", "url": "https://security.cms.gov/learn/rapid-cloud-review-rcr", "retrieved": "2026-09-20" },
+        { "label": "CMS ISPG: What the IS2P2's new RCR requirement means for you", "url": "https://security.cms.gov/posts/what-is2p2s-new-rapid-cloud-review-rcr-requirement-means-you", "retrieved": "2026-09-20" },
+        { "label": "CMS ISPG: FedRAMP at CMS", "url": "https://security.cms.gov/learn/fedramp", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": []
+    },
+    {
+      "id": "dod_il2",
+      "name": "DoD Impact Level 2 (CC SRG)",
+      "type": "dod_overlay",
+      "owner": "DISA, DoD Cloud Computing Security Requirements Guide",
+      "applies_to": ["DHA", "USU", "Army", "Navy", "AirForce"],
+      "data_types": ["Publicly releasable information and low-confidentiality unclassified data"],
+      "requirement": "Baseline security requirements equivalent to FedRAMP Moderate. A DISA provisional authorization plus the mission owner's ATO.",
+      "process": ["FedRAMP Moderate authorization or equivalent", "DISA provisional authorization at IL2", "Mission owner ATO"],
+      "duration": null,
+      "cost": null,
+      "key_dates": [
+        { "date": "2024-06-21", "event": "DISA guidance: the CC SRG transitions from NIST SP 800-53 Rev 4 to Rev 5." }
+      ],
+      "relevance_to_entry_plan": "Rarely enough for health IT: any product touching PHI or PII is CUI and sits at IL4 or above.",
+      "sources": [
+        { "label": "DoD Cloud Computing Security (DISA)", "url": "https://public.cyber.mil/dccs/", "retrieved": "2026-09-20" },
+        { "label": "GSA Cloud Information Center: cloud security", "url": "https://cic.gsa.gov/basics/cloud-security", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": ["duration", "cost"]
+    },
+    {
+      "id": "dod_il4",
+      "name": "DoD Impact Level 4 (CC SRG)",
+      "type": "dod_overlay",
+      "owner": "DISA, DoD Cloud Computing Security Requirements Guide",
+      "applies_to": ["DHA", "USU", "Army", "Navy", "AirForce"],
+      "data_types": ["Controlled unclassified information, including protected health information, privacy information and export-controlled data"],
+      "requirement": "FedRAMP Moderate plus the DoD FedRAMP+ controls for CUI, DISA provisional authorization at IL4, mission owner ATO, and connection through a DoD cloud access point.",
+      "process": ["FedRAMP Moderate authorization", "IL4 overlay and 3PAO assessment", "DISA provisional authorization", "Mission owner ATO and cloud access point connectivity"],
+      "duration": null,
+      "cost": null,
+      "key_dates": [
+        { "date": "2025-12", "event": "CC SRG V1R6 published (per secondary summaries); IL4 governs CUI including PHI." }
+      ],
+      "relevance_to_entry_plan": "The floor for a clinical or beneficiary-facing product at DHA. Plan IL4 as the first DoD milestone after FedRAMP Moderate.",
+      "sources": [
+        { "label": "DoD Cloud Computing Security (DISA)", "url": "https://public.cyber.mil/dccs/", "retrieved": "2026-09-20" },
+        { "label": "Knox Systems summary of IL4 under CC SRG V1R6", "url": "https://knoxsystems.com/resources/dod-impact-level-4", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": ["duration", "cost", "confirm CC SRG V1R6 publication date on public.cyber.mil"]
+    },
+    {
+      "id": "dod_il5",
+      "name": "DoD Impact Level 5 (CC SRG)",
+      "type": "dod_overlay",
+      "owner": "DISA, DoD Cloud Computing Security Requirements Guide",
+      "applies_to": ["DHA", "USU", "Army", "Navy", "AirForce"],
+      "data_types": ["Higher-sensitivity CUI and unclassified national security systems"],
+      "requirement": "FedRAMP High baseline with the IL5 overlay, 3PAO assessment, DISA provisional authorization, mission owner ATO and cloud access point connectivity; physical and logical separation of DoD-only tenants.",
+      "process": ["FedRAMP High authorization", "IL5 overlay and 3PAO assessment", "DISA provisional authorization", "Mission owner ATO and cloud access point connectivity"],
+      "duration": null,
+      "cost": null,
+      "key_dates": [],
+      "relevance_to_entry_plan": "Required where the mission owner categorizes the system as NSS or high-sensitivity CUI. Do not assume IL5 for every DHA product; confirm the mission owner's categorization before pricing it in.",
+      "sources": [
+        { "label": "DoD Cloud Computing Security (DISA)", "url": "https://public.cyber.mil/dccs/", "retrieved": "2026-09-20" },
+        { "label": "Microsoft Azure compliance offering: DoD IL5", "url": "https://learn.microsoft.com/en-us/azure/compliance/offerings/offering-dod-il5", "retrieved": "2026-09-20" },
+        { "label": "Knox Systems summary of IL5", "url": "https://knoxsystems.com/resources/dod-impact-level-5", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": ["duration", "cost"]
+    },
+    {
+      "id": "dod_cmmc",
+      "name": "CMMC and DFARS 252.204-7012 (contractor systems, not cloud offerings)",
+      "type": "dod_contractor",
+      "owner": "DoD CIO; CMMC Program Rule at 32 CFR Part 170",
+      "applies_to": ["DHA", "USU", "Army", "Navy", "AirForce"],
+      "data_types": ["CUI on the contractor's own systems while performing a DoD contract"],
+      "requirement": "A contractor that handles CUI under a DoD contract meets NIST SP 800-171 and the CMMC level the solicitation names (Level 2 for CUI). This governs the vendor's enterprise, not the cloud product's authorization.",
+      "process": ["System Security Plan and POA&M against NIST SP 800-171", "CMMC assessment at the required level", "Affirmation in SPRS"],
+      "duration": null,
+      "cost": null,
+      "key_dates": [],
+      "relevance_to_entry_plan": "Separate from IL4 and IL5. A DHA proposal without CMMC language reads as not understanding CUI handling; MMT's ProposalPulse flags that already.",
+      "sources": [
+        { "label": "MMT lib/regulatory-flags.js (in-repo, cites DFARS 252.204-7012 and 32 CFR Part 170)", "url": "https://missionmeetstech.com/premium/compliance-check", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": ["re-verify the CMMC phase-in dates against the 32 CFR Part 170 text"]
+    },
+    {
+      "id": "va_ato",
+      "name": "VA authorization (FedRAMP plus VA ATO)",
+      "type": "agency_ato",
+      "owner": "VA Office of Information and Technology",
+      "applies_to": ["VA", "VHA", "VBA"],
+      "data_types": ["Veteran health and benefits data in a cloud service"],
+      "requirement": "VA Notice 25-06 (March 2025) superseded VA Handbook 6517 and points cloud services at FedRAMP and OMB M-24-15. VA still issues its own ATO after the FedRAMP authorization, with continuous monitoring and annual assessments (the Handbook 6517 practice).",
+      "process": ["FedRAMP authorization at the baseline VA assigns to the system", "VA assessment and authorization in VA's own process", "Continuous monitoring and annual assessment"],
+      "duration": null,
+      "cost": null,
+      "key_dates": [
+        { "date": "2016-11-15", "event": "VA Handbook 6517, Risk Management Framework for Cloud Computing Services, published." },
+        { "date": "2025-03", "event": "VA Notice 25-06 supersedes Handbook 6517; guidance to be folded into a handbook within a year." }
+      ],
+      "relevance_to_entry_plan": "A FedRAMP listing is necessary but not sufficient at VA. Budget the VA ATO as its own milestone and ask the sponsoring program office which baseline (Moderate or High) it will assign.",
+      "sources": [
+        { "label": "VA Notice 25-06", "url": "https://www.va.gov/vapubs/viewPublication.asp?Pub_ID=1602&FType=2", "retrieved": "2026-09-20" },
+        { "label": "VA Handbook 6517", "url": "https://www.va.gov/vapubs/viewPublication.asp?Pub_ID=853&FType=2", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": ["duration", "the handbook that absorbs Notice 25-06 (due within a year of March 2025)"]
+    },
+    {
+      "id": "onc_health_it_certification",
+      "name": "ONC Health IT Certification Program",
+      "type": "certification",
+      "owner": "ASTP/ONC with ONC-Authorized Certification Bodies",
+      "applies_to": ["ONC", "CMS", "VA", "DHA", "IHS", "STATE_MEDICAID"],
+      "data_types": ["Health IT modules that must meet ONC certification criteria for a CMS program or a buyer's requirement"],
+      "requirement": "Certification is a product requirement, not a procurement gate. The HTI-4 final rule (published 2025-08-04, 90 FR 36536, effective 2025-10-01) added electronic prior authorization criteria, an updated e-prescribing criterion and a real-time prescription benefit criterion. The HTI-5 proposed rule (published 2025-12-29; comments closed 2026-02-27) would remove 34 and update 7 of 60 criteria and retain 19 including the HTI-4 criteria. HTI-5 was not final as of 2026-09-20.",
+      "process": ["Map the product to the certification criteria a buyer or CMS program requires", "Test with an ONC-Authorized Testing Lab and certify through an ONC-ACB", "Maintain the CHPL listing and real-world testing"],
+      "duration": null,
+      "cost": null,
+      "key_dates": [
+        { "date": "2025-08-04", "event": "HTI-4 final rule published in the Federal Register." },
+        { "date": "2025-10-01", "event": "HTI-4 effective." },
+        { "date": "2025-12-29", "event": "HTI-5 proposed rule published." },
+        { "date": "2026-02-27", "event": "HTI-5 comment period closed." }
+      ],
+      "relevance_to_entry_plan": "Decide early whether the product needs to be certified health IT or integrates with certified health IT. Under HTI-5 the criteria set may shrink; do not commit to certifying against a criterion HTI-5 proposes to remove without checking the final rule.",
+      "sources": [
+        { "label": "HTI-4 final rule (ASTP/ONC)", "url": "https://healthit.gov/regulations/hti-rules/hti-4-final-rule/", "retrieved": "2026-09-20" },
+        { "label": "HTI-4 overview and key dates fact sheet (October 2025)", "url": "https://healthit.gov/wp-content/uploads/2025/10/HTI-4-Overview-and-Key-Dates_OCT2025.pdf", "retrieved": "2026-09-20" },
+        { "label": "HTI-5 proposed rule, Federal Register 2025-12-29", "url": "https://www.federalregister.gov/documents/2025/12/29/2025-23896/health-data-technology-and-interoperability-astponc-deregulatory-actions-to-unleash-prosperity", "retrieved": "2026-09-20" },
+        { "label": "HTI-5 proposed rule page (ASTP/ONC)", "url": "https://healthit.gov/regulations/hti-rules/hti-5-proposed-rule/", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": ["HTI-5 final rule status after 2026-09-20"]
+    },
+    {
+      "id": "govramp",
+      "name": "GovRAMP (formerly StateRAMP)",
+      "type": "state_program",
+      "owner": "GovRAMP (nonprofit; legal name remains StateRAMP)",
+      "applies_to": ["STATE_MEDICAID"],
+      "data_types": ["Cloud products sold to state, local, tribal and education governments that adopt GovRAMP"],
+      "requirement": "Shared security verification for state and local buyers, with Ready and Authorized statuses at Low, Moderate and High. StateRAMP rebranded to GovRAMP on 2025-02-14. As of August 2026, 73 government and education entities across 33 states participate, from exploration to full adoption. Formal program pages exist for Arizona, Indiana, Minnesota, Nevada, New Hampshire, North Carolina, North Dakota, Oregon, Texas and Utah.",
+      "process": ["Engage a 3PAO and submit the security package to GovRAMP", "Achieve Ready, then Authorized, at the target level", "Continuous monitoring reporting"],
+      "duration": null,
+      "cost": null,
+      "key_dates": [
+        { "date": "2025-02-14", "event": "StateRAMP announced the rebrand to GovRAMP." },
+        { "date": "2026-08", "event": "73 participating government and education entities across 33 states." }
+      ],
+      "relevance_to_entry_plan": "For a state Medicaid sale, check whether the state or its IT agency requires GovRAMP or grants reciprocity. Texas grants TX-RAMP Level 2 to GovRAMP Core, Ready or Authorized products.",
+      "sources": [
+        { "label": "GovRAMP participating governments", "url": "https://govramp.org/participating-governments/", "retrieved": "2026-09-20" },
+        { "label": "GovRAMP advances 2026 modernization and national adoption", "url": "https://govramp.org/news/govramp-advances-2026-modernization-and-national-adoption", "retrieved": "2026-09-20" },
+        { "label": "StateRAMP announces rebrand to GovRAMP", "url": "https://govramp.org/blog/stateramp-announces-rebrand-to-govramp-reflecting-mission-to-unite-public-and-private-sectors-in-advancing-cybersecurity/", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": ["duration", "cost", "which state Medicaid agencies specifically require GovRAMP (state by state)"]
+    },
+    {
+      "id": "tx_ramp",
+      "name": "TX-RAMP (Texas Risk and Authorization Management Program)",
+      "type": "state_program",
+      "owner": "Texas Department of Information Resources",
+      "applies_to": ["STATE_MEDICAID"],
+      "data_types": ["Cloud computing services that process Texas state agency data"],
+      "requirement": "Texas Government Code 2054.0593 prohibits state agencies from entering or renewing a cloud computing services contract that does not comply with TX-RAMP. Level 1 and Level 2 certifications; Level 2 is granted reciprocally to products holding GovRAMP Core, Ready or Authorized status.",
+      "process": ["Determine the required level from the contracting agency's data classification", "Submit through the DIR TX-RAMP request process, or claim reciprocity", "Maintain certification through the contract term"],
+      "duration": null,
+      "cost": null,
+      "key_dates": [],
+      "relevance_to_entry_plan": "Texas HHSC is the single largest non-expansion Medicaid buyer. No TX-RAMP status means no cloud contract with a Texas state agency.",
+      "sources": [
+        { "label": "Texas DIR: TX-RAMP", "url": "https://dir.texas.gov/information-security/texas-risk-and-authorization-management-program-tx-ramp", "retrieved": "2026-09-20" },
+        { "label": "Texas DIR: TX-RAMP eligibility and requirements", "url": "https://dir.texas.gov/information-security/tx-ramp-eligibility-and-requirements", "retrieved": "2026-09-20" },
+        { "label": "Texas DIR: TX-RAMP certified cloud products", "url": "https://dir.texas.gov/resource-library-item/tx-ramp-certified-cloud-products", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": ["duration", "cost"]
+    },
+    {
+      "id": "mars_e",
+      "name": "MARS-E 2.2 (Minimum Acceptable Risk Standards for Exchanges)",
+      "type": "cms_state_systems",
+      "owner": "CMS",
+      "applies_to": ["STATE_MEDICAID", "CMS"],
+      "data_types": ["State Medicaid and CHIP eligibility and enrollment systems that connect to CMS; ACA administering entities"],
+      "requirement": "MARS-E compliance is required for a state's Medicaid and CHIP eligibility and enrollment systems to maintain their Authority to Connect with CMS. For an MMIS it is recommended, not required (CMS FAQ). Version 2.2, Volume I signed 2021-08-03.",
+      "process": ["Implement the MARS-E control catalog for the E&E system", "State assessment and Authority to Connect with CMS", "Ongoing assessment"],
+      "duration": null,
+      "cost": null,
+      "key_dates": [
+        { "date": "2021-08-03", "event": "MARS-E v2.2 Volume I signed." }
+      ],
+      "relevance_to_entry_plan": "A vendor selling into a state eligibility system inherits MARS-E through the state. A claims or provider module vendor does not, unless the state contract says so.",
+      "sources": [
+        { "label": "Medicaid.gov FAQ: applicability of MARS-E to MMIS", "url": "https://www.medicaid.gov/faq/what-applicability-of-minimum-acceptable-risk-standards-for-exchanges-mars-e-20-states-medicaid-management-information-systems-mmis/index.html", "retrieved": "2026-09-20" },
+        { "label": "CMS MARS-E v2.2 Volume I", "url": "https://www.cms.gov/files/document/mars-e-v2-2-vol-1final-signed08032021-1.pdf", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": []
+    },
+    {
+      "id": "hipaa_security_rule",
+      "name": "HIPAA Security Rule (legal baseline)",
+      "type": "legal_baseline",
+      "owner": "HHS Office for Civil Rights",
+      "applies_to": ["VA", "DHA", "CMS", "IHS", "HRSA", "STATE_MEDICAID"],
+      "data_types": ["Electronic protected health information held by a covered entity or business associate"],
+      "requirement": "45 CFR Part 164 Subpart C. A vendor handling ePHI for a covered entity is a business associate and signs a business associate agreement. This is law, not an authorization; it runs alongside every path above.",
+      "process": ["Business associate agreement", "Risk analysis and safeguards under Subpart C"],
+      "duration": null,
+      "cost": null,
+      "key_dates": [],
+      "relevance_to_entry_plan": "Every health buyer will ask. It is table stakes, not a differentiator.",
+      "sources": [
+        { "label": "eCFR 45 CFR Part 164 Subpart C (citation from the regulation's standing structure; not re-fetched this session)", "url": "https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-164/subpart-C", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": ["re-verify the 2025 Security Rule NPRM status"]
+    }
+  ]
+}

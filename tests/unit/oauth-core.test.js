@@ -60,8 +60,8 @@ describe("validateRegistration (RFC 7591)", () => {
 describe("scope resolution", () => {
   it("intersects with granted scopes, defaults when none valid", () => {
     expect(resolveScopes("opportunities:read tracker:read")).toEqual(["opportunities:read", "tracker:read"]);
-    expect(resolveScopes("bogus:write")).toEqual(["opportunities:read", "intel:read"]);
-    expect(resolveScopes("")).toEqual(["opportunities:read", "intel:read"]);
+    expect(resolveScopes("bogus:write")).toEqual(["opportunities:read", "intel:read", "reference:read"]);
+    expect(resolveScopes("")).toEqual(["opportunities:read", "intel:read", "reference:read"]);
     // no privilege escalation to a scope we don't offer
     expect(resolveScopes("admin:all opportunities:read")).toEqual(["opportunities:read"]);
   });

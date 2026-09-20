@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Market entry reference | MMT Premium</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Federal health buyers, buying routes with current thresholds, vehicle ordering status, security authorization paths, innovation doors and compliance rules for a company entering the federal health market. Every record dated and sourced; gaps marked, never filled.">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
+  <style>
+    /* Content styles only. The layout shell is injected at build time by
+       injectDashShell() in build.js (this page is in dashPageMap). */
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --mmt-red:#E63946; }
+    body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-surface); margin:0; line-height:1.55; }
+    .me-eyebrow { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--mmt-text-secondary); margin:0 0 8px; }
+    .me-h1 { font-size:24px; font-weight:800; margin:0 0 6px; letter-spacing:-0.02em; }
+    .me-lede { font-size:14px; color:var(--mmt-text-secondary); margin:0 0 14px; max-width:70ch; }
+    .me-meta { font-size:11.5px; color:var(--mmt-text-secondary); }
+    .me-meta a { color:var(--mmt-teal); text-decoration:none; }
+    .me-meta a:hover { text-decoration:underline; }
+    .me-tabs { display:flex; flex-wrap:wrap; gap:6px; margin:16px 0 14px; }
+    .me-tab { background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:8px; padding:8px 14px; font-size:13px; font-weight:600; color:var(--mmt-navy); cursor:pointer; font-family:Inter,sans-serif; }
+    .me-tab[aria-selected="true"] { background:var(--mmt-navy); color:var(--mmt-white); border-color:var(--mmt-navy); }
+    .me-card { background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:12px; padding:18px 20px; margin-bottom:14px; }
+    .me-card h2 { font-size:16px; font-weight:800; margin:0 0 6px; }
+    .me-card h3 { font-size:14px; font-weight:700; margin:0 0 4px; }
+    .me-card p, .me-card li { font-size:13.5px; margin:0 0 6px; }
+    .me-card ul { padding-left:18px; margin:0 0 6px; }
+    .me-kv { font-size:12.5px; color:var(--mmt-text-secondary); margin:0 0 6px; }
+    .me-kv strong { color:var(--mmt-navy); }
+    .me-pending { font-size:11.5px; color:#B45309; margin:4px 0 0; }
+    .pill { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700; letter-spacing:0.03em; white-space:nowrap; margin-right:4px; }
+    .pill.open { background:rgba(69,123,157,0.14); color:var(--mmt-teal); }
+    .pill.closing_soon { background:rgba(146,113,10,0.12); color:#92710A; }
+    .pill.pre_award { background:rgba(10,25,47,0.08); color:var(--mmt-navy); }
+    .pill.closed, .pill.cancelled { background:rgba(230,57,70,0.10); color:var(--mmt-red); }
+    .pill.unknown, .pill.type { background:rgba(92,107,122,0.10); color:var(--mmt-text-secondary); }
+    .me-filters { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:0 0 12px; }
+    .me-filters select, .me-filters input[type=text] { padding:8px 10px; border:1px solid var(--mmt-border); border-radius:6px; font-size:13px; font-family:Inter,sans-serif; background:var(--mmt-white); }
+    .me-filters input[type=text] { flex:1; min-width:200px; }
+    table.me { width:100%; border-collapse:collapse; background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:10px; overflow:hidden; font-size:13px; }
+    table.me th { text-align:left; padding:10px 12px; background:var(--mmt-surface); font-weight:700; border-bottom:2px solid var(--mmt-border); }
+    table.me td { padding:10px 12px; border-bottom:1px solid var(--mmt-border); vertical-align:top; }
+    .me-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:14px; }
+    [hidden] { display:none !important; }
+    @media (max-width:768px) { table.me { font-size:12px; } table.me th, table.me td { padding:8px; } }
+  </style>
+  <script>
+    (function() {
+      var isPremium = localStorage.getItem('mmt_premium') === 'true';
+      var ts = localStorage.getItem('mmt_premium_ts');
+      var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+      if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html'; }
+    })();
+  </script>
+</head>
+<body>
+  <p class="me-eyebrow">MMT Premium &middot; Market entry reference</p>
+  <h1 class="me-h1">Market entry reference</h1>
+  <p class="me-lede">The facts a company needs before it commits to a federal health entry plan: who buys, which routes and vehicles still take orders, which security authorization each buyer expects, which innovation doors are real, and which compliance lines an advisor or partner arrangement can cross. Every record carries the date I verified it and where the fact came from. Where I have not verified something, the record says so.</p>
+  <p class="me-meta" id="me-stamp"></p>
+
+  <div class="me-tabs" role="tablist" id="me-tabs">
+    <button class="me-tab" role="tab" data-tab="buyers" aria-selected="true">Buyers</button>
+    <button class="me-tab" role="tab" data-tab="vehicles" aria-selected="false">Vehicle status</button>
+    <button class="me-tab" role="tab" data-tab="routes" aria-selected="false">Buying routes</button>
+    <button class="me-tab" role="tab" data-tab="auth" aria-selected="false">Authorization paths</button>
+    <button class="me-tab" role="tab" data-tab="innovation" aria-selected="false">Innovation doors</button>
+    <button class="me-tab" role="tab" data-tab="compliance" aria-selected="false">Compliance rules</button>
+  </div>
+
+  <section id="tab-buyers" role="tabpanel"></section>
+  <section id="tab-vehicles" role="tabpanel" hidden>
+    <div class="me-filters">
+      <input type="text" id="veh-q" placeholder="Search vehicles (T4NG2, SPARC, Alliant)" aria-label="Search vehicles">
+      <select id="veh-status" aria-label="Filter by ordering status"><option value="">All ordering statuses</option><option value="open">Open</option><option value="closing_soon">Closing soon</option><option value="pre_award">Pre-award</option><option value="closed">Closed</option><option value="cancelled">Cancelled</option><option value="unknown">Unknown</option></select>
+    </div>
+    <div class="me-meta" id="veh-note" style="margin-bottom:10px;"></div>
+    <div style="overflow-x:auto;"><table class="me"><thead><tr><th>Vehicle</th><th>Agency</th><th>Ordering status</th><th>Ordering end</th><th>Dataset status text</th><th>Source</th></tr></thead><tbody id="veh-rows"></tbody></table></div>
+  </section>
+  <section id="tab-routes" role="tabpanel" hidden></section>
+  <section id="tab-auth" role="tabpanel" hidden></section>
+  <section id="tab-innovation" role="tabpanel" hidden></section>
+  <section id="tab-compliance" role="tabpanel" hidden></section>
+
+  <p class="me-meta" style="margin-top:12px;">Source data: <a href="/data/reference/buyers.json">buyers</a>, <a href="/data/reference/buying-routes.json">buying routes</a>, <a href="/data/reference/authorization-paths.json">authorization paths</a>, <a href="/data/reference/innovation-pathways.json">innovation pathways</a>, <a href="/data/reference/compliance-rules.json">compliance rules</a>, <a href="/data/idiq-vehicles.json">IDIQ vehicles</a>. The same files are served to connected agents at <code>/api/v1</code> with the reference:read permission (see <a href="/premium/ai-integrations/">AI &amp; Integrations</a>). Compliance rules are reference material, not legal advice.</p>
+
+  <script>
+    (function () {
+      var esc = function (s) { if (s == null) return ''; return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+      var usd = function (v) { return typeof v === 'number' ? '$' + v.toLocaleString('en-US') : esc(v); };
+      var srcLinks = function (rec) { return (rec.sources || []).map(function (s) { return '<a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.label) + '</a>'; }).join(' &middot; '); };
+      var stamp = function (rec) { return '<p class="me-meta">Verified ' + esc(rec.verified) + (rec.confidence ? ' &middot; ' + esc(rec.confidence) + ' confidence' : '') + (rec.sources && rec.sources.length ? ' &middot; ' + srcLinks(rec) : '') + '</p>'; };
+      var pending = function (rec) { return (rec.pending && rec.pending.length) ? '<p class="me-pending">Not yet covered: ' + esc(rec.pending.join('; ')) + '</p>' : ''; };
+      var list = function (arr) { return (arr && arr.length) ? '<ul>' + arr.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : ''; };
+      var D = {};
+
+      // Ordering status derived the same way lib/vehicle-status.js does it, so
+      // the page and the API agree. Kept deliberately small.
+      function orderingStatus(row, todayIso) {
+        var text = String(row.status || '');
+        var m = /last new order\s+([A-Za-z]{3,9})\s+(\d{1,2}),?\s+(\d{4})/i.exec(text);
+        var months = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+        var end = null;
+        if (m && months[m[1].slice(0, 3).toLowerCase()] != null) end = new Date(Date.UTC(+m[3], months[m[1].slice(0, 3).toLowerCase()], +m[2]));
+        else if (/^\d{4}-\d{2}-\d{2}/.test(row.pop_end || '')) end = new Date(row.pop_end.slice(0, 10) + 'T00:00:00Z');
+        var today = new Date(todayIso + 'T00:00:00Z');
+        var days = end ? Math.round((end - today) / 86400000) : null;
+        var s = 'unknown';
+        if (/cancel+ed/i.test(text)) s = 'cancelled';
+        else if (days != null && days < 0) s = 'closed';
+        else if (/expired|legacy|winding down/i.test(text) || (/sunset/i.test(text) && days == null)) s = 'closed';
+        else if (/solicitation|upcoming|market research|in evaluation|pending award|source selection|^tbd$/i.test(text)) s = 'pre_award';
+        else if (/final ordering year|nearing recompete/i.test(text) || (days != null && days <= 180)) s = 'closing_soon';
+        else if (/active|awarded|ordering|on-?ramping|sustainment|pilot|tapering|recompete watch/i.test(text)) s = 'open';
+        return { status: s, end: end ? end.toISOString().slice(0, 10) : null, days: days };
+      }
+
+      function todayEt() { return new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' }); }
+
+      function renderBuyers() {
+        var byId = function (arr, key) { var m = {}; (arr || []).forEach(function (x) { m[x[key]] = x; }); return m; };
+        var routes = byId(D.routes.routes, 'id'), paths = byId(D.paths.paths, 'id'), pathways = byId(D.pathways.pathways, 'id'), vehicles = byId(D.vehicles.vehicles, 'vehicle_id');
+        var today = todayEt();
+        document.getElementById('tab-buyers').innerHTML = D.buyers.buyers.map(function (b) {
+          var vs = (b.vehicles || []).map(function (id) { var v = vehicles[id]; if (!v) return ''; var o = orderingStatus(v, today); return '<span class="pill ' + o.status + '">' + esc(o.status.replace('_', ' ')) + '</span>' + esc(v.name); }).filter(Boolean);
+          return '<div class="me-card"><h2>' + esc(b.name) + ' <span class="pill type">' + esc(b.code) + '</span></h2>' +
+            list(b.entry_characteristics) +
+            (b.authorization_paths.length ? '<p class="me-kv"><strong>Authorization paths:</strong> ' + esc(b.authorization_paths.map(function (id) { return paths[id] ? paths[id].name : id; }).join('; ')) + '</p>' : '') +
+            (b.buying_routes.length ? '<p class="me-kv"><strong>Buying routes:</strong> ' + esc(b.buying_routes.map(function (id) { return routes[id] ? routes[id].name : id; }).join('; ')) + '</p>' : '') +
+            (b.innovation_pathways.length ? '<p class="me-kv"><strong>Innovation doors:</strong> ' + esc(b.innovation_pathways.map(function (id) { return pathways[id] ? pathways[id].name : id; }).join('; ')) + '</p>' : '') +
+            (vs.length ? '<p class="me-kv"><strong>Vehicles (ordering status as of ' + esc(D.vehicles.generated_at.slice(0, 10)) + '):</strong></p><p>' + vs.join('<br>') + '</p>' : '') +
+            (b.watch && b.watch.length ? '<p class="me-kv"><strong>Watch:</strong> ' + esc(b.watch.join(' | ')) + '</p>' : '') +
+            '<p class="me-meta">' + (b.profile_url ? '<a href="' + esc(b.profile_url) + '">Agency profile</a>' : 'No agency profile yet') + (b.org_chart ? ' &middot; <a href="' + esc(b.org_chart.url) + '">Org chart</a> (as of ' + esc(b.org_chart.as_of || 'date not stated') + ')' : '') + '</p>' +
+            stamp(b) + pending(b) + '</div>';
+        }).join('');
+      }
+
+      function renderVehicles() {
+        var q = (document.getElementById('veh-q').value || '').toLowerCase();
+        var st = document.getElementById('veh-status').value;
+        var today = todayEt();
+        document.getElementById('veh-note').textContent = 'Dataset generated ' + D.vehicles.generated_at.slice(0, 10) + '. Ordering status is derived from the dataset row and today (' + today + '); the status text is the dataset\'s own words.';
+        var rows = D.vehicles.vehicles.map(function (v) { var o = orderingStatus(v, today); return { v: v, o: o }; }).filter(function (x) {
+          if (st && x.o.status !== st) return false;
+          if (q && !(x.v.name + ' ' + x.v.vehicle_id + ' ' + (x.v.contract_number || '') + ' ' + (x.v.sub_agency || '')).toLowerCase().includes(q)) return false;
+          return true;
+        });
+        document.getElementById('veh-rows').innerHTML = rows.map(function (x) {
+          var v = x.v, o = x.o;
+          return '<tr><td><strong>' + esc(v.name) + '</strong><div class="me-meta">' + esc(v.vehicle_id) + (v.contract_number ? ' &middot; ' + esc(v.contract_number) : '') + '</div></td>' +
+            '<td>' + esc(v.agency) + (v.sub_agency ? '<div class="me-meta">' + esc(v.sub_agency) + '</div>' : '') + '</td>' +
+            '<td><span class="pill ' + o.status + '">' + esc(o.status.replace('_', ' ')) + '</span>' + (o.days != null ? '<div class="me-meta">' + (o.days >= 0 ? o.days + ' days left' : Math.abs(o.days) + ' days past') + '</div>' : '') + '</td>' +
+            '<td>' + esc(o.end || 'not recorded') + '</td><td>' + esc(v.status) + '</td>' +
+            '<td>' + (v.primary_source_url ? '<a class="me-meta" href="' + esc(v.primary_source_url) + '" target="_blank" rel="noopener">source</a>' : '<span class="me-meta">none</span>') + '</td></tr>';
+        }).join('') || '<tr><td colspan="6" class="me-meta">No vehicles match.</td></tr>';
+      }
+
+      function renderRoutes() {
+        var vehicles = {}; D.vehicles.vehicles.forEach(function (v) { vehicles[v.vehicle_id] = v; });
+        var today = todayEt();
+        var groups = [['direct_award', 'Direct award'], ['existing_vehicle', 'Existing vehicles'], ['partner', 'Partner and reseller'], ['innovation', 'Innovation'], ['state', 'State Medicaid'], ['disqualified', 'Closed, cancelled or closing']];
+        document.getElementById('tab-routes').innerHTML = '<p class="me-meta" style="margin-bottom:10px;">' + esc(D.routes._schema.status_check) + ' Thresholds effective ' + esc(D.routes._schema.thresholds_effective) + '.</p>' + groups.map(function (g) {
+          var rs = D.routes.routes.filter(function (r) { return r.group === g[0]; });
+          if (!rs.length) return '';
+          return '<h2 style="font-size:15px;font-weight:800;margin:14px 0 8px;">' + esc(g[1]) + '</h2>' + rs.map(function (r) {
+            var vs = (r.vehicles || []).map(function (id) { var v = vehicles[id]; if (!v) return ''; var o = orderingStatus(v, today); return '<span class="pill ' + o.status + '">' + esc(o.status.replace('_', ' ')) + '</span>' + esc(v.name); }).filter(Boolean);
+            return '<div class="me-card"><h3>' + esc(r.name) + '</h3><p>' + esc(r.mechanism) + '</p><p class="me-kv"><strong>Authority:</strong> ' + esc(r.authority) + '</p>' +
+              ((r.thresholds && r.thresholds.length) ? '<p class="me-kv"><strong>Thresholds:</strong> ' + r.thresholds.map(function (t) { return esc(t.label) + ' ' + usd(t.value); }).join('; ') + '</p>' : '') +
+              ((r.prerequisites && r.prerequisites.length) ? '<p class="me-kv"><strong>Prerequisites:</strong> ' + esc(r.prerequisites.join('; ')) + '</p>' : '') +
+              '<p class="me-kv"><strong>Applies to:</strong> ' + esc((r.applies_to || []).join(', ')) + '</p>' +
+              (vs.length ? '<p>' + vs.join('<br>') + '</p>' : '') +
+              '<p><strong>Fit.</strong> ' + esc(r.fit) + '</p>' + stamp(r) + pending(r) + '</div>';
+          }).join('');
+        }).join('');
+      }
+
+      function renderAuth() {
+        document.getElementById('tab-auth').innerHTML = '<p class="me-meta" style="margin-bottom:10px;">' + esc(D.paths._schema.note) + '</p>' + D.paths.paths.map(function (p) {
+          return '<div class="me-card"><h3>' + esc(p.name) + ' <span class="pill type">' + esc(p.type.replace(/_/g, ' ')) + '</span></h3><p class="me-kv"><strong>Owner:</strong> ' + esc(p.owner) + ' &middot; <strong>Applies to:</strong> ' + esc((p.applies_to || []).join(', ')) + '</p><p>' + esc(p.requirement) + '</p>' +
+            ((p.process && p.process.length) ? '<p class="me-kv"><strong>Process:</strong></p><ol style="padding-left:18px;margin:0 0 6px;">' + p.process.map(function (x) { return '<li style="font-size:13px;">' + esc(x) + '</li>'; }).join('') + '</ol>' : '') +
+            '<p class="me-kv"><strong>Duration:</strong> ' + (p.duration ? esc(p.duration) : 'no official published range') + ' &middot; <strong>Cost:</strong> ' + (p.cost ? esc(p.cost) : 'no official published range') + '</p>' +
+            ((p.key_dates && p.key_dates.length) ? '<ul>' + p.key_dates.map(function (d) { return '<li><strong>' + esc(d.date) + '</strong> ' + esc(d.event) + '</li>'; }).join('') + '</ul>' : '') +
+            '<p><strong>What it means for the entry plan.</strong> ' + esc(p.relevance_to_entry_plan) + '</p>' + stamp(p) + pending(p) + '</div>';
+        }).join('');
+      }
+
+      function renderInnovation() {
+        document.getElementById('tab-innovation').innerHTML = '<p class="me-meta" style="margin-bottom:10px;">' + esc(D.pathways._schema.note) + '</p>' + D.pathways.pathways.map(function (p) {
+          return '<div class="me-card"><h3>' + esc(p.name) + '</h3><p class="me-kv"><strong>Owner:</strong> ' + esc(p.owner) + ' &middot; <strong>Applies to:</strong> ' + esc((p.applies_to || []).join(', ')) + '</p><p>' + esc(p.mechanism) + '</p><p class="me-kv"><strong>Authority:</strong> ' + esc(p.authority) + '</p><p class="me-kv"><strong>Status:</strong> ' + esc(p.status) + '</p>' +
+            '<p><strong>Leads to.</strong> ' + esc(p.leads_to) + '</p><p><strong>Does not lead to.</strong> ' + esc(p.does_not_lead_to) + '</p>' +
+            ((p.how_to_engage && p.how_to_engage.length) ? '<p class="me-kv"><strong>How to engage:</strong> ' + esc(p.how_to_engage.join('; ')) + '</p>' : '') +
+            ((p.key_dates && p.key_dates.length) ? '<ul>' + p.key_dates.map(function (d) { return '<li><strong>' + esc(d.date) + '</strong> ' + esc(d.event) + '</li>'; }).join('') + '</ul>' : '') +
+            stamp(p) + pending(p) + '</div>';
+        }).join('');
+      }
+
+      function renderCompliance() {
+        document.getElementById('tab-compliance').innerHTML = '<p class="me-meta" style="margin-bottom:10px;">' + esc(D.rules._schema.disclaimer) + '</p>' + D.rules.rules.map(function (r) {
+          return '<div class="me-card"><h3>' + esc(r.name) + '</h3><p class="me-kv"><strong>Citation:</strong> ' + esc(r.citation) + '</p><p>' + esc(r.summary) + '</p><p class="me-kv"><strong>Status:</strong> ' + esc(r.status) + '</p>' +
+            ((r.thresholds && r.thresholds.length) ? '<ul>' + r.thresholds.map(function (t) { return '<li>' + esc(t.label) + ': ' + usd(t.value) + (t.effective ? ' (effective ' + esc(t.effective) + ')' : '') + '</li>'; }).join('') + '</ul>' : '') +
+            '<p class="me-kv"><strong>Trigger phrases:</strong> ' + esc(r.trigger_signals.join(' | ')) + '</p>' +
+            '<p><strong>For an advisor.</strong> ' + esc(r.what_it_means_for_an_advisor) + '</p><p><strong>Action.</strong> ' + esc(r.action) + '</p>' + stamp(r) + pending(r) + '</div>';
+        }).join('');
+      }
+
+      function showTab(name) {
+        document.querySelectorAll('.me-tab').forEach(function (b) { b.setAttribute('aria-selected', b.dataset.tab === name ? 'true' : 'false'); });
+        ['buyers', 'vehicles', 'routes', 'auth', 'innovation', 'compliance'].forEach(function (t) { document.getElementById('tab-' + t).hidden = t !== name; });
+      }
+
+      var files = { buyers: '/data/reference/buyers.json', routes: '/data/reference/buying-routes.json', paths: '/data/reference/authorization-paths.json', pathways: '/data/reference/innovation-pathways.json', rules: '/data/reference/compliance-rules.json', vehicles: '/data/idiq-vehicles.json' };
+      Promise.all(Object.keys(files).map(function (k) { return fetch(files[k]).then(function (r) { return r.json(); }).then(function (j) { D[k] = j; }); })).then(function () {
+        document.getElementById('me-stamp').textContent = 'Reference datasets last verified ' + D.buyers._schema.last_verified + '; vehicle dataset generated ' + D.vehicles.generated_at.slice(0, 10) + '. ' + D.buyers._schema.research_method;
+        renderBuyers(); renderVehicles(); renderRoutes(); renderAuth(); renderInnovation(); renderCompliance();
+        document.getElementById('me-tabs').addEventListener('click', function (e) { var b = e.target.closest('.me-tab'); if (b) showTab(b.dataset.tab); });
+        ['veh-q', 'veh-status'].forEach(function (id) { document.getElementById(id).addEventListener('input', renderVehicles); document.getElementById(id).addEventListener('change', renderVehicles); });
+        var want = (location.hash || '').replace('#', '');
+        if (['buyers', 'vehicles', 'routes', 'auth', 'innovation', 'compliance'].indexOf(want) >= 0) showTab(want);
+      }).catch(function () {
+        document.getElementById('tab-buyers').innerHTML = '<div class="me-card"><p class="me-meta">Could not load the reference data. Try refreshing in a moment.</p></div>';
+      });
+    })();
+  </script>
+</body>
+</html>

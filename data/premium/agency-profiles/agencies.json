@@ -1309,9 +1309,9 @@
     "abbrev": "CMS",
     "name": "Centers for Medicare & Medicaid Services",
     "type": "HHS Operating Division (largest single payer in US)",
-    "lastUpdated": "2026-05-12",
+    "lastUpdated": "2026-09-20",
     "description": "Administers Medicare, Medicaid, CHIP, the ACA Marketplace, claims processing systems, and program integrity infrastructure. Largest single payer in the US healthcare system. CMS modernization runs through SPARC and a network of multi-year IDIQs.",
-    "mmtRead": "CMS procurement is large-scale and long-cycle. SPARC ($25B, POP through Jun 7 2026) is approaching recompete. Claims modernization, payment integrity, and AI fraud detection are the active growth areas. The Rural Health Transformation program ($50B FY2026-FY2030) is grant funding to states, not a contract.",
+    "mmtRead": "CMS procurement is large-scale and long-cycle. SPARC ($25B) is in its final ordering year: CMS states the ordering period runs February 21, 2017 to February 20, 2027, no new task orders follow it, existing task orders run to their own end dates, and there is no plan to replace the vehicle. Claims modernization, payment integrity, and AI fraud detection are the active growth areas. The Rural Health Transformation program ($50B FY2026-FY2030) is grant funding to states, not a contract.",
     "officialSources": [
       {
         "label": "CMS About",
@@ -1337,7 +1337,7 @@
       "Rural Health Transformation (grant)"
     ],
     "procurementSignals": [
-      "SPARC recompete (POP ends Jun 7 2026)",
+      "SPARC ordering period ends Feb 20 2027 with no successor planned (CMS); watch where CMS IT task orders move",
       "MPSM modernization watch",
       "Rural Health Transformation grant cycle (state awards)"
     ],
@@ -1359,7 +1359,7 @@
         "ACA marketplace IT funding (policy-dependent)"
       ]
     },
-    "current_read": "CMS executing SPARC recompete preparation and advancing data modernization. AI fraud detection and payment integrity are growth areas. The Rural Health Transformation Program is grant-funded ($50B FY2026-FY2030 to states), not a contract.",
+    "current_read": "CMS is running down SPARC without a successor: the ordering period ends February 20, 2027 and CMS says it has no plan to replace the IDIQ, so new CMS IT work after that date lands on other vehicles and standalone awards. AI fraud detection and payment integrity are growth areas. The Rural Health Transformation Program is grant-funded ($50B FY2026-FY2030 to states), not a contract.",
     "key_vehicles": [
       "CMS SPARC",
       "CMS OAGM vehicles"
@@ -1371,7 +1371,7 @@
     ],
     "recent_awards": [],
     "upcoming_signals": [
-      "SPARC recompete (POP ends Jun 7 2026)",
+      "SPARC ordering period ends Feb 20 2027; no successor planned (CMS FAQ)",
       "Data modernization Phase 2 RFI"
     ],
     "related_tags": [
@@ -1402,6 +1402,12 @@
     "contractorRead": "CMS is positioning as an ecosystem-builder, not only a buyer. The voluntary-alignment framing matters: CMS is signaling influence comes from showing up to the framework, not waiting on an RFP. The Provider Directory and Medicare.gov identity work are concrete infrastructure builds with clear vendor surfaces. The RFI is the leading indicator of the FY2027-FY2028 buy.",
     "watchNext": [
       {
+        "signal": "SPARC ordering period closes Feb 20 2027 with no successor; where CMS OIT task orders land next (GSA vehicles, standalone IDIQs)",
+        "buyer": "CMS OAGM / OIT",
+        "window": "Through Feb 2027",
+        "source_id": "cms_sparc_faq"
+      },
+      {
         "signal": "National Provider Directory infrastructure build + Medicare.gov identity modernization steps",
         "buyer": "CMS",
         "window": "FY2026-FY2027",
@@ -1421,6 +1427,13 @@
         "verified_at": "2026-05-12",
         "confidence": "high",
         "id": "cms_eco"
+      },
+      {
+        "label": "CMS SPARC FAQ (ordering period and no-replacement statement)",
+        "url": "https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/SPARC/FAQ",
+        "verified_at": "2026-09-20",
+        "confidence": "high",
+        "id": "cms_sparc_faq"
       }
     ]
   },
@@ -2097,6 +2110,311 @@
         "confidence": "high",
         "caveat": "OASIS+ is a non-IT professional services IDIQ. Do not market it as a direct health IT acquisition lane.",
         "id": "gsa_oasis_plus"
+      }
+    ]
+  },
+  {
+    "slug": "hrsa",
+    "abbrev": "HRSA",
+    "name": "Health Resources and Services Administration",
+    "type": "HHS Operating Division (health workforce, health centers, HIV/AIDS, maternal and child health, organ transplantation)",
+    "lastUpdated": "2026-09-20",
+    "description": "Funds and oversees the Health Center Program, the Ryan White HIV/AIDS Program, the National Health Service Corps and other workforce programs, the Maternal and Child Health Block Grant, the 340B Drug Pricing Program and the Organ Procurement and Transplantation Network. A grant-maker first; its contracting sits behind those programs in data systems, program support and the OPTN Modernization Initiative.",
+    "mmtRead": "HRSA buys less IT than CMS or VA, and what it buys sits behind grant programs: reporting systems, data platforms and program support. The OPTN Modernization Initiative is the one live multi-vendor contracting story, with a December 2025 award to UNOS for OPTN operations including the national matching system and a task order to CVP for policy process and committee support. The 2025 proposal to fold HRSA into an Administration for a Healthy America did not get through Congress's FY2026 Labor-HHS bill, which kept HRSA funded as its own agency; the FY2027 request proposes the merger again.",
+    "officialSources": [
+      {
+        "label": "HRSA OPTN Modernization updates",
+        "url": "https://www.hrsa.gov/optn-modernization/updates"
+      },
+      {
+        "label": "HHS leadership: Thomas J. Engels, HRSA Administrator",
+        "url": "https://www.hhs.gov/about/leadership/thomas-engels.html"
+      },
+      {
+        "label": "HHS FY2027 Congressional Justification for the proposed Administration for a Healthy America",
+        "url": "https://www.hhs.gov/sites/default/files/fy-2027-aha-cj.pdf"
+      }
+    ],
+    "keyPrograms": [
+      "Health Center Program",
+      "Ryan White HIV/AIDS Program",
+      "National Health Service Corps and health workforce programs",
+      "Maternal and Child Health Block Grant",
+      "340B Drug Pricing Program",
+      "OPTN Modernization Initiative"
+    ],
+    "procurementSignals": [
+      "OPTN Modernization multi-vendor model: UNOS contract for OPTN operations (December 2025) and a CVP task order for policy process and committee support",
+      "FY2027 request routes HRSA programs through a proposed Administration for a Healthy America ($14.7B discretionary); Congress rejected the FY2026 version of the merger",
+      "Health center and National Health Service Corps mandatory funding runs on short extensions (a first-quarter extension passed in February 2026)"
+    ],
+    "openVehicles": [
+      "HHS-wide GWACs and GSA MAS (no HRSA-owned IDIQ is tracked in the MMT vehicle dataset)"
+    ],
+    "premiumLocked": true,
+    "budget": {
+      "fy2026_enacted": "Congress's bipartisan FY2026 Labor-HHS bill kept HRSA as a separate agency and rejected the restructuring; the enacted HRSA line is pending official confirmation here",
+      "fy2027_request": "Requested inside a proposed Administration for a Healthy America: $14.7B discretionary, $532.6M PHS Act evaluation funds, $114.5M user fees (HHS FY2027 AHA congressional justification)",
+      "key_programs": [
+        "OPTN Modernization Initiative",
+        "Health center data and reporting systems",
+        "Ryan White program data systems",
+        "Workforce program platforms"
+      ],
+      "at_risk": [
+        "Program identity: the FY2027 request again proposes merging HRSA into an Administration for a Healthy America",
+        "Mandatory health center and National Health Service Corps funding rides on short-term extensions"
+      ]
+    },
+    "current_read": "HRSA is operating as a standalone agency under Administrator Thomas J. Engels (in office since February 11, 2025) while the Administration proposes for a second year to merge it into an Administration for a Healthy America. Contracting attention belongs on the OPTN Modernization Initiative, where HRSA is splitting the former single-contractor OPTN into a multi-vendor model: UNOS holds the December 2025 operations contract and CVP holds the policy process and committee support task order. Everything else HRSA buys is small and program-bound.",
+    "key_vehicles": [
+      "GSA Alliant 3",
+      "GSA MAS",
+      "NITAAC CIO-SP3 (no new orders after Oct 29 2026)"
+    ],
+    "key_offices": [
+      "Office of the Administrator (Administrator Thomas J. Engels; Deputy Administrator Diana Espinosa)",
+      "OPTN Modernization Initiative (hrsa.gov/optn-modernization)"
+    ],
+    "recent_awards": [
+      "OPTN operations contract to UNOS, December 2025 (national matching system and key OPTN operations components)",
+      "OPTN Policy Process and Committee Support Services task order to CVP"
+    ],
+    "upcoming_signals": [
+      "OPTN Modernization: further awards under the congressionally mandated multi-vendor model",
+      "FY2027 appropriations: whether Congress again declines the Administration for a Healthy America consolidation"
+    ],
+    "related_tags": [
+      "Healthcare Policy",
+      "Contracting & Procurement"
+    ],
+    "role": "Grant-maker with targeted IT and program-support buys",
+    "premiumModules": [
+      "OPTN Modernization Module",
+      "Reorganization Watch",
+      "Contractor Read"
+    ],
+    "policyModule": {
+      "title": "HHS reorganization and HRSA",
+      "confirmed_facts": [
+        "HHS announced on March 27, 2025 a reorganization creating an Administration for a Healthy America from HRSA, SAMHSA, OASH, ATSDR and NIOSH.",
+        "A federal court granted a preliminary injunction against parts of the reorganization and layoffs (New York v. Kennedy), finding the Executive Branch lacks authority to make wholesale changes to agencies Congress created.",
+        "Congress's bipartisan FY2026 Labor-HHS bill rejected the large-scale restructuring and preserved HRSA funding; it requires a detailed plan before any CDC functions move.",
+        "The FY2027 President's budget again requests HRSA programs inside a proposed Administration for a Healthy America."
+      ],
+      "vendor_implication": "Plan against HRSA as it exists: bureaus, program offices and the OPTN Modernization Initiative. Treat the merger as a signal to watch in the FY2027 appropriations cycle, not as an organization to sell into.",
+      "source_id": "hrsa_crs_reorg"
+    },
+    "contractorRead": "HRSA is a grants agency with a narrow contracting lane. The live capture story is the OPTN Modernization Initiative, where a multi-vendor model replaces one contractor and each function (operations, policy support, IT, patient safety) is competed separately. Beyond OPTN, HRSA buys data systems and program support behind its grant programs, usually through HHS-wide and GSA vehicles. Position for OPTN functions not yet awarded, and for reporting and data work tied to health centers, Ryan White and 340B.",
+    "watchNext": [
+      {
+        "signal": "Next OPTN Modernization awards under the multi-vendor model",
+        "buyer": "HRSA OPTN Modernization Initiative",
+        "window": "FY2026 to FY2027",
+        "source_id": "hrsa_optn_jan2026"
+      },
+      {
+        "signal": "FY2027 Labor-HHS bill: does Congress again reject the Administration for a Healthy America merger",
+        "buyer": "Congress / HHS",
+        "window": "Through FY2027 appropriations",
+        "source_id": "hrsa_aha_cj"
+      }
+    ],
+    "sources": [
+      {
+        "id": "hrsa_optn_jan2026",
+        "label": "HRSA OPTN Modernization update, January 2026 (year in review)",
+        "url": "https://www.hrsa.gov/optn-modernization/updates/january-2026",
+        "verified_at": "2026-09-20",
+        "confidence": "high"
+      },
+      {
+        "id": "hrsa_optn_feb2026",
+        "label": "HRSA OPTN Modernization update, February 2026",
+        "url": "https://www.hrsa.gov/optn-modernization/updates/february-2026",
+        "verified_at": "2026-09-20",
+        "confidence": "high"
+      },
+      {
+        "id": "hrsa_aha_cj",
+        "label": "HHS FY2027 Congressional Justification, Administration for a Healthy America",
+        "url": "https://www.hhs.gov/sites/default/files/fy-2027-aha-cj.pdf",
+        "verified_at": "2026-09-20",
+        "confidence": "high"
+      },
+      {
+        "id": "hhs_engels",
+        "label": "HHS leadership page: Thomas J. Engels",
+        "url": "https://www.hhs.gov/about/leadership/thomas-engels.html",
+        "verified_at": "2026-09-20",
+        "confidence": "high"
+      },
+      {
+        "id": "hrsa_crs_reorg",
+        "label": "CRS Legal Sidebar LSB11311: The reorganization of the U.S. Department of Health and Human Services",
+        "url": "https://www.congress.gov/crs_external_products/LSB/HTML/LSB11311.web.html",
+        "verified_at": "2026-09-20",
+        "confidence": "high"
+      },
+      {
+        "id": "astho_fy26_lhhs",
+        "label": "ASTHO summary of the FY2026 Labor-HHS bill (January 2026)",
+        "url": "https://www.astho.org/advocacy/federal-government-affairs/leg-alerts/2026/summary-fy26-lhhs-bill-january-2026/",
+        "verified_at": "2026-09-20",
+        "confidence": "medium",
+        "caveat": "Secondary summary of the bill; the enacted text was not read directly."
+      }
+    ]
+  },
+  {
+    "slug": "aspr",
+    "abbrev": "ASPR",
+    "name": "Administration for Strategic Preparedness and Response (with BARDA)",
+    "type": "HHS Operating Division for preparedness and response; BARDA is its medical countermeasures development arm",
+    "lastUpdated": "2026-09-20",
+    "description": "Leads HHS preparedness and response: the Strategic National Stockpile, the National Disaster Medical System, hospital preparedness, and BARDA's advanced development of vaccines, therapeutics, diagnostics and devices for CBRN threats, pandemic influenza and emerging infectious diseases. Buys development of products, not enterprise IT.",
+    "mmtRead": "ASPR is a countermeasures and preparedness funder, not an enterprise IT shop. The doors are BARDA's Broad Agency Announcement on SAM.gov, the DRIVe EZ-BAA for awards under $750,000, and other transactions under 42 U.S.C. 247d-7e. The 2025 HHS reorganization proposed moving ASPR into CDC and BARDA into a new office; Congress funded ASPR at $3.7 billion for FY2026 including $1 billion for BARDA and required a plan before CDC functions move. Health IT vendors reach ASPR through preparedness data and situational awareness needs, and through BARDA's interest in digital health tools for health security.",
+    "officialSources": [
+      {
+        "label": "ASPR home",
+        "url": "https://www.aspr.gov/"
+      },
+      {
+        "label": "ASPR: Center for BARDA",
+        "url": "https://aspr.hhs.gov/AboutASPR/ProgramOffices/BARDA/Pages/default.aspx"
+      },
+      {
+        "label": "Medical Countermeasures: partner with BARDA",
+        "url": "https://medicalcountermeasures.gov/barda/partnering"
+      }
+    ],
+    "keyPrograms": [
+      "BARDA advanced research and development (BAA)",
+      "DRIVe (Division of Research, Innovation and Ventures) EZ-BAA",
+      "Strategic National Stockpile",
+      "National Disaster Medical System",
+      "Hospital Preparedness Program"
+    ],
+    "procurementSignals": [
+      "BARDA Broad Agency Announcement open on SAM.gov; DRIVe EZ-BAA amended through 2025 (Amendment 037, April 22, 2025)",
+      "Reorganization: the FY2026 request proposed moving the National Disaster Medical System, preparedness innovation and health care readiness to a CDC Center for Preparedness and Response; Congress requires a plan before any CDC move",
+      "FY2026: $3.7B for ASPR including $1B for BARDA (reporting on the enacted bill)"
+    ],
+    "openVehicles": [
+      "BARDA Broad Agency Announcement (SAM.gov)",
+      "DRIVe EZ-BAA-22-100-SOL-00003",
+      "MTEC other transaction consortium (BARDA participates)"
+    ],
+    "premiumLocked": true,
+    "budget": {
+      "fy2026_enacted": "$3.7B for ASPR including $1B for BARDA (ACEP and CIDRAP reporting on the FY2026 bill; official tables pending confirmation here)",
+      "fy2027_request": "Pending official confirmation here",
+      "key_programs": [
+        "BARDA medical countermeasure development",
+        "DRIVe health security innovation",
+        "Strategic National Stockpile",
+        "Preparedness data and situational awareness"
+      ],
+      "at_risk": [
+        "Organizational placement: ASPR into CDC and BARDA into a new office remain proposed, not enacted"
+      ]
+    },
+    "current_read": "ASPR operates its centers, BARDA included, while its placement inside HHS stays contested between the Administration's reorganization plan and Congress's FY2026 conditions. For a vendor the practical reading is unchanged: BARDA funds development through its BAA, DRIVe and other transactions, and ASPR's preparedness offices buy readiness and response capability. Nothing here runs on an IT services IDIQ.",
+    "key_vehicles": [
+      "BARDA BAA",
+      "DRIVe EZ-BAA",
+      "MTEC OTA"
+    ],
+    "key_offices": [
+      "Center for the Biomedical Advanced Research and Development Authority (BARDA)",
+      "Division of Research, Innovation and Ventures (DRIVe)",
+      "Center for Strategic National Stockpile"
+    ],
+    "recent_awards": [],
+    "upcoming_signals": [
+      "Outcome of the proposed ASPR and BARDA reorganization in FY2027 appropriations",
+      "BARDA BAA and EZ-BAA amendments"
+    ],
+    "related_tags": [
+      "Healthcare Policy",
+      "Contracting & Procurement"
+    ],
+    "role": "Countermeasures and preparedness funder",
+    "premiumModules": [
+      "Partnering Doors Module",
+      "Reorganization Watch",
+      "Contractor Read"
+    ],
+    "policyModule": {
+      "title": "ASPR partnering doors and the reorganization question",
+      "confirmed_facts": [
+        "BARDA's Broad Agency Announcement solicits proposals for advanced research and development of medical countermeasures against CBRN threats, pandemic influenza and emerging infectious diseases.",
+        "DRIVe runs the EZ-BAA for awards under $750,000 and BAA Special Instructions for larger projects.",
+        "BARDA holds other transaction authority under 42 U.S.C. 247d-7e(c)(5).",
+        "In March 2025 HHS announced the transfer of ASPR to CDC as part of its reorganization; Congress's FY2026 bill provided $3.7 billion for ASPR including $1 billion for BARDA and requires a plan before CDC functions move (reporting on the bill)."
+      ],
+      "vendor_implication": "Engage BARDA through the BAA, DRIVe or a TechWatch meeting; engage preparedness offices through readiness requirements. Do not wait on the reorganization to settle before engaging, and do not build a plan that assumes BARDA sits anywhere but ASPR until Congress acts.",
+      "source_id": "aspr_barda_partnering"
+    },
+    "contractorRead": "ASPR is a development funder. The winning motion is a countermeasure, diagnostic, device or health security tool with a development plan, taken through the BAA or DRIVe, sometimes as an other transaction with cost share. For health IT firms the openings are narrower: preparedness data, situational awareness and health care readiness systems bought by ASPR's response offices, and digital tools BARDA funds through DRIVe. Track the reorganization for where budget lines land, not for whether BARDA keeps buying.",
+    "watchNext": [
+      {
+        "signal": "BARDA BAA and DRIVe EZ-BAA amendments and new areas of interest",
+        "buyer": "BARDA",
+        "window": "Rolling",
+        "source_id": "aspr_barda_partnering"
+      },
+      {
+        "signal": "Whether FY2027 appropriations move ASPR functions to CDC or BARDA to a new office",
+        "buyer": "Congress / HHS",
+        "window": "Through FY2027 appropriations",
+        "source_id": "aspr_acep_funding"
+      }
+    ],
+    "sources": [
+      {
+        "id": "aspr_barda_partnering",
+        "label": "Medical Countermeasures: partner with BARDA",
+        "url": "https://medicalcountermeasures.gov/barda/partnering",
+        "verified_at": "2026-09-20",
+        "confidence": "high"
+      },
+      {
+        "id": "aspr_drive_ezbaa",
+        "label": "BARDA DRIVe EZ-BAA",
+        "url": "https://drive.hhs.gov/ezbaa.html",
+        "verified_at": "2026-09-20",
+        "confidence": "high"
+      },
+      {
+        "id": "aspr_barda_baa_sam",
+        "label": "BARDA Broad Agency Announcement on SAM.gov",
+        "url": "https://sam.gov/opp/8cdd54823bce4db5814e0b9a0fe63fac/view",
+        "verified_at": "2026-09-20",
+        "confidence": "high"
+      },
+      {
+        "id": "aspr_usc_247d7e",
+        "label": "42 U.S.C. 247d-7e",
+        "url": "https://uscode.house.gov/view.xhtml?req=42+USC+247d-7e",
+        "verified_at": "2026-09-20",
+        "confidence": "high"
+      },
+      {
+        "id": "aspr_acep_funding",
+        "label": "ACEP: 2026 HHS funding update",
+        "url": "https://www.acep.org/news/acep-newsroom-articles/2-3-26-2026-hhs-funding-update",
+        "verified_at": "2026-09-20",
+        "confidence": "medium",
+        "caveat": "Secondary reporting on the FY2026 bill; the enacted tables were not read directly."
+      },
+      {
+        "id": "aspr_cidrap_funding",
+        "label": "CIDRAP: federal health agencies say they need a big funding bump to prepare for future emergencies",
+        "url": "https://www.cidrap.umn.edu/biosecurity-issues/federal-health-agencies-say-they-need-big-funding-bump-prepare-future",
+        "verified_at": "2026-09-20",
+        "confidence": "medium",
+        "caveat": "Secondary reporting."
       }
     ]
   }

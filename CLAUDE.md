@@ -13,6 +13,7 @@ and adds at most one rule line below. Keep this file under 40KB.
 - IDIQ Tracker: `docs/idiq-tracker-v2-spec.md`; data `data/idiq-vehicles.json` from `data/research-agent/idiq-vehicles.csv` (`scripts/csv-to-idiq-json.js`).
 - Paywall: `PAYWALL_SPEC.md`, `ADDON_FEATURES_SPEC.md`, `AUTO_INTELLIGENCE_SPEC.md`. Entitlements: `docs/entitlement-spec.md`.
 - Ask MMT eval runbook: `docs/ask-mmt-eval.md`. Loops: `docs/MMT-Loop-System.md`.
+- Market-entry reference (buyers, routes, vehicle ordering status, authorization paths, the 56 state Medicaid agencies, innovation doors, compliance rules): `docs/market-entry-coverage-spec.md`; data in `data/reference/` (dated per record, gaps in `pending`, never filled), served at `/api/v1` under `reference:read` and read by Ask MMT; `scripts/validate-reference-data.js` gates the build.
 - Repo: missionmeetstech.com, Netlify site `curious-pony-0dec76`, Supabase ref `djuviwarqdvlbgcfuupa` (named "missionpulse-prod" in the dashboard; it IS this site's `SUPABASE_URL`). missionpulse.ai is a separate repo, Netlify site, and Stripe account.
 
 ## Twice-weekly issue drop (standing authorization, do not wait for Mary)

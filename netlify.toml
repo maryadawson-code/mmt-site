@@ -4,7 +4,7 @@
   # validate-dist.js fails the build if dist/ contains any public-facing
   # drift pattern from docs/site-spec.md §14a. If it exits non-zero,
   # Netlify will refuse to deploy.
-  command = "node scripts/sync-newsletters.js; node scripts/sync-linkedin-newsletter.js; node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js && node scripts/newsletter-inventory.js && node scripts/capture-corner-inventory.js && node scripts/qa-contrast-scan.js && node scripts/validate-agency-parity.js && node scripts/validate-agency-profiles.js && node scripts/validate-contract-tracker.js && node scripts/validate-cso-aois.js && node scripts/validate-forecast-delta.js && node scripts/validate-data-freshness.js && node scripts/scan-pii.js && node scripts/validate-no-scrubbed-stubs.js && node scripts/validate-ask-mmt-coverage.js"
+  command = "node scripts/sync-newsletters.js; node scripts/sync-linkedin-newsletter.js; node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js && node scripts/newsletter-inventory.js && node scripts/capture-corner-inventory.js && node scripts/qa-contrast-scan.js && node scripts/validate-agency-parity.js && node scripts/validate-agency-profiles.js && node scripts/validate-contract-tracker.js && node scripts/validate-cso-aois.js && node scripts/validate-forecast-delta.js && node scripts/validate-data-freshness.js && node scripts/scan-pii.js && node scripts/validate-no-scrubbed-stubs.js && node scripts/validate-ask-mmt-coverage.js && node scripts/validate-reference-data.js"
 
 [build.environment]
   # Pin the build + functions runtime. Netlify's functions runtime follows
@@ -25,6 +25,7 @@
     "contracts.json",
     "capture-intelligence.json",
     "data/idiq-vehicles.json",
+    "data/reference/**",
     "data/cso-aois.json",
     "data/forecast-pipeline.json",
     "content/forecast-delta/**",
@@ -918,6 +919,70 @@
 
 # Agent Access — MCP server (what "add a connector" in Claude/ChatGPT speaks).
 # POST JSON-RPC, bearer-token auth (lib/agent-auth). Streamable HTTP, stateless.
+# Market-entry reference (2026-09-20, scope reference:read). Item routes pass
+# resource + id in the query; list routes stay query-free so filters such as
+# ?agency=VA reach the function untouched. The handler also reads event.path.
+[[redirects]]
+  from = "/api/v1/agencies/:code"
+  to = "/.netlify/functions/agent-reference?resource=agencies&id=:code"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/api/v1/agencies"
+  to = "/.netlify/functions/agent-reference"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/api/v1/vehicles/:vehicle_id"
+  to = "/.netlify/functions/agent-reference?resource=vehicles&id=:vehicle_id"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/api/v1/vehicles"
+  to = "/.netlify/functions/agent-reference"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/api/v1/authorization-paths/:id"
+  to = "/.netlify/functions/agent-reference?resource=authorization-paths&id=:id"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/api/v1/authorization-paths"
+  to = "/.netlify/functions/agent-reference"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/api/v1/states/:code"
+  to = "/.netlify/functions/agent-reference?resource=states&id=:code"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/api/v1/states"
+  to = "/.netlify/functions/agent-reference"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/api/v1/innovation-pathways"
+  to = "/.netlify/functions/agent-reference"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/api/v1/compliance-rules"
+  to = "/.netlify/functions/agent-reference"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/api/v1/buying-routes"
+  to = "/.netlify/functions/agent-reference"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/api/v1/org-charts"
+  to = "/.netlify/functions/agent-reference"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/api/mcp"
   to = "/.netlify/functions/agent-mcp"
@@ -1413,6 +1478,20 @@
 [[redirects]]
   from = "/appropriations"
   to = "/premium/cr-exposure.html"
+  status = 200
+
+# Market-entry coverage (2026-09-20)
+[[redirects]]
+  from = "/market-entry"
+  to = "/premium/market-entry.html"
+  status = 200
+[[redirects]]
+  from = "/state-medicaid"
+  to = "/premium/state-medicaid.html"
+  status = 200
+[[redirects]]
+  from = "/agencies/states"
+  to = "/premium/state-medicaid.html"
   status = 200
 
 [[redirects]]
