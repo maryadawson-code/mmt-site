@@ -1,5 +1,8 @@
 # Market-entry coverage: buyers, routes, authorization paths, state Medicaid, innovation doors, compliance rules
 
+> **2026-09-20, later the same day.** `docs/agent-platform-spec.md` is now the authoritative spec for the agent-facing surface: scopes (`states:read` and `orgcharts:read` replaced the plan to serve states and org charts under `reference:read`), the record contract on every record, metering, the allowance, state procurement coverage and the federal MCP tools. This file stays as the detail for the reference datasets in `data/reference/` and the vehicle status derivation; where the two differ, the platform spec wins.
+
+
 **Status:** Active. **Owner:** Mary Womack. **Written:** 2026-09-20. **Branch:** `claude/agency-content-coverage-expansion-7egskp`.
 
 ## 1. Why this exists

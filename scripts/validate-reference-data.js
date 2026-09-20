@@ -115,7 +115,8 @@ function main() {
   const pathways = read("innovation-pathways.json");
   const rules = read("compliance-rules.json");
   const routes = read("buying-routes.json");
-  const all = { "buyers.json": buyers, "authorization-paths.json": paths, "state-medicaid.json": states, "innovation-pathways.json": pathways, "compliance-rules.json": rules, "buying-routes.json": routes };
+  const procurement = read("state-procurement.json");
+  const all = { "buyers.json": buyers, "authorization-paths.json": paths, "state-medicaid.json": states, "innovation-pathways.json": pathways, "compliance-rules.json": rules, "buying-routes.json": routes, "state-procurement.json": procurement };
   for (const [n, j] of Object.entries(all)) { checkSchema(n, j); checkVoice(n, j); }
 
   let vehicleIds = new Set();
@@ -166,6 +167,66 @@ function main() {
     if (mars && !pathIds.has(mars.authorization_path_id)) fail("state-medicaid.json", `certification.mars_e.authorization_path_id ${mars.authorization_path_id} not in authorization-paths.json`);
   }
 
+  // ---- state-procurement.json (platform spec section 4) --------------------
+  // Coverage must agree with the rows on file: a state marked partial or live
+  // for a state-scoped entity has rows; not_covered has none. Every state in
+  // the Medicaid directory has a coverage row, every code is a real state.
+  if (procurement && states) {
+    const n = "state-procurement.json";
+    const stateCodes = new Set((states.agencies || []).map((s) => s.code));
+    const cov = (procurement.coverage && procurement.coverage.states) || [];
+    if (cov.length !== 56) fail(n, `coverage.states expected 56 rows, found ${cov.length}`);
+    uniqueIds(n, cov, "code");
+    const ENT = ["state_agency", "state_solicitation", "mes_module", "coop_vehicle", "participating_addendum", "funding_condition"];
+    const STATE_SCOPED = { state_solicitation: "state_solicitations", mes_module: "mes_modules", participating_addendum: "participating_addenda" };
+    const byState = (key, code) => (procurement[key] || []).filter((r) => r.state === code).length;
+    for (const c of cov) {
+      const scope = `${n}:coverage:${c.code}`;
+      if (!stateCodes.has(c.code)) fail(scope, "code is not a state Medicaid jurisdiction");
+      if (!["live", "partial", "not_covered"].includes(c.status)) fail(scope, `status ${c.status}`);
+      if (!c.last_refresh || !isDate(c.last_refresh)) fail(scope, "last_refresh missing or not YYYY-MM-DD");
+      for (const e of ENT) {
+        const v = c.entities && c.entities[e];
+        if (!["live", "partial", "not_covered"].includes(v)) fail(scope, `entities.${e} = ${v}`);
+        if (STATE_SCOPED[e]) {
+          const rows = byState(STATE_SCOPED[e], c.code);
+          if (v === "not_covered" && rows) fail(scope, `${e} not_covered but ${rows} row(s) on file`);
+          if (v !== "not_covered" && !rows) fail(scope, `${e} ${v} but no rows on file`);
+        }
+      }
+      const vals = ENT.map((e) => c.entities && c.entities[e]);
+      const expect = vals.every((x) => x === "live") ? "live" : vals.every((x) => x === "not_covered") ? "not_covered" : "partial";
+      if (c.status !== expect) fail(scope, `status ${c.status} but entities say ${expect}`);
+    }
+    const coopIds = uniqueIds(n, procurement.coop_vehicles || [], "id");
+    for (const r of procurement.state_agencies || []) { checkRecord(n, r, "code"); if (!stateCodes.has(r.code)) fail(`${n}:${r.code}`, "unknown state code"); }
+    if ((procurement.state_agencies || []).length !== 56) fail(n, `state_agencies expected 56 rows, found ${(procurement.state_agencies || []).length}`);
+    for (const r of procurement.mes_modules || []) { checkRecord(n, r, "id"); if (!stateCodes.has(r.state)) fail(`${n}:${r.id}`, "unknown state code"); }
+    uniqueIds(n, procurement.mes_modules || [], "id");
+    for (const r of procurement.state_solicitations || []) {
+      checkRecord(n, r, "id");
+      if (!stateCodes.has(r.state)) fail(`${n}:${r.id}`, "unknown state code");
+      if (!["open", "closed", "planned", "unknown"].includes(r.status)) fail(`${n}:${r.id}`, `solicitation status ${r.status}`);
+      if (r.status === "open" && r.due && r.due < TODAY) fail(`${n}:${r.id}`, "open with a past due date");
+    }
+    uniqueIds(n, procurement.state_solicitations || [], "id");
+    for (const r of procurement.coop_vehicles || []) { checkRecord(n, r, "id"); if (!Array.isArray(r.awarded_suppliers) || !r.awarded_suppliers.length) fail(`${n}:${r.id}`, "awarded_suppliers[] empty"); }
+    for (const r of procurement.participating_addenda || []) {
+      checkRecord(n, r, "id");
+      if (!stateCodes.has(r.state)) fail(`${n}:${r.id}`, "unknown state code");
+      if (!coopIds.has(r.coop_vehicle_id)) fail(`${n}:${r.id}`, `unknown coop_vehicle_id ${r.coop_vehicle_id}`);
+      if (!["executed", "in_process", "intent", "none", "unknown"].includes(r.status)) fail(`${n}:${r.id}`, `addendum status ${r.status}`);
+    }
+    uniqueIds(n, procurement.participating_addenda || [], "id");
+    for (const r of procurement.funding_conditions || []) { checkRecord(n, r, "id"); if (!r.citation) fail(`${n}:${r.id}`, "citation missing"); }
+    uniqueIds(n, procurement.funding_conditions || [], "id");
+    const cefs = (procurement.funding_conditions || []).filter((r) => /^cef_\d\d$/.test(r.id));
+    if (cefs.length !== 22) fail(n, `expected the 22 CEF rows, found ${cefs.length}`);
+    const sch = procurement._schema || {};
+    if (!sch.coverage_rule) fail(n, "_schema.coverage_rule missing");
+    if (!sch.research_method) fail(n, "_schema.research_method missing");
+  }
+
   if (failures.length) {
     console.error(`validate-reference-data: FAIL (${failures.length})`);
     failures.forEach((f) => console.error(f));
@@ -174,6 +235,7 @@ function main() {
   const counts = [
     buyers && `${buyers.buyers.length} buyers`, paths && `${paths.paths.length} authorization paths`, states && `${(states.agencies || []).length} state Medicaid agencies`,
     pathways && `${pathways.pathways.length} innovation pathways`, rules && `${rules.rules.length} compliance rules`, routes && `${routes.routes.length} buying routes`,
+    procurement && `${(procurement.coverage.states || []).length} state coverage rows with ${(procurement.mes_modules || []).length} modules, ${(procurement.state_solicitations || []).length} solicitations, ${(procurement.coop_vehicles || []).length} cooperative vehicles, ${(procurement.participating_addenda || []).length} addenda, ${(procurement.funding_conditions || []).length} funding conditions`,
   ].filter(Boolean).join(", ");
   console.log(`validate-reference-data: OK (${counts}; today ${TODAY})`);
 }

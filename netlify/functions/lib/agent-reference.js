@@ -17,6 +17,18 @@ const fs = require("fs");
 const path = require("path");
 const { PAGINATION } = require("./agent-config");
 const { decorateVehicle, ORDERING_STATUSES } = require("./vehicle-status");
+const rc = require("./record-contract");
+
+// Record contract type per dataset (docs/agent-platform-spec.md section 3):
+// the freshness window a record is judged against.
+const CONTRACT_TYPES = Object.freeze({
+  buyers: "reference_directory",
+  authorization_paths: "statutory",
+  state_medicaid: "reference_directory",
+  innovation_pathways: "statutory",
+  compliance_rules: "statutory",
+  buying_routes: "reference_directory",
+});
 
 const FILES = Object.freeze({
   buyers: "data/reference/buyers.json",
@@ -27,6 +39,7 @@ const FILES = Object.freeze({
   buying_routes: "data/reference/buying-routes.json",
   vehicles: "data/idiq-vehicles.json",
   key_people: "data/key-people.json",
+  state_procurement: "data/reference/state-procurement.json",
 });
 
 let ROOT = null;
@@ -81,6 +94,7 @@ function envelope(rows, total, paging, stamp, now, extra) {
     offset,
     retrieved_at: (now instanceof Date ? now : new Date()).toISOString(),
     dataset: stamp,
+    confidence_summary: rc.confidenceSummary(rows),
     ...(extra || {}),
   };
 }
@@ -116,13 +130,41 @@ function parsePaging(qs) {
   return { limit, offset };
 }
 
+// ---- record contract -------------------------------------------------------
+
+/** One hand-maintained record with source_url, retrieved_at, confidence, as_of and gap. */
+function contractOne(row, dataset, now) {
+  return rc.contractReferenceRecord(row, CONTRACT_TYPES[dataset], now, { asOf: row.verified || null });
+}
+function contractRows(rows, dataset, now) {
+  return rows.map((r) => contractOne(r, dataset, now));
+}
+
+const SAM_ROOT_RE = /^https?:\/\/(www\.)?sam\.gov\/?$/i;
+/**
+ * A vehicle row: derived ordering status beside the dataset's own text, the
+ * date MMT last checked it (the dataset's generation date) and the contract.
+ */
+function contractVehicle(v, ds, t, now) {
+  const generated = ds.generated_at ? String(ds.generated_at) : null;
+  const asOf = generated ? generated.slice(0, 10) : null;
+  const decorated = decorateVehicle(v, { today: t, asOf });
+  const src = v.primary_source_url && /^https?:\/\//i.test(v.primary_source_url) && !SAM_ROOT_RE.test(v.primary_source_url) ? v.primary_source_url : null;
+  const pending = [];
+  if (!v.contract_number) pending.push("contract_number");
+  if (!v.pop_end) pending.push("pop_end");
+  return rc.contractRecord({ ...decorated, date_checked: asOf }, {
+    type: "vehicle_status", sourceUrl: src, retrievedAt: generated, asOf, baseConfidence: "high", pending, now,
+  });
+}
+
 // ---- buyers ---------------------------------------------------------------
 
 function listBuyers(filters, paging, now) {
   const f = filters || {};
   let rows = load("buyers").buyers;
   if (f.segment) rows = rows.filter((b) => lc(b.segment) === lc(f.segment));
-  return envelope(page(rows, paging), rows.length, paging, datasetStamp("buyers"), now);
+  return envelope(contractRows(page(rows, paging), "buyers", now), rows.length, paging, datasetStamp("buyers"), now);
 }
 
 function getBuyer(code, now) {
@@ -134,15 +176,15 @@ function getBuyer(code, now) {
   const vehicles = load("vehicles");
   const t = today(now);
   const resolved = {
-    ...buyer,
+    ...contractOne(buyer, "buyers", now),
     resolved: {
-      authorization_paths: (buyer.authorization_paths || []).map((id) => paths.find((p) => p.id === id)).filter(Boolean),
-      buying_routes: (buyer.buying_routes || []).map((id) => routes.find((r) => r.id === id)).filter(Boolean),
-      innovation_pathways: (buyer.innovation_pathways || []).map((id) => pathways.find((p) => p.id === id)).filter(Boolean),
+      authorization_paths: contractRows((buyer.authorization_paths || []).map((id) => paths.find((p) => p.id === id)).filter(Boolean), "authorization_paths", now),
+      buying_routes: contractRows((buyer.buying_routes || []).map((id) => routes.find((r) => r.id === id)).filter(Boolean), "buying_routes", now),
+      innovation_pathways: contractRows((buyer.innovation_pathways || []).map((id) => pathways.find((p) => p.id === id)).filter(Boolean), "innovation_pathways", now),
       vehicles: (buyer.vehicles || [])
         .map((id) => vehicles.vehicles.find((v) => v.vehicle_id === id))
         .filter(Boolean)
-        .map((v) => decorateVehicle(v, { today: t, asOf: String(vehicles.generated_at).slice(0, 10) })),
+        .map((v) => contractVehicle(v, vehicles, t, now)),
     },
   };
   return item(resolved, datasetStamp("buyers"), now);
@@ -158,7 +200,7 @@ function listVehicles(filters, paging, now) {
   const ds = load("vehicles");
   const asOf = String(ds.generated_at).slice(0, 10);
   const t = today(now);
-  let rows = ds.vehicles.map((v) => decorateVehicle(v, { today: t, asOf }));
+  let rows = ds.vehicles.map((v) => contractVehicle(v, ds, t, now));
   if (f.agency) rows = rows.filter((v) => lc(v.agency).includes(lc(f.agency)) || lc(v.sub_agency).includes(lc(f.agency)));
   if (f.status) rows = rows.filter((v) => v.ordering_status === lc(f.status));
   if (f.q) {
@@ -172,7 +214,7 @@ function getVehicle(id, now) {
   const ds = load("vehicles");
   const row = ds.vehicles.find((v) => eqCode(v.vehicle_id, id));
   if (!row) return null;
-  return item(decorateVehicle(row, { today: today(now), asOf: String(ds.generated_at).slice(0, 10) }), datasetStamp("vehicles"), now);
+  return item(contractVehicle(row, ds, today(now), now), datasetStamp("vehicles"), now);
 }
 
 // ---- authorization paths --------------------------------------------------
@@ -182,12 +224,12 @@ function listAuthorizationPaths(filters, paging, now) {
   let rows = load("authorization_paths").paths;
   if (f.buyer) rows = rows.filter((p) => (p.applies_to || []).some((a) => eqCode(a, f.buyer)));
   if (f.type) rows = rows.filter((p) => lc(p.type) === lc(f.type));
-  return envelope(page(rows, paging), rows.length, paging, datasetStamp("authorization_paths"), now);
+  return envelope(contractRows(page(rows, paging), "authorization_paths", now), rows.length, paging, datasetStamp("authorization_paths"), now);
 }
 
 function getAuthorizationPath(id, now) {
   const row = load("authorization_paths").paths.find((p) => eqCode(p.id, id));
-  return row ? item(row, datasetStamp("authorization_paths"), now) : null;
+  return row ? item(contractOne(row, "authorization_paths", now), datasetStamp("authorization_paths"), now) : null;
 }
 
 // ---- state Medicaid -------------------------------------------------------
@@ -211,13 +253,23 @@ function listStates(filters, paging, now) {
     const want = ["true", "1", "yes"].includes(lc(f.govramp));
     rows = rows.filter((s) => !!(s.govramp && s.govramp.participating_entity_in_state) === want);
   }
-  return envelope(page(rows, paging), rows.length, paging, datasetStamp("state_medicaid"), now, { context: stateContext() });
+  return envelope(contractRows(page(rows, paging), "state_medicaid", now), rows.length, paging, datasetStamp("state_medicaid"), now, {
+    context: stateContext(),
+    procurement_note: "Procurement detail (CIO office, portal, module landscape, cooperative routes, addenda, funding conditions) is under /states/{coverage,agencies,modules,coop-routes,addenda,funding-conditions,solicitations}; a state with no coverage for an entity returns 409 COVERAGE_GAP there.",
+  });
 }
 
 function getState(code, now) {
   const row = load("state_medicaid").agencies.find((s) => eqCode(s.code, code) || lc(s.state) === lc(code));
   if (!row) return null;
-  return item({ ...row, context: stateContext() }, datasetStamp("state_medicaid"), now);
+  // Lazy: lib/state-procurement requires this module.
+  const sp = require("./state-procurement");
+  return item({
+    ...contractOne(row, "state_medicaid", now),
+    context: stateContext(),
+    procurement: sp.getStateAgency(row.code, now),
+    procurement_coverage: sp.coverageRow(row.code),
+  }, datasetStamp("state_medicaid"), now);
 }
 
 // ---- innovation pathways, compliance rules, buying routes ------------------
@@ -226,12 +278,12 @@ function listInnovationPathways(filters, paging, now) {
   const f = filters || {};
   let rows = load("innovation_pathways").pathways;
   if (f.buyer) rows = rows.filter((p) => (p.applies_to || []).some((a) => eqCode(a, f.buyer)));
-  return envelope(page(rows, paging), rows.length, paging, datasetStamp("innovation_pathways"), now);
+  return envelope(contractRows(page(rows, paging), "innovation_pathways", now), rows.length, paging, datasetStamp("innovation_pathways"), now);
 }
 
 function listComplianceRules(filters, paging, now) {
   const rows = load("compliance_rules").rules;
-  return envelope(page(rows, paging), rows.length, paging, datasetStamp("compliance_rules"), now);
+  return envelope(contractRows(page(rows, paging), "compliance_rules", now), rows.length, paging, datasetStamp("compliance_rules"), now);
 }
 
 function listBuyingRoutes(filters, paging, now) {
@@ -239,25 +291,15 @@ function listBuyingRoutes(filters, paging, now) {
   let rows = load("buying_routes").routes;
   if (f.buyer) rows = rows.filter((r) => (r.applies_to || []).some((a) => eqCode(a, f.buyer)));
   if (f.group) rows = rows.filter((r) => lc(r.group) === lc(f.group));
-  return envelope(page(rows, paging), rows.length, paging, datasetStamp("buying_routes"), now);
+  return envelope(contractRows(page(rows, paging), "buying_routes", now), rows.length, paging, datasetStamp("buying_routes"), now);
 }
 
 // ---- org charts -----------------------------------------------------------
 
 function listOrgCharts(filters, paging, now) {
-  const buyers = load("buyers").buyers;
-  const kp = load("key_people");
-  const counts = new Map((kp.agencies || []).map((a) => [a.agency_code, { people: (a.people || []).length, verified_date: a.verified_date, source_url: a.source_url }]));
-  const rows = buyers
-    .filter((b) => b.org_chart && b.org_chart.url)
-    .map((b) => ({
-      buyer: b.code,
-      name: b.name,
-      url: `https://missionmeetstech.com${b.org_chart.url}`,
-      as_of: b.org_chart.as_of || null,
-      key_people: b.key_people_code && counts.has(b.key_people_code) ? { agency_code: b.key_people_code, ...counts.get(b.key_people_code) } : null,
-    }));
-  return envelope(page(rows, paging), rows.length, paging, datasetStamp("buyers"), now);
+  // Lazy: lib/agent-federal requires this module. Rows carry the record
+  // contract, key people and the DHA internal-vetting flag.
+  return require("./agent-federal").listOrgCharts(paging, now instanceof Date ? now : undefined);
 }
 
 module.exports = {
@@ -275,4 +317,5 @@ module.exports = {
   listComplianceRules,
   listBuyingRoutes,
   listOrgCharts,
+  contractOne, contractRows, contractVehicle, CONTRACT_TYPES,
 };

@@ -48,6 +48,20 @@ const ALERTS = Object.freeze({
   RESPONSE_MB_PER_HR: num("AGENT_ALERT_MB_PER_HR", 50),   // harvest detection
 });
 
+// spec section 2 (docs/agent-platform-spec.md) — monthly call allowance per
+// agent credential and the published per-call overage rate. Calls past the
+// allowance are never cut off (the budget, session and rate gates are the only
+// hard stops); they are priced on the monthly statement and the member is told
+// at 80 percent and on the first overage call. CONFIRMED flips to true once
+// Mary sets the numbers (AGENT_ALLOWANCE_CONFIRMED=true); until then every
+// surface that prints them says they are provisional.
+const ALLOWANCE = Object.freeze({
+  CALLS_PER_MONTH: num("AGENT_ALLOWANCE_CALLS_MONTH", 5000),
+  OVERAGE_USD_PER_CALL: num("AGENT_OVERAGE_USD_PER_CALL", 0.01),
+  ALERT_THRESHOLD: 0.8,
+  CONFIRMED: process.env.AGENT_ALLOWANCE_CONFIRMED === "true",
+});
+
 // hardening §4 — pagination
 const PAGINATION = Object.freeze({
   DEFAULT_LIMIT: 25,
@@ -58,4 +72,4 @@ const PAGINATION = Object.freeze({
 // until legal clears AND this env flag is explicitly set to "true".
 const CUI_PATH_CLEARED = process.env.CUI_PATH_CLEARED === "true";
 
-module.exports = { RATE, SESSION_MAX_CALLS, BUDGET, BREAKER, ALERTS, PAGINATION, CUI_PATH_CLEARED };
+module.exports = { RATE, SESSION_MAX_CALLS, BUDGET, BREAKER, ALERTS, ALLOWANCE, PAGINATION, CUI_PATH_CLEARED };

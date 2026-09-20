@@ -109,3 +109,41 @@ spec's section 13 is the full source log. Facts worth knowing:
 - `contracts.json` through the API (same envelope, next resource).
 - The reference JSON is public in dist, the way `key-people.json` is. Gate it
   behind entitlement (the `idiq-fields.js` pattern) if Mary wants it paid-only.
+
+## Phase two, same day: the agent platform spec
+
+Mary attached her *MMT Platform: Agent Support Build Spec* after the first
+push and asked for the two specs to be aligned into one. `docs/agent-platform-spec.md`
+is the result and the authoritative file; this note records what changed.
+
+- **Record contract** (`lib/record-contract.js`): every agent-facing record now
+  carries `source_url`, `retrieved_at`, `confidence` (verified, reported,
+  stale), `as_of` and `gap[]`, judged against per-type freshness windows.
+  Hand-maintained sets often read stale; that is the signal, not a defect.
+- **Scopes**: `states:read`, `orgcharts:read`, `signals:read` added; state and
+  org chart tools moved off `reference:read`.
+- **Metering**: `request_id` on every response and audit row, opaque
+  `X-MMT-Client-Ref` attribution, `tool`, `scope`, `records_returned`; one MCP
+  audit row per tool call. Migration `20260920000000_agent_metering.sql` is
+  gated on Mary; the code degrades to the legacy columns until it lands.
+- **Allowance**: monthly call allowance per credential with a published
+  per-call overage rate (provisional until Mary confirms), a usage statement at
+  `POST /api/tokens/usage` with a per-client_ref breakdown, and 80 percent and
+  first-overage emails sent once each through Blobs markers. No cutoff.
+- **State procurement coverage** (`data/reference/state-procurement.json`,
+  `lib/state-procurement.js`): 56 coverage rows, 32 module rows, 8 dated
+  solicitations, 5 NASPO ValuePoint vehicles, 14 addenda, the 22 CEFs plus
+  the rules around them, MACPAC sizing context. An uncovered entity for a
+  state returns 409 COVERAGE_GAP. No live portal feed yet; coverage says so.
+- **Federal surfaces through MCP** (`lib/agent-federal.js`): Contract Tracker,
+  org charts with the DHA internal-vetting guard, Pursuit Calendar, and the
+  engines (Signal Chain, Pursuit Score, Compliance Check, Ask MMT) run for the
+  member through their own handlers. Thirty MCP tools, 27 REST paths.
+- **Ten acceptance tests** in `tests/unit/agent-acceptance.test.js`.
+- Research method for the state data was web search snippets only (fetches
+  blocked in the sandbox); every record says where it came from and what it
+  lacks.
+
+Incidents worth a rule: none new. Two things the tests caught before they
+shipped: a PostgREST builder call placed after `.range()` (a Promise has no
+`.eq`), and a test that pinned a 180-day boundary one day off.

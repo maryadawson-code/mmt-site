@@ -187,7 +187,7 @@ describe("scripts/validate-reference-data.js teeth", () => {
     const dir = mkdtempSync(join(tmpdir(), "refdata-"));
     mkdirSync(join(dir, "data", "reference"), { recursive: true });
     mkdirSync(join(dir, "scripts"), { recursive: true });
-    for (const f of ["buyers", "authorization-paths", "state-medicaid", "innovation-pathways", "compliance-rules", "buying-routes"]) cpSync(join(REPO, "data", "reference", `${f}.json`), join(dir, "data", "reference", `${f}.json`));
+    for (const f of ["buyers", "authorization-paths", "state-medicaid", "innovation-pathways", "compliance-rules", "buying-routes", "state-procurement"]) cpSync(join(REPO, "data", "reference", `${f}.json`), join(dir, "data", "reference", `${f}.json`));
     cpSync(join(REPO, "data", "idiq-vehicles.json"), join(dir, "data", "idiq-vehicles.json"));
     cpSync(join(REPO, "scripts", "validate-reference-data.js"), join(dir, "scripts", "validate-reference-data.js"));
     if (mutate) mutate(dir);

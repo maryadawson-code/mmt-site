@@ -49,6 +49,9 @@ const REGISTRY = [
   { id: "reference-innovation-pathways", file: "data/reference/innovation-pathways.json", paths: ["_schema.last_verified"], warn_days: 100, cadence: "quarterly", fix: "Re-check SBIR, ARPA-H, BARDA, CSO, MTEC, VA Pathfinder and CMMI pages; bump _schema.last_verified." },
   { id: "reference-compliance-rules", file: "data/reference/compliance-rules.json", paths: ["_schema.last_verified"], warn_days: 100, cadence: "quarterly", fix: "Re-check FAR 3.4, FAR 9.5 rulemaking status, LDA thresholds, PIA and Byrd text; bump _schema.last_verified." },
   { id: "reference-buying-routes", file: "data/reference/buying-routes.json", paths: ["_schema.last_verified"], warn_days: 100, cadence: "quarterly", fix: "Re-check FAR thresholds and the disqualified list against data/idiq-vehicles.json; bump _schema.last_verified." },
+  // 2026-09-20 platform spec §4: state procurement records carry a 7-day
+  // freshness window on the API, so the file itself is re-read monthly.
+  { id: "reference-state-procurement", file: "data/reference/state-procurement.json", paths: ["_schema.last_verified"], warn_days: 35, cadence: "monthly", fix: "Re-read the top-ten state portals, NASPO ValuePoint MES portfolios and CMS CEF pages; update coverage.states and bump _schema.last_verified." },
 ];
 
 // Content directories that render through BUILD markers. The markers must

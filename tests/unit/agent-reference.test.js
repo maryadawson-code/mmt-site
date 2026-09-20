@@ -6,7 +6,7 @@
 
 import { describe, it, expect, beforeAll } from "vitest";
 import * as ref from "../../netlify/functions/lib/agent-reference.js";
-import { RESOURCES, SCOPE } from "../../netlify/functions/agent-reference.js";
+import { RESOURCES } from "../../netlify/functions/agent-reference.js";
 
 const NOW = new Date("2026-09-20T15:00:00Z");
 const paging = (o = {}) => ref.parsePaging(o);
@@ -95,15 +95,17 @@ describe("buyers, states, org charts", () => {
     expect(ref.listStates({ govramp: "true" }, paging({ limit: "100" }), NOW).total_count).toBe(33);
     expect(ref.getState("ZZ", NOW)).toBeNull();
   });
-  it("org charts list the chart pages with as_of dates and key-people counts where MMT keeps them", () => {
+  it("org charts list the chart pages with as_of dates, key people where MMT keeps them, and the DHA internal-vetting flag", () => {
     const out = ref.listOrgCharts({}, paging(), NOW);
     expect(out.total_count).toBe(11);
-    const dha = out.data.find((r) => r.buyer === "DHA");
-    expect(dha.url).toBe("https://missionmeetstech.com/premium/org-charts/dha");
+    const dha = out.data.find((r) => r.agency === "DHA");
+    expect(dha.chart_url).toBe("https://missionmeetstech.com/premium/org-charts/dha");
     expect(dha.as_of).toBe("2026-07-09");
     expect(dha.key_people.agency_code).toBe("DHA");
-    expect(dha.key_people.people).toBeGreaterThan(5);
-    expect(out.data.find((r) => r.buyer === "CMS").key_people).toBeNull();
+    expect(dha.key_people.people.length).toBeGreaterThan(5);
+    expect(dha.internally_maintained).toBe(true);
+    expect(["verified", "reported", "stale"]).toContain(dha.confidence);
+    expect(out.data.find((r) => r.agency === "CMS").key_people).toBeNull();
   });
   it("innovation pathways, compliance rules and routes filter by buyer and group", () => {
     expect(ref.listInnovationPathways({ buyer: "ARPA-H" }, paging(), NOW).data.map((p) => p.id)).toEqual(["sbir_sttr", "arpa_h"]);
@@ -114,10 +116,15 @@ describe("buyers, states, org charts", () => {
 });
 
 describe("REST resource table", () => {
-  it("covers every catalogued reference resource, with item forms only where the spec has one", () => {
-    expect(Object.keys(RESOURCES).sort()).toEqual(["agencies", "authorization-paths", "buying-routes", "compliance-rules", "innovation-pathways", "org-charts", "states", "vehicles"]);
-    expect(SCOPE).toBe("reference:read");
-    for (const k of ["agencies", "vehicles", "authorization-paths", "states"]) expect(typeof RESOURCES[k].get).toBe("function");
-    for (const k of ["innovation-pathways", "compliance-rules", "buying-routes", "org-charts"]) expect(RESOURCES[k].get).toBeNull();
+  it("covers every catalogued resource, with item forms only where the spec has one and a scope per resource", () => {
+    expect(Object.keys(RESOURCES).sort()).toEqual(["agencies", "authorization-paths", "buying-routes", "calendar", "compliance-rules", "contracts", "innovation-pathways", "org-charts", "states", "vehicles"]);
+    for (const k of ["agencies", "vehicles", "authorization-paths", "states", "org-charts", "contracts"]) expect(typeof RESOURCES[k].get).toBe("function");
+    for (const k of ["innovation-pathways", "compliance-rules", "buying-routes", "calendar"]) expect(RESOURCES[k].get).toBeNull();
+    const scopes = Object.fromEntries(Object.entries(RESOURCES).map(([k, v]) => [k, v.scope]));
+    expect(scopes).toEqual(expect.objectContaining({ agencies: "reference:read", contracts: "reference:read", states: "states:read", "org-charts": "orgcharts:read", calendar: "opportunities:read" }));
+    expect(Object.keys(RESOURCES.states.sub).sort()).toEqual(["addenda", "agencies", "coop-routes", "coverage", "funding-conditions", "modules", "solicitations"]);
+    // the coverage rule reaches the REST layer as a 409 marker
+    const gap = RESOURCES.states.sub.solicitations({ state: "WY" }, { limit: 5, offset: 0 }, {});
+    expect(gap._coverageGap.error).toBe("COVERAGE_GAP");
   });
 });

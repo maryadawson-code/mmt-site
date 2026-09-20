@@ -81,7 +81,8 @@
   <div class="sm-card" id="sm-cert"></div>
   <div class="sm-card" id="sm-coop"></div>
   <div class="sm-card" id="sm-signals"></div>
-  <p class="sm-meta">Source data: <a href="/data/reference/state-medicaid.json">state-medicaid.json</a> (hand-maintained; served to connected agents at <code>/api/v1/states</code> with the reference:read permission). Method and maintenance rules: <a href="/premium/market-entry/">Market entry reference</a>.</p>
+  <div class="sm-card" id="sm-procurement"></div>
+  <p class="sm-meta">Source data: <a href="/data/reference/state-medicaid.json">state-medicaid.json</a> (hand-maintained; served to connected agents at <code>/api/v1/states</code> with the states:read permission; procurement coverage in <a href="/data/reference/state-procurement.json">state-procurement.json</a>). Method and maintenance rules: <a href="/premium/market-entry/">Market entry reference</a>.</p>
 
   <script>
     (function () {
@@ -153,11 +154,60 @@
         }).join('');
       }
 
+      // State MES procurement coverage (data/reference/state-procurement.json):
+      // the ten highest-spending states in detail, the module landscape on
+      // file, the cooperative vehicles, and the per-entity coverage that the
+      // API turns into a coverage gap instead of an empty list.
+      function renderProcurement(p) {
+        var cov = p.coverage.states;
+        var summary = { live: 0, partial: 0, not_covered: 0 };
+        cov.forEach(function (c) { summary[c.status] = (summary[c.status] || 0) + 1; });
+        var top = p.state_agencies.filter(function (a) { return a.spend; }).sort(function (a, b) { return a.spend.kff_fy2023_rank - b.spend.kff_fy2023_rank; });
+        var countBy = function (rows) { var o = {}; rows.forEach(function (r) { o[r.state] = (o[r.state] || 0) + 1; }); return o; };
+        var modsBy = countBy(p.mes_modules), paBy = countBy(p.participating_addenda), solBy = countBy(p.state_solicitations);
+        var pill = function (v) { var k = v === 'live' ? 'yes' : v === 'partial' ? 'adopted' : 'na'; return '<span class="pill ' + k + '">' + esc(String(v).replace('_', ' ')) + '</span>'; };
+        var plural = function (n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); };
+        var rows = top.map(function (a) {
+          var c = cov.filter(function (x) { return x.code === a.code; })[0] || { entities: {} };
+          return '<tr><td><strong>' + esc(a.state) + '</strong><div class="sm-meta">rank ' + esc(a.spend.kff_fy2023_rank) + ' by total Medicaid spending</div></td>' +
+            '<td>' + esc(a.medicaid_agency) + '<div class="sm-meta"><a href="' + esc(a.medicaid_agency_url) + '" target="_blank" rel="noopener">agency</a>' +
+            (a.cio_office ? ' &middot; <a href="' + esc(a.cio_office.url) + '" target="_blank" rel="noopener">' + esc(a.cio_office.name) + '</a>' : '') + '</div></td>' +
+            '<td>' + (a.procurement_portal ? '<a href="' + esc(a.procurement_portal.url) + '" target="_blank" rel="noopener">' + esc(a.procurement_portal.name) + '</a>' : '<span class="sm-meta">not yet mapped</span>') + '</td>' +
+            '<td>' + plural(modsBy[a.code] || 0, 'module') + ' &middot; ' + plural(solBy[a.code] || 0, 'notice') + ' &middot; ' + plural(paBy[a.code] || 0, 'addendum').replace('addendums', 'addenda') + '</td>' +
+            '<td class="sm-hide-m">' + pill(c.entities.mes_module || 'not_covered') + ' ' + pill(c.entities.state_solicitation || 'not_covered') + '</td></tr>';
+        }).join('');
+        var mods = top.map(function (a) {
+          var ms = p.mes_modules.filter(function (m) { return m.state === a.code; });
+          if (!ms.length) return '';
+          return '<h3>' + esc(a.state) + '</h3><ul>' + ms.map(function (m) {
+            return '<li><strong>' + esc(m.module) + ':</strong> ' + (m.incumbent ? esc(m.incumbent) : '<span class="sm-meta">incumbent not yet read</span>') +
+              (m.contract_id ? ' <span class="sm-meta">(' + esc(m.contract_id) + ')</span>' : '') + (m.contract_end ? ' &middot; through ' + esc(m.contract_end) : '') +
+              (m.note ? '<div class="sm-meta">' + esc(m.note) + '</div>' : '') + pending(m) + '</li>';
+          }).join('') + '</ul>';
+        }).join('');
+        var coop = p.coop_vehicles.map(function (v) {
+          return '<h3>' + esc(v.name) + '</h3><p class="sm-meta">Lead state ' + esc(v.lead_state) + ' &middot; ' + esc(v.term_start) + ' to ' + esc(v.term_end) +
+            ' &middot; participating states: ' + (v.participating_states.length ? esc(v.participating_states.join(', ')) : 'none yet') + '</p>' +
+            '<p>Scope: ' + esc(v.module_scope.join('; ')) + '.</p><p class="sm-meta">Suppliers: ' + esc(v.awarded_suppliers.map(function (x) { return x.name; }).join('; ')) + '</p>' +
+            (v.note ? '<p>' + esc(v.note) + '</p>' : '') + stamp(v) + pending(v);
+        }).join('');
+        document.getElementById('sm-procurement').innerHTML = '<h2>State MES procurement coverage</h2>' +
+          '<p>' + esc(p._schema.scope) + ' Coverage is kept per state and per entity: <strong>' + summary.live + ' live, ' + summary.partial + ' partial, ' + summary.not_covered + ' not covered</strong> as of ' + esc(p.coverage.as_of) +
+          '. There is no live state portal feed yet, so the solicitations on file are dated notices. Connected agents read the same data at <code>/api/v1/states/coverage</code> and its siblings with the states:read permission, and a state I do not yet cover for an entity gets a coverage gap, never an empty list.</p>' +
+          '<h3>The ten highest-spending states</h3><div style="overflow-x:auto;"><table class="sm"><thead><tr><th>State</th><th>Medicaid agency and IT office</th><th>Procurement portal</th><th>On file</th><th class="sm-hide-m">Modules &middot; notices</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+          '<h3>Module landscape on file</h3>' + mods +
+          '<h3>Cooperative vehicles</h3>' + coop +
+          '<p class="sm-meta">' + esc(p._schema.research_method) + '</p>';
+      }
+
       fetch('/data/reference/state-medicaid.json').then(function (r) { return r.json(); }).then(function (d) {
         data = d;
         renderContext();
         renderRows();
         ['sm-search', 'sm-expansion', 'sm-govramp'].forEach(function (id) { document.getElementById(id).addEventListener('input', renderRows); document.getElementById(id).addEventListener('change', renderRows); });
+        return fetch('/data/reference/state-procurement.json').then(function (r) { return r.json(); }).then(renderProcurement).catch(function () {
+          document.getElementById('sm-procurement').innerHTML = '<h2>State MES procurement coverage</h2><p class="sm-meta">Could not load the procurement coverage data. Try refreshing in a moment.</p>';
+        });
       }).catch(function () {
         document.getElementById('sm-rows').innerHTML = '<tr><td colspan="6" class="sm-meta">Could not load the state Medicaid data. Try refreshing in a moment.</td></tr>';
       });
