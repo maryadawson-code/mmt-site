@@ -262,7 +262,7 @@ function buildCatalog() {
       note: "State procurement entities are covered per state: live, partial or not_covered (GET /states/coverage). A query naming a state whose coverage for the requested entity is not_covered returns 409 COVERAGE_GAP with that state's coverage row, never an empty list.",
     },
     attribution: {
-      request_id: "Every response carries X-Request-Id (and request_id in every error body). Send your own X-Request-Id (8 to 64 chars) to have it echoed; it appears in the audit row.",
+      request_id: "Every response carries X-Request-Id (and request_id in every error body). Send your own X-Request-Id as a UUID to have it echoed; any other value is replaced with a fresh UUID. It appears in the audit row.",
       client_ref: "Optional X-MMT-Client-Ref header (1 to 64 chars: letters, digits, . _ : @ / + -). Opaque to MMT: it groups calls on the monthly usage statement and is never treated as identifying data.",
     },
     allowance: allowanceBlock(),

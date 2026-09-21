@@ -68,15 +68,24 @@ describe("1. Revoke one agent credential", () => {
 describe("2. Call a tool without its scope", () => {
   it("REST: 403 naming the required scope, with a request id in the body, the header and the audit row", async () => {
     const audit = [];
-    const r = await authenticateAgent(evt(TOKEN_B, { "x-request-id": "client-req-0001", "x-mmt-client-ref": "acme" }), "states:read", fakeDb(audit));
+    const r = await authenticateAgent(evt(TOKEN_B, { "x-request-id": "3f2b8c1e-9a4d-4e7b-8f21-5c6d7e8f9a0b", "x-mmt-client-ref": "acme" }), "states:read", fakeDb(audit));
     expect(r.response.statusCode).toBe(403);
     const body = JSON.parse(r.response.body);
     expect(body.error).toBe("FORBIDDEN_SCOPE");
     expect(body.required_scope).toBe("states:read");
     expect(body.message).toMatch(/states:read/);
-    expect(body.request_id).toBe("client-req-0001");
-    expect(r.response.headers["X-Request-Id"]).toBe("client-req-0001");
-    expect(audit.at(-1)).toEqual(expect.objectContaining({ status_code: 403, scope: "states:read", request_id: "client-req-0001", client_ref: "acme" }));
+    expect(body.request_id).toBe("3f2b8c1e-9a4d-4e7b-8f21-5c6d7e8f9a0b");
+    expect(r.response.headers["X-Request-Id"]).toBe("3f2b8c1e-9a4d-4e7b-8f21-5c6d7e8f9a0b");
+    expect(audit.at(-1)).toEqual(expect.objectContaining({ status_code: 403, scope: "states:read", request_id: "3f2b8c1e-9a4d-4e7b-8f21-5c6d7e8f9a0b", client_ref: "acme" }));
+  });
+  it("a caller request id that is not a UUID is replaced, never echoed (request_id is a uuid column; 22P02 would lose the audit row)", async () => {
+    const audit = [];
+    const r = await authenticateAgent(evt(TOKEN_B, { "x-request-id": "client-req-0001" }), "states:read", fakeDb(audit));
+    const body = JSON.parse(r.response.body);
+    expect(body.request_id).not.toBe("client-req-0001");
+    expect(body.request_id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
+    expect(r.response.headers["X-Request-Id"]).toBe(body.request_id);
+    expect(audit.at(-1).request_id).toBe(body.request_id);
   });
   it("MCP: FORBIDDEN_SCOPE names the scope too", async () => {
     const out = await call("mmt_states_coverage", {}, { ...fullCtx, token: { scopes: ["opportunities:read"] } });

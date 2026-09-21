@@ -9,6 +9,8 @@ import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
 import { ENDPOINTS, buildCatalog, buildOpenApi, allowanceBlock } from "../../netlify/functions/agent-discovery.js";
 import { VALID_SCOPES } from "../../netlify/functions/lib/agent-tokens.js";
+import { ALLOWANCE } from "../../netlify/functions/lib/agent-config.js";
+import PRICING from "../../netlify/functions/data/agent-pricing.json";
 import { SCOPES } from "../../netlify/functions/lib/oauth-core.js";
 import { protectedResourceMetadata, TOOLS } from "../../netlify/functions/agent-mcp.js";
 
@@ -56,11 +58,13 @@ describe("catalog ↔ netlify.toml", () => {
     expect(c.coverage.note).toMatch(/409 COVERAGE_GAP/);
     expect(c.attribution.client_ref).toMatch(/X-MMT-Client-Ref/);
     expect(c.attribution.request_id).toMatch(/X-Request-Id/);
-    // Unconfirmed pricing (no AGENT_ALLOWANCE_CONFIRMED in the test env): the catalog publishes no number.
-    expect(c.allowance.pricing_confirmed).toBe(false);
-    expect(c.allowance.calls_per_month_per_agent).toBeNull();
-    expect(c.allowance.overage_usd_per_call).toBeNull();
-    expect(JSON.stringify(c.allowance)).not.toMatch(/provisional|5000|0\.01/i);
+    // The catalog is config-derived: it says exactly what lib/agent-config says, and once Mary has
+    // confirmed the numbers (data/agent-pricing.json) they are the file's numbers and nobody else's.
+    expect(c.allowance).toEqual(allowanceBlock(ALLOWANCE));
+    if (PRICING.confirmed === true) {
+      expect(c.allowance).toEqual(expect.objectContaining({ pricing_confirmed: true, calls_per_month_per_agent: PRICING.calls_per_month_per_agent, overage_usd_per_call: PRICING.overage_usd_per_call }));
+    }
+    expect(JSON.stringify(c.allowance)).not.toMatch(/provisional/i);
     expect(c.error_codes.COVERAGE_GAP).toMatch(/409/);
     expect(c.error_codes.FORBIDDEN_SCOPE).toMatch(/required_scope/);
   });

@@ -16,6 +16,11 @@
 // emails do not send, the /api/v1 catalog publishes null, and the member panel
 // counts calls without an allowance or dollars. The crossings are still counted.
 //
+// A billable call is one that returned data: status below 400. Rejected calls
+// (401, 403, 429), bad requests, COVERAGE_GAP answers and server errors are
+// listed on the statement and never count against the allowance, so they are
+// never billed (lib/agent-overage-billing.js bills what this file reports).
+//
 // client_ref is the caller-supplied X-MMT-Client-Ref header: opaque to MMT, a
 // grouping key and nothing else. It is never parsed, matched or treated as
 // identifying data.
@@ -29,6 +34,12 @@ const MARKER_TTL_MS = 45 * 86400000;
 const ALERT_KINDS = Object.freeze(["allowance_80pct", "first_overage"]);
 
 function round2(n) { return Math.round(n * 100) / 100; }
+
+/** A call counts against the allowance only when it returned data. */
+function isBillableStatus(statusCode) {
+  const s = Number(statusCode) || 0;
+  return s > 0 && s < 400;
+}
 
 /** "YYYY-MM" for a Date or ISO string (UTC). */
 function monthKey(d) {
@@ -90,12 +101,13 @@ function alertsCrossed(prevCalls, nextCalls, allowance = ALLOWANCE.CALLS_PER_MON
 function summarizeRows(rows, { month, allowance = ALLOWANCE.CALLS_PER_MONTH, rate = ALLOWANCE.OVERAGE_USD_PER_CALL } = {}) {
   const byRef = new Map();
   const byTool = new Map();
-  let calls = 0, errors = 0, records = 0, cost = 0, bytes = 0;
+  let calls = 0, errors = 0, billable = 0, records = 0, cost = 0, bytes = 0;
   for (const r of rows || []) {
     calls += 1;
     const status = Number(r.status_code) || 0;
     const isErr = status >= 400;
     if (isErr) errors += 1;
+    if (isBillableStatus(status)) billable += 1;
     const rec = Number(r.records_returned) || 0;
     records += rec;
     cost += Number(r.cost_usd) || 0;
@@ -109,9 +121,10 @@ function summarizeRows(rows, { month, allowance = ALLOWANCE.CALLS_PER_MONTH, rat
     t.calls += 1; if (isErr) t.errors += 1; t.records_returned += rec;
     byTool.set(tool, t);
   }
-  // Overage is priced in call order: the first `allowance` calls are included,
-  // every call after that is overage, attributed to the client_ref that made it.
-  const ordered = [...(rows || [])].sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
+  // Overage is priced in call order over the billable calls only: the first
+  // `allowance` calls that returned data are included, every one after that is
+  // overage, attributed to the client_ref that made it.
+  const ordered = (rows || []).filter((r) => isBillableStatus(r.status_code)).sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
   const overageByRef = new Map();
   ordered.forEach((r, i) => {
     if (i >= allowance) {
@@ -126,17 +139,19 @@ function summarizeRows(rows, { month, allowance = ALLOWANCE.CALLS_PER_MONTH, rat
       return { ...a, cost_usd: round2(a.cost_usd), overage_calls: over, overage_usd: round2(over * rate) };
     })
     .sort((x, y) => y.calls - x.calls);
-  const state = allowanceState(calls, allowance, rate);
+  const state = allowanceState(billable, allowance, rate);
   return {
     month: month || null,
     ...state,
+    calls, // every audited call, errors included
+    billable_calls: billable, // the ones that returned data; the allowance and overage are counted on these
     error_calls: errors,
     records_returned: records,
     compute_cost_usd: round2(cost),
     response_bytes: bytes,
     by_client_ref: byClientRef,
     by_tool: [...byTool.values()].sort((x, y) => y.calls - x.calls),
-    note: "Overage is priced in call order: the first calls up to the allowance are included; each call after that is billed at overage_usd_per_call and attributed to the client_ref that made it. client_ref is opaque to MMT.",
+    note: "Only calls that returned data (status below 400) count against the allowance; errors and rejected calls are listed and never billed. Overage is priced in call order: the first billable calls up to the allowance are included; each one after that is billed at overage_usd_per_call and attributed to the client_ref that made it. client_ref is opaque to MMT.",
   };
 }
 
@@ -189,13 +204,15 @@ function isMissingColumn(error) {
 /**
  * The monthly usage statement for one credential.
  * @param {object} db service client
- * @param {{tokenId:string, userId?:string, month?:string, now?:Date}} p
+ * allowance and rate default to the published ones; the billing run passes its
+ * own so the statement it bills from and the rate it checks cannot differ.
+ * @param {{tokenId:string, userId?:string, month?:string, now?:Date, allowance?:number, rate?:number}} p
  */
-async function statement(db, { tokenId, userId, month, now }) {
+async function statement(db, { tokenId, userId, month, now, allowance, rate }) {
   const window = monthWindow(month || monthKey(now || new Date()));
   if (!window) return { error: "month must be YYYY-MM." };
   const rows = await readMonthRows(db, { tokenId, userId, window });
-  const out = summarizeRows(rows, { month: window.month });
+  const out = summarizeRows(rows, { month: window.month, allowance, rate });
   return { agent_id: tokenId, member_id: userId || null, window_start: window.start, window_end: window.end, generated_at: new Date(now || Date.now()).toISOString(), ...out };
 }
 
@@ -241,7 +258,8 @@ async function sendAllowanceAlerts(p) {
     try {
       if (await p.cacheGet(key)) continue; // already sent this month
       const copy = alertCopy(kind, { tokenName: p.tokenName, state, month: p.month });
-      const res = await p.sendEmail({ to: p.email, subject: copy.subject, html: copy.html, tags: ["agent-allowance", kind] });
+      // Resend tags are { name, value } objects (letters, digits, _ and - only); a bare string is rejected and the alert would never send.
+      const res = await p.sendEmail({ to: p.email, subject: copy.subject, html: copy.html, tags: [{ name: "stream", value: "agent-allowance" }, { name: "alert", value: kind }] });
       if (!res || res.success === false) {
         console.warn(`agent-usage: ${kind} email to member not accepted${res && res.error ? `: ${res.error}` : ""}`);
         continue;
@@ -258,6 +276,7 @@ async function sendAllowanceAlerts(p) {
 module.exports = {
   UNATTRIBUTED,
   ALERT_KINDS,
+  isBillableStatus,
   monthKey,
   monthWindow,
   allowanceState,
