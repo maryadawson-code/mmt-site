@@ -18,7 +18,7 @@
 const ACRONYMS = {
   // Program milestones and structure
   FOC: "Full Operational Capability", IOC: "Initial Operational Capability",
-  PEO: "Program Executive Office", PAE: "Program Acquisition Executive", PMO: "Program Management Office",
+  PEO: "Program Executive Office", PAE: "Portfolio Acquisition Executive", PMO: "Program Management Office",
   PM: "Program Manager", PdM: "Product Manager", MDS: "Medical Digital Solutions",
   // Acquisition
   IDIQ: "Indefinite Delivery, Indefinite Quantity", GWAC: "Government-Wide Acquisition Contract",

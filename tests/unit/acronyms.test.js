@@ -13,7 +13,10 @@ describe("acronymReference", () => {
     const known = Object.fromEntries(r.known);
     expect(known.FOC).toBe("Full Operational Capability");
     expect(known.PEO).toBe("Program Executive Office");
-    expect(known.PAE).toBe("Program Acquisition Executive");
+    // Portfolio, not Program: MMT's own reporting (2026-05-29, "DHA is replacing how it buys") has the components
+    // converting Program Executive Offices into Portfolio Acquisition Executives. The table said "Program" until the
+    // eval caught the model, grounded in those articles, disagreeing with it (2026-09-21).
+    expect(known.PAE).toBe("Portfolio Acquisition Executive");
     expect(known.DHA).toBe("Defense Health Agency");
     expect(known.EHR).toBeUndefined(); // not in the context
     expect(r.block).toContain("never invent what letters stand for");
