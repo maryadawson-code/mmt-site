@@ -134,6 +134,7 @@
           <div class="ai-skel"></div><div class="ai-skel"></div>
         </div>
         <div id="ai-add-wrap" style="margin-top:14px;"><button class="ai-btn" id="ai-add" type="button">+ Connect an assistant</button></div>
+        <!-- BUILD:AGENT_ALLOWANCE_PANEL -->
         <!-- Upsell shown when the member doesn't have the paid AI-access add-on -->
         <div id="ai-upsell" class="ai-card ai-hidden" style="margin-top:14px;border-left:4px solid var(--mmt-teal);">
           <h3 style="font-size:15px;font-weight:800;margin:0 0 6px;">Add AI access to your plan</h3>
@@ -418,9 +419,14 @@
       // Until the allowance and the rate are set (pricing_confirmed) the panel
       // counts calls and quotes no allowance and no dollars.
       var priced = s.pricing_confirmed === true;
+      // Only calls that returned data (billable_calls) count against the
+      // allowance; errors and refused calls are shown and never billed.
+      var counted = s.billable_calls == null ? (s.calls || 0) : s.billable_calls;
+      var errs = s.error_calls || 0;
+      var errNote = errs ? " · " + errs + " error" + (errs === 1 ? "" : "s") + " or refused call" + (errs === 1 ? "" : "s") + ", not counted" : "";
       var head = priced
-        ? "<div><strong>" + esc(s.month || "") + "</strong> · " + (s.calls || 0) + " of " + (s.allowance || 0) + " included calls" +
-          (s.overage_calls ? " · " + s.overage_calls + " over, $" + Number(s.overage_usd || 0).toFixed(2) + " at $" + s.overage_usd_per_call + " each" : " · no overage") + "</div>"
+        ? "<div><strong>" + esc(s.month || "") + "</strong> · " + counted + " of " + (s.allowance || 0) + " included calls" +
+          (s.overage_calls ? " · " + s.overage_calls + " over, $" + Number(s.overage_usd || 0).toFixed(2) + " at $" + s.overage_usd_per_call + " each" : " · no overage") + errNote + "</div>"
         : "<div><strong>" + esc(s.month || "") + "</strong> · " + (s.calls || 0) + " call" + (s.calls === 1 ? "" : "s") + " this month</div>";
       var refs = (s.by_client_ref || []).map(function (x) {
         return "<div>" + (x.client_ref ? "client_ref " + esc(x.client_ref) : "unattributed") + " · " + x.calls + " call" + (x.calls === 1 ? "" : "s") +

@@ -52,7 +52,10 @@ const CORS = {
   "Vary": "Origin",
 };
 
-const REQUEST_ID_RE = /^[A-Za-z0-9._:-]{8,64}$/;
+// api_audit_log.request_id is a uuid column (migration 20260920000000, applied
+// 2026-09-21). Any other shape would make the audit insert fail with 22P02 and
+// lose the row, so a caller's X-Request-Id is echoed only when it is a UUID.
+const REQUEST_ID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const CLIENT_REF_RE = /^[A-Za-z0-9._:@/+-]{1,64}$/;
 const METERING_FIELDS = ["request_id", "client_ref", "tool", "scope", "records_returned"];
 const AI_PAGE = "https://missionmeetstech.com/premium/ai-integrations/";
@@ -64,10 +67,10 @@ function headerOf(event, name) {
   return undefined;
 }
 
-/** The request id every response carries: the caller's X-Request-Id when well formed, else a fresh UUID. */
+/** The request id every response carries: the caller's X-Request-Id when it is a UUID, else a fresh UUID. */
 function requestIdFrom(event) {
   const given = String(headerOf(event, "x-request-id") || "").trim();
-  return REQUEST_ID_RE.test(given) ? given : crypto.randomUUID();
+  return REQUEST_ID_RE.test(given) ? given.toLowerCase() : crypto.randomUUID();
 }
 
 /** The caller's attribution key, opaque to MMT. Malformed values are dropped, never rejected. */
@@ -307,10 +310,13 @@ async function finalizeAudit(ctx, { statusCode, responseBytes = 0, llmModel = nu
     });
     if (!r.ok) console.error("finalizeAudit insert:", r.error && r.error.message);
   } catch (e) { console.error("finalizeAudit insert threw:", e.message); }
-  // Every call counts toward the month's allowance, not only the ones that cost money.
+  // A call counts toward the month's allowance when it returned data (status
+  // below 400), whether or not it cost money: the same rule the statement and
+  // the Stripe report use, so the alert, the statement and the bill agree.
+  const billable = usage.isBillableStatus(statusCode);
   let monthCalls = null;
-  try { monthCalls = await bumpLedger(ctx, costUsd); } catch (e) { console.error("ledger:", e.message); }
-  if (monthCalls != null) {
+  try { monthCalls = await bumpLedger(ctx, costUsd, billable); } catch (e) { console.error("ledger:", e.message); }
+  if (billable && monthCalls != null) {
     const crossed = usage.alertsCrossed(monthCalls - 1, monthCalls);
     if (crossed.length) {
       await usage.sendAllowanceAlerts({
@@ -321,8 +327,12 @@ async function finalizeAudit(ctx, { statusCode, responseBytes = 0, llmModel = nu
   }
 }
 
-/** Bump the day and month ledger buckets; returns the month's call count after this call, or null. */
-async function bumpLedger(ctx, costUsd) {
+/**
+ * Bump the day and month ledger buckets; returns the month's billable call
+ * count after this call, or null. Spend always accrues; call_count moves only
+ * for a billable call (an error never uses up the allowance).
+ */
+async function bumpLedger(ctx, costUsd, billable = true) {
   const { db, token, userId, dayStart } = ctx;
   const monthStart = (() => { const d = new Date(); return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1)).toISOString(); })();
   let monthCalls = null;
@@ -331,12 +341,12 @@ async function bumpLedger(ctx, costUsd) {
       .eq("token_id", token.id).eq("window_kind", window_kind).eq("window_start", window_start).limit(1).single();
     let count;
     if (row) {
-      count = (Number(row.call_count) || 0) + 1;
+      count = (Number(row.call_count) || 0) + (billable ? 1 : 0);
       const { error } = await db.from("api_cost_ledger").update({ spend_usd: Number(row.spend_usd) + costUsd, call_count: count, updated_at: new Date().toISOString() }).eq("id", row.id);
       if (error) console.error("ledger update:", error.message);
     } else {
-      count = 1;
-      const { error } = await db.from("api_cost_ledger").insert({ token_id: token.id, user_id: userId, window_kind, window_start, spend_usd: costUsd, budget_usd, call_count: 1 });
+      count = billable ? 1 : 0;
+      const { error } = await db.from("api_cost_ledger").insert({ token_id: token.id, user_id: userId, window_kind, window_start, spend_usd: costUsd, budget_usd, call_count: count });
       if (error) console.error("ledger insert:", error.message);
     }
     if (window_kind === "month") monthCalls = count;

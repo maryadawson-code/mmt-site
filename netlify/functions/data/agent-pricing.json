@@ -1,0 +1,11 @@
+{
+  "_doc": "Agent Access monthly call allowance and overage rate (docs/agent-platform-spec.md section 2.5). These are Mary's numbers; nobody else sets them. To change one: edit this file, open a PR, deploy, then run `netlify dev:exec -- node scripts/stripe-setup-agent-overage.js` so the Stripe metered price matches. agent-overage-report refuses to bill while the Stripe price and overage_usd_per_call disagree. confirmed:false turns every quoted number, every alert email and all Stripe reporting off.",
+  "calls_per_month_per_agent": 5000,
+  "overage_usd_per_call": 0.01,
+  "max_billable_overage_calls_per_agent_month": null,
+  "billing_starts_month": "2026-10",
+  "confirmed": true,
+  "confirmed_by": "Mary Womack",
+  "confirmed_at": "2026-09-21",
+  "basis": "Mary's instruction on 2026-09-21 to set the allowance and overage rate. The values are the ones the build had carried as unconfirmed defaults since 2026-09-20 and were reported to her twice before she confirmed. Usage before billing_starts_month is counted on the statement and never billed."
+}

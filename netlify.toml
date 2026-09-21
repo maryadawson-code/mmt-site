@@ -77,6 +77,15 @@
 [functions."agent-score-batch"]
   schedule = "0 7 * * *"
 
+# Agent Access overage billed through Stripe (docs/agent-platform-spec.md
+# section 2.5). Daily. Claims the day through lib/cron-claim.js before any
+# Stripe call (crons are at-least-once). Bills nothing while
+# netlify/functions/data/agent-pricing.json is unconfirmed, for any month before
+# its billing_starts_month, or when the Stripe price disagrees with the
+# published rate.
+[functions."agent-overage-report"]
+  schedule = "20 9 * * *"
+
 # Agent Access — abuse/harvest alert sweep (Phase 5, §5). No-op until
 # AGENT_ALERTS_ENABLED=true. Hourly (Netlify's smallest reliable cadence here);
 # tighten if real-time §5 detection is needed once traffic exists.
