@@ -6,12 +6,68 @@
 // config, Sentry DSN, Resend, AI provider, stale orders.
 // ============================================================
 
+const fs = require("fs");
+const path = require("path");
 const { createClient } = require("@supabase/supabase-js");
 const { Sentry } = require("./lib/sentry");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const STALE_THRESHOLD_MIN = 30;
+const BUILD_INFO_REL = path.join("netlify", "build-info.json");
+
+/**
+ * The commit this bundle was built from. COMMIT_REF exists only while Netlify
+ * builds, never in the function runtime, so this read "local" in production
+ * from the day it shipped. build.js writes the commit into netlify/build-info.json
+ * and netlify.toml bundles that file with this function alone.
+ */
+function buildVersion() {
+  if (process.env.COMMIT_REF) return process.env.COMMIT_REF;
+  const roots = [process.env.LAMBDA_TASK_ROOT || "", path.join(__dirname, "..", ".."), process.cwd(), "/var/task"];
+  for (const root of roots) {
+    if (!root) continue;
+    try {
+      const file = path.join(root, BUILD_INFO_REL);
+      if (!fs.existsSync(file)) continue;
+      const info = JSON.parse(fs.readFileSync(file, "utf8"));
+      if (info && typeof info.commit === "string" && info.commit) return info.commit;
+    } catch (err) {
+      console.warn("health: build-info unreadable:", err.message);
+    }
+  }
+  return "local";
+}
+
+/**
+ * Scoring stuck in processing for more than STALE_THRESHOLD_MIN minutes.
+ *
+ * scores is jsonb. The first version filtered with .is("scores->_pending", true),
+ * which Postgres rejects (42804: IS TRUE wants a boolean, not jsonb). The error
+ * came back in { error }, nothing recorded it, and the check was simply absent
+ * from every production response until 2026-09-21. ->> reads the flag as text.
+ *
+ * A check that cannot run says so. "No stuck orders" and "could not look" are
+ * different facts, and only the first one is good news.
+ */
+async function staleOrdersCheck(supabase, now = Date.now()) {
+  const base = { threshold_min: STALE_THRESHOLD_MIN };
+  try {
+    const cutoff = new Date(now - STALE_THRESHOLD_MIN * 60 * 1000).toISOString();
+    const { data, error } = await supabase
+      .from("mp_scoring_history")
+      .select("id, created_at")
+      .eq("scores->>_pending", "true")
+      .lt("created_at", cutoff)
+      .order("created_at", { ascending: true });
+    if (error) return { ...base, status: "unknown", error: error.message || String(error) };
+    const rows = Array.isArray(data) ? data : [];
+    if (rows.length === 0) return { ...base, count: 0, status: "ok" };
+    return { ...base, count: rows.length, status: "warning", oldest: rows[0].created_at };
+  } catch (err) {
+    return { ...base, status: "unknown", error: err.message };
+  }
+}
 
 exports.handler = async (event) => {
   // Trigger a Sentry test event via ?sentry_test=1
@@ -105,32 +161,12 @@ exports.handler = async (event) => {
   ];
 
   // --- Stale orders (scoring stuck in processing >30 min) ---
+  // Stuck orders, or a check that could not run, make the site "degraded":
+  // still HTTP 200, and the Deploy Gate raises a warning instead of passing in
+  // silence. A database that is already unhealthy stays unhealthy.
   if (supabase) {
-    try {
-      const cutoff = new Date(Date.now() - STALE_THRESHOLD_MIN * 60 * 1000).toISOString();
-      const { data, error } = await supabase
-        .from("mp_scoring_history")
-        .select("id, created_at")
-        .is("scores->_pending", true)
-        .lt("created_at", cutoff);
-
-      if (!error && data) {
-        checks.stale_orders = {
-          count: data.length,
-          threshold_min: STALE_THRESHOLD_MIN,
-          ...(data.length > 0 && {
-            status: "warning",
-            oldest: data[0]?.created_at,
-          }),
-          ...(data.length === 0 && { status: "ok" }),
-        };
-        if (data.length > 0 && overallStatus === "healthy") {
-          overallStatus = "degraded";
-        }
-      }
-    } catch (_) {
-      // Non-critical — don't fail health check for stale order query
-    }
+    checks.stale_orders = await staleOrdersCheck(supabase);
+    if (checks.stale_orders.status !== "ok" && overallStatus === "healthy") overallStatus = "degraded";
   }
 
   const statusCode = overallStatus === "healthy" ? 200 : overallStatus === "degraded" ? 200 : 503;
@@ -145,8 +181,12 @@ exports.handler = async (event) => {
     body: JSON.stringify({
       status: overallStatus,
       timestamp: new Date().toISOString(),
-      version: process.env.COMMIT_REF || "local",
+      version: buildVersion(),
       checks,
     }),
   };
 };
+
+exports.staleOrdersCheck = staleOrdersCheck;
+exports.buildVersion = buildVersion;
+exports.BUILD_INFO_REL = BUILD_INFO_REL;

@@ -79,3 +79,6 @@ competitor-research.md
 # `git status` churn after each eval run (noted as stray in
 # reports/closeout-20260515-data-deploy.md).
 eval/reports/
+
+# Written by build.js on every build; bundled with the health function (netlify.toml)
+netlify/build-info.json

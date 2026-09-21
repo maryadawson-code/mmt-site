@@ -45,7 +45,7 @@ describe("deploy gate health step: tooling", () => {
 });
 
 describe.skipIf(!canRun)("deploy gate health step: real script, real handler", () => {
-  const stub = { dbDown: false, staleRows: [], override: null };
+  const stub = { dbDown: false, staleRows: [], staleError: null, override: null };
   const saved = {};
   let server, base, workdir, handler;
 
@@ -57,6 +57,10 @@ describe.skipIf(!canRun)("deploy gate health step: real script, real handler", (
         return res.end(stub.dbDown ? JSON.stringify({ message: "stub outage" }) : "");
       }
       if (path === "/rest/v1/mp_scoring_history") {
+        if (stub.staleError) {
+          res.writeHead(400, { "content-type": "application/json" });
+          return res.end(JSON.stringify(stub.staleError));
+        }
         res.writeHead(200, { "content-type": "application/json" });
         return res.end(JSON.stringify(stub.staleRows));
       }
@@ -104,7 +108,7 @@ describe.skipIf(!canRun)("deploy gate health step: real script, real handler", (
   }
 
   function set(next) {
-    Object.assign(stub, { dbDown: false, staleRows: [], override: null }, next);
+    Object.assign(stub, { dbDown: false, staleRows: [], staleError: null, override: null }, next);
   }
 
   it("passes clean when health.js says healthy", async () => {
@@ -122,6 +126,17 @@ describe.skipIf(!canRun)("deploy gate health step: real script, real handler", (
     expect(r.code).toBe(0);
     expect(r.out).toContain("::warning::Health is degraded");
     expect(r.out).not.toContain("::error::");
+  });
+
+  it("a stale-orders check that cannot run is visible: degraded, a warning, and the reason in the log", async () => {
+    // Until 2026-09-21 this query failed in production (42804) and the check simply vanished from the response.
+    set({ staleError: { code: "42804", message: "argument of IS TRUE must be type boolean, not type jsonb" } });
+    const r = await runStep();
+    expect(r.out).toContain('"status": "degraded"');
+    expect(r.out).toContain('"status": "unknown"');
+    expect(r.out).toContain("argument of IS TRUE must be type boolean");
+    expect(r.code).toBe(0);
+    expect(r.out).toContain("::warning::Health is degraded");
   });
 
   it("fails when health.js says unhealthy, which it serves as a 503", async () => {
