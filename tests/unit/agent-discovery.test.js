@@ -7,7 +7,7 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
-import { ENDPOINTS, buildCatalog, buildOpenApi } from "../../netlify/functions/agent-discovery.js";
+import { ENDPOINTS, buildCatalog, buildOpenApi, allowanceBlock } from "../../netlify/functions/agent-discovery.js";
 import { VALID_SCOPES } from "../../netlify/functions/lib/agent-tokens.js";
 import { SCOPES } from "../../netlify/functions/lib/oauth-core.js";
 import { protectedResourceMetadata, TOOLS } from "../../netlify/functions/agent-mcp.js";
@@ -56,10 +56,23 @@ describe("catalog ↔ netlify.toml", () => {
     expect(c.coverage.note).toMatch(/409 COVERAGE_GAP/);
     expect(c.attribution.client_ref).toMatch(/X-MMT-Client-Ref/);
     expect(c.attribution.request_id).toMatch(/X-Request-Id/);
-    expect(typeof c.allowance.calls_per_month_per_agent).toBe("number");
-    expect(typeof c.allowance.overage_usd_per_call).toBe("number");
+    // Unconfirmed pricing (no AGENT_ALLOWANCE_CONFIRMED in the test env): the catalog publishes no number.
+    expect(c.allowance.pricing_confirmed).toBe(false);
+    expect(c.allowance.calls_per_month_per_agent).toBeNull();
+    expect(c.allowance.overage_usd_per_call).toBeNull();
+    expect(JSON.stringify(c.allowance)).not.toMatch(/provisional|5000|0\.01/i);
     expect(c.error_codes.COVERAGE_GAP).toMatch(/409/);
     expect(c.error_codes.FORBIDDEN_SCOPE).toMatch(/required_scope/);
+  });
+  it("publishes the allowance and the rate only once the pricing is confirmed", () => {
+    const pending = allowanceBlock({ CALLS_PER_MONTH: 5000, OVERAGE_USD_PER_CALL: 0.01, CONFIRMED: false });
+    expect(pending).toEqual(expect.objectContaining({ calls_per_month_per_agent: null, overage_usd_per_call: null, pricing_confirmed: false }));
+    expect(pending.note).toMatch(/pending/);
+    expect(pending.note).toMatch(/nothing is billed per call/);
+    const set = allowanceBlock({ CALLS_PER_MONTH: 7500, OVERAGE_USD_PER_CALL: 0.02, CONFIRMED: true });
+    expect(set).toEqual(expect.objectContaining({ calls_per_month_per_agent: 7500, overage_usd_per_call: 0.02, pricing_confirmed: true }));
+    expect(set.alerts).toMatch(/80 percent/);
+    expect(JSON.stringify([pending, set])).not.toMatch(/[—!]/);
   });
   it("every endpoint scope is a scope a token can carry, and the scope tables agree everywhere", () => {
     for (const e of ENDPOINTS) expect(VALID_SCOPES).toContain(e.scope);

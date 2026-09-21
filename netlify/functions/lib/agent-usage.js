@@ -10,6 +10,12 @@
 // emails the member once per (agent, month, alert), with a Netlify Blobs
 // marker so an at-least-once caller cannot send twice.
 //
+// The allowance and the overage rate are Mary's to set. Until she does
+// (AGENT_ALLOWANCE_CONFIRMED=true) the defaults in lib/agent-config.js are
+// placeholders nobody chose, so no surface quotes them to a member: the alert
+// emails do not send, the /api/v1 catalog publishes null, and the member panel
+// counts calls without an allowance or dollars. The crossings are still counted.
+//
 // client_ref is the caller-supplied X-MMT-Client-Ref header: opaque to MMT, a
 // grouping key and nothing else. It is never parsed, matched or treated as
 // identifying data.
@@ -196,7 +202,8 @@ async function statement(db, { tokenId, userId, month, now }) {
 function alertCopy(kind, { tokenName, state, month }) {
   const name = tokenName || "your AI connection";
   const site = "https://missionmeetstech.com/premium/ai-integrations/";
-  const rateLine = `Calls past the allowance stay on and are priced at $${state.overage_usd_per_call} each on your monthly statement${state.pricing_confirmed ? "" : " (provisional rate until the pricing is confirmed)"}.`;
+  // Only ever sent with confirmed pricing (sendAllowanceAlerts), so the rate is the published one.
+  const rateLine = `Calls past the allowance stay on and are priced at $${state.overage_usd_per_call} each on your monthly statement.`;
   if (kind === "allowance_80pct") {
     return {
       subject: `${name} has used 80 percent of this month's API allowance`,
@@ -214,13 +221,18 @@ function escapeHtml(s) {
 }
 
 /**
- * Send the alerts a crossing fired, once each. Never throws.
+ * Send the alerts a crossing fired, once each. Never throws. Sends nothing
+ * until the pricing is confirmed: an email cannot be recalled, and it would
+ * quote an allowance and a rate Mary has not set. pricingConfirmed is
+ * injectable so a test can drive both sides; production reads ALLOWANCE.CONFIRMED.
  * @param {{email:string, tokenId:string, tokenName?:string, month:string, alerts:string[], calls:number,
- *          sendEmail:Function, cacheGet:Function, cacheSet:Function, cacheKey:Function}} p
+ *          sendEmail:Function, cacheGet:Function, cacheSet:Function, cacheKey:Function, pricingConfirmed?:boolean}} p
  * @returns {Promise<string[]>} the alert kinds actually sent
  */
 async function sendAllowanceAlerts(p) {
   const sent = [];
+  const confirmed = p.pricingConfirmed == null ? ALLOWANCE.CONFIRMED : p.pricingConfirmed === true;
+  if (!confirmed) return sent;
   const kinds = (p.alerts || []).filter((k) => ALERT_KINDS.includes(k));
   if (!kinds.length || !p.email) return sent;
   const state = allowanceState(p.calls);

@@ -200,6 +200,29 @@ const ENDPOINTS = [
       offset: "Row offset for pagination (default 0).", } },
 ];
 
+// The allowance and the overage rate are Mary's to set. Until she confirms them
+// (AGENT_ALLOWANCE_CONFIRMED=true) the config defaults are placeholders nobody
+// chose, so the public catalog publishes null rather than a number: a caller
+// planning costs must not anchor on a price that was never set.
+function allowanceBlock(a = ALLOWANCE) {
+  if (!a.CONFIRMED) {
+    return {
+      calls_per_month_per_agent: null,
+      overage_usd_per_call: null,
+      pricing_confirmed: false,
+      alerts: "Allowance emails start once the allowance is published here.",
+      note: "The monthly allowance and the overage rate are pending, so none is published here and nothing is billed per call. Every call is counted on the monthly statement (POST /api/tokens/usage from the member dashboard) with a per-client_ref breakdown.",
+    };
+  }
+  return {
+    calls_per_month_per_agent: a.CALLS_PER_MONTH,
+    overage_usd_per_call: a.OVERAGE_USD_PER_CALL,
+    pricing_confirmed: true,
+    alerts: "The member is emailed at 80 percent of the allowance and on the first call past it.",
+    note: "Calls past the allowance are never cut off; they are priced on the monthly statement (POST /api/tokens/usage from the member dashboard) with a per-client_ref breakdown.",
+  };
+}
+
 function buildCatalog() {
   return {
     name: "Mission Meets Tech Agent Access API",
@@ -242,15 +265,7 @@ function buildCatalog() {
       request_id: "Every response carries X-Request-Id (and request_id in every error body). Send your own X-Request-Id (8 to 64 chars) to have it echoed; it appears in the audit row.",
       client_ref: "Optional X-MMT-Client-Ref header (1 to 64 chars: letters, digits, . _ : @ / + -). Opaque to MMT: it groups calls on the monthly usage statement and is never treated as identifying data.",
     },
-    allowance: {
-      calls_per_month_per_agent: ALLOWANCE.CALLS_PER_MONTH,
-      overage_usd_per_call: ALLOWANCE.OVERAGE_USD_PER_CALL,
-      pricing_confirmed: ALLOWANCE.CONFIRMED,
-      alerts: "The member is emailed at 80 percent of the allowance and on the first call past it.",
-      note: ALLOWANCE.CONFIRMED
-        ? "Calls past the allowance are never cut off; they are priced on the monthly statement (POST /api/tokens/usage from the member dashboard) with a per-client_ref breakdown."
-        : "Provisional numbers until MMT confirms pricing. Calls past the allowance are never cut off; they appear on the monthly statement (POST /api/tokens/usage from the member dashboard) with a per-client_ref breakdown.",
-    },
+    allowance: allowanceBlock(),
     authentication: {
       type: "bearer",
       header: "Authorization: Bearer <token>",
@@ -494,4 +509,5 @@ exports.handler = async (event) => {
 // Exposed for unit tests (catalog ↔ netlify.toml parity, OpenAPI shape).
 module.exports.ENDPOINTS = ENDPOINTS;
 module.exports.buildCatalog = buildCatalog;
+module.exports.allowanceBlock = allowanceBlock;
 module.exports.buildOpenApi = buildOpenApi;

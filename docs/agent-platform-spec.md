@@ -75,12 +75,12 @@ The five new columns ship in `migrations/20260920000000_agent_metering.sql`, gat
 
 Each credential carries a monthly call allowance. Calls past it are never cut off (the budget, session and rate gates in `lib/agent-auth.js` are the only hard stops); they are priced at the published per-call rate and appear on the monthly statement.
 
-- **Numbers.** `lib/agent-config.js` `ALLOWANCE`: `AGENT_ALLOWANCE_CALLS_MONTH` (default 5000) and `AGENT_OVERAGE_USD_PER_CALL` (default 0.01). These are provisional until Mary sets them and flips `AGENT_ALLOWANCE_CONFIRMED=true`; every surface that prints them (`/api/v1` catalog, the statement, the alert emails) says provisional until then. Netlify's 4KB function-env cap applies; the three variables are small.
+- **Numbers.** `lib/agent-config.js` `ALLOWANCE`: `AGENT_ALLOWANCE_CALLS_MONTH` (default 5000) and `AGENT_OVERAGE_USD_PER_CALL` (default 0.01). These defaults are placeholders nobody chose. Until Mary sets the numbers and flips `AGENT_ALLOWANCE_CONFIRMED=true`, no surface quotes them: the `/api/v1` catalog publishes `null` with `pricing_confirmed: false` (`allowanceBlock()` in `agent-discovery.js`), the member's Usage panel counts calls with no allowance and no dollars, and the alert emails do not send (2026-09-21; an email cannot be recalled). The statement JSON still carries the math with `pricing_confirmed: false` so the panel can switch over the moment the flag flips. Netlify's 4KB function-env cap applies; the three variables are small.
 - **Statement.** `POST /api/tokens/usage` `{ sessionToken, tokenId, month? }` (member session, owner-scoped) returns calls against the allowance, overage calls and dollars, error calls, records returned, compute cost, and the breakdown by `client_ref` (calls, errors, records, overage attributed in call order) and by tool. `lib/agent-usage.js` reads the month in 1000-row pages. The AI integrations page shows it under each connection's **Usage** button.
-- **Alerts.** The month's count comes from the `api_cost_ledger` month bucket, which now increments on every call, not only costed ones. On the exact crossing of 80 percent and of the first overage call, the member is emailed (`sendEmail`, result checked) once per agent, month and alert, with a Netlify Blobs marker so an at-least-once caller cannot send twice.
+- **Alerts.** The month's count comes from the `api_cost_ledger` month bucket, which now increments on every call, not only costed ones. On the exact crossing of 80 percent and of the first overage call, the member is emailed (`sendEmail`, result checked) once per agent, month and alert, with a Netlify Blobs marker so an at-least-once caller cannot send twice. `sendAllowanceAlerts()` sends nothing, and sets no marker, while the pricing is unconfirmed; a crossing that happened before confirmation is not replayed.
 - **Invoicing.** The statement is the pass-through report the spec asks for at the first invoice cycle. Charging the overage through Stripe (a metered price on the add-on subscription) is *pending*: it needs Mary's pricing decision first, then a Stripe metered price and a monthly usage-record push from the ledger.
 
-*Built with provisional numbers; Stripe metered billing pending.*
+*Built, gated on the pricing decision: counting and the statement are live, every quoted number and every alert email waits for `AGENT_ALLOWANCE_CONFIRMED=true`. Stripe metered billing pending.*
 
 ## 3. Record contract
 
@@ -229,7 +229,7 @@ Supporting suites: `record-contract`, `agent-usage`, `state-procurement`, `agent
 
 ## 9. Decisions and follow-ups for Mary
 
-1. **Pricing numbers.** Set `AGENT_ALLOWANCE_CALLS_MONTH` and `AGENT_OVERAGE_USD_PER_CALL`, then `AGENT_ALLOWANCE_CONFIRMED=true`, and redeploy a function bundle that requires `lib/agent-config.js` so the Lambdas pick them up (an env change alone does not).
+1. **Pricing numbers.** Set `AGENT_ALLOWANCE_CALLS_MONTH` and `AGENT_OVERAGE_USD_PER_CALL`, then `AGENT_ALLOWANCE_CONFIRMED=true`, and redeploy a function bundle that requires `lib/agent-config.js` so the Lambdas pick them up (an env change alone does not). Nothing quotes an allowance or a rate to a member or in the public catalog until that flag is `true`.
 2. **Apply the metering migration** (`migrations/20260920000000_agent_metering.sql`) through the Management API. Until then statements have no `client_ref` breakdown.
 3. **Default scopes.** New tokens default to `opportunities:read`, `reference:read`, `states:read`, `orgcharts:read`. Narrow or widen in `lib/agent-tokens.js` and `lib/oauth-core.js`.
 4. **Stripe metered billing** for overage, once the numbers are set.

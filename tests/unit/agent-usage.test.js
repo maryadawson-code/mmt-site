@@ -87,7 +87,7 @@ describe("alerts", () => {
   };
   it("sends each alert once per agent and month, and the copy names the connection and the rate", async () => {
     const d = deps();
-    const base = { email: "m@x.com", tokenId: "tok-1", tokenName: "My ChatGPT", month: "2026-09", alerts: ["allowance_80pct"], calls: 4000, ...d };
+    const base = { email: "m@x.com", tokenId: "tok-1", tokenName: "My ChatGPT", month: "2026-09", alerts: ["allowance_80pct"], calls: 4000, pricingConfirmed: true, ...d };
     expect(await sendAllowanceAlerts(base)).toEqual(["allowance_80pct"]);
     expect(await sendAllowanceAlerts(base)).toEqual([]); // marker set: at-least-once callers cannot double-send
     expect(d.sent).toHaveLength(1);
@@ -97,11 +97,23 @@ describe("alerts", () => {
     const over = alertCopy("first_overage", { tokenName: "Bot", state: allowanceState(5001, 5000, 0.01), month: "2026-09" });
     expect(over.subject).toMatch(/past this month's API allowance/);
     expect(over.html).toMatch(/Nothing is cut off/);
+    expect(over.html).not.toMatch(/provisional/i); // only ever sent with confirmed pricing
+  });
+  it("sends nothing and sets no marker until the pricing is confirmed", async () => {
+    // The allowance and the rate are Mary's to set. An email cannot be recalled,
+    // so a crossing before AGENT_ALLOWANCE_CONFIRMED=true emails no one.
+    const d = deps();
+    const base = { email: "m@x.com", tokenId: "tok-3", tokenName: "My ChatGPT", month: "2026-09", alerts: ["allowance_80pct", "first_overage"], calls: 5001, ...d };
+    expect(await sendAllowanceAlerts({ ...base, pricingConfirmed: false })).toEqual([]);
+    expect(await sendAllowanceAlerts(base)).toEqual([]); // default: ALLOWANCE.CONFIRMED is false without the env flag
+    expect(d.sent).toHaveLength(0);
+    expect(d.store.size).toBe(0); // no marker, so the first crossing after confirmation still sends
+    expect(await sendAllowanceAlerts({ ...base, pricingConfirmed: true })).toEqual(["allowance_80pct", "first_overage"]);
   });
   it("an email the provider did not accept leaves no marker, so the next crossing can retry", async () => {
     const d = deps();
     d.sendEmail = async () => ({ success: false, error: "provider down" });
-    const out = await sendAllowanceAlerts({ email: "m@x.com", tokenId: "tok-2", month: "2026-09", alerts: ["first_overage"], calls: 5001, ...d });
+    const out = await sendAllowanceAlerts({ email: "m@x.com", tokenId: "tok-2", month: "2026-09", alerts: ["first_overage"], calls: 5001, pricingConfirmed: true, ...d });
     expect(out).toEqual([]);
     expect(d.store.size).toBe(0);
   });

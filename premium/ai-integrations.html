@@ -415,12 +415,16 @@
       var r = await api("/api/tokens/usage", { sessionToken: session(), tokenId: row.dataset.id });
       if (!r.ok) { panel.textContent = humanError(r.data.error, r.status); return; }
       var s = r.data.statement || {};
-      var head = "<div><strong>" + esc(s.month || "") + "</strong> · " + (s.calls || 0) + " of " + (s.allowance || 0) + " included calls" +
-        (s.overage_calls ? " · " + s.overage_calls + " over, $" + Number(s.overage_usd || 0).toFixed(2) + " at $" + s.overage_usd_per_call + " each" : " · no overage") +
-        (s.pricing_confirmed ? "" : " · provisional pricing") + "</div>";
+      // Until the allowance and the rate are set (pricing_confirmed) the panel
+      // counts calls and quotes no allowance and no dollars.
+      var priced = s.pricing_confirmed === true;
+      var head = priced
+        ? "<div><strong>" + esc(s.month || "") + "</strong> · " + (s.calls || 0) + " of " + (s.allowance || 0) + " included calls" +
+          (s.overage_calls ? " · " + s.overage_calls + " over, $" + Number(s.overage_usd || 0).toFixed(2) + " at $" + s.overage_usd_per_call + " each" : " · no overage") + "</div>"
+        : "<div><strong>" + esc(s.month || "") + "</strong> · " + (s.calls || 0) + " call" + (s.calls === 1 ? "" : "s") + " this month</div>";
       var refs = (s.by_client_ref || []).map(function (x) {
         return "<div>" + (x.client_ref ? "client_ref " + esc(x.client_ref) : "unattributed") + " · " + x.calls + " call" + (x.calls === 1 ? "" : "s") +
-          (x.overage_calls ? " · " + x.overage_calls + " over ($" + Number(x.overage_usd || 0).toFixed(2) + ")" : "") + "</div>";
+          (priced && x.overage_calls ? " · " + x.overage_calls + " over ($" + Number(x.overage_usd || 0).toFixed(2) + ")" : "") + "</div>";
       }).join("");
       var tools = (s.by_tool || []).slice(0, 8).map(function (t) { return "<div>" + esc(t.tool) + " · " + t.calls + "</div>"; }).join("");
       panel.innerHTML = head + (refs ? "<div style=\"margin-top:6px;\">By client</div>" + refs : "") + (tools ? "<div style=\"margin-top:6px;\">By tool</div>" + tools : "") +

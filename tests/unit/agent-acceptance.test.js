@@ -169,7 +169,8 @@ describe("7. Run 100 calls with two client_ref values", () => {
 describe("8. Cross the allowance threshold", () => {
   it("the 80 percent alert fires once and overage is priced at the published rate", async () => {
     const sent = []; const store = new Map();
-    const deps = { sendEmail: async (m) => { sent.push(m); return { success: true }; }, cacheGet: async (k) => store.get(k) || null, cacheSet: async (k, v) => { store.set(k, v); }, cacheKey: (...p) => p.join(":") };
+    // pricingConfirmed: the published rate exists only once Mary has set it; before that no alert sends (agent-usage.test.js).
+    const deps = { pricingConfirmed: true, sendEmail: async (m) => { sent.push(m); return { success: true }; }, cacheGet: async (k) => store.get(k) || null, cacheSet: async (k, v) => { store.set(k, v); }, cacheKey: (...p) => p.join(":") };
     const eighty = Math.ceil(5000 * 0.8);
     expect(usage.alertsCrossed(eighty - 1, eighty, 5000)).toEqual(["allowance_80pct"]);
     await usage.sendAllowanceAlerts({ email: "owner@example.com", tokenId: "tok-b", tokenName: "Agent B", month: "2026-09", alerts: ["allowance_80pct"], calls: eighty, ...deps });

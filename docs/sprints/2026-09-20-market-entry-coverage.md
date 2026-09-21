@@ -127,9 +127,10 @@ is the result and the authoritative file; this note records what changed.
   audit row per tool call. Migration `20260920000000_agent_metering.sql` is
   gated on Mary; the code degrades to the legacy columns until it lands.
 - **Allowance**: monthly call allowance per credential with a published
-  per-call overage rate (provisional until Mary confirms), a usage statement at
-  `POST /api/tokens/usage` with a per-client_ref breakdown, and 80 percent and
-  first-overage emails sent once each through Blobs markers. No cutoff.
+  per-call overage rate (gated on Mary confirming the numbers, see the
+  2026-09-21 pass below), a usage statement at `POST /api/tokens/usage` with a
+  per-client_ref breakdown, and 80 percent and first-overage emails sent once
+  each through Blobs markers. No cutoff.
 - **State procurement coverage** (`data/reference/state-procurement.json`,
   `lib/state-procurement.js`): 56 coverage rows, 32 module rows, 8 dated
   solicitations, 5 NASPO ValuePoint vehicles, 14 addenda, the 22 CEFs plus
@@ -147,3 +148,29 @@ is the result and the authoritative file; this note records what changed.
 Incidents worth a rule: none new. Two things the tests caught before they
 shipped: a PostgREST builder call placed after `.range()` (a Promise has no
 `.eq`), and a test that pinned a 180-day boundary one day off.
+
+## 2026-09-21 finishing pass (desktop, full access)
+
+The cloud session could not open the PR (GitHub connector credentials) and had
+no real Anthropic key for the eval. From the desktop:
+
+- Merged `origin/main` (one pursuit-calendar seed refresh, no overlap).
+- Re-ran the chain here instead of trusting the cloud run: `node build.js`
+  exits 0 on its own (the lingering feed socket was the sandbox, not the
+  build), all 15 validators in the `netlify.toml` command pass, unit tests pass.
+- Ask MMT eval, `--trials 3`, real key: 24 of 24 questions pass all three
+  trials; 0 production requests, 0 SAM ledger writes.
+- **Pricing gate.** Review found the allowance defaults (5000 calls, $0.01)
+  were placeholders nobody chose, yet the `/api/v1` catalog published them,
+  the Usage panel priced overage with them, and the 80 percent and overage
+  emails would have quoted them to a paying member under "Hi, it's Mary".
+  Now nothing quotes an allowance or a rate until
+  `AGENT_ALLOWANCE_CONFIRMED=true`: the catalog publishes `null`
+  (`allowanceBlock()`), the panel counts calls only, and
+  `sendAllowanceAlerts()` sends nothing and sets no marker. Both guards were
+  mutation-tested (removed, watched the tests fail, restored).
+
+Rule worth keeping: a config default for a number the owner has not chosen is
+a placeholder, and a placeholder never reaches a member, a public catalog or
+an email. Gate the surface on the confirmation flag, not the label
+"provisional".
