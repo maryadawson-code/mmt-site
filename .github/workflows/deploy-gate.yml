@@ -53,17 +53,48 @@ jobs:
       - name: Wait for Netlify
         run: sleep 300
       - name: Health check
+        env:
+          HEALTH_URL: https://missionmeetstech.com/.netlify/functions/health
         run: |
-          HEALTH=$(curl -sf https://missionmeetstech.com/.netlify/functions/health)
-          echo "$HEALTH" | jq .
-          STATUS=$(echo "$HEALTH" | jq -r '.status')
-          if [ "$STATUS" != "UP" ]; then
-            echo "::error::Health check failed"
+          # health.js says "healthy" | "degraded" | "unhealthy" (HTTP 200/200/503).
+          # This step used to wait for "UP", a word the endpoint never says, so it
+          # failed on every push to main and a real failure had nowhere to show.
+          # Anything outside the three known words fails closed and names itself,
+          # so a vocabulary change cannot pass for a site problem again.
+          # tests/unit/deploy-gate-health-step.test.js runs this exact script
+          # against the real handler, because this job never runs on a PR.
+          CODE=$(curl -sf --max-time 30 -o health.json -w '%{http_code}' "$HEALTH_URL") || {
+            if [ "${CODE:-000}" = "000" ]; then
+              echo "::error::Health endpoint not reached (no HTTP response). That is not a verdict on the site."
+            else
+              echo "::error::Health endpoint returned HTTP $CODE (503 is health.js reporting unhealthy)"
+            fi
             exit 1
-          fi
+          }
+          jq . health.json || true
+          STATUS=$(jq -r '.status // empty' health.json 2>/dev/null) || STATUS=""
+          case "$STATUS" in
+            healthy)
+              echo "Health: healthy"
+              ;;
+            degraded)
+              echo "::warning::Health is degraded. The site is up (HTTP 200); see the checks above."
+              ;;
+            unhealthy)
+              echo "::error::Health is unhealthy"
+              exit 1
+              ;;
+            *)
+              echo "::error::Health status was '${STATUS:-<empty>}'. Expected healthy, degraded, or unhealthy. If health.js changed its words, change this step with it."
+              exit 1
+              ;;
+          esac
       - name: Critical page check
         run: |
-          for p in "" "proposal-pulse.html" "tactical-brief.html" "about.html" "contract-tracker.html"; do
+          # /tactical-brief.html has been a forced 301 to /marketpulse.html since
+          # 2026-03-19 (_redirects). This loop wants a 200, and it sat behind the
+          # always-failing health step, so it never ran to say so.
+          for p in "" "proposal-pulse.html" "marketpulse.html" "about.html" "contract-tracker.html"; do
             CODE=$(curl -so /dev/null -w "%{http_code}" "https://missionmeetstech.com/$p")
             if [ "$CODE" != "200" ]; then
               echo "::error::/$p returned $CODE"

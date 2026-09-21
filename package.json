@@ -14,7 +14,7 @@
     "build:fy2027-pdf": "node scripts/build-fy2027-pdf.js",
     "test": "npx vitest run",
     "test:unit": "npx vitest run tests/unit",
-    "test:smoke": "npx vitest run tests/smoke",
+    "test:smoke": "npx vitest run --config vitest.smoke.config.mjs",
     "test:e2e": "npx playwright test",
     "test:links": "node scripts/validate-links.js",
     "test:integrity": "node scripts/verify-integrity.js",
