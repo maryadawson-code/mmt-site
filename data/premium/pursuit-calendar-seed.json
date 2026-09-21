@@ -1,41 +1,13 @@
 {
   "_meta": {
     "description": "Pursuit Calendar seed events. Source of truth when Supabase pursuit_calendar table is unreachable. Times are America/New_York (ET). Status is computed dynamically by the renderer for date-based events; explicit status values (Protest, Protest Due, Watch, Needs Source) are honored as-is.",
-    "last_curated_at": "2026-09-14",
+    "last_curated_at": "2026-09-21",
     "curator": "automated",
     "timezone": "America/New_York",
-    "window_start": "2026-09-14",
-    "window_end": "2026-12-13"
+    "window_start": "2026-09-21",
+    "window_end": "2026-12-20"
   },
   "events": [
-    {
-      "id": "a026007a-c479-47b8-8c04-4356005f8c8d",
-      "title": "Portfolio Acquisition Executive, Medical Digital Solutions, (PAE MDS) End User Services (EUS) Area of Interest Application, Workflow, Adoption, and Change Support (AWACS)",
-      "event_date": "2026-09-14",
-      "event_time_et": null,
-      "agency": "DHA",
-      "vehicle": "HT003826SC005-AOI0001",
-      "ref": null,
-      "category": "deadline",
-      "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/5ad10c73d29b487fa70e750479bb0517/view",
-      "source_system": "sam.gov",
-      "notes": "Sol: HT003826SC005-AOI0001 · NAICS 541512 · Set-aside: No Set aside used"
-    },
-    {
-      "id": "143e8c0a-3aaa-48d3-825e-9c8c155209ac",
-      "title": "Glucometers and Abbott i-STAT Analyzers RALS Data Management System",
-      "event_date": "2026-09-20",
-      "event_time_et": null,
-      "agency": "DHA",
-      "vehicle": "HT940626NOI3825",
-      "ref": null,
-      "category": "rfi",
-      "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/3fc6e637e2674250b9338400a181060e/view",
-      "source_system": "sam.gov",
-      "notes": "Sol: HT940626NOI3825 · NAICS 541512 · Set-aside: No Set aside used"
-    },
     {
       "id": "71af6ea8-8f85-4a92-bf65-c4fd52af92cc",
       "title": "Advanced Research Projects Agency for Health (ARPA-H) Small Business Innovation Research (SBIR)/Small Business Technology Transfer (STTR) Program",
