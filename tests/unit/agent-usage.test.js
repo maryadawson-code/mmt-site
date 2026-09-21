@@ -3,7 +3,7 @@
 
 import { describe, it, expect } from "vitest";
 import {
-  monthKey, monthWindow, allowanceState, alertsCrossed, summarizeRows, sendAllowanceAlerts, alertCopy, statement, isMissingColumn,
+  monthKey, monthWindow, allowanceState, alertsCrossed, summarizeRows, sendAllowanceAlerts, alertCopy, ownerPauseNotice, ALERT_FROM, statement, isMissingColumn,
 } from "../../netlify/functions/lib/agent-usage.js";
 
 const rowsFor = (n, refOf) => Array.from({ length: n }, (_, i) => ({
@@ -66,6 +66,18 @@ describe("statement", () => {
     const hammer = Array.from({ length: 50 }, (_, i) => ({ created_at: new Date(Date.UTC(2026, 9, 2, 0, 0, i)).toISOString(), status_code: 401 }));
     expect(summarizeRows(hammer, { month: "2026-10", allowance: 4, rate: 0.01 })).toEqual(expect.objectContaining({ calls: 50, billable_calls: 0, overage_calls: 0, overage_usd: 0 }));
   });
+  it("the overage limit: nothing past it is ever priced, and the statement says the agent is paused", () => {
+    const mk = (n) => Array.from({ length: n }, (_, i) => ({ created_at: new Date(Date.UTC(2026, 9, 1, 0, 0, i)).toISOString(), status_code: 200, client_ref: i < 12 ? "early" : "late" }));
+    // allowance 10, limit 5: 18 good calls = 5 billed over, 3 that slipped past the gate and are free.
+    const s = summarizeRows(mk(18), { month: "2026-10", allowance: 10, rate: 0.01, limit: 5 });
+    expect(s).toEqual(expect.objectContaining({ billable_calls: 18, overage_calls: 5, overage_usd: 0.05, overage_limit_calls: 5, paused: true }));
+    expect(s.by_client_ref.reduce((n, x) => n + x.overage_calls, 0)).toBe(5); // the per-client split adds up to what is billed
+    expect(summarizeRows(mk(14), { month: "2026-10", allowance: 10, rate: 0.01, limit: 5 })).toEqual(expect.objectContaining({ overage_calls: 4, paused: false }));
+    // limit 0: an agent nobody can bill. It pauses at the allowance and owes nothing.
+    expect(summarizeRows(mk(12), { month: "2026-10", allowance: 10, rate: 0.01, limit: 0 })).toEqual(expect.objectContaining({ overage_calls: 0, overage_usd: 0, overage_limit_calls: 0, paused: true }));
+    // limit null: no ceiling, never paused.
+    expect(summarizeRows(mk(18), { month: "2026-10", allowance: 10, rate: 0.01, limit: null })).toEqual(expect.objectContaining({ overage_calls: 8, overage_limit_calls: null, paused: false }));
+  });
   it("groups calls with no client_ref as unattributed and counts errors", () => {
     const rows = rowsFor(4, () => null);
     rows[1].status_code = 404;
@@ -114,7 +126,12 @@ describe("alerts", () => {
     for (const t of d.sent[0].tags) expect(t.value).toMatch(/^[A-Za-z0-9_-]+$/);
     const over = alertCopy("first_overage", { tokenName: "Bot", state: allowanceState(5001, 5000, 0.01), month: "2026-09" });
     expect(over.subject).toMatch(/past this month's API allowance/);
-    expect(over.html).toMatch(/Nothing is cut off/);
+    // The promise used to be "nothing is cut off". With a limit that is false, so the email says where it pauses.
+    const overCapped = alertCopy("first_overage", { tokenName: "Bot", state: allowanceState(5001, 5000, 0.01), month: "2026-09", limit: 5000 });
+    expect(overCapped.html).not.toMatch(/Nothing is cut off/i);
+    expect(overCapped.html).toMatch(/up to 5,000 more, then pauses until next month/);
+    expect(overCapped.html).toMatch(/Without the add-on it pauses at 5,000/);
+    expect(over.html).not.toMatch(/then pauses until next month/); // no limit configured, none claimed
     expect(over.html).not.toMatch(/provisional/i); // only ever sent with confirmed pricing
   });
   it("sends nothing and sets no marker until the pricing is confirmed", async () => {
@@ -135,9 +152,40 @@ describe("alerts", () => {
     expect(d.store.size).toBe(0);
   });
   it("copy has no em dashes or exclamation points", () => {
-    for (const kind of ["allowance_80pct", "first_overage"]) {
-      const c = alertCopy(kind, { tokenName: "Bot", state: allowanceState(4000, 5000, 0.01), month: "2026-09" });
-      expect(c.subject + c.html).not.toMatch(/[—!]/);
+    for (const kind of ["allowance_80pct", "first_overage", "paused"]) {
+      for (const pause of [{ code: "OVERAGE_LIMIT_REACHED", limit: 5000, resumes: "October 1" }, { code: "ALLOWANCE_REACHED", limit: 0, resumes: "October 1" }]) {
+        const c = alertCopy(kind, { tokenName: "Bot", state: allowanceState(4000, 5000, 0.01), month: "2026-09", limit: 5000, pause });
+        expect(c.subject + c.html).not.toMatch(/[—!]/);
+      }
     }
+    const note = ownerPauseNotice({ email: "m@x.com", tokenId: "agent-1", tokenName: "Bot", month: "2026-09", calls: 10000, pause: { code: "OVERAGE_LIMIT_REACHED", limit: 5000, resumes: "October 1" } });
+    expect(note.subject + note.html).not.toMatch(/[—!]/);
+  });
+  it("a pause emails the member once and Mary once, from an address a person can reply to", async () => {
+    const d = deps();
+    const base = { email: "m@x.com", tokenId: "tok-p", tokenName: "Echelon sync", month: "2026-10", alerts: ["paused"], calls: 10000, pricingConfirmed: true, notifyOwner: true, pause: { code: "OVERAGE_LIMIT_REACHED", limit: 5000, resumes: "November 1" }, ...d };
+    expect(await sendAllowanceAlerts(base)).toEqual(["paused"]);
+    expect(await sendAllowanceAlerts(base)).toEqual([]); // every refused call after the first is silent
+    expect(d.sent.map((m) => m.to)).toEqual(["m@x.com", "mary@missionmeetstech.com"]);
+    expect(d.sent.every((m) => m.from === ALERT_FROM)).toBe(true);
+    expect(ALERT_FROM).toMatch(/<mary@missionmeetstech\.com>/);
+    expect(d.sent[0].subject).toBe("Echelon sync is paused until November 1");
+    expect(d.sent[0].html).toMatch(/5,000 included calls and its 5,000 extra calls/);
+    expect(d.sent[0].html).toMatch(/Nothing past that limit is billed/);
+    expect(d.sent[1].html).toMatch(/overage_limit_overrides/); // Mary is told exactly how to raise it
+    expect(d.sent[1].html).toMatch(/agent id <code>tok-p<\/code>/);
+    // An agent nobody can bill: a different reason, and a way to keep going.
+    const d2 = deps();
+    await sendAllowanceAlerts({ ...base, ...d2, tokenId: "tok-q", calls: 5000, pause: { code: "ALLOWANCE_REACHED", limit: 0, resumes: "November 1" } });
+    expect(d2.sent[0].html).toMatch(/no Agent Access add-on on your account/);
+    expect(d2.sent[0].html).toMatch(/picks back up within the hour/);
+    expect(d2.sent[1].html).toMatch(/instead of running for free/);
+  });
+  it("a pause notice that Mary's inbox refuses never blocks or repeats the member's email", async () => {
+    const d = deps();
+    d.sendEmail = async (m) => { d.sent.push(m); return m.to === "m@x.com" ? { success: true } : { success: false, error: "bounced" }; };
+    const out = await sendAllowanceAlerts({ email: "m@x.com", tokenId: "tok-r", month: "2026-10", alerts: ["paused"], calls: 10000, pricingConfirmed: true, notifyOwner: true, pause: { code: "OVERAGE_LIMIT_REACHED", limit: 5000, resumes: "November 1" }, ...d });
+    expect(out).toEqual(["paused"]);
+    expect(d.store.size).toBe(1);
   });
 });

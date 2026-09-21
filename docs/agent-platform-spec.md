@@ -73,7 +73,7 @@ The five new columns ship in `migrations/20260920000000_agent_metering.sql`, gat
 
 ### 2.5 Allowance and overage
 
-Each credential carries a monthly call allowance. Calls past it are never cut off (the budget, session and rate gates in `lib/agent-auth.js` are the only hard stops); they are priced at the published per-call rate, shown on the monthly statement, and billed through Stripe.
+Each credential carries a monthly call allowance. Calls past it are priced at the published per-call rate, shown on the monthly statement and billed through Stripe, up to an overage limit; then the agent pauses until the next month (section 2.6). Mary's original spec said no cutoff. On 2026-09-21 she replaced that with a harder rule: Agent Access makes money, it never loses it.
 
 - **Numbers.** Mary's, confirmed 2026-09-21: **5,000 calls per agent per month, then $0.01 per call.** They live in `netlify/functions/data/agent-pricing.json` (a bundled file, read by `lib/agent-config.js` `buildAllowance()`), not in env: Lambda env is capped at 4KB, an env change does not reach a function until its bundle changes, and one committed file means the built copy, the running functions and the Stripe check cannot disagree. The file records who confirmed the numbers and when. `AGENT_ALLOWANCE_CALLS_MONTH`, `AGENT_OVERAGE_USD_PER_CALL` and `AGENT_ALLOWANCE_CONFIRMED` still override, and `AGENT_ALLOWANCE_CONFIRMED=false` is the kill switch. A malformed file reads as unconfirmed. While unconfirmed nothing is quoted, emailed or billed: the `/api/v1` catalog publishes `null`, the Usage panel counts calls only, the alert emails do not send, the disclosure copy renders empty and the Stripe run skips.
 - **A billable call returned data.** Status below 400 (`usage.isBillableStatus`). A rejected call (401, 403, 429), a bad request, a `COVERAGE_GAP` answer and a server error are listed on the statement and never use up the allowance, so a looping agent with a revoked token costs its owner nothing. One rule in three places: the statement (`summarizeRows`: `calls`, `billable_calls`, `error_calls`; overage is counted in call order over billable rows), the alert counter (`bumpLedger` moves `api_cost_ledger.call_count` only for a billable call) and the Stripe report.
@@ -87,9 +87,36 @@ Each credential carries a monthly call allowance. Calls past it are never cut of
   4. sends one meter event for the difference, with an identifier built from the cumulative total so a repeat cannot add the same calls twice.
   Stripe's own summary is the ledger, so there is no local state to drift and a run is self-reconciling. Every failure under-bills: one bad subscription is recorded and skipped; an unreadable statement bills nothing; a Stripe price that disagrees with the published rate fails the whole run. The previous month stays open for the first three days of the next (a bounded catch-up window), stamped inside that month. **No month before `billing_starts_month` (2026-10) is ever billed.** Members with no add-on subscription (institutional, comped seats) get a statement and no Stripe events. A run that bills someone emails Mary one summary; a quiet run is silent.
 - **Stripe objects** (live, created 2026-09-21 by `scripts/stripe-setup-agent-overage.js`, found at runtime by lookup key, never env): meter `mmt_agent_overage_call` (sum, customer by id), product "MMT Agent Access: calls past the monthly allowance", prices `mmt_agent_overage_call_month` and `mmt_agent_overage_call_year` at 1 cent per call. **After changing the rate, run the script with `--apply`**: it creates new prices, moves the lookup keys, archives the old prices and lists any subscription still on one. `scripts/agent-overage-dry-run.js` prints what a run would bill, as of any date, and writes nothing.
-- **Known limits.** The allowance is per credential, as specified, so revoking a connection and minting a new one starts a fresh allowance; seats cap live connections, not mint cycles. An annual add-on carries the yearly metered price, so its overage invoices at renewal. `max_billable_overage_calls_per_agent_month` in the pricing file caps what one agent can be billed in a month; it is `null` (no cap), and with the 5,000-calls-a-day key limit the ceiling for one runaway agent is about $1,450 a month. Scheduled functions run 30 seconds; past a few dozen subscriptions the run should hand off to a background function.
+- **Known limits.** The allowance is per credential, as specified, so revoking a connection and minting a new one starts a fresh allowance; seats cap live connections, not mint cycles (an Institutional plan has unlimited connections, so that is the one place call volume is not bounded per member). An annual add-on carries the yearly metered price, so its overage invoices at renewal; with the default limit the most one annual agent can owe at renewal is 12 x $50. A Stripe billing threshold would shorten that, and was left out on purpose: it could not be tested without a live subscription and a mistake there re-bills an annual fee. Scheduled functions run 30 seconds; past a few dozen subscriptions the run should hand off to a background function.
 
 *Built and live. Not yet exercised by a real subscription: on 2026-09-21 no customer held the add-on, so the billing path is proven by tests, by the live Stripe configuration check, and by dry runs against production.*
+
+### 2.6 The margin rule: nothing is served that cannot be billed
+
+Set by Mary on 2026-09-21 ("the intent is for me to make money not lose it"). What the numbers showed first, from production, read-only:
+
+- No agent endpoint ever recorded a cost: every audit row has `cost_usd = 0`, so the per-token compute budget gate could never trip. Compute is not where money is lost. Of the four engines an agent can run for a member, only Ask MMT calls a model (about $0.007 a turn across the 25 turns on record), and it is bounded by the member's own monthly cap (100 Premium, 500 Institutional). Pursuit Score, Compliance Check and Signal Chain call no model.
+- The real leaks were on the revenue side: overage served to a member nobody can bill (a comped seat or an Institutional plan has no Stripe subscription), an unbounded bill (about $1,450 a month for one runaway agent under the 5,000-a-day key limit; a surprise bill is a dispute, and a dispute is a loss), and a fixed scoring batch ceiling of $60 a month against a first seat of $39.
+- `cost_events` cannot answer margin questions: it rounds each call to whole cents (1,393 Claude calls summed to $0.00) and none of the four engines writes to it. Treat it as a call counter, not a ledger.
+
+The rule, in `lib/agent-allowance-gate.js`, enforced in `authenticateAgent` (step 9) before any work:
+
+| The agent's owner | Past the allowance |
+| --- | --- |
+| holds a live Stripe add-on ("billable") | runs at the published rate up to `max_billable_overage_calls_per_agent_month` (5,000 calls, $50), then `429 OVERAGE_LIMIT_REACHED` until the next month |
+| has no Stripe add-on (comped seat, Institutional) | `429 ALLOWANCE_REACHED` at the allowance: there is nothing to bill extra calls to |
+| is listed in `overage_limit_overrides` | runs to the number Mary wrote (null = no limit); listing an agent means she bills it herself from the statement |
+
+- **One count.** The gate counts the month's rows with status below 400 in `api_audit_log`: the same rows and the same rule as the statement and the Stripe report, so what is served, shown and billed cannot disagree. A call that slips past the ceiling in a race is never priced (`summarizeRows` caps `overage_calls` at the limit). If the count cannot be read the call is served and the failure logged.
+- **Billable is read from Stripe**, by email, only once an agent is past its allowance, and cached in Blobs: a day for a settled yes, an hour for a no or for an add-on whose metered item has not attached yet. A new subscriber in that window is served, because billing works from the month's statement and catches up the day the item lands; `agent-overage-report` emails Mary when an attach fails, so pending cannot quietly become never. Stripe unreachable: that one call is served and nothing is cached. A paying customer is never paused because Stripe blinked.
+- **The 429** carries the code, `monthly_ceiling`, when the agent resumes, `Retry-After` in seconds and a link to `agent-access-guide#allowance`. A refused call is audited and, being a 4xx, is never billable.
+- **Emails, once per agent and month** (Blobs marker), from `Mary Womack <mary@missionmeetstech.com>` because they say "reply to this email": 80 percent, first extra call, and paused. A pause also sends Mary one note with the agent id and the exact line to add to the pricing file. A customer who wants more is a sale.
+- **Scoring batch.** The daily ceiling is $1 ($30 a month), under one monthly seat ($39) and one annual seat ($32.50 a month). Each run now writes `AGENT_SCORE_BATCH_RUN` to `ops_events` with `cost_estimate`; it had been console-only. It runs only when someone is eligible.
+- **A shared bug found on the way:** `lib/fetch-cache.js` truncated TTLs with `ttlMs | 0`, a 32-bit operation, so any TTL past about 24.8 days became one second. The 45-day "already emailed this month" markers lived for one second. Fixed; Ask MMT bundles that file, so the eval ran before deploy.
+
+Worst case in a month with one paying seat: scoring at most $30, that member's Ask MMT at most a few dollars under their own cap, infrastructure for at most 10,000 served calls per agent, against $39 plus up to $50 of overage. With no paying seat: scoring does not run, and nobody is served past 5,000 calls per agent.
+
+*Not verified: Netlify's price per function invocation on this account. The gate bounds the number of calls instead of assuming a price.*
 
 ## 3. Record contract
 
@@ -207,6 +234,8 @@ The engines run through their own handlers with a synthetic request, so entitlem
 | 409 | `COVERAGE_GAP` | state not covered for the entity; body carries the `coverage` object |
 | 429 | `RATE_LIMITED`, `DAILY_LIMIT`, `SESSION_LIMIT`, `BUDGET_EXCEEDED` | with `Retry-After`; per credential (`agent_id`), so one agent's burst cannot starve a sibling |
 | 429 | `MEMBER_ALLOWANCE` (MCP engines) | the member's own monthly allowance for that engine is used up |
+| 429 | `OVERAGE_LIMIT_REACHED` | the agent used its allowance and its overage limit; paused until the next month (`Retry-After`) |
+| 429 | `ALLOWANCE_REACHED` | the agent used its allowance and its owner has no billable add-on; paused until the next month |
 
 Every response carries `X-Request-Id`; every error body carries `request_id`; the same id is on the audit row. *Built.*
 
@@ -241,7 +270,7 @@ Supporting suites: `record-contract`, `agent-usage`, `state-procurement`, `agent
 1. **Pricing numbers.** Done 2026-09-21: 5,000 calls per agent per month, $0.01 per call past that, in `netlify/functions/data/agent-pricing.json`. To change one: edit the file, PR, deploy, then `netlify dev:exec -- node scripts/stripe-setup-agent-overage.js --apply`.
 2. **Metering migration.** Applied to production 2026-09-21 through the Management API; verified 5 columns, 2 indexes, rows untouched. `request_id` is a `uuid` column, so a caller's `X-Request-Id` is echoed only when it is a UUID.
 3. **Default scopes.** New tokens default to `opportunities:read`, `reference:read`, `states:read`, `orgcharts:read`. Narrow or widen in `lib/agent-tokens.js` and `lib/oauth-core.js`.
-4. **Stripe metered billing.** Done 2026-09-21 (section 2.5). Open for Mary: whether to set `max_billable_overage_calls_per_agent_month`, and whether the reference JSON in `dist/data/reference/` should be paid-only.
+4. **Stripe metered billing.** Done 2026-09-21 (section 2.5). **Overage limit and the margin rule:** done 2026-09-21 (section 2.6); the default limit of 5,000 extra calls ($50) was chosen for Mary and is one number in the pricing file. Open for Mary: whether the reference JSON in `dist/data/reference/` should be paid-only, and whether Institutional plans should get a per-member ceiling (they have unlimited connections).
 5. **Portal ingestion loop** for live state solicitations (§4.5).
 6. **Signal Chain through agents** spends SAM.gov quota through `lib/sam-quota.js`; it stays opt-in for that reason.
 

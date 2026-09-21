@@ -25,7 +25,11 @@ const USD_PER_OUTPUT_TOKEN = 5 / 1_000_000;        // ~$5/Mtok out
 function cfg() {
   return {
     maxCalls: Number(process.env.AGENT_SCORING_MAX_CALLS) || 150,
-    dailyBudgetUsd: Number(process.env.AGENT_SCORING_DAILY_BUDGET_USD) || 2.0,
+    // $1 a day is a $30-a-month ceiling, under the price of one monthly seat
+    // ($39) and one annual seat ($32.50 a month): this batch can never cost more
+    // than the first subscriber pays. It was $2 ($60 a month). Haiku at 150
+    // calls a run lands far below either number; this is the hard stop.
+    dailyBudgetUsd: Number(process.env.AGENT_SCORING_DAILY_BUDGET_USD) || 1.0,
     opportunityLimit: Number(process.env.AGENT_SCORING_LIMIT) || 200,
   };
 }

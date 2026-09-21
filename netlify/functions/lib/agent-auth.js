@@ -25,7 +25,8 @@
 const crypto = require("crypto");
 const { createClient } = require("@supabase/supabase-js");
 const { hashToken, looksLikeToken } = require("./agent-tokens");
-const { RATE, SESSION_MAX_CALLS, BUDGET } = require("./agent-config");
+const { RATE, SESSION_MAX_CALLS, BUDGET, ALLOWANCE } = require("./agent-config");
+const gate = require("./agent-allowance-gate");
 const { loadEntitlement } = require("./entitlement");
 const { computeAgentAccess } = require("./agent-entitlement");
 // 2026-09-20 platform spec (docs/agent-platform-spec.md §2, §6): every response
@@ -59,6 +60,7 @@ const REQUEST_ID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]
 const CLIENT_REF_RE = /^[A-Za-z0-9._:@/+-]{1,64}$/;
 const METERING_FIELDS = ["request_id", "client_ref", "tool", "scope", "records_returned"];
 const AI_PAGE = "https://missionmeetstech.com/premium/ai-integrations/";
+const GUIDE_ALLOWANCE_URL = "https://missionmeetstech.com/agent-access-guide#allowance";
 
 function headerOf(event, name) {
   const h = (event && event.headers) || {};
@@ -128,6 +130,70 @@ async function countAudit(db, filter, sinceIso) {
   return count || 0;
 }
 
+/**
+ * The month's billable calls for one agent: the same rows, the same rule
+ * (status below 400), that the statement and the Stripe report count, so the
+ * gate, the statement and the bill cannot disagree. null when the count could
+ * not be read: the gate then serves the call (a database blip never pauses a
+ * paying customer) and says so in the log.
+ */
+async function countBillableThisMonth(db, tokenId, now) {
+  const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
+  try {
+    const { count, error } = await db.from("api_audit_log").select("id", { count: "exact", head: true })
+      .eq("token_id", tokenId).gte("created_at", monthStart).lt("status_code", 400);
+    if (error) { console.error("agent-auth allowance gate count (serving the call):", error.message); return null; }
+    return count || 0;
+  } catch (e) {
+    console.error("agent-auth allowance gate count (serving the call):", e.message);
+    return null;
+  }
+}
+
+const addonPriceIds = () => String(process.env.AGENT_ACCESS_ADDON_PRICE_IDS || "").split(",").map((x) => x.trim()).filter(Boolean);
+let _stripe = null;
+function stripeClient() {
+  if (_stripe || !process.env.STRIPE_SECRET_KEY) return _stripe;
+  const Stripe = require("stripe"); // lazy: only an agent already past its allowance ever needs it
+  _stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+  return _stripe;
+}
+
+/**
+ * 9. ALLOWANCE GATE (lib/agent-allowance-gate.js). Nothing is served that
+ * cannot be billed: past its allowance an agent runs only while its owner's
+ * overage is billable, and only up to the overage limit. Returns the 429
+ * response when the agent is paused, else null.
+ */
+async function allowanceGate({ db, token, email, monthCalls, now, deps }) {
+  if (!ALLOWANCE.CONFIRMED || monthCalls == null || monthCalls < ALLOWANCE.CALLS_PER_MONTH) return null;
+  let billable = true;
+  if (!gate.hasOverride(ALLOWANCE, token.id)) {
+    const r = await gate.resolveBillable({
+      userId: token.user_id, email,
+      stripe: (deps && deps.stripe) || stripeClient(), cacheGet, cacheSet, cacheKey,
+      addonPriceIds: (deps && deps.addonPriceIds) || addonPriceIds(),
+    });
+    billable = r.billable;
+  }
+  const d = gate.gateDecision({ allowance: ALLOWANCE, monthCalls, tokenId: token.id, billable });
+  if (d.allow) return null;
+  const resumes = gate.resumeLabel(now);
+  const over = d.code === "OVERAGE_LIMIT_REACHED";
+  // Tell the member (and Mary) once per agent and month. Never throws.
+  await usage.sendAllowanceAlerts({
+    email, tokenId: token.id, tokenName: token.name || null, month: usage.monthKey(now), alerts: ["paused"], calls: monthCalls,
+    pause: { code: d.code, limit: d.limit, resumes }, notifyOwner: true, sendEmail: (deps && deps.sendEmail) || sendEmail, cacheGet, cacheSet, cacheKey,
+  });
+  return {
+    code: d.code,
+    message: over
+      ? `This connection has used its ${ALLOWANCE.CALLS_PER_MONTH} included calls and its ${d.limit} extra calls for the month. It resumes on ${resumes}. To raise the limit, reply to the email MMT sent the account owner.`
+      : `This connection has used its ${ALLOWANCE.CALLS_PER_MONTH} included calls for the month. It resumes on ${resumes}. The account owner can add Agent Access on ${AI_PAGE} to keep going past the allowance.`,
+    ceiling: d.ceiling,
+  };
+}
+
 const nextUtcMidnightSec = () => {
   const now = new Date();
   const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
@@ -138,7 +204,7 @@ const nextUtcMidnightSec = () => {
  * Authenticate + gate an agent request.
  * @returns {Promise<{ok:true, ctx} | {ok:false, response}>}
  */
-async function authenticateAgent(event, requiredScope, dbOverride) {
+async function authenticateAgent(event, requiredScope, dbOverride, gateDeps) {
   const db = dbOverride || getServiceClient();
   const requestId = requestIdFrom(event);
   const clientRef = clientRefFrom(event);
@@ -236,10 +302,11 @@ async function authenticateAgent(event, requiredScope, dbOverride) {
 
   // 8. RATE LIMIT — per-key 60/min + 5k/day, global 1k/min
   const minAgo = new Date(now.getTime() - 60 * 1000).toISOString();
-  const [perMin, perDay, globalMin] = await Promise.all([
+  const [perMin, perDay, globalMin, monthCalls] = await Promise.all([
     countAudit(db, { token_id: token.id }, minAgo),
     countAudit(db, { token_id: token.id }, dayStart),
     countAudit(db, {}, minAgo),
+    countBillableThisMonth(db, token.id, now),
   ]);
   // Rate limits are per credential (the spec's agent_id is api_tokens.id), so
   // one connected agent's burst never starves a sibling on the same membership.
@@ -255,6 +322,15 @@ async function authenticateAgent(event, requiredScope, dbOverride) {
   if (perDay >= RATE.PER_KEY_PER_DAY) {
     await safeAuditFailure(db, token, 429, event, requiredScope, sessionId, failMeta);
     return { ok: false, response: resp(429, { error: "DAILY_LIMIT", message: "You've reached today's request limit.", request_id: requestId }, { ...rateHeaders, "Retry-After": String(nextUtcMidnightSec()) }) };
+  }
+
+  // 9. ALLOWANCE GATE — never serve a call nobody can be billed for.
+  let paused = null;
+  try { paused = await allowanceGate({ db, token, email, monthCalls, now, deps: gateDeps }); }
+  catch (e) { console.error("agent-auth allowance gate (serving the call):", e.message); }
+  if (paused) {
+    await safeAuditFailure(db, token, 429, event, requiredScope, sessionId, failMeta);
+    return { ok: false, response: resp(429, { error: paused.code, message: paused.message, monthly_ceiling: paused.ceiling, docs: GUIDE_ALLOWANCE_URL, request_id: requestId }, { ...rateHeaders, "Retry-After": String(gate.secondsToNextMonth(now)) }) };
   }
 
   return {
@@ -321,7 +397,7 @@ async function finalizeAudit(ctx, { statusCode, responseBytes = 0, llmModel = nu
     if (crossed.length) {
       await usage.sendAllowanceAlerts({
         email: ctx.email, tokenId: token.id, tokenName: ctx.tokenName, month: usage.monthKey(new Date()),
-        alerts: crossed, calls: monthCalls, sendEmail, cacheGet, cacheSet, cacheKey,
+        alerts: crossed, calls: monthCalls, limit: gate.overageLimitFor(ALLOWANCE, token.id, true), sendEmail, cacheGet, cacheSet, cacheKey,
       });
     }
   }
@@ -370,4 +446,5 @@ async function safeAuditFailure(db, token, statusCode, event, endpoint, sessionI
 module.exports = {
   authenticateAgent, finalizeAudit, getServiceClient, resp, CORS,
   requestIdFrom, clientRefFrom, insertAudit, METERING_FIELDS, _resetMeteringForTests,
+  countBillableThisMonth, allowanceGate,
 };

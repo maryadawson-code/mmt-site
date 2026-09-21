@@ -45,6 +45,19 @@ describe("buildAllowance", () => {
     expect(buildAllowance(GOOD, { AGENT_ALLOWANCE_CONFIRMED: "" }).CONFIRMED).toBe(true); // an empty var is not a decision
     expect(buildAllowance(GOOD, { AGENT_ALLOWANCE_CALLS_MONTH: "-5" }).CALLS_PER_MONTH).toBe(7500);
   });
+  it("per-agent overrides: a number or null, keyed by agent id, and a malformed entry is dropped", () => {
+    const a = buildAllowance({ ...GOOD, overage_limit_overrides: {
+      "3f2b8c1e-9a4d-4e7b-8f21-5c6d7e8f9a0b": null, "aaaaaaaa-0000-0000-0000-000000000001": 20000, "aaaaaaaa-0000-0000-0000-000000000002": 0,
+      "someone@example.com": 99, "bbbbbbbb-0000-0000-0000-000000000003": -1, "cccccccc-0000-0000-0000-000000000004": "lots", "dddddddd-0000-0000-0000-000000000005": 12.5,
+    } }, {});
+    expect(a.OVERAGE_LIMIT_OVERRIDES).toEqual({ "3f2b8c1e-9a4d-4e7b-8f21-5c6d7e8f9a0b": null, "aaaaaaaa-0000-0000-0000-000000000001": 20000, "aaaaaaaa-0000-0000-0000-000000000002": 0 });
+    expect(Object.isFrozen(a.OVERAGE_LIMIT_OVERRIDES)).toBe(true);
+    for (const bad of [null, [], "x", 5]) expect(buildAllowance({ ...GOOD, overage_limit_overrides: bad }, {}).OVERAGE_LIMIT_OVERRIDES).toEqual({});
+  });
+  it("the committed file sets a limit and never carries an email or a name in its overrides", () => {
+    expect(Number.isInteger(PRICING.max_billable_overage_calls_per_agent_month)).toBe(true);
+    for (const id of Object.keys(PRICING.overage_limit_overrides || {})) expect(id).toMatch(/^[0-9a-f-]{8,64}$/i);
+  });
   it("a bad billing start month or cap is dropped, never guessed", () => {
     expect(readPricing({ ...GOOD, billing_starts_month: "October" }).billingStartsMonth).toBeNull();
     expect(readPricing({ ...GOOD, billing_starts_month: "2026-13" }).billingStartsMonth).toBeNull();

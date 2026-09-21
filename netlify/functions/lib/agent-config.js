@@ -49,11 +49,11 @@ const ALERTS = Object.freeze({
 });
 
 // spec section 2 (docs/agent-platform-spec.md) — monthly call allowance per
-// agent credential and the published per-call overage rate. Calls past the
-// allowance are never cut off (the budget, session and rate gates are the only
-// hard stops); they are priced on the monthly statement, the member is told
-// at 80 percent and on the first overage call, and agent-overage-report bills
-// them through Stripe.
+// agent credential, the published per-call overage rate and the overage limit.
+// Calls past the allowance are priced on the monthly statement and billed
+// through Stripe (agent-overage-report) up to the limit; then the agent pauses
+// until the next month (lib/agent-allowance-gate.js). The member is told at 80
+// percent, on the first overage call, and when it pauses.
 //
 // The numbers are Mary's and live in data/agent-pricing.json, a bundled file
 // rather than env: Lambda env is capped at 4KB, an env change does not reach a
@@ -69,11 +69,20 @@ function readPricing(file) {
   const rate = Number(f.overage_usd_per_call);
   const valid = Number.isInteger(calls) && calls > 0 && Number.isFinite(rate) && rate > 0;
   const cap = f.max_billable_overage_calls_per_agent_month;
+  // agent id -> calls past the allowance (integer >= 0) or null for no limit.
+  // A malformed entry is dropped, never guessed: that agent falls back to the default rule.
+  const overrides = {};
+  const rawOverrides = f.overage_limit_overrides && typeof f.overage_limit_overrides === "object" && !Array.isArray(f.overage_limit_overrides) ? f.overage_limit_overrides : {};
+  for (const [id, v] of Object.entries(rawOverrides)) {
+    if (!/^[0-9a-f-]{8,64}$/i.test(id)) continue;
+    if (v === null || (Number.isInteger(v) && v >= 0)) overrides[id] = v;
+  }
   return {
     calls: valid ? calls : 5000,
     rate: valid ? rate : 0.01,
     confirmed: valid && f.confirmed === true,
     maxBillableOverage: Number.isInteger(cap) && cap >= 0 ? cap : null,
+    overageLimitOverrides: Object.freeze(overrides),
     billingStartsMonth: /^\d{4}-(0[1-9]|1[0-2])$/.test(String(f.billing_starts_month || "")) ? f.billing_starts_month : null,
     confirmedAt: f.confirmed_at || null,
   };
@@ -94,7 +103,10 @@ function buildAllowance(file, env) {
     CONFIRMED: flag == null || flag === "" ? p.confirmed : flag === "true",
     // Billing knobs (lib/agent-overage-billing.js). No month before
     // BILLING_STARTS_MONTH is ever billed; null there means never bill.
+    // The overage limit (lib/agent-allowance-gate.js): what is served and what
+    // is billed past the allowance, per agent per month. null = no limit.
     MAX_BILLABLE_OVERAGE_CALLS: p.maxBillableOverage,
+    OVERAGE_LIMIT_OVERRIDES: p.overageLimitOverrides,
     BILLING_STARTS_MONTH: p.billingStartsMonth,
     CONFIRMED_AT: p.confirmedAt,
   });

@@ -220,6 +220,12 @@ describe("a billing run", () => {
     const r = await run(stripe, fakeDb(member(rows)), { allowance: { ...ALLOW, MAX_BILLABLE_OVERAGE_CALLS: 60 } });
     expect(r.calls_reported).toBe(110); // 60 (capped) + 50
   });
+  it("an agent Mary listed is billed to her number, not the default", async () => {
+    const stripe = fakeStripe({ subs: [sub("s1", { withOverage: true })] });
+    const rows = [...calls("tok-a", "u1", "2026-10", 205), ...calls("tok-b", "u1", "2026-10", 205)]; // 200 over each
+    const r = await run(stripe, fakeDb(member(rows)), { allowance: { ...ALLOW, MAX_BILLABLE_OVERAGE_CALLS: 50, OVERAGE_LIMIT_OVERRIDES: { "tok-a": null } } });
+    expect(r.calls_reported).toBe(250); // tok-a uncapped (200) + tok-b at the default (50)
+  });
   it("one bad subscription never stops the others, and canceled ones are ignored", async () => {
     const subs = [sub("s_bad", { email: null, customer: "cus_gone" }), sub("s_ok", { withOverage: true }), sub("s_canceled", { status: "canceled", customer: "cus_x", email: "x@example.com" })];
     const stripe = fakeStripe({ subs });
