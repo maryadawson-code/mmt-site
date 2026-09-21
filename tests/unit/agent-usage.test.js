@@ -51,6 +51,21 @@ describe("statement", () => {
     expect(acme.overage_calls).toBe(0);
     expect(s.by_tool.map((t) => t.tool).sort()).toEqual(["/api/v1/agencies", "mmt_list_vehicles"]);
   });
+  it("only calls that returned data use up the allowance; errors and rejections are listed and never billed", () => {
+    // 6 good calls and 6 failures against an allowance of 4: overage is 2, not 8.
+    const rows = [200, 401, 200, 429, 200, 403, 200, 500, 200, 409, 200, 404].map((status_code, i) => ({
+      created_at: new Date(Date.UTC(2026, 9, 1, 0, 0, i)).toISOString(), status_code, tool: "mmt_list_vehicles", client_ref: i < 8 ? "early" : "late",
+    }));
+    const s = summarizeRows(rows, { month: "2026-10", allowance: 4, rate: 0.01 });
+    expect(s).toEqual(expect.objectContaining({ calls: 12, billable_calls: 6, error_calls: 6, overage_calls: 2, overage_usd: 0.02, remaining: 0 }));
+    // Call order over billable rows only: the 5th and 6th good calls are the overage, both made by "late".
+    expect(s.by_client_ref.find((x) => x.client_ref === "late").overage_calls).toBe(2);
+    expect(s.by_client_ref.find((x) => x.client_ref === "early").overage_calls).toBe(0);
+    expect(s.note).toMatch(/never billed/);
+    // A month of nothing but rejected calls costs nothing, however many there are.
+    const hammer = Array.from({ length: 50 }, (_, i) => ({ created_at: new Date(Date.UTC(2026, 9, 2, 0, 0, i)).toISOString(), status_code: 401 }));
+    expect(summarizeRows(hammer, { month: "2026-10", allowance: 4, rate: 0.01 })).toEqual(expect.objectContaining({ calls: 50, billable_calls: 0, overage_calls: 0, overage_usd: 0 }));
+  });
   it("groups calls with no client_ref as unattributed and counts errors", () => {
     const rows = rowsFor(4, () => null);
     rows[1].status_code = 404;
@@ -94,6 +109,9 @@ describe("alerts", () => {
     expect(d.sent[0].to).toBe("m@x.com");
     expect(d.sent[0].subject).toMatch(/My ChatGPT/);
     expect(d.sent[0].html).toMatch(/\$0\.01/);
+    // Resend's tag schema: objects with a name and a value of letters, digits, _ or -. A bare string is rejected.
+    expect(d.sent[0].tags).toEqual([{ name: "stream", value: "agent-allowance" }, { name: "alert", value: "allowance_80pct" }]);
+    for (const t of d.sent[0].tags) expect(t.value).toMatch(/^[A-Za-z0-9_-]+$/);
     const over = alertCopy("first_overage", { tokenName: "Bot", state: allowanceState(5001, 5000, 0.01), month: "2026-09" });
     expect(over.subject).toMatch(/past this month's API allowance/);
     expect(over.html).toMatch(/Nothing is cut off/);
@@ -105,7 +123,6 @@ describe("alerts", () => {
     const d = deps();
     const base = { email: "m@x.com", tokenId: "tok-3", tokenName: "My ChatGPT", month: "2026-09", alerts: ["allowance_80pct", "first_overage"], calls: 5001, ...d };
     expect(await sendAllowanceAlerts({ ...base, pricingConfirmed: false })).toEqual([]);
-    expect(await sendAllowanceAlerts(base)).toEqual([]); // default: ALLOWANCE.CONFIRMED is false without the env flag
     expect(d.sent).toHaveLength(0);
     expect(d.store.size).toBe(0); // no marker, so the first crossing after confirmation still sends
     expect(await sendAllowanceAlerts({ ...base, pricingConfirmed: true })).toEqual(["allowance_80pct", "first_overage"]);

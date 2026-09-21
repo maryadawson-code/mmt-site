@@ -51,16 +51,56 @@ const ALERTS = Object.freeze({
 // spec section 2 (docs/agent-platform-spec.md) — monthly call allowance per
 // agent credential and the published per-call overage rate. Calls past the
 // allowance are never cut off (the budget, session and rate gates are the only
-// hard stops); they are priced on the monthly statement and the member is told
-// at 80 percent and on the first overage call. CONFIRMED flips to true once
-// Mary sets the numbers (AGENT_ALLOWANCE_CONFIRMED=true); until then every
-// surface that prints them says they are provisional.
-const ALLOWANCE = Object.freeze({
-  CALLS_PER_MONTH: num("AGENT_ALLOWANCE_CALLS_MONTH", 5000),
-  OVERAGE_USD_PER_CALL: num("AGENT_OVERAGE_USD_PER_CALL", 0.01),
-  ALERT_THRESHOLD: 0.8,
-  CONFIRMED: process.env.AGENT_ALLOWANCE_CONFIRMED === "true",
-});
+// hard stops); they are priced on the monthly statement, the member is told
+// at 80 percent and on the first overage call, and agent-overage-report bills
+// them through Stripe.
+//
+// The numbers are Mary's and live in data/agent-pricing.json, a bundled file
+// rather than env: Lambda env is capped at 4KB, an env change does not reach a
+// function until its bundle changes, and one committed file means the built
+// copy and the running functions cannot disagree. The env vars still override
+// (AGENT_ALLOWANCE_CONFIRMED=false is the kill switch). A malformed file reads
+// as unconfirmed: nothing is quoted, emailed or billed.
+const PRICING_FILE = require("../data/agent-pricing.json");
+
+function readPricing(file) {
+  const f = file || {};
+  const calls = Number(f.calls_per_month_per_agent);
+  const rate = Number(f.overage_usd_per_call);
+  const valid = Number.isInteger(calls) && calls > 0 && Number.isFinite(rate) && rate > 0;
+  const cap = f.max_billable_overage_calls_per_agent_month;
+  return {
+    calls: valid ? calls : 5000,
+    rate: valid ? rate : 0.01,
+    confirmed: valid && f.confirmed === true,
+    maxBillableOverage: Number.isInteger(cap) && cap >= 0 ? cap : null,
+    billingStartsMonth: /^\d{4}-(0[1-9]|1[0-2])$/.test(String(f.billing_starts_month || "")) ? f.billing_starts_month : null,
+    confirmedAt: f.confirmed_at || null,
+  };
+}
+
+function buildAllowance(file, env) {
+  const p = readPricing(file);
+  const e = env || {};
+  const flag = e.AGENT_ALLOWANCE_CONFIRMED;
+  const envNum = (name, fallback) => {
+    const n = Number(e[name]);
+    return e[name] != null && e[name] !== "" && Number.isFinite(n) && n > 0 ? n : fallback;
+  };
+  return Object.freeze({
+    CALLS_PER_MONTH: envNum("AGENT_ALLOWANCE_CALLS_MONTH", p.calls),
+    OVERAGE_USD_PER_CALL: envNum("AGENT_OVERAGE_USD_PER_CALL", p.rate),
+    ALERT_THRESHOLD: 0.8,
+    CONFIRMED: flag == null || flag === "" ? p.confirmed : flag === "true",
+    // Billing knobs (lib/agent-overage-billing.js). No month before
+    // BILLING_STARTS_MONTH is ever billed; null there means never bill.
+    MAX_BILLABLE_OVERAGE_CALLS: p.maxBillableOverage,
+    BILLING_STARTS_MONTH: p.billingStartsMonth,
+    CONFIRMED_AT: p.confirmedAt,
+  });
+}
+
+const ALLOWANCE = buildAllowance(PRICING_FILE, process.env);
 
 // hardening §4 — pagination
 const PAGINATION = Object.freeze({
@@ -72,4 +112,4 @@ const PAGINATION = Object.freeze({
 // until legal clears AND this env flag is explicitly set to "true".
 const CUI_PATH_CLEARED = process.env.CUI_PATH_CLEARED === "true";
 
-module.exports = { RATE, SESSION_MAX_CALLS, BUDGET, BREAKER, ALERTS, ALLOWANCE, PAGINATION, CUI_PATH_CLEARED };
+module.exports = { RATE, SESSION_MAX_CALLS, BUDGET, BREAKER, ALERTS, ALLOWANCE, PAGINATION, CUI_PATH_CLEARED, buildAllowance, readPricing };

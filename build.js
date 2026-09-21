@@ -14,6 +14,12 @@ const { monthsToExpiry: voteMonthsToExpiry } = require('./netlify/functions/lib/
 // /ask, /pricing and /help come from the same modules the server runs.
 const { SOURCE_CATALOG: askMmtSourceCatalog } = require('./netlify/functions/lib/ask-mmt-sources');
 const { CHAT_CAPS: askMmtChatCaps, FREE_CAP: askMmtFreeCap } = require('./netlify/functions/lib/ask-mmt-access');
+// Agent Access allowance and overage rate: Mary's numbers, from
+// netlify/functions/data/agent-pricing.json through lib/agent-config. The same
+// object the functions and the Stripe report read, so the page cannot quote a
+// number the bill does not use. Unconfirmed pricing renders nothing at all.
+const { ALLOWANCE: agentAllowance } = require('./netlify/functions/lib/agent-config');
+const agentAllowanceCopy = require('./netlify/functions/lib/agent-allowance-copy');
 const { isFutureDated } = require('./scripts/lib/publish-gate');
 
 // Autonomous feature-vote system: which vote features are live this build.
@@ -3463,6 +3469,9 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
     '<!-- BUILD:ASK_MMT_CAP_PREMIUM -->': String(askMmtChatCaps.premium),
     '<!-- BUILD:ASK_MMT_CAP_INSTITUTIONAL -->': String(askMmtChatCaps.institutional),
     '<!-- BUILD:ASK_MMT_CAP_FREE -->': String(askMmtFreeCap),
+    '<!-- BUILD:AGENT_ALLOWANCE_FEATURE -->': agentAllowanceCopy.pricingFeature(agentAllowance),
+    '<!-- BUILD:AGENT_ALLOWANCE_GUIDE -->': agentAllowanceCopy.guideSection(agentAllowance),
+    '<!-- BUILD:AGENT_ALLOWANCE_PANEL -->': agentAllowanceCopy.panelNote(agentAllowance),
     '<!-- BUILD:PRIMER_CTA -->': primerCta(primerData),
     '<!-- BUILD:PRIMER_LIFECYCLE -->': primerLifecycle(primerData),
     '<!-- BUILD:PRIMER_TOOLKIT -->': primerToolkit(primerData, primerDhaDate),

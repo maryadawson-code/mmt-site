@@ -21,6 +21,10 @@
 --
 -- GATED: do NOT `supabase db push` this. Mary applies it through the Supabase
 -- Management API after review (repo convention).
+--
+-- APPLIED to production 2026-09-21 (Mary approved) through the Management API.
+-- Verified after apply: 5 columns, 2 indexes, existing rows untouched. request_id
+-- is uuid, so lib/agent-auth.js echoes a caller's X-Request-Id only when it is one.
 -- ============================================================================
 
 alter table public.api_audit_log
