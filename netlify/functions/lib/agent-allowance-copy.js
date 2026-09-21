@@ -58,6 +58,11 @@ function guideSection(a) {
   ].join("\n      ");
 }
 
+/** The guide's table-of-contents line; rendered only when the section it points at is. */
+function guideTocItem(a) {
+  return ready(a) ? `<a href="#allowance">Calls, the monthly allowance and what happens past it</a>` : "";
+}
+
 /** One line under the connections list on the member page. */
 function panelNote(a) {
   if (!ready(a)) return "";
@@ -68,4 +73,4 @@ function panelNote(a) {
   return `<p class="ai-allowance-note" style="margin-top:12px;font-size:13px;color:var(--mmt-text-secondary);">Each connection includes ${fmtCalls(a.CALLS_PER_MONTH)} calls a month. Only calls that return data count. ${past} I email you at 80 percent. <a href="/agent-access-guide#allowance">How the allowance works</a></p>`;
 }
 
-module.exports = { pricingFeature, guideSection, panelNote, fmtCalls, fmtRate, fmtUsd, monthName, limitOf };
+module.exports = { pricingFeature, guideSection, guideTocItem, panelNote, fmtCalls, fmtRate, fmtUsd, monthName, limitOf };

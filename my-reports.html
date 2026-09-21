@@ -375,7 +375,7 @@
 
         // Actions
         h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">';
-        if (o.report_url) h += '<a href="' + esc(o.report_url) + '" target="_blank" class="btn-portal btn-portal-secondary">📥 Download</a>';
+        if (o.report_url) h += '<a href="' + esc(o.report_url) + '" target="_blank" rel="noopener" class="btn-portal btn-portal-secondary">📥 Download</a>';
         h += '<button onclick="showFeedback(\'' + id + '\',\'' + o.product + '\')" class="btn-portal btn-portal-secondary">⭐ Rate This</button>';
         h += '<button onclick="requestRerun(\'' + id + '\')" class="btn-portal btn-portal-secondary">🔄 Request Re-run</button>';
         h += '</div>';

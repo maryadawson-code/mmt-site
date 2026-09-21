@@ -1235,7 +1235,7 @@
         if (productsTab === 'pp') {
           h += '<table><tr><th>Time</th><th>File</th><th>Status</th><th>Grade</th><th></th></tr>';
           rh.slice(0, 10).forEach(function(r) {
-            h += '<tr><td style="font-size:0.75rem;color:rgba(255,255,255,0.4)">' + fmtDate(r.created_at) + '</td><td style="font-size:0.82rem;" class="trunc">' + esc(r.file_name || '--') + '</td><td><span class="badge badge-' + (r.workflow_state === 'email_sent' || r.workflow_state === 'delivered' ? 'green' : 'yellow') + '">' + esc(r.workflow_state || '--') + '</span></td><td>' + esc(r.overall_grade || '--') + '</td><td>' + (r.report_url ? '<a href="' + r.report_url + '" target="_blank" style="color:#457B9D;font-size:0.75rem;">View</a>' : '') + '</td></tr>';
+            h += '<tr><td style="font-size:0.75rem;color:rgba(255,255,255,0.4)">' + fmtDate(r.created_at) + '</td><td style="font-size:0.82rem;" class="trunc">' + esc(r.file_name || '--') + '</td><td><span class="badge badge-' + (r.workflow_state === 'email_sent' || r.workflow_state === 'delivered' ? 'green' : 'yellow') + '">' + esc(r.workflow_state || '--') + '</span></td><td>' + esc(r.overall_grade || '--') + '</td><td>' + (r.report_url ? '<a href="' + r.report_url + '" target="_blank" rel="noopener" style="color:#457B9D;font-size:0.75rem;">View</a>' : '') + '</td></tr>';
           });
         } else {
           h += '<table><tr><th>Time</th><th>Email</th><th>Topic</th><th>Status</th></tr>';
@@ -1287,7 +1287,7 @@
 
       // Quick actions
       h += '<div class="detail-card"><h3>Quick Actions</h3>';
-      h += '<div class="actions"><button class="btn btn-yellow btn-sm" onclick="setMode(\'degraded\')">Set Degraded Mode</button><button class="btn btn-cyan btn-sm" onclick="setMode(\'normal\')">Set Normal Mode</button><button class="btn btn-cyan btn-sm" onclick="triggerHealthCheck()">Trigger Health Check</button><a href="https://app.netlify.com" target="_blank" class="btn btn-cyan btn-sm" style="text-decoration:none;">Netlify Dashboard</a></div>';
+      h += '<div class="actions"><button class="btn btn-yellow btn-sm" onclick="setMode(\'degraded\')">Set Degraded Mode</button><button class="btn btn-cyan btn-sm" onclick="setMode(\'normal\')">Set Normal Mode</button><button class="btn btn-cyan btn-sm" onclick="triggerHealthCheck()">Trigger Health Check</button><a href="https://app.netlify.com" target="_blank" rel="noopener" class="btn btn-cyan btn-sm" style="text-decoration:none;">Netlify Dashboard</a></div>';
       h += '<div id="action-result" style="margin-top:10px;font-size:0.82rem;color:rgba(255,255,255,0.6);"></div></div>';
       h += '<div style="margin-top:16px;text-align:right;"><button onclick="copyViewAsMarkdown(\'engineering\')" style="padding:6px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#e2e8f0;border-radius:4px;cursor:pointer;font-size:0.8rem;" title="Copy this view as markdown">📋 Copy as Markdown</button></div>';
 
@@ -1313,7 +1313,7 @@
         const prs = d.prs || [];
         if (d.error) { container.innerHTML = '<p style="color:rgba(255,255,255,0.3)">' + esc(d.error) + '</p>'; return; }
         if (!prs.length) { container.innerHTML = '<p style="color:rgba(255,255,255,0.3)">No open PRs</p>'; return; }
-        container.innerHTML = prs.map(pr => '<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;"><div><a href="' + esc(pr.url) + '" target="_blank" style="color:#457B9D;font-size:0.85rem;text-decoration:none;">#' + pr.number + ' ' + esc(pr.title) + '</a><div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">' + esc(pr.repo) + ' · ' + esc(pr.author) + ' · ' + timeSince(pr.created_at) + '</div></div><div>' + (pr.draft ? '<span class="badge badge-gray">Draft</span>' : '') + pr.labels.map(l => '<span class="badge badge-purple" style="margin-left:4px;">' + esc(l) + '</span>').join('') + '</div></div>').join('');
+        container.innerHTML = prs.map(pr => '<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;"><div><a href="' + esc(pr.url) + '" target="_blank" rel="noopener" style="color:#457B9D;font-size:0.85rem;text-decoration:none;">#' + pr.number + ' ' + esc(pr.title) + '</a><div style="font-size:0.72rem;color:rgba(255,255,255,0.4);">' + esc(pr.repo) + ' · ' + esc(pr.author) + ' · ' + timeSince(pr.created_at) + '</div></div><div>' + (pr.draft ? '<span class="badge badge-gray">Draft</span>' : '') + pr.labels.map(l => '<span class="badge badge-purple" style="margin-left:4px;">' + esc(l) + '</span>').join('') + '</div></div>').join('');
       }).catch(() => {});
 
       // Fetch tech debt from roadmap
@@ -2327,7 +2327,7 @@
       h += '<span style="font-size:0.75rem;color:' + (statusColors[proj.status] || '#9ca3af') + ';text-transform:uppercase;font-weight:600;">' + proj.status + '</span>';
       h += '<button class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:#e2e8f0;font-size:0.75rem;" onclick="document.getElementById(\'creative-project-detail\').style.display=\'none\'">Close</button>';
       h += '</div></div>';
-      if (proj.article_url) h += '<div style="font-size:0.75rem;margin-bottom:8px;"><a href="' + proj.article_url + '" target="_blank" style="color:#457B9D;">View article →</a></div>';
+      if (proj.article_url) h += '<div style="font-size:0.75rem;margin-bottom:8px;"><a href="' + proj.article_url + '" target="_blank" rel="noopener" style="color:#457B9D;">View article →</a></div>';
 
       // Prompt builder
       h += '<div style="margin-bottom:16px;">';
@@ -2455,7 +2455,7 @@
         let h = '';
         if (data.high_priority?.length) {
           h += '<div style="font-size:0.75rem;color:rgba(255,255,255,0.5);margin-bottom:4px;">Top Engagements</div>';
-          data.high_priority.forEach(i => { h += '<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><div style="font-size:0.82rem;font-weight:500;">' + esc(i.person_or_source) + '</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.5)">' + esc(i.title_or_context) + '</div>' + (i.url ? '<a href="' + i.url + '" target="_blank" style="color:#457B9D;font-size:0.7rem;">Link</a> ' : '') + '<div style="font-size:0.75rem;font-style:italic;color:rgba(255,255,255,0.6);margin-top:2px;">' + esc(i.suggested_comment) + '</div></div>'; });
+          data.high_priority.forEach(i => { h += '<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><div style="font-size:0.82rem;font-weight:500;">' + esc(i.person_or_source) + '</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.5)">' + esc(i.title_or_context) + '</div>' + (i.url ? '<a href="' + i.url + '" target="_blank" rel="noopener" style="color:#457B9D;font-size:0.7rem;">Link</a> ' : '') + '<div style="font-size:0.75rem;font-style:italic;color:rgba(255,255,255,0.6);margin-top:2px;">' + esc(i.suggested_comment) + '</div></div>'; });
         }
         if (data._delivered) h += '<p style="color:#22c55e;font-size:0.75rem;margin-top:6px;">Emailed to Mary.</p>';
         el.innerHTML = h || '<p style="color:rgba(255,255,255,0.3);font-size:0.82rem;">No results.</p>';
@@ -2927,7 +2927,7 @@ async function renderDetailQA() {
         h += '<div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05;">';
         h += '<div style="display:flex;justify-content:space-between;align-items:flex-start;">';
         h += '<div><span class="badge badge-red">' + r.product + '</span> <span style="font-size:0.82rem;">' + esc(r.regression_details || r.result_summary || '') + '</span><div style="font-size:0.72rem;color:rgba(255,255,255,0.3);margin-top:2px;">' + timeSince(r.created_at);
-        if (r.metadata?.fix_pr) h += ' · <a href="' + esc(r.metadata.fix_pr) + '" target="_blank" style="color:#457B9D;">Fix PR</a>';
+        if (r.metadata?.fix_pr) h += ' · <a href="' + esc(r.metadata.fix_pr) + '" target="_blank" rel="noopener" style="color:#457B9D;">Fix PR</a>';
         h += '</div></div>';
         h += '<div style="display:flex;gap:4px;flex-shrink:0;">';
         h += '<button class="btn btn-sm btn-cyan" onclick="qaCreateIssue(\'' + rid + '\',\'' + esc(r.product) + '\',\'' + esc((r.regression_details||r.result_summary||'').replace(/'/g,'')) + '\')">File Issue</button>';
@@ -3210,7 +3210,7 @@ async function showIssueDetail(id) {
         h += '<div><span style="color:rgba(255,255,255,0.5);font-size:0.78rem;">ERROR LOGS / STACK TRACE</span>';
         h += '<div style="margin-top:4px;font-family:monospace;font-size:0.72rem;background:rgba(255,255,255,0.03);padding:10px;border-radius:6px;white-space:pre-wrap;max-height:250px;overflow-y:auto;border:1px solid rgba(255,255,255,0.06);">' + esc(i.error_logs) + '</div></div>';
       }
-      if (i.sentry_url) h += '<div style="margin-top:8px;font-size:0.78rem;"><a href="' + esc(i.sentry_url) + '" target="_blank" style="color:#457B9D;">View in Sentry &#x2197;</a></div>';
+      if (i.sentry_url) h += '<div style="margin-top:8px;font-size:0.78rem;"><a href="' + esc(i.sentry_url) + '" target="_blank" rel="noopener" style="color:#457B9D;">View in Sentry &#x2197;</a></div>';
       if (!i.root_cause && !i.suggested_fix && !i.error_logs) h += '<p style="color:rgba(255,255,255,0.3)">No diagnostic context yet. Click "Ask Agent" to start diagnosis.</p>';
       h += '</div>';
     }
@@ -3232,7 +3232,7 @@ async function showIssueDetail(id) {
       h += '<div class="detail-card">';
       if (i.fix_branch) h += '<div style="font-size:0.82rem;margin-bottom:6px;">Branch: <code style="background:rgba(255,255,255,0.05);padding:2px 6px;border-radius:3px;">' + esc(i.fix_branch) + '</code></div>';
       if (i.fix_commit) h += '<div style="font-size:0.82rem;margin-bottom:6px;">Commit: <code style="background:rgba(255,255,255,0.05);padding:2px 6px;border-radius:3px;">' + esc(i.fix_commit) + '</code></div>';
-      if (i.fix_pr_url) h += '<div style="font-size:0.82rem;margin-bottom:6px;"><a href="' + esc(i.fix_pr_url) + '" target="_blank" style="color:#457B9D;">View Pull Request &#x2197;</a></div>';
+      if (i.fix_pr_url) h += '<div style="font-size:0.82rem;margin-bottom:6px;"><a href="' + esc(i.fix_pr_url) + '" target="_blank" rel="noopener" style="color:#457B9D;">View Pull Request &#x2197;</a></div>';
       if (i.fix_diff) {
         h += '<div style="margin-top:8px;">' + renderDiffBlock(i.fix_diff) + '</div>';
         if (i.status === 'fix-proposed') {

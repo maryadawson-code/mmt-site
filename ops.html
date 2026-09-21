@@ -73,7 +73,7 @@
           <div class="card"><h2>ProposalPulse (24h)</h2><div class="stat" id="pp-count">—</div><div id="pp-states"></div><div id="pp-stuck"></div></div>
           <div class="card"><h2>MarketPulse (24h)</h2><div class="stat" id="mp-count">—</div><div id="mp-states"></div><div id="mp-stuck"></div></div>
           <div class="card"><h2>IntegrityPulse Suite</h2><div class="stat" id="oc-users">—</div><div style="font-size:11px;color:#64748b;">total users</div><div id="oc-tiers" style="margin-top:6px;"></div><div style="margin-top:8px;font-size:12px;color:#94a3b8;">Ops this month: <strong id="oc-ops">—</strong></div><div style="margin-top:4px;font-size:12px;color:#94a3b8;">Events 24h: <strong id="oc-events">—</strong></div><div id="oc-channels" style="margin-top:6px;"></div><!-- API key must be provided server-side, not embedded in client HTML -->
-              <div style="margin-top:8px;"><a href="https://integritypulse.marywomack.workers.dev/g/dashboard" target="_blank" style="font-size:11px;color:#f97316;">Growth Dashboard →</a></div></div>
+              <div style="margin-top:8px;"><a href="https://integritypulse.marywomack.workers.dev/g/dashboard" target="_blank" rel="noopener" style="font-size:11px;color:#f97316;">Growth Dashboard →</a></div></div>
           <div class="card mini-grid card-full">
             <div><div class="stat" id="stat-mode">—</div><div class="stat-label">AI Mode</div></div>
             <div><div class="stat" id="stat-held">—</div><div class="stat-label">Held Emails</div></div>
@@ -88,9 +88,9 @@
             <h2>Quick Actions</h2>
             <div class="actions">
               <button onclick="runHealthCheck()">Health Check</button>
-              <a href="https://app.netlify.com/sites/curious-pony-0dec76/logs/functions" target="_blank">Netlify Logs</a>
-              <a href="https://supabase.com/dashboard" target="_blank">Supabase</a>
-              <a href="https://dashboard.stripe.com" target="_blank">Stripe</a>
+              <a href="https://app.netlify.com/sites/curious-pony-0dec76/logs/functions" target="_blank" rel="noopener">Netlify Logs</a>
+              <a href="https://supabase.com/dashboard" target="_blank" rel="noopener">Supabase</a>
+              <a href="https://dashboard.stripe.com" target="_blank" rel="noopener">Stripe</a>
               <button onclick="releaseEmails()">Release Held Emails</button>
             </div>
             <div id="action-result" style="margin-top:0.5rem;font-size:12px;color:#94a3b8;"></div>
