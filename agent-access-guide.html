@@ -205,7 +205,7 @@ Header:    Authorization: Bearer YOUR_KEY_HERE</span>
 
       <h2 id="ids">Request ids, attribution and your usage statement</h2>
 
-      <p>Every response carries an <code>X-Request-Id</code> header, and every error body a <code>request_id</code>; if something looks wrong, send me that id and I can find the exact call. Your assistant can also send an <code>X-MMT-Client-Ref</code> header on each call. It is opaque to me: I never read it, only group by it, so your monthly usage statement can show which of your clients or projects the calls belonged to. The statement lives under each connection's <strong>Usage</strong> button on the <a href="/premium/ai-integrations/">AI integrations</a> page: calls against the monthly allowance, anything over it priced at the published per-call rate, and the per-client breakdown. Nothing is cut off at the allowance; I email you at 80 percent and again on the first call past it.</p>
+      <p>Every response carries an <code>X-Request-Id</code> header, and every error body a <code>request_id</code>; if something looks wrong, send me that id and I can find the exact call. Your assistant can also send an <code>X-MMT-Client-Ref</code> header on each call. It is opaque to me: I never read it, only group by it, so your monthly usage statement can show which of your clients or projects the calls belonged to. The statement lives under each connection's <strong>Usage</strong> button on the <a href="/premium/ai-integrations/">AI integrations</a> page: calls against the monthly allowance, anything over it priced at the published per-call rate, and the per-client breakdown. The <a href="#allowance">next section</a> has the numbers and where a connection pauses.</p>
 
       <!-- BUILD:AGENT_ALLOWANCE_GUIDE -->
 

@@ -56,6 +56,9 @@ describe("the disclosure", () => {
 describe("the pages carry the markers and build.js injects every one", () => {
   const build = readFileSync(resolve(REPO, "build.js"), "utf8");
   const pages = { "pricing.html": "BUILD:AGENT_ALLOWANCE_FEATURE", "agent-access-guide.html": "BUILD:AGENT_ALLOWANCE_GUIDE", "premium/ai-integrations.html": "BUILD:AGENT_ALLOWANCE_PANEL" };
+  it("no page source still promises that nothing is cut off: with a limit, that is false", () => {
+    for (const file of Object.keys(pages)) expect(readFileSync(resolve(REPO, file), "utf8")).not.toMatch(/nothing is cut off|never cut off/i);
+  });
   it("a marker without an injection is decoration", () => {
     for (const [file, marker] of Object.entries(pages)) {
       expect(readFileSync(resolve(REPO, file), "utf8")).toContain(`<!-- ${marker} -->`);

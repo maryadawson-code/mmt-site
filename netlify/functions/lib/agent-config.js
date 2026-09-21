@@ -49,11 +49,11 @@ const ALERTS = Object.freeze({
 });
 
 // spec section 2 (docs/agent-platform-spec.md) — monthly call allowance per
-// agent credential and the published per-call overage rate. Calls past the
-// allowance are never cut off (the budget, session and rate gates are the only
-// hard stops); they are priced on the monthly statement, the member is told
-// at 80 percent and on the first overage call, and agent-overage-report bills
-// them through Stripe.
+// agent credential, the published per-call overage rate and the overage limit.
+// Calls past the allowance are priced on the monthly statement and billed
+// through Stripe (agent-overage-report) up to the limit; then the agent pauses
+// until the next month (lib/agent-allowance-gate.js). The member is told at 80
+// percent, on the first overage call, and when it pauses.
 //
 // The numbers are Mary's and live in data/agent-pricing.json, a bundled file
 // rather than env: Lambda env is capped at 4KB, an env change does not reach a
