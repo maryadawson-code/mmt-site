@@ -105,3 +105,37 @@ describe("engine wrappers", () => {
     expect((await fed.askMmt(ctx, { question: "hi" }, NOW))._badRequest).toMatch(/question/);
   });
 });
+
+// Every static file the agent libs read at runtime has to ride in
+// [functions].included_files, or the Lambda falls back silently (the HHS chart
+// shipped unbundled once: the tool answered "nodes not yet exported" while the
+// JSON sat in the repo). The paths are read out of the libs, not retyped here.
+describe("runtime data files are bundled with the functions", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const REPO = path.resolve(__dirname, "..", "..");
+  const toml = fs.readFileSync(path.join(REPO, "netlify.toml"), "utf8");
+  const block = /included_files\s*=\s*\[([\s\S]*?)\]/.exec(toml);
+  const patterns = [...block[1].matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+  const covered = (rel) => patterns.some((pat) => (pat.endsWith("/**") ? rel.startsWith(pat.slice(0, -2)) : pat === rel));
+
+  const libs = ["agent-federal.js", "agent-reference.js", "state-procurement.js"].map((f) => path.join(REPO, "netlify", "functions", "lib", f));
+  const reads = new Set();
+  for (const lib of libs) {
+    const src = fs.readFileSync(lib, "utf8");
+    for (const m of src.matchAll(/["'`]((?:data\/[A-Za-z0-9_\-./]+|contracts)\.json)["'`]/g)) reads.add(m[1]);
+  }
+
+  it("finds the files the libs read (the scan itself is not empty)", () => {
+    expect(reads.has("data/orgcharts/hhs.json")).toBe(true);
+    expect(reads.has("contracts.json")).toBe(true);
+    expect(reads.has("data/reference/state-procurement.json")).toBe(true);
+    expect(reads.size).toBeGreaterThanOrEqual(10);
+  });
+  it("each one exists in the repo and is covered by included_files", () => {
+    for (const rel of reads) {
+      expect(fs.existsSync(path.join(REPO, rel)), `${rel} missing from the repo`).toBe(true);
+      expect(covered(rel), `${rel} is not in [functions].included_files`).toBe(true);
+    }
+  });
+});

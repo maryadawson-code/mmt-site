@@ -26,6 +26,7 @@
     "capture-intelligence.json",
     "data/idiq-vehicles.json",
     "data/reference/**",
+    "data/orgcharts/**",
     "data/cso-aois.json",
     "data/forecast-pipeline.json",
     "content/forecast-delta/**",
