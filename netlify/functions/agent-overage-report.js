@@ -8,8 +8,9 @@
 // second firing loses the claim and does nothing. The Stripe side is also
 // idempotent by itself (item idempotency key, meter event identifier).
 //
-// A run that bills someone emails Mary once with the totals (never inside a
-// per-member loop). A run with nothing to bill is silent. A Stripe price that
+// A run that bills someone, or that fails to process a subscription, emails
+// Mary once with the totals (never inside a per-member loop). A clean run with
+// nothing to bill is silent. A Stripe price that
 // disagrees with the published rate fails the run (5xx, *_RUN_FAILED) and bills
 // nothing.
 // ============================================================================
@@ -41,7 +42,7 @@ function summarize(day, result) {
 function billedEmail(day, result) {
   const rows = (result.plan || []).flatMap((p) => (p.months || []).filter((m) => m.sent).map((m) => `<li>${p.customer}, ${m.month}: ${m.delta} calls (statement shows ${m.billable} over, Stripe held ${m.reported})</li>`));
   return {
-    subject: `Agent Access overage reported to Stripe: ${result.calls_reported} calls`,
+    subject: result.failures.length ? `Agent Access billing: ${result.failures.length} subscription(s) could not be processed` : `Agent Access overage reported to Stripe: ${result.calls_reported} calls`,
     html: `<p>The ${day} overage run reported ${result.calls_reported} calls to Stripe across ${result.events_sent} customer month(s). Stripe bills them on each customer's next invoice.</p><ul>${rows.join("")}</ul>` +
       (result.failures.length ? `<p>${result.failures.length} subscription(s) could not be processed and were billed nothing. First: ${result.failures[0].subscription}: ${result.failures[0].error}</p>` : ""),
   };
@@ -73,7 +74,9 @@ function makeHandler(deps = {}) {
 
     const details = summarize(day, result);
     await finalizeClaim(supabase, claim.claimId, { severity: result.status === "partial" ? "warning" : "info", details });
-    if (result.events_sent > 0) {
+    // A run that billed someone, or that could NOT process someone (an item that
+    // will not attach means overage being served and never billed), gets one email.
+    if (result.events_sent > 0 || (result.failures || []).length > 0) {
       const mail = billedEmail(day, result);
       const res = await send({ to: MARY, subject: mail.subject, html: mail.html, tags: [{ name: "stream", value: "agent-overage-report" }] });
       if (!res || res.success === false) console.warn(`${SOURCE}: summary email not accepted${res && res.error ? `: ${res.error}` : ""}`);

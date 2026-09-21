@@ -76,6 +76,12 @@ describe("catalog ↔ netlify.toml", () => {
     const set = allowanceBlock({ CALLS_PER_MONTH: 7500, OVERAGE_USD_PER_CALL: 0.02, CONFIRMED: true });
     expect(set).toEqual(expect.objectContaining({ calls_per_month_per_agent: 7500, overage_usd_per_call: 0.02, pricing_confirmed: true }));
     expect(set.alerts).toMatch(/80 percent/);
+    expect(set.note).not.toMatch(/never cut off/i);
+    const capped = allowanceBlock({ CALLS_PER_MONTH: 5000, OVERAGE_USD_PER_CALL: 0.01, MAX_BILLABLE_OVERAGE_CALLS: 5000, CONFIRMED: true });
+    expect(capped.overage_limit_calls_per_agent).toBe(5000);
+    expect(capped.note).toMatch(/429 OVERAGE_LIMIT_REACHED/);
+    expect(capped.note).toMatch(/429 ALLOWANCE_REACHED/);
+    expect(buildCatalog().error_codes).toEqual(expect.objectContaining({ OVERAGE_LIMIT_REACHED: expect.stringMatching(/paused until the next month/), ALLOWANCE_REACHED: expect.stringMatching(/no billable/) }));
     expect(JSON.stringify([pending, set])).not.toMatch(/[—!]/);
   });
   it("every endpoint scope is a scope a token can carry, and the scope tables agree everywhere", () => {

@@ -214,12 +214,17 @@ function allowanceBlock(a = ALLOWANCE) {
       note: "The monthly allowance and the overage rate are pending, so none is published here and nothing is billed per call. Every call is counted on the monthly statement (POST /api/tokens/usage from the member dashboard) with a per-client_ref breakdown.",
     };
   }
+  const limit = Number.isInteger(a.MAX_BILLABLE_OVERAGE_CALLS) ? a.MAX_BILLABLE_OVERAGE_CALLS : null;
   return {
     calls_per_month_per_agent: a.CALLS_PER_MONTH,
     overage_usd_per_call: a.OVERAGE_USD_PER_CALL,
+    overage_limit_calls_per_agent: limit,
     pricing_confirmed: true,
-    alerts: "The member is emailed at 80 percent of the allowance and on the first call past it.",
-    note: "Calls past the allowance are never cut off; they are priced on the monthly statement (POST /api/tokens/usage from the member dashboard) with a per-client_ref breakdown.",
+    counted: "Only calls that return data (status below 400) count against the allowance or are billed.",
+    alerts: "The member is emailed at 80 percent of the allowance, on the first call past it, and if the agent pauses.",
+    note: limit == null
+      ? "Calls past the allowance are priced on the monthly statement (POST /api/tokens/usage from the member dashboard) with a per-client_ref breakdown. An agent whose owner has no billable Agent Access add-on pauses at the allowance (429 ALLOWANCE_REACHED) until the next month."
+      : "Calls past the allowance are priced at overage_usd_per_call for up to overage_limit_calls_per_agent more; then the agent pauses until the next month (429 OVERAGE_LIMIT_REACHED, Retry-After in seconds). The member can ask MMT for a different limit on one agent. An agent whose owner has no billable Agent Access add-on pauses at the allowance (429 ALLOWANCE_REACHED). The monthly statement (POST /api/tokens/usage from the member dashboard) carries the per-client_ref breakdown.",
   };
 }
 
@@ -297,6 +302,8 @@ function buildCatalog() {
       NOT_FOUND: "404 — no resource with that id.",
       COVERAGE_GAP: "409 — the state named is not covered for the requested entity; the body carries the state's coverage object.",
       MEMBER_ALLOWANCE: "429 (MCP engines) — the member's own monthly allowance for that engine is used up.",
+      OVERAGE_LIMIT_REACHED: "429 — the agent used its monthly allowance and its overage limit; it is paused until the next month (Retry-After). The body carries monthly_ceiling.",
+      ALLOWANCE_REACHED: "429 — the agent used its monthly allowance and its owner has no billable Agent Access add-on, so it is paused until the next month (Retry-After).",
     },
     endpoints: ENDPOINTS,
   };

@@ -31,7 +31,11 @@ const { ALLOWANCE } = require("./agent-config");
 const UNATTRIBUTED = "unattributed";
 const PAGE = 1000;
 const MARKER_TTL_MS = 45 * 86400000;
-const ALERT_KINDS = Object.freeze(["allowance_80pct", "first_overage"]);
+const ALERT_KINDS = Object.freeze(["allowance_80pct", "first_overage", "paused"]);
+// From Mary's own address: these say "reply to this email", and the site
+// default is a noreply sender.
+const ALERT_FROM = "Mary Womack <mary@missionmeetstech.com>";
+const OWNER_EMAIL = "mary@missionmeetstech.com";
 
 function round2(n) { return Math.round(n * 100) / 100; }
 
@@ -98,7 +102,11 @@ function alertsCrossed(prevCalls, nextCalls, allowance = ALLOWANCE.CALLS_PER_MON
  * Rows carry: created_at, status_code, endpoint, tool?, scope?, client_ref?,
  * records_returned?, cost_usd?, response_bytes?.
  */
-function summarizeRows(rows, { month, allowance = ALLOWANCE.CALLS_PER_MONTH, rate = ALLOWANCE.OVERAGE_USD_PER_CALL } = {}) {
+function summarizeRows(rows, { month, allowance = ALLOWANCE.CALLS_PER_MONTH, rate = ALLOWANCE.OVERAGE_USD_PER_CALL, limit = ALLOWANCE.MAX_BILLABLE_OVERAGE_CALLS } = {}) {
+  // The overage limit: calls past the allowance this agent may make (and be
+  // billed for) in a month. null = none. The gate pauses the agent there, so a
+  // call past it is rare (a race); when one slips through it is never priced.
+  const cap = Number.isInteger(limit) && limit >= 0 ? limit : null;
   const byRef = new Map();
   const byTool = new Map();
   let calls = 0, errors = 0, billable = 0, records = 0, cost = 0, bytes = 0;
@@ -127,7 +135,7 @@ function summarizeRows(rows, { month, allowance = ALLOWANCE.CALLS_PER_MONTH, rat
   const ordered = (rows || []).filter((r) => isBillableStatus(r.status_code)).sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
   const overageByRef = new Map();
   ordered.forEach((r, i) => {
-    if (i >= allowance) {
+    if (i >= allowance && (cap == null || i < allowance + cap)) {
       const ref = r.client_ref ? String(r.client_ref) : UNATTRIBUTED;
       overageByRef.set(ref, (overageByRef.get(ref) || 0) + 1);
     }
@@ -140,9 +148,14 @@ function summarizeRows(rows, { month, allowance = ALLOWANCE.CALLS_PER_MONTH, rat
     })
     .sort((x, y) => y.calls - x.calls);
   const state = allowanceState(billable, allowance, rate);
+  const billedOverage = cap == null ? state.overage_calls : Math.min(state.overage_calls, cap);
   return {
     month: month || null,
     ...state,
+    overage_calls: billedOverage, // never more than the limit: what is billed
+    overage_usd: round2(billedOverage * rate),
+    overage_limit_calls: cap,
+    paused: cap != null && billable >= allowance + cap,
     calls, // every audited call, errors included
     billable_calls: billable, // the ones that returned data; the allowance and overage are counted on these
     error_calls: errors,
@@ -151,7 +164,7 @@ function summarizeRows(rows, { month, allowance = ALLOWANCE.CALLS_PER_MONTH, rat
     response_bytes: bytes,
     by_client_ref: byClientRef,
     by_tool: [...byTool.values()].sort((x, y) => y.calls - x.calls),
-    note: "Only calls that returned data (status below 400) count against the allowance; errors and rejected calls are listed and never billed. Overage is priced in call order: the first billable calls up to the allowance are included; each one after that is billed at overage_usd_per_call and attributed to the client_ref that made it. client_ref is opaque to MMT.",
+    note: "Only calls that returned data (status below 400) count against the allowance; errors and rejected calls are listed and never billed. Overage is priced in call order: the first billable calls up to the allowance are included; each one after that, up to overage_limit_calls, is billed at overage_usd_per_call and attributed to the client_ref that made it. At the limit the connection pauses until the next month; nothing past it is billed. client_ref is opaque to MMT.",
   };
 }
 
@@ -206,30 +219,64 @@ function isMissingColumn(error) {
  * @param {object} db service client
  * allowance and rate default to the published ones; the billing run passes its
  * own so the statement it bills from and the rate it checks cannot differ.
- * @param {{tokenId:string, userId?:string, month?:string, now?:Date, allowance?:number, rate?:number}} p
+ * @param {{tokenId:string, userId?:string, month?:string, now?:Date, allowance?:number, rate?:number, limit?:number|null}} p
  */
-async function statement(db, { tokenId, userId, month, now, allowance, rate }) {
+async function statement(db, { tokenId, userId, month, now, allowance, rate, limit }) {
   const window = monthWindow(month || monthKey(now || new Date()));
   if (!window) return { error: "month must be YYYY-MM." };
   const rows = await readMonthRows(db, { tokenId, userId, window });
-  const out = summarizeRows(rows, { month: window.month, allowance, rate });
+  const out = summarizeRows(rows, { month: window.month, allowance, rate, limit });
   return { agent_id: tokenId, member_id: userId || null, window_start: window.start, window_end: window.end, generated_at: new Date(now || Date.now()).toISOString(), ...out };
 }
 
-function alertCopy(kind, { tokenName, state, month }) {
+const fmtInt = (n) => Number(n).toLocaleString("en-US");
+
+/**
+ * The member's email for one alert. limit is the default overage limit (calls
+ * past the allowance; null = none). pause = { code, limit, resumes } for "paused".
+ */
+function alertCopy(kind, { tokenName, state, month, limit, pause }) {
   const name = tokenName || "your AI connection";
   const site = "https://missionmeetstech.com/premium/ai-integrations/";
+  const rate = `$${state.overage_usd_per_call}`;
+  const included = fmtInt(state.allowance);
+  const hello = "<p>Hi, it's Mary.</p>";
+  const statementLine = `<p>The usage statement, with the per-client breakdown, is on your <a href="${site}">AI integrations page</a>. Only calls that returned data count.</p>`;
   // Only ever sent with confirmed pricing (sendAllowanceAlerts), so the rate is the published one.
-  const rateLine = `Calls past the allowance stay on and are priced at $${state.overage_usd_per_call} each on your monthly statement.`;
+  const pastLine = Number.isInteger(limit)
+    ? `With the Agent Access add-on on your plan, it keeps working past ${included} at ${rate} a call for up to ${fmtInt(limit)} more, then pauses until next month. Without the add-on it pauses at ${included}. Reply to this email if you want a different limit.`
+    : `With the Agent Access add-on on your plan, it keeps working past ${included} at ${rate} a call on your monthly statement. Without the add-on it pauses at ${included}.`;
   if (kind === "allowance_80pct") {
     return {
       subject: `${name} has used 80 percent of this month's API allowance`,
-      html: `<p>Hi, it's Mary.</p><p>The AI connection <strong>${escapeHtml(name)}</strong> has made ${state.calls} of its ${state.allowance} included calls for ${month}.</p><p>${rateLine}</p><p>The usage statement, with the per-client breakdown, is on your <a href="${site}">AI integrations page</a>.</p>`,
+      html: `${hello}<p>The AI connection <strong>${escapeHtml(name)}</strong> has made ${fmtInt(state.calls)} of its ${included} included calls for ${month}.</p><p>${pastLine}</p>${statementLine}`,
+    };
+  }
+  if (kind === "paused") {
+    const p = pause || {};
+    const over = p.code === "OVERAGE_LIMIT_REACHED";
+    const why = over
+      ? `It has used its ${included} included calls and its ${fmtInt(p.limit)} extra calls for ${month}. Nothing past that limit is billed. If you need it running before then, reply to this email and I will raise the limit.`
+      : `It has used its ${included} included calls for ${month}, and it stops here because there is no Agent Access add-on on your account to bill extra calls to. Add it on your <a href="${site}">AI integrations page</a> and it picks back up within the hour, or reply to this email.`;
+    return {
+      subject: `${name} is paused until ${p.resumes}`,
+      html: `${hello}<p>The AI connection <strong>${escapeHtml(name)}</strong> is paused until ${p.resumes}.</p><p>${why}</p>${statementLine}`,
     };
   }
   return {
     subject: `${name} is past this month's API allowance`,
-    html: `<p>Hi, it's Mary.</p><p>The AI connection <strong>${escapeHtml(name)}</strong> just made its first call past the ${state.allowance} included calls for ${month}. Nothing is cut off.</p><p>${rateLine}</p><p>The usage statement, with the per-client breakdown, is on your <a href="${site}">AI integrations page</a>.</p>`,
+    html: `${hello}<p>The AI connection <strong>${escapeHtml(name)}</strong> just made its first call past the ${included} included calls for ${month}.</p><p>${pastLine}</p>${statementLine}`,
+  };
+}
+
+/** What Mary sees when a connection pauses: a customer who wants more is a sale, not an incident. */
+function ownerPauseNotice({ email, tokenId, tokenName, month, calls, pause }) {
+  const over = pause && pause.code === "OVERAGE_LIMIT_REACHED";
+  return {
+    subject: `Agent paused at its ${over ? "overage limit" : "allowance"}: ${tokenName || tokenId}`,
+    html: `<p>${escapeHtml(tokenName || "An agent")} (agent id <code>${escapeHtml(tokenId)}</code>, member ${escapeHtml(email)}) is paused until ${escapeHtml(pause.resumes)} after ${fmtInt(calls)} billable calls in ${escapeHtml(month)}.</p>`
+      + `<p>${over ? "It ran through its included calls and its extra calls. That overage is billed through Stripe." : "Its owner has no live Stripe add-on, so there is nothing to bill extra calls to. It stopped at the allowance instead of running for free."}</p>`
+      + `<p>To let it run further this month and every month, add the agent id to <code>overage_limit_overrides</code> in <code>netlify/functions/data/agent-pricing.json</code> (a number of extra calls, or null for no limit) and deploy. The member got an email that says to reply to you.</p>`,
   };
 }
 
@@ -253,19 +300,26 @@ async function sendAllowanceAlerts(p) {
   const kinds = (p.alerts || []).filter((k) => ALERT_KINDS.includes(k));
   if (!kinds.length || !p.email) return sent;
   const state = allowanceState(p.calls);
+  const limit = p.limit === undefined ? ALLOWANCE.MAX_BILLABLE_OVERAGE_CALLS : p.limit;
   for (const kind of kinds) {
     const key = p.cacheKey("agent-alert", p.tokenId, p.month, kind);
     try {
       if (await p.cacheGet(key)) continue; // already sent this month
-      const copy = alertCopy(kind, { tokenName: p.tokenName, state, month: p.month });
+      const copy = alertCopy(kind, { tokenName: p.tokenName, state, month: p.month, limit, pause: p.pause });
       // Resend tags are { name, value } objects (letters, digits, _ and - only); a bare string is rejected and the alert would never send.
-      const res = await p.sendEmail({ to: p.email, subject: copy.subject, html: copy.html, tags: [{ name: "stream", value: "agent-allowance" }, { name: "alert", value: kind }] });
+      const res = await p.sendEmail({ to: p.email, from: ALERT_FROM, subject: copy.subject, html: copy.html, tags: [{ name: "stream", value: "agent-allowance" }, { name: "alert", value: kind }] });
       if (!res || res.success === false) {
         console.warn(`agent-usage: ${kind} email to member not accepted${res && res.error ? `: ${res.error}` : ""}`);
         continue;
       }
       await p.cacheSet(key, { sent_at: new Date().toISOString() }, MARKER_TTL_MS);
       sent.push(kind);
+      // One note to Mary per pause, outside any loop over members (this loop is over alert kinds for ONE agent).
+      if (kind === "paused" && p.notifyOwner) {
+        const note = ownerPauseNotice(p);
+        const o = await p.sendEmail({ to: OWNER_EMAIL, from: ALERT_FROM, subject: note.subject, html: note.html, tags: [{ name: "stream", value: "agent-allowance" }, { name: "alert", value: "paused_owner" }] });
+        if (!o || o.success === false) console.warn(`agent-usage: pause notice to owner not accepted${o && o.error ? `: ${o.error}` : ""}`);
+      }
     } catch (e) {
       console.error(`agent-usage: ${kind} alert failed:`, e.message);
     }
@@ -285,5 +339,7 @@ module.exports = {
   statement,
   sendAllowanceAlerts,
   alertCopy,
+  ownerPauseNotice,
+  ALERT_FROM,
   isMissingColumn,
 };

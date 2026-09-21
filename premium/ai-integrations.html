@@ -424,9 +424,14 @@
       var counted = s.billable_calls == null ? (s.calls || 0) : s.billable_calls;
       var errs = s.error_calls || 0;
       var errNote = errs ? " · " + errs + " error" + (errs === 1 ? "" : "s") + " or refused call" + (errs === 1 ? "" : "s") + ", not counted" : "";
+      // overage_limit_calls: how far past the allowance this connection may run
+      // (0 = it pauses at the allowance, null = no limit). paused: it is there now.
+      var lim = s.overage_limit_calls;
+      var limNote = lim == null ? "" : (lim === 0 ? " · pauses at the allowance" : " · pauses at " + lim + " over");
+      var pausedNote = s.paused ? "<div><strong>Paused until the 1st.</strong> Reply to my email about it and I will sort it out.</div>" : "";
       var head = priced
         ? "<div><strong>" + esc(s.month || "") + "</strong> · " + counted + " of " + (s.allowance || 0) + " included calls" +
-          (s.overage_calls ? " · " + s.overage_calls + " over, $" + Number(s.overage_usd || 0).toFixed(2) + " at $" + s.overage_usd_per_call + " each" : " · no overage") + errNote + "</div>"
+          (s.overage_calls ? " · " + s.overage_calls + " over, $" + Number(s.overage_usd || 0).toFixed(2) + " at $" + s.overage_usd_per_call + " each" : " · no overage") + limNote + errNote + "</div>" + pausedNote
         : "<div><strong>" + esc(s.month || "") + "</strong> · " + (s.calls || 0) + " call" + (s.calls === 1 ? "" : "s") + " this month</div>";
       var refs = (s.by_client_ref || []).map(function (x) {
         return "<div>" + (x.client_ref ? "client_ref " + esc(x.client_ref) : "unattributed") + " · " + x.calls + " call" + (x.calls === 1 ? "" : "s") +

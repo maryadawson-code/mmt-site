@@ -26,10 +26,11 @@
 
 const { ALLOWANCE } = require("./agent-config");
 const usage = require("./agent-usage");
+const gate = require("./agent-allowance-gate");
 
 const METER_EVENT_NAME = "mmt_agent_overage_call";
-const PRICE_LOOKUP_KEYS = Object.freeze({ month: "mmt_agent_overage_call_month", year: "mmt_agent_overage_call_year" });
-const BILLABLE_STATUSES = Object.freeze(["active", "trialing", "past_due"]);
+const PRICE_LOOKUP_KEYS = gate.OVERAGE_PRICE_LOOKUP_KEYS; // one definition: the gate reads the same keys to decide what is billable
+const BILLABLE_STATUSES = gate.BILLABLE_STATUSES;
 const CATCH_UP_DAYS = 3; // the previous month stays open for the first days of the next
 const ITEM_METADATA = Object.freeze({ app: "mmt", product: "agent_access_overage" });
 
@@ -156,9 +157,12 @@ async function memberBillableOverage(db, email, month, allowance = ALLOWANCE) {
   if (tErr) throw new Error(`api_tokens read: ${tErr.message}`);
   let billable = 0;
   for (const t of tokens || []) {
-    const st = await usage.statement(db, { tokenId: t.id, userId, month, allowance: allowance.CALLS_PER_MONTH, rate: allowance.OVERAGE_USD_PER_CALL });
+    // Everyone here holds a live add-on, so the limit is the agent's own
+    // (override or default), the same number the gate pauses it at.
+    const limit = gate.overageLimitFor(allowance, t.id, true);
+    const st = await usage.statement(db, { tokenId: t.id, userId, month, allowance: allowance.CALLS_PER_MONTH, rate: allowance.OVERAGE_USD_PER_CALL, limit });
     if (st.error) throw new Error(`statement ${t.id}: ${st.error}`);
-    billable += billableOverage(st.overage_calls, allowance.MAX_BILLABLE_OVERAGE_CALLS);
+    billable += billableOverage(st.overage_calls, limit);
   }
   return { billable, tokens: (tokens || []).length, member: true };
 }

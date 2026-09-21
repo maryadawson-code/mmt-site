@@ -69,6 +69,16 @@ describe("agent-overage-report handler", () => {
     expect(db.updates.at(-1).patch).toEqual(expect.objectContaining({ event_type: "AGENT_OVERAGE_REPORT_FAILED", severity: "error" }));
     expect(db.updates.at(-1).patch.details.error).toMatch(/Nothing billed/);
   });
+  it("a subscription that cannot be processed emails Mary even when nothing was billed: an item that will not attach is overage served for free", async () => {
+    const sent = [];
+    async function* one() { yield { id: "s_bad", status: "active", customer: { id: "cus_gone", deleted: true }, items: { data: [{ price: { id: "price_a", recurring: { interval: "month" } } }] } }; }
+    const stripe = { ...quietStripe([]), subscriptions: { list: () => one() } };
+    const res = await makeHandler({ now: NOW, supabase: fakeOps(), stripe, sendEmail: async (m) => { sent.push(m); return { success: true }; }, env: { AGENT_ACCESS_ADDON_PRICE_IDS: "price_a" }, allowance: ALLOW })();
+    expect(JSON.parse(res.body)).toEqual(expect.objectContaining({ status: "partial", failure_count: 1, events_sent: 0 }));
+    expect(sent).toHaveLength(1);
+    expect(sent[0].to).toBe("mary@missionmeetstech.com");
+    expect(sent[0].subject).toMatch(/1 subscription\(s\) could not be processed/);
+  });
   it("a failure count keeps the first reason", () => {
     const d = summarize("2026-10-15", { status: "partial", subscriptions: 3, items_added: 0, events_sent: 1, calls_reported: 4, failures: [{ subscription: "s1", error: "first" }, { subscription: "s2", error: "second" }] });
     expect(d).toEqual(expect.objectContaining({ failure_count: 2, first_failure: "s1: first" }));

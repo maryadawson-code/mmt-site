@@ -10,11 +10,26 @@ const { createClient } = require("@supabase/supabase-js");
 const { json, preflight, parseBody } = require("./lib/agent-http");
 const { resolveAgentOwner } = require("./lib/agent-session");
 const usage = require("./lib/agent-usage");
+const gate = require("./lib/agent-allowance-gate");
+const { ALLOWANCE } = require("./lib/agent-config");
+const { cacheGet, cacheSet, cacheKey, connectEvent } = require("./lib/fetch-cache");
+
+const addonPriceIds = () => String(process.env.AGENT_ACCESS_ADDON_PRICE_IDS || "").split(",").map((x) => x.trim()).filter(Boolean);
+
+/** This agent's overage limit, by the same rule the gate uses (lib/agent-allowance-gate.js). */
+async function limitFor(tokenId, owner) {
+  if (gate.hasOverride(ALLOWANCE, tokenId)) return gate.overageLimitFor(ALLOWANCE, tokenId, true);
+  let stripe = null;
+  if (process.env.STRIPE_SECRET_KEY) { const Stripe = require("stripe"); stripe = new Stripe(process.env.STRIPE_SECRET_KEY); }
+  const r = await gate.resolveBillable({ userId: owner.userId, email: owner.email, addonPriceIds: addonPriceIds(), stripe, cacheGet, cacheSet, cacheKey });
+  return gate.overageLimitFor(ALLOWANCE, tokenId, r.billable);
+}
 
 exports.handler = async (event) => {
   const pf = preflight(event);
   if (pf) return pf;
   if (event.httpMethod !== "POST") return json(405, { error: "Method not allowed" });
+  connectEvent(event); // the billable answer is cached in Netlify Blobs
 
   const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
   const body = parseBody(event);
@@ -36,7 +51,8 @@ exports.handler = async (event) => {
   if (!owned || owned.length === 0) return json(404, { error: "NOT_FOUND", message: "That connection no longer exists." });
 
   try {
-    const statement = await usage.statement(supabase, { tokenId, userId: owner.userId, month });
+    const limit = await limitFor(tokenId, owner);
+    const statement = await usage.statement(supabase, { tokenId, userId: owner.userId, month, limit });
     if (statement.error) return json(400, { error: "BAD_MONTH", message: statement.error });
     return json(200, { connection: { agent_id: owned[0].id, label: owned[0].name }, statement });
   } catch (e) {
