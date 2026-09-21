@@ -107,6 +107,18 @@ const VEHICLES = [
     source: "data/premium/agency-profiles/agencies.json (va)",
   },
   {
+    aliases: ["sparc", "cms sparc", "strategic partners acquisition readiness"],
+    canonical: "CMS SPARC",
+    agency: "CMS",
+    naics: ["541512", "541511", "541519"],
+    search_terms: ["SPARC", "Strategic Partners Acquisition Readiness Contract"],
+    owners: ["CMS Office of Acquisition and Grants Management", "CMS Office of Information Technology"],
+    notes: "SPARC is CMS's $25B multiple-award IT IDIQ (large business, small business and WOSB tiers), available to CMS and every HHS operating division with no administrative fee. CMS states the period of performance runs February 21 2017 to February 20 2027, no new task orders will be awarded after the ordering period ends, existing task orders run to their own end dates (up to five years past it), and there is no plan to replace the SPARC IDIQ. The 2026-08-17 Contract Tracker update carries the same statement.",
+    verified: "2026-09-20",
+    source: "data/idiq-vehicles.json; contracts.json (cms-sparc-ii, 2026-08-17); cms.gov SPARC FAQ read 2026-09-20",
+    idiq_name: "CMS SPARC",
+  },
+  {
     aliases: ["cio-sp4", "cio sp4", "ciosp4", "cio-sp 4", "cio-sp iv"],
     canonical: "CIO-SP4",
     agency: "HHS",

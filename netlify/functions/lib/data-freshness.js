@@ -41,6 +41,17 @@ const REGISTRY = [
   // 2026-09-14: the Ask MMT vehicle baseline. CIO-SP4 read as a live
   // vehicle eight months after its cancellation because nothing aged it.
   { id: "known-vehicles", file: "netlify/functions/lib/known-vehicles.js", module: "./known-vehicles", paths: ["VEHICLES[].verified"], label: "VEHICLES[].canonical", warn_days: 90, cadence: "quarterly", fix: "Re-check the vehicle's note against data/idiq-vehicles.json, contracts.json or the issuing office's notice; rewrite the note without undated future claims and bump verified." },
+  // 2026-09-20: the market-entry reference layer (docs/market-entry-coverage-spec.md).
+  // Served through /api/v1 (scope reference:read), Ask MMT and two Premium pages.
+  { id: "reference-buyers", file: "data/reference/buyers.json", paths: ["_schema.last_verified"], warn_days: 100, cadence: "quarterly", fix: "Re-verify each buyer's entry characteristics and links; bump _schema.last_verified and each touched row's verified." },
+  { id: "reference-authorization-paths", file: "data/reference/authorization-paths.json", paths: ["_schema.last_verified"], warn_days: 100, cadence: "quarterly", fix: "Re-check FedRAMP, CMS RCR, CC SRG, VA, ONC, GovRAMP and TX-RAMP pages; bump _schema.last_verified." },
+  { id: "reference-state-medicaid", file: "data/reference/state-medicaid.json", paths: ["_schema.last_verified"], warn_days: 100, cadence: "quarterly", fix: "Re-check the funding rules, SMC, cooperative contracts and demand-signal dates; fill pending state fields with a source; bump _schema.last_verified." },
+  { id: "reference-innovation-pathways", file: "data/reference/innovation-pathways.json", paths: ["_schema.last_verified"], warn_days: 100, cadence: "quarterly", fix: "Re-check SBIR, ARPA-H, BARDA, CSO, MTEC, VA Pathfinder and CMMI pages; bump _schema.last_verified." },
+  { id: "reference-compliance-rules", file: "data/reference/compliance-rules.json", paths: ["_schema.last_verified"], warn_days: 100, cadence: "quarterly", fix: "Re-check FAR 3.4, FAR 9.5 rulemaking status, LDA thresholds, PIA and Byrd text; bump _schema.last_verified." },
+  { id: "reference-buying-routes", file: "data/reference/buying-routes.json", paths: ["_schema.last_verified"], warn_days: 100, cadence: "quarterly", fix: "Re-check FAR thresholds and the disqualified list against data/idiq-vehicles.json; bump _schema.last_verified." },
+  // 2026-09-20 platform spec §4: state procurement records carry a 7-day
+  // freshness window on the API, so the file itself is re-read monthly.
+  { id: "reference-state-procurement", file: "data/reference/state-procurement.json", paths: ["_schema.last_verified"], warn_days: 35, cadence: "monthly", fix: "Re-read the top-ten state portals, NASPO ValuePoint MES portfolios and CMS CEF pages; update coverage.states and bump _schema.last_verified." },
 ];
 
 // Content directories that render through BUILD markers. The markers must

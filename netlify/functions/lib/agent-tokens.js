@@ -22,9 +22,15 @@ const VALID_SCOPES = Object.freeze([
   "opportunities:read", // GET /api/v1/opportunities(/:id)
   "tracker:read",       // GET /api/v1/tracker
   "intel:read",         // GET /api/v1/recommended
+  "reference:read",     // GET /api/v1/{agencies,vehicles,authorization-paths,innovation-pathways,compliance-rules,buying-routes,contracts} (2026-09-20)
+  "states:read",        // GET /api/v1/states/** — state Medicaid agencies and state procurement coverage (platform spec section 2)
+  "orgcharts:read",     // GET /api/v1/org-charts(/:agency) — agency org charts, key people, the DHA internal-vetting flag
+  "signals:read",       // MCP mmt_signals_list — Signal Chain cards (spends upstream API quota, so opt-in)
 ]);
 
-const DEFAULT_SCOPES = Object.freeze(["opportunities:read"]);
+// Global, non-personal data ships by default; the owner-scoped reads and the
+// quota-spending Signal Chain stay opt-in.
+const DEFAULT_SCOPES = Object.freeze(["opportunities:read", "reference:read", "states:read", "orgcharts:read"]);
 
 // Token CRUD policy (spec §6 / §9):
 const MAX_ACTIVE_TOKENS_PER_USER = 5;

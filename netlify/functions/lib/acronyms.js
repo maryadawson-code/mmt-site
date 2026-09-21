@@ -83,6 +83,26 @@ const ACRONYMS = {
   EHR: "Electronic Health Record", EIDS: "Enterprise Intelligence and Data Solutions", JLV: "Joint Longitudinal Viewer",
   HIE: "Health Information Exchange", PHI: "Protected Health Information", PII: "Personally Identifiable Information",
   HIPAA: "Health Insurance Portability and Accountability Act",
+  // State Medicaid systems and financing (2026-09-20 market-entry coverage;
+  // sources in data/reference/state-medicaid.json)
+  MES: "Medicaid Enterprise System", MMIS: "Medicaid Management Information System", MITA: "Medicaid Information Technology Architecture",
+  APD: "Advance Planning Document (45 CFR Part 95 Subpart F)", PAPD: "Planning Advance Planning Document", IAPD: "Implementation Advance Planning Document",
+  APDU: "Advance Planning Document Update", FFP: "Federal Financial Participation", SMC: "Streamlined Modular Certification (CMS, SMDL 22-001)",
+  OBC: "Outcomes-Based Certification", "E&E": "Eligibility and Enrollment", EVV: "Electronic Visit Verification",
+  "T-MSIS": "Transformed Medicaid Statistical Information System", "MARS-E": "Minimum Acceptable Risk Standards for Exchanges (CMS)",
+  MCO: "Managed Care Organization", FFS: "Fee-for-Service", CHIP: "Children's Health Insurance Program",
+  NASPO: "National Association of State Procurement Officials", SMDL: "State Medicaid Director Letter", SHO: "State Health Official letter",
+  // Security authorization programs
+  RCR: "Rapid Cloud Review (CMS)", "P-ATO": "Provisional Authority to Operate", "3PAO": "Third-Party Assessment Organization",
+  CSP: "Cloud Service Provider", "CC SRG": "DoD Cloud Computing Security Requirements Guide", SRG: "Security Requirements Guide",
+  GovRAMP: "GovRAMP (formerly StateRAMP), the state and local cloud authorization program", StateRAMP: "State Risk and Authorization Management Program (renamed GovRAMP in 2025)",
+  "TX-RAMP": "Texas Risk and Authorization Management Program", IL2: "DoD Impact Level 2",
+  // Compliance references
+  LDA: "Lobbying Disclosure Act", OCI: "Organizational Conflict of Interest", PIA: "Procurement Integrity Act (41 U.S.C. 2101 to 2107)",
+  // Innovation doors
+  MTEC: "Medical Technology Enterprise Consortium", ISO: "Innovative Solution Opening (ARPA-H solicitation)", "EZ-BAA": "Easy Broad Agency Announcement (BARDA DRIVe)",
+  DRIVe: "Division of Research, Innovation and Ventures (BARDA)", WISeR: "Wasteful and Inappropriate Service Reduction model (CMS Innovation Center)",
+  SBIR: "Small Business Innovation Research", STTR: "Small Business Technology Transfer", OBBBA: "One Big Beautiful Bill Act (H.R. 1, 2025)",
   // Cyber and cloud
   ATO: "Authority to Operate", cATO: "Continuous Authority to Operate", RMF: "Risk Management Framework",
   FedRAMP: "Federal Risk and Authorization Management Program", CMMC: "Cybersecurity Maturity Model Certification",

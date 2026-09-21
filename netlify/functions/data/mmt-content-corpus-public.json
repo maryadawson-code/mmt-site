@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-15T20:55:17.893Z",
+  "generated_at": "2026-09-20T16:46:06.818Z",
   "total": 277,
   "note": "Public subset of mmt-content-corpus.json (premium=false items only). For unauthenticated endpoints. Per Sprint C 2026-05-14.",
   "counts": {
@@ -4217,17 +4217,17 @@
       "title": "DHA Medical Support Services IDIQ",
       "slug": "dha-mss",
       "date": "",
-      "description": "DoD DHA — IDIQ · $0.97B ceiling",
+      "description": "DoD DHA — Multiple Award IDIQ · $0.97B ceiling",
       "tags": [
         "idiq",
         "DoD",
         "DHA",
         "Multiple Award IDIQ",
-        "614000000"
+        "Winding Down"
       ],
       "url": "/idiq-tracker.html",
-      "source_url": "Clinical/medical support at MTFs",
-      "excerpt": "Vehicle: DHA Medical Support Services IDIQ\nAgency: DoD / DHA\nCeiling: $0.97B\nPeriod of performance: ? to 2025-10-31\nSet-aside: Multiple Award IDIQ\nStatus: 614000000\nPrimes: Winding Down\nMMT burn status: 5\nMMT forecast: 2026-10-01 to 2027-03-31 (65) — ?% confidence\nPrimary source: Clinical/medical support at MTFs",
+      "source_url": "https://www.highergov.com/vehicle/dha-medical-support-services-mss-2007/",
+      "excerpt": "Vehicle: DHA Medical Support Services IDIQ\nAgency: DoD / DHA\nCeiling: $0.97B\nPeriod of performance: ? to 2025-10-31\nType: Multiple Award IDIQ\nStatus: Winding Down\nMMT burn status: Saturating\nMMT Incumbent Vulnerability Score: 5/5\nMMT forecast: Successor vehicle RFP (2026-10-01 to 2027-03-31) — 65% confidence\nMMT note: Clinical/medical support at MTFs\nPrimary source: https://www.highergov.com/vehicle/dha-medical-support-services-mss-2007/",
       "premium": false
     },
     {
@@ -4355,7 +4355,7 @@
       "type": "idiq_vehicle",
       "title": "CMS SPARC",
       "slug": "cms-sparc",
-      "date": "2016-06-08",
+      "date": "2017-02-21",
       "description": "HHS CMS — Multiple Award IDIQ · $25.00B ceiling",
       "tags": [
         "idiq",
@@ -4363,11 +4363,11 @@
         "CMS",
         "Multi-tier (LB/SB/WOSB)",
         "Multiple Award IDIQ",
-        "Active nearing recompete"
+        "Active: ordering period ends Feb 20 2027; no successor planned"
       ],
       "url": "/idiq-tracker.html",
       "source_url": "https://www.cms.gov/data-research/cms-information-technology/sparc",
-      "excerpt": "Vehicle: CMS SPARC\nAgency: HHS / CMS\nContract number: HHSM-500-2016-00051I\nCeiling: $25.00B\nPeriod of performance: 2016-06-08 to 2026-06-07\nSet-aside: Multi-tier (LB/SB/WOSB)\nType: Multiple Award IDIQ\nStatus: Active nearing recompete\nPrimes: Multiple\nNAICS primary: 541512\nMMT burn status: Saturating\nMMT Incumbent Vulnerability Score: 1/5\nMMT forecast: SPARC recompete (2026-06-08 to 2027-06-30) — 80% confidence\nMMT note: Active nearing recompete; POP Jun 8 2016 to Jun 7 2026; available to CMS and HHS OPDIVs\nPrimary source: https://www.cms.gov/data-research/cms-information-technology/sparc",
+      "excerpt": "Vehicle: CMS SPARC\nAgency: HHS / CMS\nContract number: HHSM-500-2016-00051I\nCeiling: $25.00B\nPeriod of performance: 2017-02-21 to 2027-02-20\nSet-aside: Multi-tier (LB/SB/WOSB)\nType: Multiple Award IDIQ\nStatus: Active: ordering period ends Feb 20 2027; no successor planned\nPrimes: Multiple\nNAICS primary: 541512\nMMT burn status: Saturating\nMMT Incumbent Vulnerability Score: 1/5\nMMT forecast: Ordering period closes with no successor vehicle (CMS FAQ) (2027-02-20 to 2027-02-20) — 90% confidence\nMMT note: CMS: period of performance Feb 21 2017 to Feb 20 2027; no new task orders after the ordering period; existing task orders run to their own end dates (up to five years past); CMS states there is no plan to replace the SPARC IDIQ (cms.gov SPARC FAQ read 2026-09-20). Available to CMS and HHS OPDIVs with no administrative fee.\nPrimary source: https://www.cms.gov/data-research/cms-information-technology/sparc",
       "premium": false
     },
     {
@@ -4556,17 +4556,18 @@
       "title": "DLA MedSurg Prime Vendor Gen VI",
       "slug": "dla-mspv-gen-vi",
       "date": "",
-      "description": "DoD DLA Troop Support Medical — Unrestricted + regional · $5.00B ceiling",
+      "description": "DoD DLA Troop Support Medical — Multiple Award IDIQ · $5.00B ceiling",
       "tags": [
         "idiq",
         "DoD",
         "DLA Troop Support Medical",
         "Unrestricted + regional",
-        "TBD"
+        "Multiple Award IDIQ",
+        "In Evaluation"
       ],
       "url": "/idiq-tracker.html",
-      "source_url": "70",
-      "excerpt": "Vehicle: DLA MedSurg Prime Vendor Gen VI\nAgency: DoD / DLA Troop Support Medical\nContract number: SPE2DV25R0001\nCeiling: $5.00B\nType: Unrestricted + regional\nStatus: TBD\nPrimes: Commercial distribution\nNAICS secondary: 339113\nPSC: 424210\nMMT forecast: 2 (Award decisions) — ?% confidence\nMMT note: https://www.highergov.com/contract-opportunity/dla-medsurg-prime-vendor-gen-vi-spe2dv25r0001-o-daa0a/\nPrimary source: 70",
+      "source_url": "https://www.highergov.com/contract-opportunity/dla-medsurg-prime-vendor-gen-vi-spe2dv25r0001-o-daa0a/",
+      "excerpt": "Vehicle: DLA MedSurg Prime Vendor Gen VI\nAgency: DoD / DLA Troop Support Medical\nContract number: SPE2DV25R0001\nCeiling: $5.00B\nSet-aside: Unrestricted + regional\nType: Multiple Award IDIQ\nStatus: In Evaluation\nPrimes: TBD\nNAICS primary: 339113\nNAICS secondary: 424210\nMMT burn status: New\nMMT Incumbent Vulnerability Score: 2/5\nMMT forecast: Award decisions (2026-06-01 to 2026-09-30) — 70% confidence\nMMT note: 3 Global Regions primary + backup PVs\nPrimary source: https://www.highergov.com/contract-opportunity/dla-medsurg-prime-vendor-gen-vi-spe2dv25r0001-o-daa0a/",
       "premium": false
     },
     {

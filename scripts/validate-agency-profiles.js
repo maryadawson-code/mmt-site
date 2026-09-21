@@ -6,7 +6,7 @@
 // judge editorial quality, or require Claude Code to verify research.
 //
 // Enforces:
-//   1. agencies.json contains exactly the expected 11 slugs.
+//   1. agencies.json contains exactly the expected 13 slugs.
 //   2. Every agency has required public fields.
 //   3. Every agency has a non-empty `premiumModules` array.
 //   4. Every premium module key (dataStrategy, scaleCards,
@@ -35,6 +35,9 @@ const DIST = path.join(REPO, "dist");
 const EXPECTED_SLUGS = [
   "dha", "va", "hhs", "onc", "arpa-h", "cms",
   "ihs", "cdc", "fda", "nih-nitaac", "gsa",
+  // 2026-09-20 market-entry coverage: the two buyers the Echelon proposal
+  // names that had no profile.
+  "hrsa", "aspr",
 ];
 
 const REQUIRED_PUBLIC_FIELDS = [

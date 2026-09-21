@@ -85,6 +85,12 @@ const NOT_INITIALISMS = new Set([
   "KO",     // Contracting Officer, the traditional K
   "VETS",   // Veterans Technology Services, a GWAC brand
   "MILCON", // MILitary CONstruction, syllabic
+  // 2026-09-20 market-entry reference terms
+  "3PAO",    // Third-Party Assessment Organization: the 3 counts the word Third
+  "GovRAMP", // a program name modeled on FedRAMP, not an initialism of its own
+  "TX-RAMP", // TX is the postal abbreviation for Texas
+  "EZ-BAA",  // EZ is "easy", BARDA DRIVe's brand for its short-form BAA
+  "STTR",    // Small Business Technology Transfer: the R is the last letter of Transfer
 ]);
 
 function initials(expansion) {

@@ -38,13 +38,19 @@ exports.handler = async (event) => {
   }
 
   const now = new Date();
+  // agent_id / member_id / label are the platform spec's names for the same
+  // fields (docs/agent-platform-spec.md §2): one credential per connected agent.
   const connections = (data || []).map((row) => ({
     id: row.id,
+    agent_id: row.id,
+    member_id: owner.userId,
     name: row.name,
+    label: row.name,
     token_prefix: row.token_prefix,
     scopes: row.scopes,
     last_used_at: row.last_used_at,
     expires_at: row.expires_at,
+    revoked_at: row.revoked_at || null,
     created_at: row.created_at,
     status: statusOf(row, now),
   }));

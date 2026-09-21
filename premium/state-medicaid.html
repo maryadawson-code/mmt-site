@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>State Medicaid coverage | MMT Premium</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="All 56 state and territory Medicaid agencies with the federal funding rules, certification framework, cooperative purchasing routes and dated demand signals a health IT vendor needs before selling into a state program. Every row dated and sourced.">
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <link rel="icon" href="/favicon-v3.png" type="image/png">
+  <style>
+    /* Content styles only. The layout shell is injected at build time by
+       injectDashShell() in build.js (this page is in dashPageMap). */
+    :root { --mmt-navy:#0A192F; --mmt-teal:#457B9D; --mmt-white:#FFFFFF; --mmt-surface:#F3F4F6; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --mmt-red:#E63946; }
+    body { font-family:Inter,system-ui,sans-serif; color:var(--mmt-navy); background:var(--mmt-surface); margin:0; line-height:1.55; }
+    .sm-eyebrow { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--mmt-text-secondary); margin:0 0 8px; }
+    .sm-h1 { font-size:24px; font-weight:800; margin:0 0 6px; letter-spacing:-0.02em; }
+    .sm-lede { font-size:14px; color:var(--mmt-text-secondary); margin:0 0 18px; max-width:70ch; }
+    .sm-card { background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:12px; padding:20px 22px; margin-bottom:16px; }
+    .sm-card h2 { font-size:16px; font-weight:800; margin:0 0 10px; }
+    .sm-card h3 { font-size:13.5px; font-weight:700; margin:14px 0 4px; }
+    .sm-card p, .sm-card li { font-size:13.5px; margin:0 0 6px; }
+    .sm-meta { font-size:11.5px; color:var(--mmt-text-secondary); }
+    .sm-meta a, .sm-link { color:var(--mmt-teal); text-decoration:none; }
+    .sm-meta a:hover, .sm-link:hover { text-decoration:underline; }
+    .sm-filters { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:0 0 12px; }
+    .sm-filters input[type=text] { flex:1; min-width:220px; padding:9px 12px; border:1px solid var(--mmt-border); border-radius:6px; font-size:14px; font-family:Inter,sans-serif; }
+    .sm-filters select { padding:8px 10px; border:1px solid var(--mmt-border); border-radius:6px; font-size:13px; font-family:Inter,sans-serif; background:var(--mmt-white); }
+    .sm-count { font-size:12.5px; color:var(--mmt-text-secondary); margin-bottom:10px; }
+    table.sm { width:100%; border-collapse:collapse; background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:10px; overflow:hidden; font-size:13px; }
+    table.sm th { text-align:left; padding:10px 12px; background:var(--mmt-surface); font-weight:700; border-bottom:2px solid var(--mmt-border); }
+    table.sm td { padding:10px 12px; border-bottom:1px solid var(--mmt-border); vertical-align:top; }
+    table.sm tr:hover td { background:rgba(69,123,157,0.04); }
+    .pill { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700; letter-spacing:0.03em; white-space:nowrap; }
+    .pill.adopted { background:rgba(69,123,157,0.12); color:var(--mmt-teal); }
+    .pill.not_adopted { background:rgba(10,25,47,0.08); color:var(--mmt-navy); }
+    .pill.na { background:rgba(92,107,122,0.10); color:var(--mmt-text-secondary); }
+    .pill.yes { background:rgba(69,123,157,0.12); color:var(--mmt-teal); }
+    .sm-pending { font-size:11.5px; color:#B45309; }
+    .sm-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:14px; }
+    .sm-stat { background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:10px; padding:14px 16px; }
+    .sm-stat .n { font-size:24px; font-weight:800; }
+    .sm-stat .l { font-size:12px; color:var(--mmt-text-secondary); }
+    .sm-threshold { font-variant-numeric:tabular-nums; }
+    @media (max-width:768px) { table.sm { font-size:12px; } table.sm th, table.sm td { padding:8px; } .sm-hide-m { display:none; } }
+  </style>
+  <script>
+    (function() {
+      var isPremium = localStorage.getItem('mmt_premium') === 'true';
+      var ts = localStorage.getItem('mmt_premium_ts');
+      var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+      if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html'; }
+    })();
+  </script>
+</head>
+<body>
+  <p class="sm-eyebrow">MMT Premium &middot; State coverage</p>
+  <h1 class="sm-h1">State Medicaid coverage</h1>
+  <p class="sm-lede">Every state and territory Medicaid agency, with the federal rules that decide what a state may buy and how it is paid for. Agency names and official sites were verified on the date shown on each row. A blank field means I have not verified it yet, and the row says so.</p>
+  <p class="sm-meta" id="sm-stamp"></p>
+
+  <div class="sm-grid" id="sm-stats" style="margin:14px 0 18px;"></div>
+
+  <div class="sm-card">
+    <h2>The agencies</h2>
+    <div class="sm-filters">
+      <input type="text" id="sm-search" placeholder="Search state, agency or program (Medi-Cal, HHSC, TennCare)" aria-label="Search states">
+      <select id="sm-expansion" aria-label="Filter by expansion status"><option value="">All expansion statuses</option><option value="adopted">Adopted expansion</option><option value="not_adopted">Not adopted</option><option value="na">Territories (not assessed)</option></select>
+      <select id="sm-govramp" aria-label="Filter by GovRAMP participation"><option value="">GovRAMP: any</option><option value="yes">Participating entity in state</option><option value="formal">Formal state program</option><option value="no">No participating entity</option></select>
+    </div>
+    <div class="sm-count" id="sm-count"></div>
+    <div style="overflow-x:auto;">
+      <table class="sm" id="sm-table">
+        <thead><tr><th>State</th><th>Agency and program</th><th>Expansion</th><th>GovRAMP</th><th class="sm-hide-m">Statewide cloud program</th><th>Verified</th></tr></thead>
+        <tbody id="sm-rows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sm-card" id="sm-rules"></div>
+  <div class="sm-card" id="sm-cert"></div>
+  <div class="sm-card" id="sm-coop"></div>
+  <div class="sm-card" id="sm-signals"></div>
+  <div class="sm-card" id="sm-procurement"></div>
+  <p class="sm-meta">Source data: <a href="/data/reference/state-medicaid.json">state-medicaid.json</a> (hand-maintained; served to connected agents at <code>/api/v1/states</code> with the states:read permission; procurement coverage in <a href="/data/reference/state-procurement.json">state-procurement.json</a>). Method and maintenance rules: <a href="/premium/market-entry/">Market entry reference</a>.</p>
+
+  <script>
+    (function () {
+      var esc = function (s) { if (s == null) return ''; return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+      var usd = function (v) { return typeof v === 'number' ? '$' + v.toLocaleString('en-US') : esc(v); };
+      var srcLinks = function (rec) { return (rec.sources || []).map(function (s) { return '<a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.label) + '</a>'; }).join(' &middot; '); };
+      var stamp = function (rec) { return '<p class="sm-meta">Verified ' + esc(rec.verified) + (rec.confidence ? ' &middot; ' + esc(rec.confidence) + ' confidence' : '') + (rec.sources && rec.sources.length ? ' &middot; ' + srcLinks(rec) : '') + '</p>'; };
+      var pending = function (rec) { return (rec.pending && rec.pending.length) ? '<p class="sm-pending">Not yet covered: ' + esc(rec.pending.join('; ')) + '</p>' : ''; };
+      var data = null;
+
+      function renderRows() {
+        var q = (document.getElementById('sm-search').value || '').toLowerCase();
+        var exp = document.getElementById('sm-expansion').value;
+        var gr = document.getElementById('sm-govramp').value;
+        var rows = data.agencies.filter(function (s) {
+          if (q && !(s.state + ' ' + s.agency + ' ' + s.program_name + ' ' + s.code).toLowerCase().includes(q)) return false;
+          if (exp === 'na' && s.expansion_status !== null) return false;
+          if ((exp === 'adopted' || exp === 'not_adopted') && s.expansion_status !== exp) return false;
+          var g = s.govramp || {};
+          if (gr === 'yes' && !g.participating_entity_in_state) return false;
+          if (gr === 'formal' && !g.formal_program) return false;
+          if (gr === 'no' && g.participating_entity_in_state) return false;
+          return true;
+        });
+        document.getElementById('sm-count').textContent = rows.length + ' of ' + data.agencies.length + ' jurisdictions';
+        document.getElementById('sm-rows').innerHTML = rows.map(function (s) {
+          var g = s.govramp || {};
+          var expPill = s.expansion_status === 'adopted' ? '<span class="pill adopted">Adopted</span>' : s.expansion_status === 'not_adopted' ? '<span class="pill not_adopted">Not adopted</span>' : '<span class="pill na">Not assessed</span>';
+          var grCell = g.participating_entity_in_state ? '<span class="pill yes">' + (g.formal_program ? 'Formal program' : 'Participating entity') + '</span>' : '<span class="pill na">None listed</span>';
+          return '<tr><td><strong>' + esc(s.state) + '</strong><div class="sm-meta">' + esc(s.code) + '</div></td>' +
+            '<td>' + esc(s.agency) + '<div class="sm-meta">' + esc(s.program_name) + ' &middot; <a href="' + esc(s.url) + '" target="_blank" rel="noopener">official site</a></div>' + pending(s) + '</td>' +
+            '<td>' + expPill + '</td><td>' + grCell + '</td>' +
+            '<td class="sm-hide-m">' + (s.statewide_cloud_program ? esc(s.statewide_cloud_program) : '<span class="sm-meta">none recorded</span>') + '</td>' +
+            '<td class="sm-meta">' + esc(s.verified) + '</td></tr>';
+        }).join('');
+      }
+
+      function renderContext() {
+        var adopted = data.agencies.filter(function (s) { return s.expansion_status === 'adopted'; }).length;
+        var notAdopted = data.agencies.filter(function (s) { return s.expansion_status === 'not_adopted'; }).length;
+        var gov = data.agencies.filter(function (s) { return s.govramp && s.govramp.participating_entity_in_state; }).length;
+        document.getElementById('sm-stats').innerHTML = [
+          ['56', 'jurisdictions on file (50 states, DC, 5 territories)'],
+          [adopted, 'adopted Medicaid expansion (KFF, read ' + esc(data._schema.last_verified) + ')'],
+          [notAdopted, 'have not adopted expansion'],
+          [gov, 'states with a GovRAMP participating entity'],
+        ].map(function (x) { return '<div class="sm-stat"><div class="n">' + esc(x[0]) + '</div><div class="l">' + x[1] + '</div></div>'; }).join('');
+        document.getElementById('sm-stamp').innerHTML = 'Dataset last verified ' + esc(data._schema.last_verified) + '. ' + esc(data._schema.research_method);
+
+        document.getElementById('sm-rules').innerHTML = '<h2>Federal funding rules</h2>' + data.federal_funding_rules.map(function (r) {
+          return '<h3>' + esc(r.name) + '</h3><p class="sm-meta">' + esc(r.citation) + '</p><p>' + esc(r.summary) + '</p>' +
+            ((r.thresholds && r.thresholds.length) ? '<ul>' + r.thresholds.map(function (t) { return '<li class="sm-threshold">' + esc(t.label) + ': ' + usd(t.value) + '</li>'; }).join('') + '</ul>' : '') +
+            (r.what_it_means_for_a_vendor ? '<p><strong>What it means for a vendor.</strong> ' + esc(r.what_it_means_for_a_vendor) + '</p>' : '') + stamp(r);
+        }).join('');
+
+        var c = data.certification;
+        document.getElementById('sm-cert').innerHTML = '<h2>Certification and reporting</h2>' + ['smc', 'mes_modules', 't_msis', 'mars_e'].map(function (k) {
+          var r = c[k]; if (!r) return '';
+          return '<h3>' + esc(r.name) + '</h3>' + (r.citation ? '<p class="sm-meta">' + esc(r.citation) + '</p>' : '') + '<p>' + esc(r.summary) + '</p>' +
+            (r.modules ? '<p class="sm-meta">Modules: ' + esc(r.modules.join('; ')) + '</p>' : '') + (r.sources ? stamp(r) : '<p class="sm-meta">Verified ' + esc(r.verified) + '</p>') + pending(r);
+        }).join('');
+
+        document.getElementById('sm-coop').innerHTML = '<h2>Cooperative purchasing routes</h2>' + data.cooperative_purchasing.map(function (r) {
+          return '<h3>' + esc(r.name) + '</h3><p class="sm-meta">' + esc(r.administrator) + '</p><p>' + esc(r.summary) + '</p><p><strong>Who may buy.</strong> ' + esc(r.eligible_buyers) + '</p><p><strong>How a vendor uses it.</strong> ' + esc(r.how_a_vendor_uses_it) + '</p>' + stamp(r) + pending(r);
+        }).join('');
+
+        document.getElementById('sm-signals').innerHTML = '<h2>Demand signals with dates</h2>' + data.demand_signals.map(function (r) {
+          return '<h3>' + esc(r.name) + '</h3><p>' + esc(r.summary) + '</p><ul>' + (r.dates || []).map(function (d) { return '<li><strong>' + esc(d.date) + '</strong> ' + esc(d.event) + '</li>'; }).join('') + '</ul><p><strong>What it means for a vendor.</strong> ' + esc(r.what_it_means_for_a_vendor) + '</p>' + stamp(r) + pending(r);
+        }).join('');
+      }
+
+      // State MES procurement coverage (data/reference/state-procurement.json):
+      // the ten highest-spending states in detail, the module landscape on
+      // file, the cooperative vehicles, and the per-entity coverage that the
+      // API turns into a coverage gap instead of an empty list.
+      function renderProcurement(p) {
+        var cov = p.coverage.states;
+        var summary = { live: 0, partial: 0, not_covered: 0 };
+        cov.forEach(function (c) { summary[c.status] = (summary[c.status] || 0) + 1; });
+        var top = p.state_agencies.filter(function (a) { return a.spend; }).sort(function (a, b) { return a.spend.kff_fy2023_rank - b.spend.kff_fy2023_rank; });
+        var countBy = function (rows) { var o = {}; rows.forEach(function (r) { o[r.state] = (o[r.state] || 0) + 1; }); return o; };
+        var modsBy = countBy(p.mes_modules), paBy = countBy(p.participating_addenda), solBy = countBy(p.state_solicitations);
+        var pill = function (v) { var k = v === 'live' ? 'yes' : v === 'partial' ? 'adopted' : 'na'; return '<span class="pill ' + k + '">' + esc(String(v).replace('_', ' ')) + '</span>'; };
+        var plural = function (n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); };
+        var rows = top.map(function (a) {
+          var c = cov.filter(function (x) { return x.code === a.code; })[0] || { entities: {} };
+          return '<tr><td><strong>' + esc(a.state) + '</strong><div class="sm-meta">rank ' + esc(a.spend.kff_fy2023_rank) + ' by total Medicaid spending</div></td>' +
+            '<td>' + esc(a.medicaid_agency) + '<div class="sm-meta"><a href="' + esc(a.medicaid_agency_url) + '" target="_blank" rel="noopener">agency</a>' +
+            (a.cio_office ? ' &middot; <a href="' + esc(a.cio_office.url) + '" target="_blank" rel="noopener">' + esc(a.cio_office.name) + '</a>' : '') + '</div></td>' +
+            '<td>' + (a.procurement_portal ? '<a href="' + esc(a.procurement_portal.url) + '" target="_blank" rel="noopener">' + esc(a.procurement_portal.name) + '</a>' : '<span class="sm-meta">not yet mapped</span>') + '</td>' +
+            '<td>' + plural(modsBy[a.code] || 0, 'module') + ' &middot; ' + plural(solBy[a.code] || 0, 'notice') + ' &middot; ' + plural(paBy[a.code] || 0, 'addendum').replace('addendums', 'addenda') + '</td>' +
+            '<td class="sm-hide-m">' + pill(c.entities.mes_module || 'not_covered') + ' ' + pill(c.entities.state_solicitation || 'not_covered') + '</td></tr>';
+        }).join('');
+        var mods = top.map(function (a) {
+          var ms = p.mes_modules.filter(function (m) { return m.state === a.code; });
+          if (!ms.length) return '';
+          return '<h3>' + esc(a.state) + '</h3><ul>' + ms.map(function (m) {
+            return '<li><strong>' + esc(m.module) + ':</strong> ' + (m.incumbent ? esc(m.incumbent) : '<span class="sm-meta">incumbent not yet read</span>') +
+              (m.contract_id ? ' <span class="sm-meta">(' + esc(m.contract_id) + ')</span>' : '') + (m.contract_end ? ' &middot; through ' + esc(m.contract_end) : '') +
+              (m.note ? '<div class="sm-meta">' + esc(m.note) + '</div>' : '') + pending(m) + '</li>';
+          }).join('') + '</ul>';
+        }).join('');
+        var coop = p.coop_vehicles.map(function (v) {
+          return '<h3>' + esc(v.name) + '</h3><p class="sm-meta">Lead state ' + esc(v.lead_state) + ' &middot; ' + esc(v.term_start) + ' to ' + esc(v.term_end) +
+            ' &middot; participating states: ' + (v.participating_states.length ? esc(v.participating_states.join(', ')) : 'none yet') + '</p>' +
+            '<p>Scope: ' + esc(v.module_scope.join('; ')) + '.</p><p class="sm-meta">Suppliers: ' + esc(v.awarded_suppliers.map(function (x) { return x.name; }).join('; ')) + '</p>' +
+            (v.note ? '<p>' + esc(v.note) + '</p>' : '') + stamp(v) + pending(v);
+        }).join('');
+        document.getElementById('sm-procurement').innerHTML = '<h2>State MES procurement coverage</h2>' +
+          '<p>' + esc(p._schema.scope) + ' Coverage is kept per state and per entity: <strong>' + summary.live + ' live, ' + summary.partial + ' partial, ' + summary.not_covered + ' not covered</strong> as of ' + esc(p.coverage.as_of) +
+          '. There is no live state portal feed yet, so the solicitations on file are dated notices. Connected agents read the same data at <code>/api/v1/states/coverage</code> and its siblings with the states:read permission, and a state I do not yet cover for an entity gets a coverage gap, never an empty list.</p>' +
+          '<h3>The ten highest-spending states</h3><div style="overflow-x:auto;"><table class="sm"><thead><tr><th>State</th><th>Medicaid agency and IT office</th><th>Procurement portal</th><th>On file</th><th class="sm-hide-m">Modules &middot; notices</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+          '<h3>Module landscape on file</h3>' + mods +
+          '<h3>Cooperative vehicles</h3>' + coop +
+          '<p class="sm-meta">' + esc(p._schema.research_method) + '</p>';
+      }
+
+      fetch('/data/reference/state-medicaid.json').then(function (r) { return r.json(); }).then(function (d) {
+        data = d;
+        renderContext();
+        renderRows();
+        ['sm-search', 'sm-expansion', 'sm-govramp'].forEach(function (id) { document.getElementById(id).addEventListener('input', renderRows); document.getElementById(id).addEventListener('change', renderRows); });
+        return fetch('/data/reference/state-procurement.json').then(function (r) { return r.json(); }).then(renderProcurement).catch(function () {
+          document.getElementById('sm-procurement').innerHTML = '<h2>State MES procurement coverage</h2><p class="sm-meta">Could not load the procurement coverage data. Try refreshing in a moment.</p>';
+        });
+      }).catch(function () {
+        document.getElementById('sm-rows').innerHTML = '<tr><td colspan="6" class="sm-meta">Could not load the state Medicaid data. Try refreshing in a moment.</td></tr>';
+      });
+    })();
+  </script>
+</body>
+</html>

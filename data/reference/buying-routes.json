@@ -1,0 +1,303 @@
+{
+  "_schema": {
+    "version": "1.0",
+    "last_verified": "2026-09-20",
+    "owner": "hand-maintained; docs/market-entry-coverage-spec.md section 4.6",
+    "research_method": "Web search on 2026-09-20 for thresholds and authorities; vehicle facts come from data/idiq-vehicles.json and are never restated here. Direct fetch was blocked by the session proxy.",
+    "status_check": "Before citing any route that runs on a vehicle, read /api/v1/vehicles/{vehicle_id} for ordering_status, ordering_end and as_of. A route in this file does not carry vehicle status on its own.",
+    "thresholds_effective": "2025-10-01 (FAR inflation adjustment, Federal Register 2025-08-27)"
+  },
+  "routes": [
+    {
+      "id": "micro_purchase",
+      "name": "Micro-purchase",
+      "group": "direct_award",
+      "mechanism": "A government purchase card or simple order at or below the micro-purchase threshold, with no competition required.",
+      "authority": "FAR 2.101 and Part 13",
+      "thresholds": [{ "label": "Micro-purchase threshold", "value": 15000, "currency": "USD", "effective": "2025-10-01" }],
+      "applies_to": ["VA", "DHA", "CMS", "HHS", "NIH", "CDC", "HRSA", "IHS", "FDA", "SAMHSA", "AHRQ", "ONC", "ARPA-H", "ASPR"],
+      "vehicles": [],
+      "prerequisites": ["SAM.gov registration", "A program office with card authority"],
+      "fit": "Pilots, trial licenses, small data purchases. Not a market entry strategy on its own.",
+      "sources": [
+        { "label": "Federal Register 2025-08-27: inflation adjustment of acquisition-related thresholds", "url": "https://www.federalregister.gov/documents/2025/08/27/2025-16412/federal-acquisition-regulation-inflation-adjustment-of-acquisition-related-thresholds", "retrieved": "2026-09-20" },
+        { "label": "GSA SmartPay bulletin: micro-purchase threshold $15,000 effective 2025-10-01", "url": "https://smartpay.gsa.gov/guidance-and-audits/smart-bulletins/002/", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high"
+    },
+    {
+      "id": "simplified_acquisition",
+      "name": "Simplified acquisition",
+      "group": "direct_award",
+      "mechanism": "Simplified procedures for purchases at or below the simplified acquisition threshold, usually reserved for small business between the micro-purchase threshold and the SAT.",
+      "authority": "FAR Part 13; FAR 19.502-2",
+      "thresholds": [{ "label": "Simplified acquisition threshold", "value": 350000, "currency": "USD", "effective": "2025-10-01" }],
+      "applies_to": ["VA", "DHA", "CMS", "HHS", "NIH", "CDC", "HRSA", "IHS", "FDA", "SAMHSA", "AHRQ", "ONC", "ARPA-H", "ASPR"],
+      "vehicles": [],
+      "prerequisites": ["SAM.gov registration", "Small business status helps: the range is set aside for small business by default"],
+      "fit": "A first pilot or a bounded implementation with one program office.",
+      "sources": [
+        { "label": "Federal Register 2025-08-27: inflation adjustment of acquisition-related thresholds", "url": "https://www.federalregister.gov/documents/2025/08/27/2025-16412/federal-acquisition-regulation-inflation-adjustment-of-acquisition-related-thresholds", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high"
+    },
+    {
+      "id": "8a_sole_source",
+      "name": "8(a) sole source",
+      "group": "direct_award",
+      "mechanism": "A direct award to an SBA 8(a) participant below the sole-source ceiling, or above it for entity-owned (tribal, ANC, NHO) firms.",
+      "authority": "FAR 19.8; 13 CFR 124",
+      "thresholds": [
+        { "label": "8(a) sole-source ceiling, most acquisitions", "value": 5500000, "currency": "USD", "effective": "2025-10-01" },
+        { "label": "8(a) sole-source ceiling, manufacturing", "value": 8500000, "currency": "USD", "effective": "2025-10-01" }
+      ],
+      "applies_to": ["VA", "DHA", "CMS", "HHS", "NIH", "CDC", "HRSA", "IHS", "FDA", "SAMHSA", "AHRQ", "ONC", "ARPA-H", "ASPR"],
+      "vehicles": ["gsa-stars-iii"],
+      "prerequisites": ["Certified 8(a) participant, or a teaming arrangement with one", "At IHS, the Buy Indian Act set-asides (ISBEE and IEE) run alongside"],
+      "fit": "The fastest legitimate direct award for a small firm with a sponsor inside the program office.",
+      "sources": [
+        { "label": "Federal Register 2025-08-27: inflation adjustment of acquisition-related thresholds", "url": "https://www.federalregister.gov/documents/2025/08/27/2025-16412/federal-acquisition-regulation-inflation-adjustment-of-acquisition-related-thresholds", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high"
+    },
+    {
+      "id": "gsa_mas_order",
+      "name": "GSA Multiple Award Schedule order",
+      "group": "existing_vehicle",
+      "mechanism": "An order against the vendor's own MAS contract (IT category) under FAR 8.4. State and local governments may also order through Cooperative Purchasing.",
+      "authority": "FAR Subpart 8.4; 40 U.S.C. 502(c) for state and local",
+      "thresholds": [],
+      "applies_to": ["VA", "DHA", "CMS", "HHS", "NIH", "CDC", "HRSA", "IHS", "FDA", "SAMHSA", "AHRQ", "ONC", "ARPA-H", "ASPR", "GSA", "STATE_MEDICAID"],
+      "vehicles": [],
+      "prerequisites": ["A MAS contract, or a reseller or distributor that lists the product", "MAS Refresh 31 (April 2026) made Transactional Data Reporting mandatory for all SINs (MMT lib/regulatory-flags.js)"],
+      "fit": "The default commercial software route into every HHS operating division and, through Cooperative Purchasing, into state agencies.",
+      "sources": [
+        { "label": "GSA: Cooperative Purchasing", "url": "https://www.gsa.gov/buy-through-us/purchasing-programs/programs-for-state-and-local-governments/cooperative-purchasing-program", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high"
+    },
+    {
+      "id": "gwac_task_order",
+      "name": "Government-wide acquisition contract task order",
+      "group": "existing_vehicle",
+      "mechanism": "A task order competed among holders of a GWAC. A vendor without a seat sells through a prime that holds one.",
+      "authority": "FAR 16.505 fair opportunity",
+      "thresholds": [],
+      "applies_to": ["VA", "DHA", "CMS", "HHS", "NIH", "CDC", "HRSA", "IHS", "FDA", "SAMHSA", "AHRQ", "ONC", "ARPA-H", "ASPR"],
+      "vehicles": ["gsa-alliant-3", "gsa-alliant-2", "gsa-polaris", "gsa-stars-iii", "gsa-vets-2", "gsa-oasis-plus", "nitaac-cio-sp3", "nitaac-cio-cs"],
+      "prerequisites": ["A prime relationship on the target vehicle, or a seat on it", "Check ordering_status: the NITAAC GWACs stop taking new orders 2026-10-29 and NASA SEWP VI opens ordering 2026-11-01 (MMT vehicle baseline)"],
+      "fit": "Where most HHS and VA IT services dollars move. For a product company this is a reseller or subcontract route, not a prime route.",
+      "sources": [
+        { "label": "MMT data/idiq-vehicles.json (in-repo)", "url": "https://missionmeetstech.com/idiq-tracker", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high"
+    },
+    {
+      "id": "agency_idiq_task_order",
+      "name": "Agency IDIQ task order",
+      "group": "existing_vehicle",
+      "mechanism": "A task order under an agency's own multiple-award or single-award IDIQ, competed among its holders or issued to the single awardee.",
+      "authority": "FAR 16.505",
+      "thresholds": [],
+      "applies_to": ["VA", "DHA", "CMS", "NIH", "CDC", "IHS", "ARPA-H"],
+      "vehicles": ["va-t4ng2", "va-vector", "va-ehrm-idiq", "vha-iht", "va-mspv-gen-z", "cms-sparc", "peo-dhms-deployment", "dha-wf3", "dha-gsp", "dha-omnibus-iv", "aix-tech-dha", "dha-dhmsm-mhs-genesis", "nih-arpah-stats", "cdc-itopss-4", "ihs-path-ehr", "army-ites-4h"],
+      "prerequisites": ["A prime on the vehicle, or a seat", "Read ordering_status before naming a vehicle: SPARC stops taking new orders 2027-02-20 with no successor planned (CMS)"],
+      "fit": "The main route into VA (T4NG2, VECTOR), DHA (GSP, PEO DHMS vehicles) and CMS (SPARC until February 2027).",
+      "sources": [
+        { "label": "MMT data/idiq-vehicles.json (in-repo)", "url": "https://missionmeetstech.com/idiq-tracker", "retrieved": "2026-09-20" },
+        { "label": "CMS SPARC FAQ", "url": "https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/SPARC/FAQ", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high"
+    },
+    {
+      "id": "reseller_partner",
+      "name": "Reseller or distributor route",
+      "group": "partner",
+      "mechanism": "The product is sold on a reseller's MAS contract, Army CHESS ITES-SW2, NASA SEWP, or a NASPO ValuePoint master agreement. The reseller holds the paper; the vendor holds the customer.",
+      "authority": "FAR 8.4 (MAS); the reseller's vehicle terms",
+      "thresholds": [],
+      "applies_to": ["VA", "DHA", "CMS", "HHS", "NIH", "CDC", "HRSA", "IHS", "FDA", "SAMHSA", "AHRQ", "ONC", "ARPA-H", "ASPR", "STATE_MEDICAID"],
+      "vehicles": [],
+      "prerequisites": ["A signed reseller agreement with a holder of the target vehicle", "ITES-SW2 and SEWP VI status: see the MMT vehicle baseline (known-vehicles.js) before citing"],
+      "fit": "The quickest first federal transaction for a commercial software product; margin and relationship control go to the reseller.",
+      "sources": [
+        { "label": "NASPO ValuePoint: Cloud and Software Solutions portfolio", "url": "https://www.naspovaluepoint.org/portfolios/cloud-and-software-solutions/", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium"
+    },
+    {
+      "id": "cso",
+      "name": "Commercial Solutions Opening",
+      "group": "innovation",
+      "mechanism": "A general solicitation for innovative commercial products and services, selected through peer review of proposals against posted Areas of Interest.",
+      "authority": "10 U.S.C. 3458 (DoD); DFARS 212.70",
+      "thresholds": [],
+      "applies_to": ["DHA"],
+      "vehicles": [],
+      "prerequisites": ["An open Area of Interest that matches the product (data/cso-aois.json)"],
+      "fit": "DHA's fast door for a commercial product with no vehicle seat. Respond to the AoI, not the CSO.",
+      "innovation_pathway_id": "dha_cso",
+      "sources": [
+        { "label": "MMT data/cso-aois.json (in-repo)", "url": "https://missionmeetstech.com/contract-tracker", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high"
+    },
+    {
+      "id": "ota_consortium",
+      "name": "Other transaction through a consortium",
+      "group": "innovation",
+      "mechanism": "A prototype project awarded by a consortium manager (MTEC) to a member under a DoD other transaction agreement.",
+      "authority": "10 U.S.C. 4021 and 4022",
+      "thresholds": [],
+      "applies_to": ["DHA", "Army", "Navy", "AirForce", "USU", "ASPR"],
+      "vehicles": [],
+      "prerequisites": ["MTEC membership in good standing"],
+      "fit": "Research and prototype work for military medicine, not enterprise IT operations.",
+      "innovation_pathway_id": "mtec_ota",
+      "sources": [
+        { "label": "MTEC", "url": "https://mtec-sc.org/", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium"
+    },
+    {
+      "id": "baa_or_iso",
+      "name": "Broad agency announcement or Innovative Solution Opening",
+      "group": "innovation",
+      "mechanism": "Proposals against a standing announcement for research and development (BARDA BAA, DRIVe EZ-BAA, ARPA-H Mission Office ISOs and Open BAA).",
+      "authority": "FAR 35.016 (BAA); 42 U.S.C. 247d-7e (BARDA); 42 U.S.C. 290c (ARPA-H)",
+      "thresholds": [{ "label": "DRIVe EZ-BAA award ceiling", "value": 750000, "currency": "USD" }],
+      "applies_to": ["ASPR", "ARPA-H", "NIH"],
+      "vehicles": [],
+      "prerequisites": ["A research or development proposition, not a commercial sale"],
+      "fit": "Funding for development; a different motion from services procurement.",
+      "innovation_pathway_id": "barda",
+      "sources": [
+        { "label": "ARPA-H open funding opportunities", "url": "https://arpa-h.gov/explore-funding/open-funding-opportunities", "retrieved": "2026-09-20" },
+        { "label": "BARDA DRIVe EZ-BAA", "url": "https://drive.hhs.gov/ezbaa.html", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high"
+    },
+    {
+      "id": "sbir_phase_iii",
+      "name": "SBIR Phase III award",
+      "group": "innovation",
+      "mechanism": "A sole-source award for work that derives from, extends or completes prior SBIR effort, funded with non-SBIR money.",
+      "authority": "15 U.S.C. 638(r); SBA SBIR/STTR Policy Directive",
+      "thresholds": [],
+      "applies_to": ["NIH", "ARPA-H", "CDC", "FDA", "DHA"],
+      "vehicles": [],
+      "prerequisites": ["A prior Phase I or Phase II award on the same technology", "An agency or prime that wants to buy; at HHS this is not typical (see innovation-pathways.json sbir_sttr)"],
+      "fit": "Real at DoD. At HHS, treat any plan that depends on it as needing a replacement route.",
+      "innovation_pathway_id": "sbir_sttr",
+      "sources": [
+        { "label": "SBIR.gov tutorial: Phase III", "url": "https://www.sbir.gov/tutorials/data-rights/tutorial-4", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high"
+    },
+    {
+      "id": "cmmi_model_vendor",
+      "name": "CMS Innovation Center model vendor role",
+      "group": "innovation",
+      "mechanism": "Selection as a technology vendor inside an Innovation Center model test (WISeR in 2026).",
+      "authority": "42 U.S.C. 1315a",
+      "thresholds": [],
+      "applies_to": ["CMS"],
+      "vehicles": [],
+      "prerequisites": ["A model with a vendor application window"],
+      "fit": "A pilot at scale with CMS as the customer, outside SPARC.",
+      "innovation_pathway_id": "cms_innovation_center_models",
+      "sources": [
+        { "label": "DLA Piper: CMS launches WISeR model", "url": "https://www.dlapiper.com/en/insights/publications/2026/01/cms-wiser-model", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium"
+    },
+    {
+      "id": "unsolicited_or_front_door",
+      "name": "Unsolicited proposal or agency front door",
+      "group": "innovation",
+      "mechanism": "VA Pathfinder routes a vendor idea to the right office; FAR 15.6 governs a formal unsolicited proposal.",
+      "authority": "FAR Subpart 15.6; VA Pathfinder",
+      "thresholds": [],
+      "applies_to": ["VA", "DHA", "CMS", "HHS", "NIH", "CDC", "HRSA", "IHS", "FDA"],
+      "vehicles": [],
+      "prerequisites": ["A unique idea not available elsewhere, or a VA program office willing to sponsor a pilot"],
+      "fit": "A conversation starter, not an award route.",
+      "innovation_pathway_id": "va_pathfinder",
+      "sources": [
+        { "label": "VA News: VA launches Pathfinder", "url": "https://news.va.gov/press-room/va-launches-pathfinder-a-virtual-concierge-to-streamline-procurement-and-innovation/", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium"
+    },
+    {
+      "id": "state_cooperative_contract",
+      "name": "State cooperative contract (NASPO ValuePoint or GSA Cooperative Purchasing)",
+      "group": "state",
+      "mechanism": "A state or its subdivision orders under a NASPO ValuePoint master agreement through its Participating Addendum, or under a GSA MAS IT contract through Cooperative Purchasing.",
+      "authority": "State procurement law and the Participating Addendum; 40 U.S.C. 502(c)",
+      "thresholds": [],
+      "applies_to": ["STATE_MEDICAID"],
+      "vehicles": [],
+      "prerequisites": ["A NASPO ValuePoint master agreement (58 suppliers on Cloud and Software Solutions 2026 to 2036) or a MAS IT contract, or a partner that holds one", "The target state's Participating Addendum", "Any state security program the state requires (GovRAMP, TX-RAMP)"],
+      "fit": "The fastest route into a state Medicaid agency for commercial software; the APD and certification rules still apply when federal match is claimed.",
+      "sources": [
+        { "label": "NASPO ValuePoint: Cloud and Software Solutions portfolio", "url": "https://www.naspovaluepoint.org/portfolios/cloud-and-software-solutions/", "retrieved": "2026-09-20" },
+        { "label": "GSA: Cooperative Purchasing", "url": "https://www.gsa.gov/buy-through-us/purchasing-programs/programs-for-state-and-local-governments/cooperative-purchasing-program", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high"
+    },
+    {
+      "id": "state_competitive_procurement",
+      "name": "State competitive procurement under an approved APD",
+      "group": "state",
+      "mechanism": "A state RFP for an MES module or service, funded at 90 percent (DDI) or 75 percent (operations) federal match under a CMS-approved Advance Planning Document, certified through Streamlined Modular Certification.",
+      "authority": "42 CFR 433 Subpart C; 45 CFR Part 95 Subpart F; SMDL 22-001",
+      "thresholds": [
+        { "label": "APD prior approval, total acquisition at regular match", "value": 5000000, "currency": "USD" },
+        { "label": "Contract submission, software development, competitive", "value": 6000000, "currency": "USD" },
+        { "label": "Contract submission, noncompetitive (software or COTS)", "value": 1000000, "currency": "USD" }
+      ],
+      "applies_to": ["STATE_MEDICAID"],
+      "vehicles": [],
+      "prerequisites": ["A state APD that names the module", "MARS-E for eligibility systems", "A certification plan under SMC with CMS-required outcomes"],
+      "fit": "The main route for MES modules. Long cycle, high match, certification-bound.",
+      "sources": [
+        { "label": "eCFR 42 CFR Part 433 Subpart C", "url": "https://www.ecfr.gov/current/title-42/chapter-IV/subchapter-C/part-433/subpart-C", "retrieved": "2026-09-20" },
+        { "label": "eCFR 45 CFR 95.611", "url": "https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-A/part-95/subpart-F/subject-group-ECFR8ea7e78ba47a262/section-95.611", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high"
+    },
+    {
+      "id": "disqualified_or_closing",
+      "name": "Routes that are closed, cancelled or closing (do not plan on these)",
+      "group": "disqualified",
+      "mechanism": "Vehicles a plan should not depend on. Each carries its status in data/idiq-vehicles.json; the API's ordering_status is the live read.",
+      "authority": "n/a",
+      "thresholds": [],
+      "applies_to": ["HHS", "NIH", "CMS", "FDA", "DHA"],
+      "vehicles": ["nitaac-cio-sp4", "nitaac-cio-sp3", "nitaac-cio-cs", "cms-sparc", "fda-ead-bpa", "dha-mss", "army-ites-3h"],
+      "prerequisites": [],
+      "fit": "CIO-SP4 was cancelled 2026-01-30 with no successor; CIO-SP3 and CIO-CS take no new orders after 2026-10-29; SPARC takes no new orders after 2027-02-20 and CMS plans no replacement; the FDA Enterprise IT App Dev BPA was cancelled; DHA MSS ordering ended October 2025; ITES-3H expired February 2026 (ITES-4H is the follow-on).",
+      "sources": [
+        { "label": "MMT data/idiq-vehicles.json and known-vehicles.js (in-repo)", "url": "https://missionmeetstech.com/idiq-tracker", "retrieved": "2026-09-20" },
+        { "label": "CMS SPARC FAQ", "url": "https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/SPARC/FAQ", "retrieved": "2026-09-20" }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high"
+    }
+  ]
+}

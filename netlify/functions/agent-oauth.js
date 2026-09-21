@@ -90,7 +90,7 @@ input[type=email]{width:100%;padding:12px 14px;border:1px solid #cbd5e1;border-r
 </style></head><body><div class="wrap"><div class="card"><p class="brand">★ Mission Meets Tech</p>${inner}</div>
 <p class="muted" style="text-align:center;margin-top:16px">Read-only access. Nothing of yours is sent into MMT. Revoke anytime in your member dashboard.</p></div></body></html>`);
 }
-const scopeLabel = (s) => ({ "opportunities:read": "Live federal opportunities MMT is tracking", "tracker:read": "Your own saved pipeline / watchlist", "intel:read": "Your personalized fit recommendations" }[s] || s);
+const scopeLabel = (s) => ({ "opportunities:read": "Live federal opportunities MMT is tracking", "tracker:read": "Your own saved pipeline / watchlist", "intel:read": "Your personalized fit recommendations", "reference:read": "MMT's market-entry reference: buyers, vehicle status, authorization paths, state Medicaid, innovation doors, compliance rules" }[s] || s);
 function errorPage(message) {
   return page("Can't connect", `<h1>We couldn't finish connecting</h1><p class="err">${esc(message)}</p><p class="muted">Close this window and try again from your assistant. If it keeps happening, email support@missionmeetstech.com.</p>`);
 }

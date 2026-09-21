@@ -1,0 +1,924 @@
+{
+  "_schema": {
+    "version": "1.0",
+    "last_verified": "2026-09-20",
+    "owner": "hand-maintained; docs/market-entry-coverage-spec.md section 4.1",
+    "research_method": "Entry characteristics are drawn from MMT's own agency profiles, org charts and vehicle dataset (in-repo, each dated) and from the 2026-09-20 web search pass recorded in the other data/reference files. Vehicle status is never restated here; read /api/v1/vehicles.",
+    "codes": "code matches lib/federal-agencies.js (VA, DHA, CMS, ONC, NIH, CDC, HRSA, IHS, ARPA-H, ASPR, FDA, SAMHSA, AHRQ, HHS, GSA, NASA) plus STATE_MEDICAID for the state segment.",
+    "org_chart_as_of": "Taken from each chart page's own as-of statement; null where the page carries none."
+  },
+  "buyers": [
+    {
+      "code": "VA",
+      "name": "Department of Veterans Affairs",
+      "segment": "federal",
+      "parent": null,
+      "entry_characteristics": [
+        "Enterprise health IT and virtual care for the largest integrated health system in the country; national rollout dynamics across medical centers and VISNs.",
+        "Distinct security and accessibility requirements: FedRAMP authorization plus VA's own ATO (VA Notice 25-06), Section 508.",
+        "IT services flow through T4NG2 ($60.7B, 33 primes, ordering to March 2036) and SDVOSB-only VECTOR; EHR modernization runs on a single-award Oracle Health IDIQ.",
+        "Pathfinder (pathfinder.va.gov) is the vendor front door; every purchase still runs through a VA contracting activity."
+      ],
+      "authorization_paths": [
+        "fedramp_20x",
+        "fedramp_rev5_agency",
+        "va_ato",
+        "onc_health_it_certification",
+        "hipaa_security_rule"
+      ],
+      "buying_routes": [
+        "agency_idiq_task_order",
+        "gwac_task_order",
+        "gsa_mas_order",
+        "reseller_partner",
+        "8a_sole_source",
+        "simplified_acquisition",
+        "micro_purchase",
+        "unsolicited_or_front_door"
+      ],
+      "innovation_pathways": [
+        "va_pathfinder",
+        "unsolicited_proposal"
+      ],
+      "vehicles": [
+        "va-t4ng2",
+        "va-vector",
+        "va-ehrm-idiq",
+        "vha-iht",
+        "va-mspv-gen-z"
+      ],
+      "profile_url": "/agencies/va/",
+      "org_chart": {
+        "url": "/premium/org-charts/va",
+        "as_of": "2026-08-25"
+      },
+      "key_people_code": "VA-OIT",
+      "watch": [
+        "CCN Next Gen Medical ($700B ceiling) in source selection since March 2026 (MMT Contract Tracker, 2026-08-17)",
+        "SEWP VI ordering opens 2026-11-01 (MMT VA profile, verified 2026-07-09)"
+      ],
+      "sources": [
+        {
+          "label": "MMT VA agency profile (in-repo, lastUpdated 2026-07-09)",
+          "url": "https://missionmeetstech.com/agencies/va/",
+          "retrieved": "2026-09-20"
+        },
+        {
+          "label": "VA Notice 25-06",
+          "url": "https://www.va.gov/vapubs/viewPublication.asp?Pub_ID=1602&FType=2",
+          "retrieved": "2026-09-20"
+        }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": []
+    },
+    {
+      "code": "DHA",
+      "name": "Defense Health Agency / Military Health System",
+      "segment": "federal",
+      "parent": "DoD",
+      "entry_characteristics": [
+        "Enterprise systems (MHS GENESIS in sustainment), deployed and virtual care, records interoperability with VA through FEHRM.",
+        "Impact-level sequencing for cloud products: FedRAMP Moderate then IL4 for PHI and CUI, IL5 where the mission owner categorizes the system as NSS or high-sensitivity CUI; CMMC for the contractor's own systems.",
+        "Vehicles: Geographic Service Provider (small business, to 2034), PEO DHMS deployment IDIQ (pre-award), OMNIBUS IV for R&D support, Workforce 3.0 in its final ordering year.",
+        "Fast doors: the Enterprise-Wide CSO (HT003826SC005) and the MTEC other transaction consortium."
+      ],
+      "authorization_paths": [
+        "fedramp_20x",
+        "fedramp_rev5_agency",
+        "dod_il2",
+        "dod_il4",
+        "dod_il5",
+        "dod_cmmc",
+        "onc_health_it_certification",
+        "hipaa_security_rule"
+      ],
+      "buying_routes": [
+        "agency_idiq_task_order",
+        "cso",
+        "ota_consortium",
+        "gwac_task_order",
+        "gsa_mas_order",
+        "reseller_partner",
+        "8a_sole_source",
+        "simplified_acquisition",
+        "micro_purchase",
+        "sbir_phase_iii"
+      ],
+      "innovation_pathways": [
+        "dha_cso",
+        "mtec_ota",
+        "sbir_sttr"
+      ],
+      "vehicles": [
+        "peo-dhms-deployment",
+        "dha-wf3",
+        "dha-gsp",
+        "dha-omnibus-iv",
+        "dha-mss",
+        "dha-medlog-jhuapl",
+        "aix-tech-dha",
+        "dha-dhmsm-mhs-genesis",
+        "usace-mobile-dha-west",
+        "usace-medcom-dbmatoc",
+        "usace-huntsville-medae",
+        "dla-mspv-gen-vi",
+        "army-ites-4h",
+        "army-ites-3h"
+      ],
+      "profile_url": "/agencies/dha/",
+      "org_chart": {
+        "url": "/premium/org-charts/dha",
+        "as_of": "2026-07-09",
+        "note": "Chart as of 2026-07-09; DHA R&D and J-6 nodes updated 2026-09-15 (page's own statement)."
+      },
+      "key_people_code": "DHA",
+      "watch": [
+        "DHA reorganization offices (OWHA, HCDS) and the PAE structure: MMT org chart, Mary-vetted",
+        "Enterprise-Wide CSO active 2026-08-07 to 2027-08-06 (data/cso-aois.json)"
+      ],
+      "sources": [
+        {
+          "label": "MMT DHA agency profile (in-repo, lastUpdated 2026-07-09)",
+          "url": "https://missionmeetstech.com/agencies/dha/",
+          "retrieved": "2026-09-20"
+        },
+        {
+          "label": "DoD Cloud Computing Security (DISA)",
+          "url": "https://public.cyber.mil/dccs/",
+          "retrieved": "2026-09-20"
+        }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": []
+    },
+    {
+      "code": "CMS",
+      "name": "Centers for Medicare & Medicaid Services",
+      "segment": "federal",
+      "parent": "HHS",
+      "entry_characteristics": [
+        "Largest HHS IT buyer. Operates its own contract vehicle (SPARC, ordering ends 2027-02-20 with no replacement planned) and its own cloud review path (Rapid Cloud Review for non-FedRAMP SaaS).",
+        "Absence of full FedRAMP authorization is not automatically disqualifying at CMS: RCR grants a provisional ATO in about 2 to 3 weeks for low-risk SaaS.",
+        "Adjacency to state Medicaid: CMS sets the enhanced-funding conditions, certification (SMC) and interoperability rules (CMS-0057-F) every state system follows.",
+        "Innovation Center models (WISeR from 2026-01-01) select technology vendors directly."
+      ],
+      "authorization_paths": [
+        "cms_rcr",
+        "fedramp_20x",
+        "fedramp_rev5_agency",
+        "onc_health_it_certification",
+        "mars_e",
+        "hipaa_security_rule"
+      ],
+      "buying_routes": [
+        "agency_idiq_task_order",
+        "gwac_task_order",
+        "gsa_mas_order",
+        "reseller_partner",
+        "cmmi_model_vendor",
+        "8a_sole_source",
+        "simplified_acquisition",
+        "micro_purchase",
+        "disqualified_or_closing"
+      ],
+      "innovation_pathways": [
+        "cms_innovation_center_models",
+        "unsolicited_proposal"
+      ],
+      "vehicles": [
+        "cms-sparc"
+      ],
+      "profile_url": "/agencies/cms/",
+      "org_chart": {
+        "url": "/premium/org-charts/cms",
+        "as_of": "2026-08-25"
+      },
+      "key_people_code": null,
+      "watch": [
+        "Where CMS OIT task orders land after SPARC's ordering period closes 2027-02-20",
+        "RMADA 3 awarded July 2026 to 17 companies (MMT Contract Tracker, 2026-08-17)"
+      ],
+      "sources": [
+        {
+          "label": "CMS SPARC FAQ",
+          "url": "https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/SPARC/FAQ",
+          "retrieved": "2026-09-20"
+        },
+        {
+          "label": "CMS ISPG: Rapid Cloud Review",
+          "url": "https://security.cms.gov/learn/rapid-cloud-review-rcr",
+          "retrieved": "2026-09-20"
+        },
+        {
+          "label": "MMT CMS agency profile (in-repo)",
+          "url": "https://missionmeetstech.com/agencies/cms/",
+          "retrieved": "2026-09-20"
+        }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": []
+    },
+    {
+      "code": "ONC",
+      "name": "Assistant Secretary for Technology Policy / Office of the National Coordinator for Health IT (ASTP/ONC)",
+      "segment": "federal",
+      "parent": "HHS",
+      "entry_characteristics": [
+        "A standards regulator, not a conventional buyer: certification criteria and interoperability policy shape product requirements across every health buyer.",
+        "HTI-4 (effective 2025-10-01) added electronic prior authorization, e-prescribing and real-time prescription benefit criteria; HTI-5 (proposed 2025-12-29) would remove 34 of 60 criteria and is not final.",
+        "TEFCA and the information blocking rules are the policy levers that flow into CMS, VA and DoD procurements."
+      ],
+      "authorization_paths": [
+        "onc_health_it_certification"
+      ],
+      "buying_routes": [
+        "gsa_mas_order",
+        "gwac_task_order",
+        "simplified_acquisition",
+        "micro_purchase"
+      ],
+      "innovation_pathways": [],
+      "vehicles": [],
+      "profile_url": "/agencies/onc/",
+      "org_chart": {
+        "url": "/premium/org-charts/onc",
+        "as_of": "2026-08-25"
+      },
+      "key_people_code": null,
+      "watch": [
+        "HTI-5 final rule",
+        "March 2026 reversal of the ASTP reorganization (MMT org chart, 2026-08-25)"
+      ],
+      "sources": [
+        {
+          "label": "HTI-5 proposed rule (Federal Register 2025-12-29)",
+          "url": "https://www.federalregister.gov/documents/2025/12/29/2025-23896/health-data-technology-and-interoperability-astponc-deregulatory-actions-to-unleash-prosperity",
+          "retrieved": "2026-09-20"
+        },
+        {
+          "label": "MMT ONC agency profile (in-repo)",
+          "url": "https://missionmeetstech.com/agencies/onc/",
+          "retrieved": "2026-09-20"
+        }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": []
+    },
+    {
+      "code": "NIH",
+      "name": "National Institutes of Health (including NITAAC)",
+      "segment": "federal",
+      "parent": "HHS",
+      "entry_characteristics": [
+        "Research mission framing: program-specific systems, analytics and data platforms; SBIR through the NIH SEED office.",
+        "NITAAC is sunsetting: CIO-SP3, CIO-SP3 SB and CIO-CS take no new orders after 2026-10-29; CIO-SP4 was cancelled 2026-01-30; all NITAAC functions cease 2028-12-31. Work moves to GSA (Alliant 3, Polaris, MAS).",
+        "An NIH SBIR Phase III is not a reliable purchase route; HHS calls Phase III awards not typical."
+      ],
+      "authorization_paths": [
+        "fedramp_20x",
+        "fedramp_rev5_agency",
+        "hipaa_security_rule"
+      ],
+      "buying_routes": [
+        "gwac_task_order",
+        "gsa_mas_order",
+        "agency_idiq_task_order",
+        "baa_or_iso",
+        "sbir_phase_iii",
+        "8a_sole_source",
+        "simplified_acquisition",
+        "micro_purchase",
+        "disqualified_or_closing"
+      ],
+      "innovation_pathways": [
+        "sbir_sttr",
+        "unsolicited_proposal"
+      ],
+      "vehicles": [
+        "nitaac-cio-sp4",
+        "nitaac-cio-sp3",
+        "nitaac-cio-cs",
+        "nitaac-ecs-iii",
+        "nih-arpah-stats"
+      ],
+      "profile_url": "/agencies/nih-nitaac/",
+      "org_chart": {
+        "url": "/premium/org-charts/nih-nitaac",
+        "as_of": "2026-08-25"
+      },
+      "key_people_code": null,
+      "watch": [
+        "2026-10-29: last day for new NITAAC orders",
+        "Where NIH IT services move: GSA vehicles"
+      ],
+      "sources": [
+        {
+          "label": "MMT NIH/NITAAC agency profile (in-repo, lastUpdated 2026-09-10)",
+          "url": "https://missionmeetstech.com/agencies/nih-nitaac/",
+          "retrieved": "2026-09-20"
+        }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": []
+    },
+    {
+      "code": "CDC",
+      "name": "Centers for Disease Control and Prevention",
+      "segment": "federal",
+      "parent": "HHS",
+      "entry_characteristics": [
+        "Public health mission framing: surveillance, data modernization (OPHDST), analytics and data platforms.",
+        "IT operations run through ITOPSS 4.0; OCIO TASS was in market research as of the dataset date.",
+        "The 2025 HHS reorganization proposed moving ASPR functions into a CDC Center for Preparedness and Response; Congress requires a plan before CDC functions move."
+      ],
+      "authorization_paths": [
+        "fedramp_20x",
+        "fedramp_rev5_agency",
+        "hipaa_security_rule"
+      ],
+      "buying_routes": [
+        "agency_idiq_task_order",
+        "gwac_task_order",
+        "gsa_mas_order",
+        "reseller_partner",
+        "sbir_phase_iii",
+        "8a_sole_source",
+        "simplified_acquisition",
+        "micro_purchase"
+      ],
+      "innovation_pathways": [
+        "sbir_sttr",
+        "unsolicited_proposal"
+      ],
+      "vehicles": [
+        "cdc-itopss-4",
+        "cdc-tass"
+      ],
+      "profile_url": "/agencies/cdc/",
+      "org_chart": {
+        "url": "/premium/org-charts/cdc",
+        "as_of": "2026-08-25"
+      },
+      "key_people_code": null,
+      "watch": [
+        "OCIO TASS: market research to solicitation",
+        "Preparedness functions arriving from ASPR if the reorganization proceeds"
+      ],
+      "sources": [
+        {
+          "label": "MMT CDC agency profile (in-repo)",
+          "url": "https://missionmeetstech.com/agencies/cdc/",
+          "retrieved": "2026-09-20"
+        }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": []
+    },
+    {
+      "code": "HRSA",
+      "name": "Health Resources and Services Administration",
+      "segment": "federal",
+      "parent": "HHS",
+      "entry_characteristics": [
+        "A grant-maker first: health centers, Ryan White, the National Health Service Corps, maternal and child health, 340B. IT and program-support contracting sits behind those programs.",
+        "The OPTN Modernization Initiative is the live multi-vendor contracting story: a December 2025 UNOS contract for OPTN operations and the national matching system, and a policy-process support task order to CVP.",
+        "Congress's FY2026 Labor-HHS bill rejected folding HRSA into an Administration for a Healthy America; the FY2027 request proposes it again."
+      ],
+      "authorization_paths": [
+        "fedramp_20x",
+        "fedramp_rev5_agency",
+        "hipaa_security_rule"
+      ],
+      "buying_routes": [
+        "gwac_task_order",
+        "gsa_mas_order",
+        "reseller_partner",
+        "8a_sole_source",
+        "simplified_acquisition",
+        "micro_purchase",
+        "unsolicited_or_front_door"
+      ],
+      "innovation_pathways": [
+        "unsolicited_proposal"
+      ],
+      "vehicles": [],
+      "profile_url": "/agencies/hrsa/",
+      "org_chart": null,
+      "key_people_code": null,
+      "watch": [
+        "Next OPTN Modernization awards under the multi-vendor model",
+        "FY2027 appropriations and the Administration for a Healthy America proposal"
+      ],
+      "sources": [
+        {
+          "label": "HRSA OPTN Modernization update, January 2026",
+          "url": "https://www.hrsa.gov/optn-modernization/updates/january-2026",
+          "retrieved": "2026-09-20"
+        },
+        {
+          "label": "HRSA OPTN Modernization update, February 2026",
+          "url": "https://www.hrsa.gov/optn-modernization/updates/february-2026",
+          "retrieved": "2026-09-20"
+        },
+        {
+          "label": "ASTHO summary of the FY2026 Labor-HHS bill (January 2026)",
+          "url": "https://www.astho.org/advocacy/federal-government-affairs/leg-alerts/2026/summary-fy26-lhhs-bill-january-2026/",
+          "retrieved": "2026-09-20"
+        }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": [
+        "HRSA-owned IDIQs, if any, are not in the MMT vehicle dataset",
+        "org chart"
+      ]
+    },
+    {
+      "code": "IHS",
+      "name": "Indian Health Service",
+      "segment": "federal",
+      "parent": "HHS",
+      "entry_characteristics": [
+        "Program-specific systems for tribal and IHS facilities; the PATH EHR modernization IDIQ is in its pilot year (ordering to 2033).",
+        "Buy Indian Act set-asides (ISBEE and IEE) run alongside the standard small business programs.",
+        "RPMS is the legacy record system being replaced."
+      ],
+      "authorization_paths": [
+        "fedramp_20x",
+        "fedramp_rev5_agency",
+        "onc_health_it_certification",
+        "hipaa_security_rule"
+      ],
+      "buying_routes": [
+        "agency_idiq_task_order",
+        "gwac_task_order",
+        "gsa_mas_order",
+        "reseller_partner",
+        "8a_sole_source",
+        "simplified_acquisition",
+        "micro_purchase"
+      ],
+      "innovation_pathways": [
+        "unsolicited_proposal"
+      ],
+      "vehicles": [
+        "ihs-path-ehr"
+      ],
+      "profile_url": "/agencies/ihs/",
+      "org_chart": {
+        "url": "/premium/org-charts/ihs",
+        "as_of": "2026-08-25"
+      },
+      "key_people_code": null,
+      "watch": [
+        "PATH EHR pilot sites and wave schedule"
+      ],
+      "sources": [
+        {
+          "label": "MMT IHS agency profile (in-repo)",
+          "url": "https://missionmeetstech.com/agencies/ihs/",
+          "retrieved": "2026-09-20"
+        }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": []
+    },
+    {
+      "code": "ARPA-H",
+      "name": "Advanced Research Projects Agency for Health",
+      "segment": "federal",
+      "parent": "HHS",
+      "entry_characteristics": [
+        "Innovation funding with published partnering processes: Open BAA, four Mission Office ISOs, Sprints; a different motion from services procurement.",
+        "Other transaction authority under 42 U.S.C. 290c; the Director prioritizes work performed in the United States.",
+        "FY2027 request $945M, down from $1.5B in FY2026; the STATS IDIQ (shared with NIH) is the one conventional vehicle."
+      ],
+      "authorization_paths": [
+        "fedramp_20x",
+        "fedramp_rev5_agency"
+      ],
+      "buying_routes": [
+        "baa_or_iso",
+        "agency_idiq_task_order",
+        "sbir_phase_iii",
+        "simplified_acquisition",
+        "micro_purchase"
+      ],
+      "innovation_pathways": [
+        "arpa_h",
+        "sbir_sttr"
+      ],
+      "vehicles": [
+        "nih-arpah-stats"
+      ],
+      "profile_url": "/agencies/arpa-h/",
+      "org_chart": {
+        "url": "/premium/org-charts/arpa-h",
+        "as_of": "2026-08-25"
+      },
+      "key_people_code": "ARPA-H",
+      "watch": [
+        "FY2027 appropriation against the $945M request",
+        "New ISOs and Sprints"
+      ],
+      "sources": [
+        {
+          "label": "ARPA-H open funding opportunities",
+          "url": "https://arpa-h.gov/explore-funding/open-funding-opportunities",
+          "retrieved": "2026-09-20"
+        },
+        {
+          "label": "MMT ARPA-H agency profile (in-repo)",
+          "url": "https://missionmeetstech.com/agencies/arpa-h/",
+          "retrieved": "2026-09-20"
+        }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": []
+    },
+    {
+      "code": "ASPR",
+      "name": "Administration for Strategic Preparedness and Response (with BARDA)",
+      "segment": "federal",
+      "parent": "HHS",
+      "entry_characteristics": [
+        "Preparedness funding with published partnering processes: the BARDA BAA on SAM.gov, the DRIVe EZ-BAA for awards under $750,000, other transactions under 42 U.S.C. 247d-7e(c)(5).",
+        "Buys development of countermeasures, diagnostics and devices, not enterprise IT.",
+        "Organizational placement is in motion: the 2025 reorganization proposed moving ASPR functions to CDC and BARDA to a new office; Congress funded ASPR at $3.7B for FY2026 including $1B for BARDA."
+      ],
+      "authorization_paths": [
+        "fedramp_20x",
+        "fedramp_rev5_agency",
+        "hipaa_security_rule"
+      ],
+      "buying_routes": [
+        "baa_or_iso",
+        "ota_consortium",
+        "gsa_mas_order",
+        "simplified_acquisition",
+        "micro_purchase"
+      ],
+      "innovation_pathways": [
+        "barda",
+        "mtec_ota"
+      ],
+      "vehicles": [],
+      "profile_url": "/agencies/aspr/",
+      "org_chart": null,
+      "key_people_code": null,
+      "watch": [
+        "Outcome of the ASPR and BARDA reorganization proposal",
+        "BARDA BAA amendments"
+      ],
+      "sources": [
+        {
+          "label": "Medical Countermeasures: partner with BARDA",
+          "url": "https://medicalcountermeasures.gov/barda/partnering",
+          "retrieved": "2026-09-20"
+        },
+        {
+          "label": "ASPR: BARDA",
+          "url": "https://aspr.hhs.gov/AboutASPR/ProgramOffices/BARDA/Pages/default.aspx",
+          "retrieved": "2026-09-20"
+        },
+        {
+          "label": "ACEP: 2026 HHS funding update",
+          "url": "https://www.acep.org/news/acep-newsroom-articles/2-3-26-2026-hhs-funding-update",
+          "retrieved": "2026-09-20"
+        }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": [
+        "org chart",
+        "FY2026 enacted figures from the official tables"
+      ]
+    },
+    {
+      "code": "FDA",
+      "name": "Food and Drug Administration",
+      "segment": "federal",
+      "parent": "HHS",
+      "entry_characteristics": [
+        "Regulatory science and review systems; the Enterprise IT App Dev BPA was cancelled, so IT services run through HHS-wide and GSA vehicles.",
+        "Post-RIF center bench and an acting commissioner as of the August 2026 org chart."
+      ],
+      "authorization_paths": [
+        "fedramp_20x",
+        "fedramp_rev5_agency"
+      ],
+      "buying_routes": [
+        "gwac_task_order",
+        "gsa_mas_order",
+        "reseller_partner",
+        "sbir_phase_iii",
+        "8a_sole_source",
+        "simplified_acquisition",
+        "micro_purchase",
+        "disqualified_or_closing"
+      ],
+      "innovation_pathways": [
+        "sbir_sttr",
+        "unsolicited_proposal"
+      ],
+      "vehicles": [
+        "fda-ead-bpa"
+      ],
+      "profile_url": "/agencies/fda/",
+      "org_chart": {
+        "url": "/premium/org-charts/fda",
+        "as_of": "2026-08-25"
+      },
+      "key_people_code": null,
+      "watch": [
+        "Replacement route for the cancelled Enterprise IT App Dev BPA"
+      ],
+      "sources": [
+        {
+          "label": "MMT FDA agency profile (in-repo)",
+          "url": "https://missionmeetstech.com/agencies/fda/",
+          "retrieved": "2026-09-20"
+        }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": []
+    },
+    {
+      "code": "SAMHSA",
+      "name": "Substance Abuse and Mental Health Services Administration",
+      "segment": "federal",
+      "parent": "HHS",
+      "entry_characteristics": [
+        "Grant-maker for behavioral health; IT and data buys support grant reporting and the 988 Lifeline.",
+        "Named in the proposed Administration for a Healthy America consolidation that Congress did not enact for FY2026."
+      ],
+      "authorization_paths": [
+        "fedramp_20x",
+        "fedramp_rev5_agency",
+        "hipaa_security_rule"
+      ],
+      "buying_routes": [
+        "gwac_task_order",
+        "gsa_mas_order",
+        "8a_sole_source",
+        "simplified_acquisition",
+        "micro_purchase"
+      ],
+      "innovation_pathways": [],
+      "vehicles": [],
+      "profile_url": null,
+      "org_chart": null,
+      "key_people_code": null,
+      "watch": [
+        "FY2027 reorganization proposal"
+      ],
+      "sources": [
+        {
+          "label": "CRS: The reorganization of the U.S. Department of Health and Human Services (LSB11311)",
+          "url": "https://www.congress.gov/crs_external_products/LSB/HTML/LSB11311.web.html",
+          "retrieved": "2026-09-20"
+        }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": [
+        "agency profile",
+        "vehicles"
+      ]
+    },
+    {
+      "code": "AHRQ",
+      "name": "Agency for Healthcare Research and Quality",
+      "segment": "federal",
+      "parent": "HHS",
+      "entry_characteristics": [
+        "Health services research funder; small contracting footprint for data and evidence platforms."
+      ],
+      "authorization_paths": [
+        "fedramp_20x",
+        "fedramp_rev5_agency"
+      ],
+      "buying_routes": [
+        "gwac_task_order",
+        "gsa_mas_order",
+        "simplified_acquisition",
+        "micro_purchase"
+      ],
+      "innovation_pathways": [],
+      "vehicles": [],
+      "profile_url": null,
+      "org_chart": null,
+      "key_people_code": null,
+      "watch": [],
+      "sources": [
+        {
+          "label": "MMT lib/federal-agencies.js registry (in-repo)",
+          "url": "https://missionmeetstech.com/agencies/",
+          "retrieved": "2026-09-20"
+        }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": [
+        "agency profile",
+        "vehicles",
+        "entry characteristics beyond the registry row"
+      ]
+    },
+    {
+      "code": "HHS",
+      "name": "Department of Health and Human Services (department level)",
+      "segment": "federal",
+      "parent": null,
+      "entry_characteristics": [
+        "Ten Heads of Contracting Activity and the OMAS consolidation shape how every operating division buys (MMT HHS org chart, 2026-05-18).",
+        "Department-wide vehicles are leaving: the NITAAC GWACs stop taking new orders 2026-10-29; SPARC (available to all HHS operating divisions) stops 2027-02-20.",
+        "Executive orders and OMB memos driving procurement consolidation are tracked in data/policy/eo-procurement.json."
+      ],
+      "authorization_paths": [
+        "fedramp_20x",
+        "fedramp_rev5_agency",
+        "hipaa_security_rule"
+      ],
+      "buying_routes": [
+        "gwac_task_order",
+        "agency_idiq_task_order",
+        "gsa_mas_order",
+        "reseller_partner",
+        "8a_sole_source",
+        "simplified_acquisition",
+        "micro_purchase",
+        "disqualified_or_closing"
+      ],
+      "innovation_pathways": [
+        "sbir_sttr",
+        "unsolicited_proposal"
+      ],
+      "vehicles": [
+        "nitaac-cio-sp3",
+        "nitaac-cio-cs",
+        "nitaac-cio-sp4",
+        "nitaac-ecs-iii",
+        "cms-sparc"
+      ],
+      "profile_url": "/agencies/hhs/",
+      "org_chart": {
+        "url": "/premium/org-charts/hhs",
+        "as_of": "2026-05-18"
+      },
+      "key_people_code": null,
+      "watch": [
+        "PACT and the three executive orders (MMT policy module)",
+        "RFO 8.4 tier playbook (MMT policy module)"
+      ],
+      "sources": [
+        {
+          "label": "MMT HHS agency profile and org chart (in-repo)",
+          "url": "https://missionmeetstech.com/agencies/hhs/",
+          "retrieved": "2026-09-20"
+        }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": []
+    },
+    {
+      "code": "GSA",
+      "name": "General Services Administration (vehicle owner)",
+      "segment": "federal",
+      "parent": null,
+      "entry_characteristics": [
+        "Owns the vehicles health buyers are moving to as NITAAC sunsets: Alliant 3 (active, no ceiling), OASIS+, Polaris, 8(a) STARS III, VETS 2 and MAS.",
+        "May 2026 FAS five-portfolio reorganization (MMT GSA org chart, 2026-08-25).",
+        "MAS Refresh 31 (April 2026) made Transactional Data Reporting mandatory."
+      ],
+      "authorization_paths": [
+        "fedramp_20x",
+        "fedramp_rev5_agency"
+      ],
+      "buying_routes": [
+        "gwac_task_order",
+        "gsa_mas_order"
+      ],
+      "innovation_pathways": [],
+      "vehicles": [
+        "gsa-alliant-3",
+        "gsa-alliant-2",
+        "gsa-oasis-plus",
+        "gsa-stars-iii",
+        "gsa-vets-2",
+        "gsa-polaris"
+      ],
+      "profile_url": "/agencies/gsa/",
+      "org_chart": {
+        "url": "/premium/org-charts/gsa",
+        "as_of": "2026-08-25"
+      },
+      "key_people_code": null,
+      "watch": [
+        "8(a) STARS III option exercise past July 2026 (MMT vehicle baseline says confirm before citing)"
+      ],
+      "sources": [
+        {
+          "label": "MMT GSA agency profile (in-repo)",
+          "url": "https://missionmeetstech.com/agencies/gsa/",
+          "retrieved": "2026-09-20"
+        }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": []
+    },
+    {
+      "code": "NASA",
+      "name": "NASA SEWP (vehicle owner)",
+      "segment": "federal",
+      "parent": null,
+      "entry_characteristics": [
+        "SEWP is the government-wide IT products vehicle DHA, VA and HHS lean on for hardware, software and reseller buys.",
+        "SEWP VI awarded 2026-06-22 with 364 initial awardees; ordering opens 2026-11-01; SEWP V extended through 2026-09-30 with options to 2027-04-30 (MMT VA profile, verified 2026-07-09)."
+      ],
+      "authorization_paths": [],
+      "buying_routes": [
+        "reseller_partner",
+        "gwac_task_order"
+      ],
+      "innovation_pathways": [],
+      "vehicles": [],
+      "profile_url": null,
+      "org_chart": null,
+      "key_people_code": null,
+      "watch": [
+        "SEWP VI ordering start 2026-11-01"
+      ],
+      "sources": [
+        {
+          "label": "MMT known-vehicles.js SEWP VI baseline (in-repo, verified 2026-07-09)",
+          "url": "https://missionmeetstech.com/idiq-tracker",
+          "retrieved": "2026-09-20"
+        }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "medium",
+      "pending": [
+        "SEWP VI row in data/idiq-vehicles.json"
+      ]
+    },
+    {
+      "code": "STATE_MEDICAID",
+      "name": "State Medicaid agencies (56 jurisdictions)",
+      "segment": "state",
+      "parent": null,
+      "entry_characteristics": [
+        "Multi-billion-dollar enterprise systems spend financed at 90 percent federal match for development and 75 percent for operations, inside CMS-approved Advance Planning Documents and Streamlined Modular Certification.",
+        "Cooperative purchasing routes: NASPO ValuePoint Cloud and Software Solutions (2026 to 2036, 58 suppliers) through each state's Participating Addendum, and GSA Cooperative Purchasing for MAS IT.",
+        "Security programs vary by state: GovRAMP has participating entities in 33 states with formal programs in ten; Texas requires TX-RAMP; MARS-E applies to eligibility systems.",
+        "Two dated demand signals: CMS-0057-F APIs due 2027-01-01, and H.R. 1 community engagement requirements by 2026-12-31 with six-month redeterminations for expansion adults."
+      ],
+      "authorization_paths": [
+        "govramp",
+        "tx_ramp",
+        "mars_e",
+        "onc_health_it_certification",
+        "hipaa_security_rule"
+      ],
+      "buying_routes": [
+        "state_cooperative_contract",
+        "state_competitive_procurement",
+        "gsa_mas_order",
+        "reseller_partner"
+      ],
+      "innovation_pathways": [],
+      "vehicles": [],
+      "profile_url": "/premium/state-medicaid/",
+      "org_chart": null,
+      "key_people_code": null,
+      "watch": [
+        "State APD and RFP activity for E&E changes driven by H.R. 1",
+        "CMS-0057-F API deadlines"
+      ],
+      "sources": [
+        {
+          "label": "MMT data/reference/state-medicaid.json (in-repo)",
+          "url": "https://missionmeetstech.com/premium/state-medicaid",
+          "retrieved": "2026-09-20"
+        }
+      ],
+      "verified": "2026-09-20",
+      "confidence": "high",
+      "pending": [
+        "per-state procurement portals, MES modernization status and work-requirement implementation dates (see state-medicaid.json pending fields)"
+      ]
+    }
+  ]
+}

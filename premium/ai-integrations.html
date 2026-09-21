@@ -167,6 +167,22 @@
             <input type="checkbox" value="tracker:read" aria-describedby="d-trk">
             <span><span class="t">My pipeline</span><span class="d" id="d-trk">What you're already tracking.</span><span class="ex">For example: "Summarize everything in my pipeline."</span></span>
           </label>
+          <label class="ai-scope" data-on="true">
+            <input type="checkbox" value="reference:read" checked aria-describedby="d-ref">
+            <span><span class="t">Market-entry reference<span class="ai-tag">New</span></span><span class="d" id="d-ref">Buyers, vehicle ordering status, authorization paths, innovation doors, compliance rules and the Contract Tracker, each record dated and sourced.</span><span class="ex">For example: "Which vehicles can still take a new order at CMS, and when were they last checked?"</span></span>
+          </label>
+          <label class="ai-scope" data-on="true">
+            <input type="checkbox" value="states:read" checked aria-describedby="d-st">
+            <span><span class="t">State Medicaid and state procurement<span class="ai-tag">New</span></span><span class="d" id="d-st">All 56 Medicaid agencies, the funding rules, and per-state MES procurement coverage: portals, module incumbents, cooperative routes, addenda, CMS funding conditions.</span><span class="ex">For example: "Who runs claims for Texas Medicaid and what does the state buy through NASPO ValuePoint?"</span></span>
+          </label>
+          <label class="ai-scope" data-on="true">
+            <input type="checkbox" value="orgcharts:read" checked aria-describedby="d-oc">
+            <span><span class="t">Agency org charts<span class="ai-tag">New</span></span><span class="d" id="d-oc">Leadership charts and key people for DHA, VA, HHS, CMS and seven more, with the date each was checked.</span><span class="ex">For example: "Who owns health IT acquisition at DHA right now?"</span></span>
+          </label>
+          <label class="ai-scope" data-on="false">
+            <input type="checkbox" value="signals:read" aria-describedby="d-sig">
+            <span><span class="t">Signal Chain</span><span class="d" id="d-sig">Lets your AI run Signal Chain scans. Each scan spends your Signal Chain allowance and live upstream quota, so it is off unless you turn it on.</span><span class="ex">For example: "Run a signal scan on MHS GENESIS sustainment."</span></span>
+          </label>
           <p class="ai-sub" style="font-size:12px;margin:6px 0 14px;">You can change this anytime. Your AI can only read — never edit, delete, or spend.</p>
           <button class="ai-btn" id="ai-s1-next" type="button">Continue</button>
         </div>
@@ -340,13 +356,16 @@
         return '<div class="ai-conn" data-id="' + c.id + '">' +
           '<div><div class="name">' + esc(c.name) + ' <span class="ai-badge" data-s="' + c.status + '">' + c.status + "</span></div>" +
           '<div class="meta">' + chips + " · last used " + last + " · " + (c.token_prefix ? "key …" + c.token_prefix : "") + "</div>" +
-          '<div class="ai-activity ai-hidden" data-activity></div></div>' +
+          '<div class="ai-activity ai-hidden" data-activity></div>' +
+          '<div class="ai-activity ai-hidden" data-usage></div></div>' +
           '<div style="display:flex;gap:8px;align-items:center;"><button class="ai-link" data-act="activity">Activity</button>' +
+          '<button class="ai-link" data-act="usage">Usage</button>' +
           (c.status === "active" ? '<button class="ai-btn ai-btn-danger" data-act="revoke" style="padding:6px 12px;">Revoke</button>' : "") +
           "</div></div>";
       }).join("");
       box.querySelectorAll("[data-act=revoke]").forEach(function (b) { b.addEventListener("click", onRevoke); });
       box.querySelectorAll("[data-act=activity]").forEach(function (b) { b.addEventListener("click", onActivity); });
+      box.querySelectorAll("[data-act=usage]").forEach(function (b) { b.addEventListener("click", onUsage); });
     }
 
     // Advanced/developer view (UX §3b): dense table, raw scope strings, a ready
@@ -363,7 +382,7 @@
       }).join("");
       $("ai-list").innerHTML =
         "<table class=\"ai-table\"><thead><tr><th>Name</th><th>Scopes</th><th>Prefix</th><th>Status</th><th>Last used</th><th></th></tr></thead><tbody>" + rows + "</tbody></table>" +
-        "<div class=\"ai-snippet\" style=\"margin-top:12px;\">curl -H \"Authorization: Bearer &lt;your_token&gt;\" " + base + "/opportunities?limit=25\n# MCP connector URL (Claude/ChatGPT): " + BASE + "/api/mcp · scopes: opportunities:read tracker:read intel:read</div>";
+        "<div class=\"ai-snippet\" style=\"margin-top:12px;\">curl -H \"Authorization: Bearer &lt;your_token&gt;\" " + base + "/opportunities?limit=25\n# MCP connector URL (Claude/ChatGPT): " + BASE + "/api/mcp · scopes: opportunities:read tracker:read intel:read reference:read states:read orgcharts:read signals:read\n# Optional headers: X-MMT-Client-Ref (opaque, groups calls on your usage statement) · X-Request-Id (echoed; every response carries one)</div>";
       $("ai-list").querySelectorAll("[data-act=revoke]").forEach(function (b) { b.addEventListener("click", onRevoke); });
     }
 
@@ -386,6 +405,32 @@
       panel.innerHTML = reads.length ? reads.map(function (x) { return "<div>" + timeAgo(x.at) + " · " + x.method + " " + esc(x.endpoint) + " · " + x.status + "</div>"; }).join("") : "<div>No reads yet.</div>";
     }
 
+    // The monthly usage statement: calls against the allowance, overage at the
+    // published per-call rate, and the per-client_ref breakdown (the caller's
+    // own X-MMT-Client-Ref header, opaque to MMT).
+    async function onUsage(e) {
+      var row = e.target.closest(".ai-conn"); var panel = row.querySelector("[data-usage]");
+      if (!panel.classList.contains("ai-hidden")) { panel.classList.add("ai-hidden"); return; }
+      panel.classList.remove("ai-hidden"); panel.textContent = "Loading…";
+      var r = await api("/api/tokens/usage", { sessionToken: session(), tokenId: row.dataset.id });
+      if (!r.ok) { panel.textContent = humanError(r.data.error, r.status); return; }
+      var s = r.data.statement || {};
+      // Until the allowance and the rate are set (pricing_confirmed) the panel
+      // counts calls and quotes no allowance and no dollars.
+      var priced = s.pricing_confirmed === true;
+      var head = priced
+        ? "<div><strong>" + esc(s.month || "") + "</strong> · " + (s.calls || 0) + " of " + (s.allowance || 0) + " included calls" +
+          (s.overage_calls ? " · " + s.overage_calls + " over, $" + Number(s.overage_usd || 0).toFixed(2) + " at $" + s.overage_usd_per_call + " each" : " · no overage") + "</div>"
+        : "<div><strong>" + esc(s.month || "") + "</strong> · " + (s.calls || 0) + " call" + (s.calls === 1 ? "" : "s") + " this month</div>";
+      var refs = (s.by_client_ref || []).map(function (x) {
+        return "<div>" + (x.client_ref ? "client_ref " + esc(x.client_ref) : "unattributed") + " · " + x.calls + " call" + (x.calls === 1 ? "" : "s") +
+          (priced && x.overage_calls ? " · " + x.overage_calls + " over ($" + Number(x.overage_usd || 0).toFixed(2) + ")" : "") + "</div>";
+      }).join("");
+      var tools = (s.by_tool || []).slice(0, 8).map(function (t) { return "<div>" + esc(t.tool) + " · " + t.calls + "</div>"; }).join("");
+      panel.innerHTML = head + (refs ? "<div style=\"margin-top:6px;\">By client</div>" + refs : "") + (tools ? "<div style=\"margin-top:6px;\">By tool</div>" + tools : "") +
+        (s.calls ? "" : "<div>No calls this month yet.</div>");
+    }
+
     // ---- wizard -----------------------------------------------------------
     function showWizard() { ["ai-list-card", "ai-signin"].forEach(function (i) { show(i, false); }); show("ai-wizard", true); gotoScreen(1); }
     $("ai-add") && $("ai-add").addEventListener("click", function () { if (session()) showWizard(); else { show("ai-list-card", false); show("ai-signin", true); } });
@@ -401,7 +446,7 @@
       cb.addEventListener("change", sync); sync();
     });
     function pickedScopes() { return Array.prototype.map.call(document.querySelectorAll(".ai-scope input:checked"), function (i) { return i.value; }); }
-    function scopeLabel(s) { return { "intel:read": "Market intel", "opportunities:read": "Live opportunities", "tracker:read": "Pipeline" }[s] || s; }
+    function scopeLabel(s) { return { "intel:read": "Market intel", "opportunities:read": "Live opportunities", "tracker:read": "Pipeline", "reference:read": "Market-entry reference", "states:read": "State Medicaid and procurement", "orgcharts:read": "Org charts", "signals:read": "Signal Chain" }[s] || s; }
 
     $("ai-s1-next").addEventListener("click", function () { if (pickedScopes().length === 0) { announce("Pick at least one thing your AI can see."); return; } gotoScreen(2); $("ai-name").focus(); });
     $("ai-s2-back").addEventListener("click", function () { gotoScreen(1); });

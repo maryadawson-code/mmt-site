@@ -161,6 +161,58 @@ Header:    Authorization: Bearer YOUR_KEY_HERE</span>
         <li>"Is this opportunity worth our time given what we do? Give me the sourcing."</li>
       </ul>
 
+      <h2 id="reference">What the market-entry reference gives your assistant</h2>
+
+      <p>Connections created on or after September 20, 2026 can carry four more permissions: <strong>Market-entry reference</strong>, <strong>State Medicaid and state procurement</strong>, <strong>Agency org charts</strong> and, off by default, <strong>Signal Chain</strong>. The reference layer is the same one behind the Premium <a href="/premium/market-entry/">Market Entry</a> and <a href="/premium/state-medicaid/">State Medicaid</a> pages, served read-only:</p>
+
+      <ul>
+
+        <li><strong>Buyers.</strong> VA, DHA, CMS, ASTP/ONC, NIH, CDC, HRSA, IHS, ARPA-H, ASPR/BARDA and the state Medicaid segment, with the routes, authorization paths and vehicles that apply to each.</li>
+
+        <li><strong>Vehicles.</strong> Every IDIQ and GWAC in the MMT tracker with an ordering status (open, closing soon, pre-award, closed, cancelled), the ordering end date and the date the dataset was generated.</li>
+
+        <li><strong>Authorization paths.</strong> FedRAMP Rev5 and 20x, CMS Rapid Cloud Review, DoD impact levels, VA, ONC certification, GovRAMP, TX-RAMP, MARS-E.</li>
+
+        <li><strong>State Medicaid.</strong> All 56 agencies, the 90/10 and 75/25 funding rules, APD thresholds, certification, cooperative purchasing routes and the dated demand signals.</li>
+
+        <li><strong>Innovation doors and compliance rules.</strong> SBIR Phase III, ARPA-H, BARDA, the DHA CSO, MTEC, VA Pathfinder, CMS Innovation Center models; FAR 3.4, FAR 9.5, the Lobbying Disclosure Act, the Procurement Integrity Act and the Byrd Amendment.</li>
+
+      </ul>
+
+      <p>Every answer carries the date the record was verified and the time it was retrieved, so your assistant can say "as of" on every claim. A connection made before September 20, 2026 does not have these permissions; revoke it and create a new one to add them.</p>
+
+      <h2 id="contract">What every record promises</h2>
+
+      <p>Every record your assistant reads carries the same five fields, so it can tell you how much to trust a claim without a second call:</p>
+
+      <ul>
+
+        <li><strong>source_url.</strong> The primary public source, never an MMT page. When the record is MMT's own output, such as a score, it is null and the gap list says where the provenance lives.</li>
+
+        <li><strong>retrieved_at.</strong> When I last read the source.</li>
+
+        <li><strong>confidence.</strong> <em>verified</em> means the primary source was read inside the record's freshness window. <em>reported</em> means a secondary account or a medium-confidence read. <em>stale</em> means the read is older than the window: opportunities one day, vehicle ordering status and state procurement records seven days, org charts thirty days, statutory conditions ninety days, my hand-maintained Contract Tracker forty-five days. Stale means check before relying on it, and a good assistant says so instead of answering from it.</li>
+
+        <li><strong>as_of.</strong> When the fact itself is effective, where that differs from the read.</li>
+
+        <li><strong>gap.</strong> What I do not have, as a list of field and reason. A gap is never filled with a guess.</li>
+
+      </ul>
+
+      <h2 id="states">State Medicaid procurement coverage</h2>
+
+      <p>State coverage is honest about its edges. Ask for coverage first (the tool is <code>mmt_states_coverage</code>, or <code>GET /api/v1/states/coverage</code>) and you get, for every state and territory, whether each entity is live, partial or not covered: the agency and its procurement portal, solicitations on file, the module landscape (who runs claims, pharmacy, EVV and the rest), cooperative vehicles such as the NASPO ValuePoint MES portfolios, participating addenda, and the CMS conditions for enhanced funding. Full detail exists for the ten highest-spending states. A question about a state I do not cover for that entity returns a coverage gap with the coverage row, never an empty list your assistant might read as "nothing there."</p>
+
+      <h2 id="ids">Request ids, attribution and your usage statement</h2>
+
+      <p>Every response carries an <code>X-Request-Id</code> header, and every error body a <code>request_id</code>; if something looks wrong, send me that id and I can find the exact call. Your assistant can also send an <code>X-MMT-Client-Ref</code> header on each call. It is opaque to me: I never read it, only group by it, so your monthly usage statement can show which of your clients or projects the calls belonged to. The statement lives under each connection's <strong>Usage</strong> button on the <a href="/premium/ai-integrations/">AI integrations</a> page: calls against the monthly allowance, anything over it priced at the published per-call rate, and the per-client breakdown. Nothing is cut off at the allowance; I email you at 80 percent and again on the first call past it.</p>
+
+      <h2 id="engines">Running my tools through your assistant</h2>
+
+      <p>With the right permissions your assistant can also run the paid tools for you: Ask MMT, Pursuit Score, Compliance Check and, if you turned it on, Signal Chain. They run exactly as they do on the site, against your own monthly allowances, and Ask MMT returns the same sources list the web widget shows, untouched.</p>
+
+
+
       <h2 id="privacy">Your data and privacy</h2>
       <div class="callout">
         <h3>Short version: it is a one-way, read-only pull.</h3>

@@ -9,6 +9,7 @@
 // ============================================================================
 
 const { PAGINATION } = require("./agent-config");
+const rc = require("./record-contract");
 
 /** Parse + clamp pagination. limit>MAX → { error } so the handler returns 400. */
 function parsePaging(qs) {
@@ -35,7 +36,16 @@ function envelope(rows, total, limit, offset) {
 
 // ---- opportunities (global) ------------------------------------------------
 
+// Every row meets the record contract (docs/agent-platform-spec.md §3):
+// opportunities are judged against the 24-hour window from scan_date; the
+// member's own tracker and recommendation rows are member_data.
 function serializeOpp(r) {
+  return rc.contractRecord(serializeOppFields(r), {
+    type: "opportunity", sourceUrl: r.source_url || null, retrievedAt: r.scan_date || null, asOf: r.scan_date || null, baseConfidence: "high",
+  });
+}
+
+function serializeOppFields(r) {
   return {
     id: r.id,
     title: r.title,
@@ -103,7 +113,10 @@ async function listTracker(db, email, paging) {
     .order("saved_at", { ascending: false })
     .range(offset, offset + limit - 1);
   if (error) throw new Error(`tracker: ${error.message}`);
-  const rows = (data || []).map((r) => ({ id: r.entry_id, title: r.entry_title, url: r.entry_url, saved_at: r.saved_at }));
+  const rows = (data || []).map((r) => rc.contractRecord(
+    { id: r.entry_id, title: r.entry_title, url: r.entry_url, saved_at: r.saved_at },
+    { type: "member_data", sourceUrl: r.entry_url || null, retrievedAt: r.saved_at || null, asOf: r.saved_at || null, baseConfidence: "high" },
+  ));
   return envelope(rows, count ?? (offset + rows.length), limit, offset);
 }
 
@@ -119,10 +132,10 @@ async function listRecommended(db, userId, paging) {
     .order("fit_score", { ascending: false })
     .range(offset, offset + limit - 1);
   if (error) throw new Error(`recommended: ${error.message}`);
-  const rows = (data || []).map((r) => ({
-    opportunity_id: r.opportunity_id, fit_score: Number(r.fit_score),
-    rationale: r.rationale, scored_model: r.scored_model, scored_at: r.scored_at,
-  }));
+  const rows = (data || []).map((r) => rc.contractRecord(
+    { opportunity_id: r.opportunity_id, fit_score: Number(r.fit_score), rationale: r.rationale, scored_model: r.scored_model, scored_at: r.scored_at },
+    { type: "member_data", retrievedAt: r.scored_at || null, asOf: r.scored_at || null, derived: "scored_model and scored_at (a nightly batch, never a live model call)" },
+  ));
   return envelope(rows, count ?? (offset + rows.length), limit, offset);
 }
 

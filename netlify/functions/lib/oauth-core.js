@@ -19,8 +19,8 @@
 
 const crypto = require("crypto");
 
-const SCOPES = ["opportunities:read", "tracker:read", "intel:read"];
-const DEFAULT_SCOPES = ["opportunities:read", "intel:read"];
+const SCOPES = ["opportunities:read", "tracker:read", "intel:read", "reference:read", "states:read", "orgcharts:read", "signals:read"];
+const DEFAULT_SCOPES = ["opportunities:read", "intel:read", "reference:read", "states:read", "orgcharts:read"];
 
 // Lifetimes (ms)
 const AUTH_REQUEST_TTL_MS = 10 * 60 * 1000;   // sign-in window

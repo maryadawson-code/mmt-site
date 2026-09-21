@@ -164,3 +164,13 @@ create policy recommended_cache_owner_select on public.recommended_cache
 -- - Verify after push: every table has rowsecurity = true in pg_tables; no plaintext
 --   token column exists; api_tokens.token_hash is unique.
 -- ============================================================================
+
+-- ============================================================================
+-- ADDENDUM 2026-09-20 — metering columns (docs/agent-platform-spec.md §2, §6)
+-- Applied by migrations/20260920000000_agent_metering.sql (gated on Mary).
+-- api_audit_log gains request_id uuid, client_ref text (opaque caller
+-- attribution header, never identifying data), tool text, scope text,
+-- records_returned integer, plus (token_id, created_at) and request_id indexes.
+-- api_tokens is unchanged: the spec's agent_id is api_tokens.id, member_id is
+-- api_tokens.user_id, label is api_tokens.name.
+-- ============================================================================
