@@ -3471,6 +3471,7 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
     '<!-- BUILD:ASK_MMT_CAP_FREE -->': String(askMmtFreeCap),
     '<!-- BUILD:AGENT_ALLOWANCE_FEATURE -->': agentAllowanceCopy.pricingFeature(agentAllowance),
     '<!-- BUILD:AGENT_ALLOWANCE_GUIDE -->': agentAllowanceCopy.guideSection(agentAllowance),
+    '<!-- BUILD:AGENT_ALLOWANCE_TOC -->': agentAllowanceCopy.guideTocItem(agentAllowance),
     '<!-- BUILD:AGENT_ALLOWANCE_PANEL -->': agentAllowanceCopy.panelNote(agentAllowance),
     '<!-- BUILD:PRIMER_CTA -->': primerCta(primerData),
     '<!-- BUILD:PRIMER_LIFECYCLE -->': primerLifecycle(primerData),

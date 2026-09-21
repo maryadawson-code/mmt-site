@@ -51,7 +51,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Wait for Netlify
-        run: sleep 300
+        env:
+          HEALTH_URL: https://missionmeetstech.com/.netlify/functions/health
+          WANT: ${{ github.sha }}
+        run: |
+          # This step used to `sleep 300` and then check whatever was live. Netlify
+          # builds here run past five minutes, so the smoke checks below were often
+          # testing the PREVIOUS deploy. health.js reports the commit it was built
+          # from (2026-09-21), so wait for THIS push: up to ten minutes, done the
+          # moment it is live. If it never shows up the checks still run, as before,
+          # with a warning that says which commit they ran against.
+          # TRIES and PAUSE exist so tests/unit/deploy-gate-wait-step.test.js can run
+          # this exact script in a second; the workflow never sets them.
+          TRIES="${TRIES:-60}"
+          PAUSE="${PAUSE:-10}"
+          V=""
+          for i in $(seq 1 "$TRIES"); do
+            V=$(curl -s --max-time 10 "$HEALTH_URL" | jq -r '.version // empty' 2>/dev/null || true)
+            if [ "$V" = "$WANT" ]; then
+              echo "Live: $V on try $i"
+              exit 0
+            fi
+            sleep "$PAUSE"
+          done
+          echo "::warning::After $TRIES tries health reports '${V:-nothing}', not this push ($WANT). The checks below ran against whatever was live."
       - name: Health check
         env:
           HEALTH_URL: https://missionmeetstech.com/.netlify/functions/health

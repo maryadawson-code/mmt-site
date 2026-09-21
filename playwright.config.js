@@ -2,6 +2,9 @@ const { defineConfig } = require('@playwright/test');
 
 module.exports = defineConfig({
   testDir: './tests',
+  // tests/ also holds the vitest suites (*.test.js). Without this Playwright tried to
+  // load them, threw on `import ... from "vitest"`, and `npm run test:e2e` never ran a spec.
+  testMatch: '**/*.spec.js',
   timeout: 30000,
   retries: 0,
   use: {

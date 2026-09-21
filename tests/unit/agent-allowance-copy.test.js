@@ -66,3 +66,19 @@ describe("the pages carry the markers and build.js injects every one", () => {
     }
   });
 });
+
+describe("the guide's table of contents", () => {
+  it("lists the allowance section only when that section renders, and every listed anchor exists", () => {
+    expect(copy.guideTocItem({ CONFIRMED: true, CALLS_PER_MONTH: 5000, OVERAGE_USD_PER_CALL: 0.01 })).toBe('<a href="#allowance">Calls, the monthly allowance and what happens past it</a>');
+    expect(copy.guideTocItem({ CONFIRMED: false, CALLS_PER_MONTH: 5000, OVERAGE_USD_PER_CALL: 0.01 })).toBe("");
+    const html = readFileSync(resolve(REPO, "agent-access-guide.html"), "utf8");
+    const toc = html.slice(html.indexOf('class="guide-toc"'), html.indexOf('class="guide-body"'));
+    const anchors = [...toc.matchAll(/href="#([a-z-]+)"/g)].map((m) => m[1]);
+    expect(anchors.length).toBeGreaterThanOrEqual(13);
+    for (const a of anchors) expect(html, `#${a} is listed but no section has that id`).toContain(`id="${a}"`);
+    expect(toc).toContain("<!-- BUILD:AGENT_ALLOWANCE_TOC -->");
+    // Every h2 in the body is reachable from the list (the allowance one through its marker).
+    const ids = [...html.slice(html.indexOf('class="guide-body"')).matchAll(/<h2 id="([a-z-]+)"/g)].map((m) => m[1]);
+    for (const id of ids) expect(anchors, `section #${id} is missing from "On this page"`).toContain(id);
+  });
+});
