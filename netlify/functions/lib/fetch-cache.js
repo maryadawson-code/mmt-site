@@ -102,7 +102,10 @@ async function cacheGet(key, now = Date.now()) {
 }
 
 async function cacheSet(key, value, ttlMs, now = Date.now()) {
-  const entry = { value, expiresAt: now + Math.max(1000, ttlMs | 0) };
+  // Not `ttlMs | 0`: that is a 32-bit operation, so any TTL past about 24.8 days
+  // wrapped negative and became one second (a 45-day marker lived for 1000ms).
+  const ttl = Number.isFinite(Number(ttlMs)) ? Math.floor(Number(ttlMs)) : 0;
+  const entry = { value, expiresAt: now + Math.max(1000, ttl) };
   memory.set(key, entry);
   const s = getStore();
   if (!s) return;

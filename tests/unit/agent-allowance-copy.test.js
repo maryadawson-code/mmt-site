@@ -9,7 +9,7 @@ import { dirname, resolve } from "node:path";
 import * as copy from "../../netlify/functions/lib/agent-allowance-copy.js";
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const SET = { CONFIRMED: true, CALLS_PER_MONTH: 5000, OVERAGE_USD_PER_CALL: 0.01, BILLING_STARTS_MONTH: "2026-10" };
+const SET = { CONFIRMED: true, CALLS_PER_MONTH: 5000, OVERAGE_USD_PER_CALL: 0.01, MAX_BILLABLE_OVERAGE_CALLS: 5000, BILLING_STARTS_MONTH: "2026-10" };
 const BANNED = /pivotal|comprehensive|robust|transformative|delve|leverage|synergy|paradigm|holistic|streamline|actionable|ecosystem/i;
 
 describe("formatting", () => {
@@ -26,13 +26,20 @@ describe("the disclosure", () => {
   const all = (a) => [copy.pricingFeature(a), copy.guideSection(a), copy.panelNote(a)];
   it("quotes the configured numbers, everywhere, and nothing else", () => {
     for (const html of all(SET)) { expect(html).toMatch(/5,000 calls a month/); expect(html).toMatch(/\$0\.01/); }
-    for (const html of all({ ...SET, CALLS_PER_MONTH: 7500, OVERAGE_USD_PER_CALL: 0.02 })) { expect(html).toMatch(/7,500/); expect(html).toMatch(/\$0\.02/); expect(html).not.toMatch(/5,000|\$0\.01/); }
+    for (const html of all({ ...SET, CALLS_PER_MONTH: 7500, OVERAGE_USD_PER_CALL: 0.02, MAX_BILLABLE_OVERAGE_CALLS: 2500 })) { expect(html).toMatch(/7,500/); expect(html).toMatch(/\$0\.02/); expect(html).not.toMatch(/5,000|\$0\.01/); }
   });
   it("says only calls that return data count, that nothing is cut off, and when billing starts", () => {
     const g = copy.guideSection(SET);
     expect(g).toMatch(/Only calls that return data count/);
     expect(g).toMatch(/never billed/);
-    expect(g).toMatch(/nothing is cut off/i);
+    // "Nothing is cut off" was true for one afternoon. With a limit the page says where the pause is, in calls and in dollars.
+    expect(g).not.toMatch(/nothing is cut off/i);
+    expect(g).toMatch(/up to 5,000 more calls \(\$50\.00\)/);
+    expect(g).toMatch(/pauses until the first of the next month/);
+    expect(g).toMatch(/A connection without the add-on pauses at the allowance/);
+    for (const html of all(SET)) expect(html).toMatch(/pauses until/);
+    // No limit configured: no pause is promised anywhere.
+    for (const html of [copy.pricingFeature({ ...SET, MAX_BILLABLE_OVERAGE_CALLS: null }), copy.panelNote({ ...SET, MAX_BILLABLE_OVERAGE_CALLS: null })]) expect(html).not.toMatch(/pauses until next month/);
     expect(g).toMatch(/starts with October 2026 usage/);
     expect(g).toMatch(/id="allowance"/);
     expect(copy.guideSection({ ...SET, BILLING_STARTS_MONTH: null })).not.toMatch(/starts with/);

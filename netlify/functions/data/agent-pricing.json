@@ -1,11 +1,14 @@
 {
-  "_doc": "Agent Access monthly call allowance and overage rate (docs/agent-platform-spec.md section 2.5). These are Mary's numbers; nobody else sets them. To change one: edit this file, open a PR, deploy, then run `netlify dev:exec -- node scripts/stripe-setup-agent-overage.js` so the Stripe metered price matches. agent-overage-report refuses to bill while the Stripe price and overage_usd_per_call disagree. confirmed:false turns every quoted number, every alert email and all Stripe reporting off.",
+  "_doc": "Agent Access monthly call allowance, overage rate and overage limit (docs/agent-platform-spec.md sections 2.5 and 2.6). These are Mary's numbers; nobody else sets them. To change one: edit this file, open a PR, deploy, then run `netlify dev:exec -- node scripts/stripe-setup-agent-overage.js --apply` if the rate changed. agent-overage-report refuses to bill while the Stripe price and overage_usd_per_call disagree. confirmed:false turns every quoted number, every alert email, the pause gate and all Stripe reporting off.",
   "calls_per_month_per_agent": 5000,
   "overage_usd_per_call": 0.01,
-  "max_billable_overage_calls_per_agent_month": null,
+  "_doc_limit": "max_billable_overage_calls_per_agent_month is the overage limit: how many calls past the allowance one agent may make in a month. It is both what is served and what is billed, so nothing is ever served that cannot be billed. At the limit the agent pauses until the next month. null means no limit. An agent whose owner has no live Stripe add-on (a comped seat, an Institutional plan) cannot be billed per call, so it pauses at the allowance unless it is listed in overage_limit_overrides.",
+  "max_billable_overage_calls_per_agent_month": 5000,
+  "_doc_overrides": "overage_limit_overrides: agent id (the id shown on the member's AI integrations page) -> calls past the allowance that agent may make each month; null = no limit. Listing an agent here means Mary bills that usage herself from the statement when Stripe cannot. Ids only, never an email or a name.",
+  "overage_limit_overrides": {},
   "billing_starts_month": "2026-10",
   "confirmed": true,
   "confirmed_by": "Mary Womack",
   "confirmed_at": "2026-09-21",
-  "basis": "Mary's instruction on 2026-09-21 to set the allowance and overage rate. The values are the ones the build had carried as unconfirmed defaults since 2026-09-20 and were reported to her twice before she confirmed. Usage before billing_starts_month is counted on the statement and never billed."
+  "basis": "Mary's instruction on 2026-09-21 to set the allowance and overage rate. The values are the ones the build had carried as unconfirmed defaults since 2026-09-20 and were reported to her twice before she confirmed. Usage before billing_starts_month is counted on the statement and never billed. Overage limit set 2026-09-21 on Mary's instruction to build the cap and make sure Agent Access never costs more than it earns; 5,000 (one more allowance, $50) is the default chosen for her and is hers to change."
 }
