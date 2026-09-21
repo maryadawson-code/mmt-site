@@ -71,6 +71,13 @@
 [functions."weekly-report"]
   schedule = "0 14 * * 1"
 
+# health.js reports the commit it was built from as `version`. build.js writes
+# netlify/build-info.json at the end of every build (COMMIT_REF is not in the
+# function runtime). Bundled with this function only, on purpose: in the global
+# list it would change every function's bundle on every deploy.
+[functions."health"]
+  included_files = ["netlify/build-info.json"]
+
 # Agent Access — nightly recommendation scoring (Phase 4). Feeds
 # recommended_cache. No-op until AGENT_SCORING_ENABLED=true AND provider keys
 # land (the router is fail-closed), so the cron is safe to register now.

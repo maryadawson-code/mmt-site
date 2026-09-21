@@ -6013,6 +6013,15 @@ async function build() {
       '',
     ].join('\n');
     fs.writeFileSync(path.join(DIST_DIR, 'deploy-id.txt'), marker);
+    // The same commit for the functions: health.js reports it as `version`.
+    // COMMIT_REF exists only during the build, never in the function runtime,
+    // so the ref has to travel in a file. netlify.toml bundles this one with
+    // the health function alone; the global included_files list would make
+    // every function's bundle change on every deploy.
+    fs.writeFileSync(path.join(__dirname, 'netlify', 'build-info.json'), JSON.stringify({
+      commit: sha, branch, built: new Date().toISOString(),
+      netlify_context: process.env.CONTEXT || 'local', netlify_deploy_id: process.env.DEPLOY_ID || null,
+    }, null, 2) + '\n');
     console.log(`Wrote dist/deploy-id.txt (commit: ${sha.slice(0, 10)})`);
   } catch (err) {
     console.warn('Failed to write deploy marker:', err.message);
