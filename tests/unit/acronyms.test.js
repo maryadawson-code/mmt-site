@@ -17,6 +17,8 @@ describe("acronymReference", () => {
     // converting Program Executive Offices into Portfolio Acquisition Executives. The table said "Program" until the
     // eval caught the model, grounded in those articles, disagreeing with it (2026-09-21).
     expect(known.PAE).toBe("Portfolio Acquisition Executive");
+    // The eval caught the model expanding CUI correctly with nothing in the table to verify it against (2026-09-21).
+    expect(known.CUI).toBe("Controlled Unclassified Information");
     expect(known.DHA).toBe("Defense Health Agency");
     expect(known.EHR).toBeUndefined(); // not in the context
     expect(r.block).toContain("never invent what letters stand for");

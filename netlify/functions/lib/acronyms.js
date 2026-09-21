@@ -108,6 +108,7 @@ const ACRONYMS = {
   FedRAMP: "Federal Risk and Authorization Management Program", CMMC: "Cybersecurity Maturity Model Certification",
   IL4: "DoD Impact Level 4", IL5: "DoD Impact Level 5", IL6: "DoD Impact Level 6", STIG: "Security Technical Implementation Guide",
   NIST: "National Institute of Standards and Technology", ZTA: "Zero Trust Architecture", DISA: "Defense Information Systems Agency",
+  CUI: "Controlled Unclassified Information", // 32 CFR Part 2002; the glossary's NIST 800-171 entry uses it
   DLA: "Defense Logistics Agency", GSA: "General Services Administration", FAS: "Federal Acquisition Service", OMB: "Office of Management and Budget",
   // Budget and oversight
   FY: "Fiscal Year", CR: "Continuing Resolution", NDAA: "National Defense Authorization Act", OIG: "Office of Inspector General",
