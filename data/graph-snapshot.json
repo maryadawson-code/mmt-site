@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-09-15T19:22:16.435Z",
+  "generated_at": "2026-09-18T20:59:19.073Z",
   "node_count": 469,
-  "edge_count": 687,
+  "edge_count": 695,
   "nodes": [
     {
       "id": "peo-dhms-deployment",
@@ -10,11 +10,11 @@
       "properties": {
         "contract_number": "HT003826RE001",
         "ceiling_usd": 300000000,
-        "pop_start": "2026-06-01",
-        "pop_end": "2031-05-31",
+        "pop_start": "2026-08-01",
+        "pop_end": "2031-08-31",
         "set_aside": "Unrestricted",
         "vehicle_type": "Multiple Award IDIQ",
-        "status": "Solicitation-stage / upcoming"
+        "status": "Active / Awarded"
       }
     },
     {
@@ -104,9 +104,9 @@
         "ceiling_usd": 969000000,
         "pop_start": "",
         "pop_end": "2025-10-31",
-        "set_aside": "Multiple Award IDIQ",
-        "vehicle_type": "",
-        "status": "614000000"
+        "set_aside": "",
+        "vehicle_type": "Multiple Award IDIQ",
+        "status": "Winding Down"
       }
     },
     {
@@ -376,10 +376,16 @@
         "ceiling_usd": 5000000000,
         "pop_start": "",
         "pop_end": "",
-        "set_aside": "",
-        "vehicle_type": "Unrestricted + regional",
-        "status": "TBD"
+        "set_aside": "Unrestricted + regional",
+        "vehicle_type": "Multiple Award IDIQ",
+        "status": "In Evaluation"
       }
+    },
+    {
+      "id": "naics-339113",
+      "type": "Topic",
+      "canonical_name": "NAICS 339113",
+      "properties": {}
     },
     {
       "id": "va-mspv-gen-z",
@@ -394,12 +400,6 @@
         "vehicle_type": "Multiple Award IDIQ",
         "status": "Active"
       }
-    },
-    {
-      "id": "naics-339113",
-      "type": "Topic",
-      "canonical_name": "NAICS 339113",
-      "properties": {}
     },
     {
       "id": "usace-medcom-dbmatoc",
@@ -1380,7 +1380,7 @@
         "classification": "Solicitation",
         "status": "active",
         "naics": "541714",
-        "last_verified": "2026-08-17"
+        "last_verified": "2026-09-18"
       }
     },
     {
@@ -3858,6 +3858,17 @@
       }
     },
     {
+      "id": "article-vas-manual-tells-raters-to-enter-service-that-never-happened",
+      "type": "Article",
+      "canonical_name": "VA's Manual Tells Raters to Enter Service That Never Happened",
+      "properties": {
+        "slug": "vas-manual-tells-raters-to-enter-service-that-never-happened",
+        "type": "article",
+        "url": "/newsletter/vas-manual-tells-raters-to-enter-service-that-never-happened/",
+        "published": "2026-09-15"
+      }
+    },
+    {
       "id": "article-capture-corner-2026-04-29",
       "type": "Article",
       "canonical_name": "DHA Reorganization: Sixteen Changes, Five That Move Your Pipeline",
@@ -4232,6 +4243,17 @@
       }
     },
     {
+      "id": "article-capture-corner-2026-09-15",
+      "type": "Article",
+      "canonical_name": "The Clause That Opens on January 6",
+      "properties": {
+        "slug": "capture-corner-2026-09-15",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-09-15.html",
+        "published": "2026-09-15"
+      }
+    },
+    {
       "id": "article-premium-briefs-2026-03-21",
       "type": "Article",
       "canonical_name": "Week of March 21, 2026",
@@ -4547,28 +4569,6 @@
         "slug": "peo-dhms-cso-competitive-solutions-opening-",
         "type": "contract_intel",
         "url": "/contracts/peo-dhms-cso-competitive-solutions-opening/",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-va-health-connect-iht-2-0",
-      "type": "Article",
-      "canonical_name": "VA Health Connect / IHT 2.0",
-      "properties": {
-        "slug": "va-health-connect-iht-2-0",
-        "type": "contract_intel",
-        "url": "/contracts/va-health-connect-iht-2-0/",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-enterprise-intelligence-data-solutions-eids",
-      "type": "Article",
-      "canonical_name": "Enterprise Intelligence & Data Solutions (EIDS)",
-      "properties": {
-        "slug": "enterprise-intelligence-data-solutions-eids-",
-        "type": "contract_intel",
-        "url": "/contracts/enterprise-intelligence-data-solutions-eids/",
         "published": "2026-08-17"
       }
     }
@@ -4903,6 +4903,13 @@
       "properties": {
         "sub_agency": "DLA Troop Support Medical"
       },
+      "weight": 1
+    },
+    {
+      "from_id": "dla-mspv-gen-vi",
+      "to_id": "naics-339113",
+      "relation": "covers_naics",
+      "properties": {},
       "weight": 1
     },
     {
@@ -7649,6 +7656,27 @@
       "weight": 1
     },
     {
+      "from_id": "article-vas-manual-tells-raters-to-enter-service-that-never-happened",
+      "to_id": "dmdc",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-vas-manual-tells-raters-to-enter-service-that-never-happened",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-vas-manual-tells-raters-to-enter-service-that-never-happened",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-capture-corner-2026-04-29",
       "to_id": "dhmsm",
       "relation": "mentions",
@@ -8419,6 +8447,55 @@
       "weight": 1
     },
     {
+      "from_id": "article-capture-corner-2026-09-15",
+      "to_id": "dmdc",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-15",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-15",
+      "to_id": "federal-ehr",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-15",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-15",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-15",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-15",
+      "to_id": "va-ehrm",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-premium-briefs-2026-03-21",
       "to_id": "federal-ehr",
       "relation": "mentions",
@@ -8937,6 +9014,13 @@
       "weight": 1
     },
     {
+      "from_id": "article-va-helm-scmdso-healthcare-environment-and-logistics-manageme",
+      "to_id": "va-helm-scmdso-healthcare-environment-and-logistics-manageme",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-cio-cs-follow-on-the-store",
       "to_id": "alliant-3",
       "relation": "mentions",
@@ -9099,6 +9183,13 @@
     },
     {
       "from_id": "article-dha-enterprise-wide-cso-ht003826sc005",
+      "to_id": "dha-enterprise-wide-cso-ht003826sc005",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-dha-enterprise-wide-cso-ht003826sc005",
       "to_id": "defense-health-agency",
       "relation": "mentions",
       "properties": {},
@@ -9170,41 +9261,6 @@
     {
       "from_id": "article-peo-dhms-cso-competitive-solutions-opening",
       "to_id": "peo-dhms-cso-competitive-solutions-opening",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-va-health-connect-iht-2-0",
-      "to_id": "va-health-connect-iht-2-0",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-enterprise-intelligence-data-solutions-eids",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-enterprise-intelligence-data-solutions-eids",
-      "to_id": "enterprise-intelligence-data-solutions-eids",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-enterprise-intelligence-data-solutions-eids",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-enterprise-intelligence-data-solutions-eids",
-      "to_id": "peo-dhms",
       "relation": "mentions",
       "properties": {},
       "weight": 1

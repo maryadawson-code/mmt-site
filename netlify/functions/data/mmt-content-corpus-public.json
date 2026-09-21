@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-15T20:55:17.893Z",
+  "generated_at": "2026-09-18T21:34:32.553Z",
   "total": 277,
   "note": "Public subset of mmt-content-corpus.json (premium=false items only). For unauthenticated endpoints. Per Sprint C 2026-05-14.",
   "counts": {
@@ -3175,8 +3175,8 @@
       "type": "contract_intel",
       "title": "NIH Scientific & Technical Support Services IDIQ ($3B)",
       "slug": "nih-scientific-technical-support-services-idiq-3b-",
-      "date": "2026-08-17",
-      "description": "Update Aug 17, 2026: NIH (NIAID) opened bidding on the ~$3B multiple-award PSTSS recompete in March 2026 with proposals due April 27, 2026; solicitation closed and in source selection, no award yet. NIH's largest multi-award IDIQ in the cur",
+      "date": "2026-09-18",
+      "description": "Update Sep 18, 2026: GAO sustained LJR Solutions' protest of this solicitation on August 14, 2026 (B-424487), finding NIH's decision not to set the work aside for small business unreasonable and internally inconsistent. GAO faulted the Apri",
       "tags": [
         "National Institutes of Health (NIH)",
         "active",
@@ -3184,7 +3184,7 @@
       ],
       "url": "/contracts/nih-scientific-technical-support-services-idiq-3b/",
       "source_url": "https://www.govconwire.com/articles/nih-rfp-scientific-technical-support",
-      "excerpt": "Update Aug 17, 2026: NIH (NIAID) opened bidding on the ~$3B multiple-award PSTSS recompete in March 2026 with proposals due April 27, 2026; solicitation closed and in source selection, no award yet. NIH's largest multi-award IDIQ in the current pipeline (solicitation 75N98026R00042), Full and Open. Covers bioinformatics, computational biology, BSL 2-4 lab research support, and clinical research across all NIH institutes. Proposals were due April 27, 2026 — that deadline has passed, placing the procurement in evaluation/award-pending status (not open for new bids). Multiple awards expected; period of performance 9/15/2026–9/14/2031. NAICS 541714 primary (541511 secondary). Small-business eligible at the task-order level. Track for award announcement and prepare task-order teaming with awardees.\nAgency: National Institutes of Health (NIH)\nVendor: TBD — award-pending; proposals closed April 27, 2026\nValue: $3B ceiling (5-year); perf. 9/15/2026–9/14/2031\nStatus: active\nNAICS: 541714\nMMT verdict: WATCH — Award-pending $3B NIH IDIQ; proposals closed Apr 2026\nFactors: vehicle_fit: pass — Multi-award IDIQ — task-order bench access | agency_alignment: pass — NIH biomedical R&D support — core lane | timeline: watch — Proposals closed Apr 27 2026; awaiting award decision | competition: watch — Full-and-open; large biomedical-support field | scope_fit: pass — 541714/541511 scope; SB eligible at TO level",
+      "excerpt": "Update Sep 18, 2026: GAO sustained LJR Solutions' protest of this solicitation on August 14, 2026 (B-424487), finding NIH's decision not to set the work aside for small business unreasonable and internally inconsistent. GAO faulted the April 2026 market research memo for not explaining why three small businesses found capable in 2024 could no longer meet the requirement, faulted NIH for requiring small businesses to perform the entire scope without subcontractors when no firm could, and found NIH never documented consideration of a partial set-aside. GAO recommended new market research if appropriate and a determination on a full or partial set-aside. LJR raised the same objection in December 2024 and NIH took corrective action then. The 9/15/2026 performance start did not hold; award timing now depends on the corrective action. Update Aug 17, 2026: NIH (NIAID) opened bidding on the ~$3B multiple-award PSTSS recompete in March 2026 with proposals due April 27, 2026; solicitation closed and in source selection, no award yet. NIH's largest multi-award IDIQ in the current pipeline (solicitation 75N98026R00042), Full and Open. Covers bioinformatics, computational biology, BSL 2-4 lab research support, and clinical research across all NIH institutes. Proposals were due April 27, 2026 — that deadline has passed, placing the procurement in evaluation/award-pending status (not open for new bids). Multiple awards expected; period of performance 9/15/2026–9/14/2031. NAICS 541714 primary (541511 secondary). Small-business eligible at the task-order level. Track for award announcement and prepare task-order teaming with awardees.\nAgency: National Institutes of Health (NIH)\nVendor: TBD — award-pending; proposals closed April 27, 2026\nValue: $3B ceiling (5-year); perf. 9/15/2026–9/14/2031\nStatus: active\nNAICS: 541714\nMMT verdict: WATCH — Award-pending $3B NIH IDIQ; proposals closed Apr 2026\nFactors: vehicle_fit: pass — Multi-award IDIQ — task-order bench access | agency_alignment: pass — NIH biomedical R&D support — core lane | timeline: watch — Proposals closed Apr 27 2026; awaiting award decision | competition: watch — Full-and-open; large biomedical-support field | scope_fit: pass — 541714/541511 scope; SB eligible at TO level",
       "premium": false
     },
     {
@@ -4136,7 +4136,7 @@
       "type": "idiq_vehicle",
       "title": "PEO DHMS Deployment Solutions IDIQ",
       "slug": "peo-dhms-deployment",
-      "date": "2026-06-01",
+      "date": "2026-08-01",
       "description": "DHA DHA / PEO DHMS — Multiple Award IDIQ · $0.30B ceiling",
       "tags": [
         "idiq",
@@ -4144,11 +4144,11 @@
         "DHA / PEO DHMS",
         "Unrestricted",
         "Multiple Award IDIQ",
-        "Solicitation-stage / upcoming"
+        "Active / Awarded"
       ],
       "url": "/idiq-tracker.html",
       "source_url": "https://sam.gov/workspace/contract/opp/111847a96d214505b4d398a931dfdf1d/view",
-      "excerpt": "Vehicle: PEO DHMS Deployment Solutions IDIQ\nAgency: DHA / DHA / PEO DHMS\nContract number: HT003826RE001\nCeiling: $0.30B\nPeriod of performance: 2026-06-01 to 2031-05-31\nSet-aside: Unrestricted\nType: Multiple Award IDIQ\nStatus: Solicitation-stage / upcoming\nPrimes: 6-9 expected\nNAICS primary: 541512\nPSC: DA01\nMMT burn status: New\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: Proposals due Apr 21 2026 (2026-04-21 to 2026-09-30) — 70% confidence\nMMT note: Solicitation HT003826RE001; proposals due 2026-04-21\nPrimary source: https://sam.gov/workspace/contract/opp/111847a96d214505b4d398a931dfdf1d/view",
+      "excerpt": "Vehicle: PEO DHMS Deployment Solutions IDIQ\nAgency: DHA / DHA / PEO DHMS\nContract number: HT003826RE001\nCeiling: $0.30B\nPeriod of performance: 2026-08-01 to 2031-08-31\nSet-aside: Unrestricted\nType: Multiple Award IDIQ\nStatus: Active / Awarded\nPrimes: 12 (from 29 offers)\nNAICS primary: 541512\nPSC: DA01\nMMT burn status: New\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: Awarded Aug 2026; task order phase (2026-08-01 to 2031-08-31)\nMMT note: Awarded Aug 2026: 12 primes from 29 offers, $300M combined ceiling, one base year plus four option years. Ordering Aug 2026 to Aug 2031 at the month precision MMT published. Sources: contracts.json peo-dhms-deployment-solutions-new-idiq (verified 2026-08-17); MMT brief 2026-08-18.\nPrimary source: https://sam.gov/workspace/contract/opp/111847a96d214505b4d398a931dfdf1d/view",
       "premium": false
     },
     {
@@ -4217,17 +4217,17 @@
       "title": "DHA Medical Support Services IDIQ",
       "slug": "dha-mss",
       "date": "",
-      "description": "DoD DHA — IDIQ · $0.97B ceiling",
+      "description": "DoD DHA — Multiple Award IDIQ · $0.97B ceiling",
       "tags": [
         "idiq",
         "DoD",
         "DHA",
         "Multiple Award IDIQ",
-        "614000000"
+        "Winding Down"
       ],
       "url": "/idiq-tracker.html",
-      "source_url": "Clinical/medical support at MTFs",
-      "excerpt": "Vehicle: DHA Medical Support Services IDIQ\nAgency: DoD / DHA\nCeiling: $0.97B\nPeriod of performance: ? to 2025-10-31\nSet-aside: Multiple Award IDIQ\nStatus: 614000000\nPrimes: Winding Down\nMMT burn status: 5\nMMT forecast: 2026-10-01 to 2027-03-31 (65) — ?% confidence\nPrimary source: Clinical/medical support at MTFs",
+      "source_url": "https://www.highergov.com/vehicle/dha-medical-support-services-mss-2007/",
+      "excerpt": "Vehicle: DHA Medical Support Services IDIQ\nAgency: DoD / DHA\nCeiling: $0.97B\nPeriod of performance: ? to 2025-10-31\nType: Multiple Award IDIQ\nStatus: Winding Down\nMMT burn status: Saturating\nMMT Incumbent Vulnerability Score: 5/5\nMMT forecast: Successor vehicle RFP (2026-10-01 to 2027-03-31) — 65% confidence\nMMT note: Clinical/medical support at MTFs\nPrimary source: https://www.highergov.com/vehicle/dha-medical-support-services-mss-2007/",
       "premium": false
     },
     {
@@ -4556,17 +4556,18 @@
       "title": "DLA MedSurg Prime Vendor Gen VI",
       "slug": "dla-mspv-gen-vi",
       "date": "",
-      "description": "DoD DLA Troop Support Medical — Unrestricted + regional · $5.00B ceiling",
+      "description": "DoD DLA Troop Support Medical — Multiple Award IDIQ · $5.00B ceiling",
       "tags": [
         "idiq",
         "DoD",
         "DLA Troop Support Medical",
         "Unrestricted + regional",
-        "TBD"
+        "Multiple Award IDIQ",
+        "In Evaluation"
       ],
       "url": "/idiq-tracker.html",
-      "source_url": "70",
-      "excerpt": "Vehicle: DLA MedSurg Prime Vendor Gen VI\nAgency: DoD / DLA Troop Support Medical\nContract number: SPE2DV25R0001\nCeiling: $5.00B\nType: Unrestricted + regional\nStatus: TBD\nPrimes: Commercial distribution\nNAICS secondary: 339113\nPSC: 424210\nMMT forecast: 2 (Award decisions) — ?% confidence\nMMT note: https://www.highergov.com/contract-opportunity/dla-medsurg-prime-vendor-gen-vi-spe2dv25r0001-o-daa0a/\nPrimary source: 70",
+      "source_url": "https://www.highergov.com/contract-opportunity/dla-medsurg-prime-vendor-gen-vi-spe2dv25r0001-o-daa0a/",
+      "excerpt": "Vehicle: DLA MedSurg Prime Vendor Gen VI\nAgency: DoD / DLA Troop Support Medical\nContract number: SPE2DV25R0001\nCeiling: $5.00B\nSet-aside: Unrestricted + regional\nType: Multiple Award IDIQ\nStatus: In Evaluation\nPrimes: TBD\nNAICS primary: 339113\nNAICS secondary: 424210\nMMT burn status: New\nMMT Incumbent Vulnerability Score: 2/5\nMMT forecast: Award decisions (2026-06-01 to 2026-09-30) — 70% confidence\nMMT note: 3 Global Regions primary + backup PVs\nPrimary source: https://www.highergov.com/contract-opportunity/dla-medsurg-prime-vendor-gen-vi-spe2dv25r0001-o-daa0a/",
       "premium": false
     },
     {
