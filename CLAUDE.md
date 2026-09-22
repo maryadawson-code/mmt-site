@@ -78,6 +78,7 @@ Mary's voice: warm but fierce, story-first, conversational, technical but access
 - A forecast row traces to the agency's own published forecast, at the precision it published. Never carry POC PII from exports. DHA org-chart nodes are Mary-vetted; never change them from public sources.
 - MMT's own published briefs are an in-repo source for correcting tracker status.
 - Frontmatter titles containing a colon must be quoted (gray-matter silently skips them).
+- `state-medicaid.json` fields fill only through `scripts/merge-state-medicaid-research.js` (https source, retrieved date, `As of` suffix, out of `pending`); a field no source supports stays null and says not yet covered.
 
 ## Platform rules (do not regress)
 

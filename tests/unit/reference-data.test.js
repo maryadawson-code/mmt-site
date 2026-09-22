@@ -16,7 +16,7 @@ import { AGENCIES } from "../../netlify/functions/lib/federal-agencies.js";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "..", "..");
 const load = (f) => JSON.parse(readFileSync(join(REPO, "data", "reference", f), "utf8"));
-const TODAY = "2026-09-20";
+const TODAY = "2026-09-22";
 
 const buyers = load("buyers.json");
 const paths = load("authorization-paths.json");
@@ -205,7 +205,7 @@ describe("scripts/validate-reference-data.js teeth", () => {
     const edit = (dir, f, fn) => { const p = join(dir, "data", "reference", f); const j = JSON.parse(readFileSync(p, "utf8")); fn(j); writeFileSync(p, JSON.stringify(j)); };
     let r = run((d) => edit(d, "compliance-rules.json", (j) => { j.rules[0].verified = "2099-01-01"; }));
     expect(r.code).toBe(1); expect(r.out).toMatch(/in the future/);
-    r = run((d) => edit(d, "state-medicaid.json", (j) => { j.agencies[0].procurement_portal_url = "https://example.com"; }));
+    r = run((d) => edit(d, "state-medicaid.json", (j) => { j.agencies[0].pending = ["procurement_portal_url"]; j.agencies[0].procurement_portal_url = "https://example.com"; }));
     expect(r.code).toBe(1); expect(r.out).toMatch(/pending names "procurement_portal_url" but the field is filled/);
     r = run((d) => edit(d, "buying-routes.json", (j) => { j.routes[0].vehicles = ["no-such-vehicle"]; }));
     expect(r.code).toBe(1); expect(r.out).toMatch(/unknown vehicle_id no-such-vehicle/);
