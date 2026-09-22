@@ -103,6 +103,7 @@ Mary's voice: warm but fierce, story-first, conversational, technical but access
 - A freshness signal reflects when the source was last touched, not whether rows are in-window.
 - Anthropic web_search is unreliable from serverless; MarketPulse research uses Perplexity `sonar-pro`.
 - The local harness `ANTHROPIC_API_KEY` is a JWT that 401s; local scripts read the real key from `.env`.
+- A scheduled trigger reaches its background worker only through `lib/trigger-background.js` (two bounded attempts, 202 is the only success); a bare `fetch` in a trigger is a regression (one connect timeout failed award-tracker on 2026-09-21).
 
 ## Operations
 
