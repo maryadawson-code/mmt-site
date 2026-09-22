@@ -1,249 +1,311 @@
 #!/usr/bin/env node
 /**
- * Comprehensive site integrity checker for mmt-site.
- * Validates: internal links, newsletter hybrid model, archive completeness,
- * external link safety, and crawlable anchor semantics.
+ * Site integrity checker for mmt-site. Runs against a built dist/.
  *
- * Usage: node scripts/verify-integrity.js
+ * Every expectation is derived from the data the build shipped
+ * (dist/newsletters.json, the archive's own page size), never hard-coded, so
+ * a content drop cannot break it. It checks:
+ *   1. the build output exists
+ *   2. dist/newsletters.json (and the root newsletters.json it merges from)
+ *      is well formed: title, valid date, url on every entry; slug and
+ *      description on every on-site entry; unique urls; newest first
+ *   3. every on-site entry has a rendered page carrying its title and body
+ *   4. every external entry is a valid URL; every target="_blank" anchor in
+ *      dist carries rel="noopener"
+ *   5. the paginated archive (/newsletter.html, /newsletter/page/N/) renders
+ *      every entry exactly once, with issue badges counting #N down to #1
+ *   6. every internal href in dist resolves (shared with validate-links.js)
+ *   7. the homepage carries the newest issue and the Analysis page lists
+ *      every article
+ *
+ * Usage: node scripts/verify-integrity.js [--root <repo>] [--dist <dir>]
  * Exit code 0 = all checks pass, 1 = failures found
  */
 
 const fs = require('fs');
 const path = require('path');
+const { loadRedirectRules, scanInternalLinks, findHtmlFiles } = require('./lib/site-links');
 
-const DIST = path.join(__dirname, '..', 'dist');
-const ROOT = path.join(__dirname, '..');
-const HREF_RE = /href="([^"#?]*)(?:[#?][^"]*)?"/g;
-const TARGET_BLANK_RE = /<a\s[^>]*target="_blank"[^>]*>/g;
-const ANCHOR_HREF_RE = /<a\s[^>]*href="(https?:\/\/[^"]+)"[^>]*>/g;
+function arg(name, fallback) {
+  const i = process.argv.indexOf(name);
+  return i > -1 && process.argv[i + 1] ? process.argv[i + 1] : fallback;
+}
 
-const EXPECTED_NEWSLETTER_COUNT = 76;
-const LINKEDIN_URL_PATTERN = /^https:\/\/www\.linkedin\.com\//;
+const ROOT = path.resolve(arg('--root', path.join(__dirname, '..')));
+const DIST = path.resolve(arg('--dist', path.join(ROOT, 'dist')));
+
+const ARCHIVE_CARD_RE = /<article\s[^>]*class="[^"]*\bcard\b[^"]*"/g;
+const ARCHIVE_BADGE_RE = /<span class="text-eyebrow[^"]*"[^>]*>#(\d+)<\/span>/g;
+const ANALYSIS_ARTICLE_RE = /<article\s[^>]*data-content-type="article"/g;
+const BLANK_ANCHOR_RE = /<a\s([^>]*target="_blank"[^>]*)>/g;
 
 let totalChecks = 0;
 let passed = 0;
 let failed = 0;
-let warnings = 0;
-
 const failures = [];
-const warningList = [];
+const warnings = [];
 
 function check(name, condition, detail) {
   totalChecks++;
-  if (condition) {
-    passed++;
-  } else {
+  if (condition) passed++;
+  else {
     failed++;
     failures.push({ name, detail });
   }
+  return Boolean(condition);
 }
 
 function warn(name, detail) {
-  warnings++;
-  warningList.push({ name, detail });
+  warnings.push({ name, detail });
 }
 
-function findHtmlFiles(dir) {
-  const results = [];
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      results.push(...findHtmlFiles(full));
-    } else if (entry.name.endsWith('.html')) {
-      results.push(full);
-    }
+function readJson(file) {
+  try {
+    return JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch (err) {
+    return { __error: err.message };
   }
-  return results;
 }
 
-function resolves(href) {
-  const rel = href.startsWith('/') ? href.slice(1) : href;
-  const abs = path.join(DIST, rel);
-  if (fs.existsSync(abs) && fs.statSync(abs).isFile()) return true;
-  if (fs.existsSync(path.join(abs, 'index.html'))) return true;
-  return false;
+function decodeEntities(s) {
+  return s
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)))
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&amp;/g, '&')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&(rsquo|lsquo);/g, "'")
+    .replace(/&(rdquo|ldquo);/g, '"');
+}
+
+// Compare text the way a reader would: entities decoded, punctuation and
+// casing ignored. Apostrophes and dashes differ between markdown and HTML.
+function fold(s) {
+  return decodeEntities(String(s)).toLowerCase().replace(/[^a-z0-9]+/g, '');
+}
+
+function htmlHasText(html, text) {
+  return fold(html).includes(fold(text));
+}
+
+function countMatches(html, re) {
+  re.lastIndex = 0;
+  return (html.match(re) || []).length;
+}
+
+function badges(html) {
+  const out = [];
+  let m;
+  ARCHIVE_BADGE_RE.lastIndex = 0;
+  while ((m = ARCHIVE_BADGE_RE.exec(html)) !== null) out.push(Number(m[1]));
+  return out;
+}
+
+function pageFile(n) {
+  return n === 1 ? path.join(DIST, 'newsletter.html') : path.join(DIST, 'newsletter', 'page', String(n), 'index.html');
+}
+
+function pageLabel(n) {
+  return n === 1 ? '/newsletter.html' : `/newsletter/page/${n}/`;
 }
 
 // ─── SECTION 1: Build output exists ────────────────────────────────────
 console.log('\n=== Section 1: Build Output ===');
 
-check('dist/ exists', fs.existsSync(DIST), 'dist/ directory not found');
-check('newsletter.html exists', fs.existsSync(path.join(DIST, 'newsletter.html')), 'dist/newsletter.html not found');
-check('index.html exists', fs.existsSync(path.join(DIST, 'index.html')), 'dist/index.html not found');
-check('latest.html exists', fs.existsSync(path.join(DIST, 'latest.html')), 'dist/latest.html not found');
-
+const required = ['index.html', 'latest.html', 'newsletter.html', 'newsletters.json'];
+let outputOk = check('dist/ exists', fs.existsSync(DIST), `${DIST} not found — run node build.js first`);
+for (const f of required) {
+  outputOk = check(`dist/${f} exists`, outputOk && fs.existsSync(path.join(DIST, f)), `dist/${f} not found`) && outputOk;
+}
 console.log(`  Build output: ${passed}/${totalChecks} checks passed`);
+
+if (!outputOk) {
+  console.log('\nCannot continue without a built dist/.');
+  console.log('\nFAILURES:');
+  failures.forEach((f) => console.log(`  ✗ ${f.name}: ${f.detail}`));
+  process.exit(1);
+}
 
 // ─── SECTION 2: newsletters.json validation ────────────────────────────
 console.log('\n=== Section 2: Newsletter Data Validation ===');
 
-const srcJson = JSON.parse(fs.readFileSync(path.join(ROOT, 'newsletters.json'), 'utf-8'));
-const distJson = JSON.parse(fs.readFileSync(path.join(DIST, 'newsletters.json'), 'utf-8'));
+const distJson = readJson(path.join(DIST, 'newsletters.json'));
+const distOk = check('dist/newsletters.json parses to a non-empty array',
+  Array.isArray(distJson) && distJson.length > 0,
+  distJson && distJson.__error ? distJson.__error : 'not a non-empty array');
+const entries = distOk ? distJson : [];
+const total = entries.length;
 
-check('Source newsletters.json count', srcJson.length === EXPECTED_NEWSLETTER_COUNT,
-  `Expected ${EXPECTED_NEWSLETTER_COUNT} entries, got ${srcJson.length}`);
+const srcPath = path.join(ROOT, 'newsletters.json');
+if (fs.existsSync(srcPath)) {
+  const srcJson = readJson(srcPath);
+  const srcOk = check('root newsletters.json parses to an array', Array.isArray(srcJson),
+    srcJson && srcJson.__error ? srcJson.__error : 'not an array');
+  if (srcOk) {
+    const srcIssues = [];
+    srcJson.forEach((e, i) => {
+      if (!e.title) srcIssues.push(`entry ${i}: missing title`);
+      if (!e.url) srcIssues.push(`entry ${i} (${e.title}): missing url`);
+      if (!e.date || Number.isNaN(new Date(e.date).getTime())) srcIssues.push(`entry ${i} (${e.title}): invalid date "${e.date}"`);
+    });
+    check('root newsletters.json entries have title, url and a valid date', srcIssues.length === 0, srcIssues.join('; '));
+    // A Buttondown-only entry may ship without a description; the on-site
+    // article supplies one when there is a markdown file for it. Report the
+    // rest as a content gap, not a build failure.
+    const noDesc = srcJson.filter((e) => !e.description).length;
+    if (noDesc > 0) warn('root newsletters.json entries without a description', `${noDesc} (Buttondown-only issues render without a summary)`);
+    check('root newsletters.json is not larger than dist/newsletters.json', srcJson.length <= total,
+      `${srcJson.length} source entries but ${total} in dist — the build dropped issues`);
+  }
+}
 
-check('Dist newsletters.json count', distJson.length === EXPECTED_NEWSLETTER_COUNT,
-  `Expected ${EXPECTED_NEWSLETTER_COUNT} entries in dist, got ${distJson.length}`);
-
-// Schema validation
 const schemaIssues = [];
-srcJson.forEach((entry, i) => {
-  if (!entry.title) schemaIssues.push(`Entry ${i}: missing title`);
-  if (!entry.date) schemaIssues.push(`Entry ${i}: missing date`);
-  if (!entry.url) schemaIssues.push(`Entry ${i}: missing url`);
-  if (!entry.description) schemaIssues.push(`Entry ${i}: missing description`);
-  const d = new Date(entry.date);
-  if (isNaN(d.getTime())) schemaIssues.push(`Entry ${i} (${entry.title}): invalid date "${entry.date}"`);
+entries.forEach((e, i) => {
+  if (!e.title) schemaIssues.push(`entry ${i}: missing title`);
+  if (!e.url) schemaIssues.push(`entry ${i} (${e.title}): missing url`);
+  if (!e.date || Number.isNaN(new Date(e.date).getTime())) schemaIssues.push(`entry ${i} (${e.title}): invalid date "${e.date}"`);
 });
-check('All entries have required fields', schemaIssues.length === 0,
-  schemaIssues.join('; '));
+check('every dist entry has title, url and a valid date', schemaIssues.length === 0, schemaIssues.join('; '));
 
-// Every dist entry satisfies exactly ONE: internal OR external
-const internalEntries = distJson.filter(e => e.url && e.url.startsWith('/newsletter/'));
-const externalEntries = distJson.filter(e => e.url && e.url.startsWith('http'));
-const otherEntries = distJson.filter(e => !e.url || (!e.url.startsWith('/newsletter/') && !e.url.startsWith('http')));
+const internalEntries = entries.filter((e) => typeof e.url === 'string' && e.url.startsWith('/newsletter/'));
+const externalEntries = entries.filter((e) => typeof e.url === 'string' && /^https?:\/\//.test(e.url));
+const otherEntries = entries.filter((e) => !internalEntries.includes(e) && !externalEntries.includes(e));
+check('every entry is on-site (/newsletter/...) or external (https://...)', otherEntries.length === 0,
+  otherEntries.map((e) => `${e.title}: ${e.url}`).join('; '));
 
-check('Every entry is internal or external', otherEntries.length === 0,
-  `${otherEntries.length} entries have neither internal nor external URL`);
+const internalIssues = [];
+for (const e of internalEntries) {
+  if (!e.slug) internalIssues.push(`${e.title}: missing slug`);
+  if (!e.description) internalIssues.push(`${e.title}: missing description`);
+}
+check('every on-site entry has slug and description', internalIssues.length === 0, internalIssues.join('; '));
 
-console.log(`  Internal articles: ${internalEntries.length}`);
-console.log(`  External (LinkedIn): ${externalEntries.length}`);
+const seen = new Set();
+const dupes = entries.filter((e) => (seen.has(e.url) ? true : (seen.add(e.url), false))).map((e) => e.url);
+check('entry urls are unique', dupes.length === 0, `duplicated: ${dupes.join(', ')}`);
+
+const sortedNewestFirst = entries.every((e, i) => i === 0 || new Date(entries[i - 1].date) >= new Date(e.date));
+check('entries are sorted newest first', sortedNewestFirst, 'an older issue precedes a newer one');
+
+console.log(`  Entries: ${total} (${internalEntries.length} on-site, ${externalEntries.length} external)`);
 
 // ─── SECTION 3: Internal article pages exist ───────────────────────────
-console.log('\n=== Section 3: Internal Article Pages ===');
+console.log('\n=== Section 3: On-site Article Pages ===');
 
-const contentFiles = fs.readdirSync(path.join(ROOT, 'content', 'newsletter')).filter(f => f.endsWith('.md'));
-check('Content files match internal count', contentFiles.length === internalEntries.length,
-  `${contentFiles.length} markdown files but ${internalEntries.length} internal entries in dist JSON`);
-
-for (const entry of internalEntries) {
-  const slug = entry.url.replace(/^\/newsletter\//, '').replace(/\/$/, '');
-  const pagePath = path.join(DIST, 'newsletter', slug, 'index.html');
-  const exists = fs.existsSync(pagePath);
-  check(`Internal page: ${slug}`, exists, `Missing: ${pagePath}`);
-
-  if (exists) {
-    const html = fs.readFileSync(pagePath, 'utf-8');
-    check(`Page has title: ${slug}`, html.includes('<title>') && html.includes(entry.title.substring(0, 20)),
-      `Title mismatch or missing in ${slug}`);
-    check(`Page has article content: ${slug}`, html.includes('article-content'),
-      `No article-content element in ${slug}`);
-  }
+for (const e of internalEntries) {
+  const slug = e.url.replace(/^\/newsletter\//, '').replace(/\/$/, '');
+  const file = path.join(DIST, 'newsletter', slug, 'index.html');
+  if (!check(`page exists: ${slug}`, fs.existsSync(file), `missing ${path.relative(DIST, file)}`)) continue;
+  const html = fs.readFileSync(file, 'utf8');
+  const titleTag = (html.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || '';
+  check(`page title carries the entry title: ${slug}`, fold(titleTag).includes(fold(e.title).slice(0, 24)),
+    `<title> "${titleTag.trim()}" does not carry "${e.title}"`);
+  check(`page has article body: ${slug}`, html.includes('article-content'), 'no article-content element');
 }
 
 // ─── SECTION 4: External link safety ───────────────────────────────────
 console.log('\n=== Section 4: External Link Safety ===');
 
-for (const entry of externalEntries) {
-  try {
-    new URL(entry.url);
-    check(`Valid URL: ${entry.title.substring(0, 50)}`, true, '');
-  } catch {
-    check(`Valid URL: ${entry.title.substring(0, 50)}`, false, `Malformed URL: ${entry.url}`);
-  }
+for (const e of externalEntries) {
+  let valid = true;
+  try { new URL(e.url); } catch { valid = false; }
+  check(`valid external URL: ${e.title.slice(0, 50)}`, valid, `malformed URL: ${e.url}`);
 }
 
-// Check that target="_blank" links have rel="noopener"
 const allHtmlFiles = findHtmlFiles(DIST);
-let unsafeBlankLinks = 0;
-
+const unsafeBlank = [];
 for (const file of allHtmlFiles) {
-  const html = fs.readFileSync(file, 'utf-8');
-  const rel = path.relative(DIST, file);
-  // Find all <a> tags with target="_blank"
-  const blankRe = /<a\s([^>]*target="_blank"[^>]*)>/g;
+  const html = fs.readFileSync(file, 'utf8');
   let m;
-  while ((m = blankRe.exec(html)) !== null) {
-    const attrs = m[1];
-    if (!attrs.includes('rel="noopener') && !attrs.includes("rel='noopener")) {
-      unsafeBlankLinks++;
-      warn(`Unsafe blank link in ${rel}`, m[0].substring(0, 120));
-    }
+  BLANK_ANCHOR_RE.lastIndex = 0;
+  while ((m = BLANK_ANCHOR_RE.exec(html)) !== null) {
+    if (!/rel=["'][^"']*noopener/.test(m[1])) unsafeBlank.push(`${path.relative(DIST, file)}: ${m[0].slice(0, 100)}`);
   }
 }
+check('every target="_blank" anchor has rel="noopener"', unsafeBlank.length === 0,
+  `${unsafeBlank.length} without it: ${unsafeBlank.slice(0, 5).join(' | ')}${unsafeBlank.length > 5 ? ' | ...' : ''}`);
 
-check('All target="_blank" links have rel="noopener"', unsafeBlankLinks === 0,
-  `${unsafeBlankLinks} target="_blank" links missing rel="noopener"`);
-
-// ─── SECTION 5: Archive rendering completeness ────────────────────────
+// ─── SECTION 5: Archive rendering across pagination ────────────────────
 console.log('\n=== Section 5: Archive Rendering ===');
 
-const archiveHtml = fs.readFileSync(path.join(DIST, 'newsletter.html'), 'utf-8');
-const cardCount = (archiveHtml.match(/class="card rounded-xl p-6"/g) || []).length;
+const page1 = fs.readFileSync(pageFile(1), 'utf8');
+const perPage = countMatches(page1, ARCHIVE_CARD_RE);
+const archiveOk = check('archive page 1 renders cards', perPage > 0, 'no <article class="... article-card"> on /newsletter.html');
 
-check('Archive shows expected item count', cardCount === EXPECTED_NEWSLETTER_COUNT,
-  `Expected ${EXPECTED_NEWSLETTER_COUNT} cards, found ${cardCount}`);
+if (archiveOk) {
+  const totalPages = Math.max(1, Math.ceil(total / perPage));
+  const pages = [];
+  for (let n = 1; n <= totalPages; n++) {
+    const file = pageFile(n);
+    if (!check(`archive page exists: ${pageLabel(n)}`, fs.existsSync(file), `missing ${path.relative(DIST, file)}`)) continue;
+    pages.push({ n, html: fs.readFileSync(file, 'utf8') });
+  }
+  check(`no archive page beyond ${totalPages}`, !fs.existsSync(pageFile(totalPages + 1)),
+    `${pageLabel(totalPages + 1)} exists but ${total} entries at ${perPage} per page fill ${totalPages}`);
 
-// Verify internal entries link internally on archive page
-for (const entry of internalEntries) {
-  check(`Archive links internally: ${entry.title.substring(0, 40)}`,
-    archiveHtml.includes(`href="${entry.url}"`),
-    `Internal entry "${entry.title}" not linked to ${entry.url} on archive page`);
-}
+  const cardTotal = pages.reduce((sum, p) => sum + countMatches(p.html, ARCHIVE_CARD_RE), 0);
+  check('archive pages render every entry exactly once', cardTotal === total,
+    `${cardTotal} cards across ${pages.length} page(s) for ${total} entries`);
 
-// Verify external entries are crawlable <a href> links (not JS-only)
-for (const entry of externalEntries) {
-  check(`Archive has crawlable link: ${entry.title.substring(0, 40)}`,
-    archiveHtml.includes(`href="${entry.url}"`),
-    `External entry "${entry.title}" not found as <a href> on archive page`);
+  for (const p of pages) {
+    const expected = p.n === totalPages ? total - perPage * (totalPages - 1) : perPage;
+    const got = countMatches(p.html, ARCHIVE_CARD_RE);
+    check(`${pageLabel(p.n)} holds ${expected} cards`, got === expected, `found ${got}`);
+  }
+
+  const seq = pages.flatMap((p) => badges(p.html));
+  const expectedSeq = Array.from({ length: total }, (_, i) => total - i);
+  check('issue badges count from #N down to #1 across pages',
+    seq.length === expectedSeq.length && seq.every((v, i) => v === expectedSeq[i]),
+    `got ${seq.length} badges starting ${seq.slice(0, 3).join(',')} ending ${seq.slice(-3).join(',')}`);
+
+  for (const e of entries) {
+    const hits = pages.filter((p) => p.html.includes(`href="${e.url}"`)).length;
+    check(`archive links: ${e.title.slice(0, 50)}`, hits === 1,
+      hits === 0 ? `no <a href="${e.url}"> on any archive page` : `linked on ${hits} archive pages`);
+  }
+  console.log(`  ${total} entries, ${perPage} per page, ${pages.length} page(s)`);
 }
 
 // ─── SECTION 6: Sitewide internal link integrity ──────────────────────
 console.log('\n=== Section 6: Sitewide Internal Links ===');
 
-let brokenLinks = 0;
-for (const file of allHtmlFiles) {
-  const html = fs.readFileSync(file, 'utf-8');
-  const rel = path.relative(DIST, file);
-  let m;
-  const hrefRe = /href="(\/[^"#?]*)(?:[#?][^"]*)?"/g;
-  while ((m = hrefRe.exec(html)) !== null) {
-    const href = m[1];
-    if (href === '/') continue;
-    if (!resolves(href)) {
-      brokenLinks++;
-      failures.push({ name: `Broken link: ${href}`, detail: `in ${rel}` });
-    }
-  }
+const rules = loadRedirectRules(ROOT, DIST);
+const { broken } = scanInternalLinks(DIST, rules);
+for (const b of broken) failures.push({ name: `broken link: ${b.href}`, detail: `in ${b.file} (${b.reason})` });
+check('no broken internal links', broken.length === 0, `${broken.length} broken internal link(s)`);
+console.log(`  Scanned ${allHtmlFiles.length} HTML files against ${rules.length} redirect rules`);
+
+// ─── SECTION 7: Homepage & Analysis page coverage ─────────────────────
+console.log('\n=== Section 7: Homepage & Analysis Coverage ===');
+
+if (total > 0) {
+  const homepageHtml = fs.readFileSync(path.join(DIST, 'index.html'), 'utf8');
+  const latestHtml = fs.readFileSync(path.join(DIST, 'latest.html'), 'utf8');
+  const newest = entries[0];
+  check('homepage carries the newest issue', htmlHasText(homepageHtml, newest.title) || homepageHtml.includes(`href="${newest.url}"`),
+    `homepage has neither the title nor a link for "${newest.title}"`);
+  const analysisCount = countMatches(latestHtml, ANALYSIS_ARTICLE_RE);
+  check('Analysis page lists every article', analysisCount >= total,
+    `${analysisCount} article cards on /latest.html for ${total} entries`);
 }
 
-check('No broken internal links', brokenLinks === 0,
-  `${brokenLinks} broken internal links found`);
-console.log(`  Scanned ${allHtmlFiles.length} HTML files`);
-
-// ─── SECTION 7: Homepage & Intelligence page coverage ─────────────────
-console.log('\n=== Section 7: Homepage & Intelligence Coverage ===');
-
-const homepageHtml = fs.readFileSync(path.join(DIST, 'index.html'), 'utf-8');
-const latestHtml = fs.readFileSync(path.join(DIST, 'latest.html'), 'utf-8');
-
-// Homepage should show the newest article (first in dist JSON by date sort)
-const newestTitle = distJson[0].title;
-check('Homepage shows newest article', homepageHtml.includes(newestTitle),
-  `Homepage missing newest article: "${newestTitle}"`);
-
-// Intelligence page should have all articles + podcast episodes
-const latestCardCount = (latestHtml.match(/class="card rounded-xl p-6"/g) || []).length;
-check('Intelligence page has articles', latestCardCount >= EXPECTED_NEWSLETTER_COUNT,
-  `Expected at least ${EXPECTED_NEWSLETTER_COUNT} cards on Intelligence page, found ${latestCardCount}`);
-
 // ─── SUMMARY ──────────────────────────────────────────────────────────
-console.log('\n' + '='.repeat(60));
-console.log(`INTEGRITY CHECK COMPLETE`);
+console.log(`\n${'='.repeat(60)}`);
+console.log('INTEGRITY CHECK COMPLETE');
 console.log(`  Total checks: ${totalChecks}`);
 console.log(`  Passed: ${passed}`);
 console.log(`  Failed: ${failed}`);
-console.log(`  Warnings: ${warnings}`);
+console.log(`  Warnings: ${warnings.length}`);
 
 if (failures.length > 0) {
   console.log('\nFAILURES:');
-  failures.forEach(f => console.log(`  ✗ ${f.name}: ${f.detail}`));
+  failures.forEach((f) => console.log(`  ✗ ${f.name}: ${f.detail}`));
 }
-if (warningList.length > 0) {
+if (warnings.length > 0) {
   console.log('\nWARNINGS:');
-  warningList.forEach(w => console.log(`  ⚠ ${w.name}: ${w.detail}`));
+  warnings.forEach((w) => console.log(`  ⚠ ${w.name}: ${w.detail}`));
 }
-
 console.log('='.repeat(60));
 process.exit(failed > 0 ? 1 : 0);
