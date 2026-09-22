@@ -9,9 +9,10 @@
 //                        tail is redundant and, worse, is where invented
 //                        links used to land. Inline citations stay.
 //   enforceLinks         any URL the model wrote that is not present in the
-//                        context block or in the sources list is de-linked
-//                        to its link text. A link the reader can click must
-//                        be one the server actually retrieved.
+//                        context block, in the sources list or on the
+//                        caller's allow list (the one link the prompt itself
+//                        hands the model) is de-linked. A link the reader
+//                        can click must be one the server actually retrieved.
 //   dollarGuard          every dollar figure in the answer is checked for a
 //                        matching figure in the context (2 significant
 //                        digits). SHADOW MODE: counts only, never rewrites.
@@ -37,9 +38,18 @@ function stripSourcesSection(answer) {
 
 // URL forms the model writes: markdown [text](url), and bare http(s)
 // URLs. A bare URL stops at whitespace, a closing bracket or an angle
-// bracket; trailing sentence punctuation is not part of it.
+// bracket; trailing sentence punctuation is not part of it. The only
+// lookbehind is the markdown "](": until 2026-09-22 a second one skipped
+// every URL that followed "(", so a bare "(https://...)" citation, the
+// model's commonest URL shape, was never checked at all.
 const MD_LINK_RE = /\[([^\]]*)\]\((https?:\/\/[^)\s]+)\)/g;
-const BARE_URL_RE = /(?<!\]\()(?<!\()https?:\/\/[^\s<>)\]]+/g;
+const BARE_URL_RE = /(?<!\]\()https?:\/\/[^\s<>)\]]+/g;
+// A bare URL that closes a parenthesised citation after a separator,
+// "(Mission Meets Tech, https://...)": an unlisted one is dropped with its
+// separator, so the reader sees "(Mission Meets Tech)" rather than
+// "(Mission Meets Tech, missionmeetstech.com)" (a served answer in the
+// 2026-09-21 eval report).
+const CITATION_TAIL_URL_RE = /([,;][ \t]+)(https?:\/\/[^\s<>)\]]+)(?=\))/g;
 const ANY_URL_RE = /https?:\/\/[^\s<>)\]"']+/g;
 const TRAILING_PUNCT_RE = /[.,;:!?'"]+$/;
 
@@ -74,18 +84,27 @@ function hostOf(u) {
 
 /**
  * Pure: de-link every URL in the answer that the server did not retrieve.
- * A markdown link becomes its text; a bare URL becomes its hostname (there
- * is no text to fall back to, and a dangling dead URL is what we are
- * removing). Allowed links are left byte-identical.
+ * A markdown link becomes its text; a bare URL closing a citation goes with
+ * its separator; any other bare URL becomes its hostname (there is no text
+ * to fall back to, and a dangling dead URL is what we are removing).
+ * Allowed links are left byte-identical. `allow` lists the URLs the prompt
+ * itself hands the model, which no context or source carries.
  * @returns {{ answer: string, unlisted_link_count: number, unlisted: string[] }}
  */
-function enforceLinks(answer, context, sources) {
+function enforceLinks(answer, context, sources, { allow = [] } = {}) {
   const allowed = allowedUrlKeys(context, sources);
+  for (const u of Array.isArray(allow) ? allow : []) if (typeof u === "string") allowed.add(urlKey(u));
   const unlisted = [];
   let out = String(answer || "").replace(MD_LINK_RE, (whole, text, url) => {
     if (allowed.has(urlKey(url))) return whole;
     unlisted.push(cleanUrl(url));
     return text && text.trim() ? text : hostOf(url);
+  });
+  out = out.replace(CITATION_TAIL_URL_RE, (whole, sep, url) => {
+    const clean = cleanUrl(url);
+    if (allowed.has(urlKey(clean))) return whole;
+    unlisted.push(clean);
+    return "";
   });
   out = out.replace(BARE_URL_RE, (whole) => {
     const url = cleanUrl(whole);
