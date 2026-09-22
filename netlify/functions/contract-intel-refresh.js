@@ -1,10 +1,11 @@
 // ============================================================
 // contract-intel-refresh.js — Netlify Scheduled Function (Trigger)
 //
-// Thin trigger that invokes the background function.
-// Scheduled functions have a 10-26s timeout, but the actual
-// research takes ~5 min, so the heavy work runs in the
-// background function (contract-intel-refresh-background.js).
+// Thin trigger that invokes the background function through
+// lib/trigger-background.js (two bounded attempts, 202 is the only
+// success). Scheduled functions stop at 30 s, but the actual research
+// takes ~5 min, so the heavy work runs in the background function
+// (contract-intel-refresh-background.js).
 //
 // Schedule configured in netlify.toml:
 //   [functions."contract-intel-refresh"]
@@ -12,35 +13,9 @@
 // ============================================================
 
 const { withOpsLogging } = require("./lib/scheduled-fn-wrapper");
+const { makeTriggerHandler } = require("./lib/trigger-background");
 
-const SITE_URL = process.env.URL || "https://missionmeetstech.com";
-
-async function _handler(event) {
-  console.log("Contract intel refresh trigger:", new Date().toISOString());
-
-  try {
-    const response = await fetch(
-      `${SITE_URL}/.netlify/functions/contract-intel-refresh-background`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ triggered_by: "schedule" }),
-      }
-    );
-
-    console.log(`Background function response: ${response.status}`);
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ status: "triggered", code: response.status }),
-    };
-  } catch (err) {
-    console.error("Failed to trigger background function:", err.message);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: err.message }),
-    };
-  }
-}
-
-exports.handler = withOpsLogging("contract_intel_refresh", _handler);
+exports.handler = withOpsLogging(
+  "contract_intel_refresh",
+  makeTriggerHandler("contract-intel-refresh-background", { label: "Contract intel refresh" })
+);
