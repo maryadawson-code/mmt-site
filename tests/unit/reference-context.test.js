@@ -2,6 +2,7 @@
 // questions. Detection is broad on purpose; rendering prints a verified date
 // and a source on every line and never fills a pending field.
 
+import fs from "fs";
 import { describe, it, expect } from "vitest";
 import { detectReferenceTopics, formatReferenceContext, TOPIC_ORDER } from "../../netlify/functions/lib/reference-context.js";
 import { classifyQuestion, systemsFor } from "../../netlify/functions/lib/question-shape.js";
@@ -41,8 +42,16 @@ describe("formatReferenceContext", () => {
     for (const l of lines) { expect(l).toMatch(/verified \d{4}-\d{2}-\d{2}/); expect(l).toMatch(/source https:\/\//); }
     const tx = lines.find((l) => l.startsWith("- Texas Medicaid"));
     expect(tx).toMatch(/TX-RAMP/);
-    expect(tx).toMatch(/Not yet covered: procurement_portal_url/);
+    expect(tx).toMatch(/procurement portal: Electronic State Business Daily \(ESBD\) https:\/\/www\.txsmartbuy\.gov\/esbd/);
     expect(r.data.records.some((x) => /Texas/.test(x.name) && /hhs\.texas\.gov/.test(x.url))).toBe(true);
+  });
+  it("a state whose fields are still pending says not yet covered, never a value", () => {
+    const ds = JSON.parse(fs.readFileSync(new URL("../../data/reference/state-medicaid.json", import.meta.url), "utf8"));
+    const gap = ds.agencies.find((s) => Array.isArray(s.pending) && s.pending.length && !["VA", "DC"].includes(s.code));
+    if (!gap) return; // every field on every row is sourced; nothing left to render as a gap
+    const r = formatReferenceContext(["state_medicaid"], { question: "How does " + gap.state + " Medicaid buy an MMIS module?" });
+    const line = r.text.split("\n").find((l) => l.startsWith("- " + gap.state + " Medicaid"));
+    expect(line).toContain("Not yet covered: " + gap.pending[0]);
   });
   it("the CMS coverage point reaches the model: Rapid Cloud Review with its timing", () => {
     const r = formatReferenceContext(["authorization"], { question: "Does CMS require FedRAMP for SaaS?" });

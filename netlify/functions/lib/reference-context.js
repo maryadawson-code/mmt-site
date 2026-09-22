@@ -81,7 +81,7 @@ function blockStateMedicaid(question, records) {
   for (const r of ds.demand_signals) { out.push(line(r.name, `${r.summary} Dates: ${(r.dates || []).map((d) => `${d.date} ${d.event}`).join("; ")}`, r)); records.push({ name: r.name, url: firstUrl(r), verified: r.verified }); }
   const named = stateRows(question).slice(0, 4);
   for (const s of named) {
-    const facts = [`${s.agency}; program ${s.program_name}; ${s.url}`, `expansion ${s.expansion_status || "not assessed"}`, `GovRAMP participating entity in state: ${s.govramp && s.govramp.participating_entity_in_state ? "yes" : "no"}${s.govramp && s.govramp.formal_program ? " (formal state program)" : ""}`, s.statewide_cloud_program ? `statewide cloud program: ${s.statewide_cloud_program}` : null, s.work_requirements_status ? `work requirements: ${s.work_requirements_status}` : null].filter(Boolean).join("; ");
+    const facts = [`${s.agency}; program ${s.program_name}; ${s.url}`, `expansion ${s.expansion_status || "not assessed"}`, `GovRAMP participating entity in state: ${s.govramp && s.govramp.participating_entity_in_state ? "yes" : "no"}${s.govramp && s.govramp.formal_program ? " (formal state program)" : ""}`, s.statewide_cloud_program ? `statewide cloud program: ${s.statewide_cloud_program}` : null, s.procurement_portal_url ? `procurement portal: ${s.procurement_portal_name ? s.procurement_portal_name + " " : ""}${s.procurement_portal_url}` : null, s.mes_modernization ? `MES modernization: ${s.mes_modernization}` : null, s.work_requirements_status ? `work requirements: ${s.work_requirements_status}` : null].filter(Boolean).join("; ");
     out.push(line(`${s.state} Medicaid`, facts, s));
     records.push({ name: `${s.state} Medicaid (${s.agency})`, url: s.url, verified: s.verified });
   }

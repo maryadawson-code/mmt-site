@@ -1088,15 +1088,15 @@
         "status": "partial",
         "entities": {
           "state_agency": "live",
-          "state_solicitation": "partial",
+          "state_solicitation": "not_covered",
           "mes_module": "partial",
           "coop_vehicle": "live",
           "participating_addendum": "not_covered",
           "funding_condition": "live"
         },
-        "last_refresh": "2026-09-20",
+        "last_refresh": "2026-09-22",
         "reasons": {
-          "state_solicitation": "dated rows found by search; no live portal feed",
+          "state_solicitation": "the one solicitation on file, RFP 2025HCA15, was read on 2026-09-22 and is a mail order incontinence and urinary supplies RFP, not an MES procurement; no MES solicitation for Washington was found in that pass",
           "mes_module": "incumbents from official or dated sources; contract ends and certification status largely unread",
           "coop_vehicle": "national NASPO ValuePoint portfolios apply to every state",
           "participating_addendum": "no participating addendum found for this state in the portfolios read",
@@ -4179,35 +4179,6 @@
         "posted",
         "award",
         "official_source"
-      ]
-    },
-    {
-      "id": "wa-rfp-2025hca15",
-      "state": "WA",
-      "agency": "HCA",
-      "title": "RFP 2025HCA15",
-      "module": null,
-      "type": "RFP",
-      "posted": null,
-      "due": null,
-      "status": "unknown",
-      "award": null,
-      "portal_url": null,
-      "note": "The solicitation document exists; its subject was not read.",
-      "sources": [
-        {
-          "label": "HCA RFP 2025HCA15",
-          "url": "https://www.hca.wa.gov/assets/program/rfp-2025hca15.pdf",
-          "retrieved": "2026-09-20"
-        }
-      ],
-      "verified": "2026-09-20",
-      "confidence": "medium",
-      "pending": [
-        "module",
-        "posted",
-        "due",
-        "solicitation subject and current status not yet read; only the number is known"
       ]
     }
   ],

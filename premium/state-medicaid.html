@@ -37,6 +37,9 @@
     .pill.na { background:rgba(92,107,122,0.10); color:var(--mmt-text-secondary); }
     .pill.yes { background:rgba(69,123,157,0.12); color:var(--mmt-teal); }
     .sm-pending { font-size:11.5px; color:#B45309; }
+    .sm-field { font-size:12.5px; margin:5px 0 0; line-height:1.45; }
+    #sm-table td:nth-child(2) { min-width:360px; }
+    #sm-table td:nth-child(3) { min-width:150px; }
     .sm-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:14px; }
     .sm-stat { background:var(--mmt-white); border:1px solid var(--mmt-border); border-radius:10px; padding:14px 16px; }
     .sm-stat .n { font-size:24px; font-weight:800; }
@@ -71,7 +74,7 @@
     <div class="sm-count" id="sm-count"></div>
     <div style="overflow-x:auto;">
       <table class="sm" id="sm-table">
-        <thead><tr><th>State</th><th>Agency and program</th><th>Expansion</th><th>GovRAMP</th><th class="sm-hide-m">Statewide cloud program</th><th>Verified</th></tr></thead>
+        <thead><tr><th>State</th><th>Agency and program</th><th>Procurement portal</th><th>Expansion</th><th>GovRAMP</th><th class="sm-hide-m">Statewide cloud program</th><th>Verified</th></tr></thead>
         <tbody id="sm-rows"></tbody>
       </table>
     </div>
@@ -98,7 +101,7 @@
         var exp = document.getElementById('sm-expansion').value;
         var gr = document.getElementById('sm-govramp').value;
         var rows = data.agencies.filter(function (s) {
-          if (q && !(s.state + ' ' + s.agency + ' ' + s.program_name + ' ' + s.code).toLowerCase().includes(q)) return false;
+          if (q && !(s.state + ' ' + s.agency + ' ' + s.program_name + ' ' + s.code + ' ' + (s.procurement_portal_name || '')).toLowerCase().includes(q)) return false;
           if (exp === 'na' && s.expansion_status !== null) return false;
           if ((exp === 'adopted' || exp === 'not_adopted') && s.expansion_status !== exp) return false;
           var g = s.govramp || {};
@@ -111,10 +114,13 @@
         document.getElementById('sm-rows').innerHTML = rows.map(function (s) {
           var g = s.govramp || {};
           var expPill = s.expansion_status === 'adopted' ? '<span class="pill adopted">Adopted</span>' : s.expansion_status === 'not_adopted' ? '<span class="pill not_adopted">Not adopted</span>' : '<span class="pill na">Not assessed</span>';
+          var portal = s.procurement_portal_url ? '<a href="' + esc(s.procurement_portal_url) + '" target="_blank" rel="noopener">' + esc(s.procurement_portal_name || s.procurement_portal_url.replace(/^https?:\/\//, '').split('/')[0]) + '</a>' : '<span class="sm-meta">not yet covered</span>';
+          var mes = s.mes_modernization ? '<p class="sm-field"><strong>MES modernization.</strong> ' + esc(s.mes_modernization) + '</p>' : '';
+          var wr = s.work_requirements_status ? '<p class="sm-field"><strong>Work requirements.</strong> ' + esc(s.work_requirements_status) + '</p>' : '';
           var grCell = g.participating_entity_in_state ? '<span class="pill yes">' + (g.formal_program ? 'Formal program' : 'Participating entity') + '</span>' : '<span class="pill na">None listed</span>';
           return '<tr><td><strong>' + esc(s.state) + '</strong><div class="sm-meta">' + esc(s.code) + '</div></td>' +
-            '<td>' + esc(s.agency) + '<div class="sm-meta">' + esc(s.program_name) + ' &middot; <a href="' + esc(s.url) + '" target="_blank" rel="noopener">official site</a></div>' + pending(s) + '</td>' +
-            '<td>' + expPill + '</td><td>' + grCell + '</td>' +
+            '<td>' + esc(s.agency) + '<div class="sm-meta">' + esc(s.program_name) + ' &middot; <a href="' + esc(s.url) + '" target="_blank" rel="noopener">official site</a></div>' + mes + wr + pending(s) + '</td>' +
+            '<td>' + portal + '</td><td>' + expPill + '</td><td>' + grCell + '</td>' +
             '<td class="sm-hide-m">' + (s.statewide_cloud_program ? esc(s.statewide_cloud_program) : '<span class="sm-meta">none recorded</span>') + '</td>' +
             '<td class="sm-meta">' + esc(s.verified) + '</td></tr>';
         }).join('');
@@ -126,7 +132,7 @@
         var gov = data.agencies.filter(function (s) { return s.govramp && s.govramp.participating_entity_in_state; }).length;
         document.getElementById('sm-stats').innerHTML = [
           ['56', 'jurisdictions on file (50 states, DC, 5 territories)'],
-          [adopted, 'adopted Medicaid expansion (KFF, read ' + esc(data._schema.last_verified) + ')'],
+          [adopted, 'adopted Medicaid expansion (KFF, read ' + esc(((data._schema.expansion_source || {}).label || '').match(/read (\d{4}-\d{2}-\d{2})/) ? ((data._schema.expansion_source || {}).label || '').match(/read (\d{4}-\d{2}-\d{2})/)[1] : data._schema.last_verified) + ')'],
           [notAdopted, 'have not adopted expansion'],
           [gov, 'states with a GovRAMP participating entity'],
         ].map(function (x) { return '<div class="sm-stat"><div class="n">' + esc(x[0]) + '</div><div class="l">' + x[1] + '</div></div>'; }).join('');

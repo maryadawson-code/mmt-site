@@ -112,7 +112,7 @@ Cost ranges: GAO-24-106591 found estimates "from tens of thousands to millions o
                   "pending": ["procurement_portal_url", "mes_modernization", "work_requirements_status"] } ] }
 ```
 
-56 jurisdictions: 50 states, DC, Puerto Rico, US Virgin Islands, Guam, American Samoa, Northern Mariana Islands. Agency name and official URL are verified for all 56 (official state domains returned by search on 2026-09-20). Procurement portal, MES modernization status and work-requirement implementation are `null` with `pending` for every row; the research agent fills them state by state with a source and a date, the way `data/research-agent/idiq-vehicles.csv` is maintained.
+56 jurisdictions: 50 states, DC, Puerto Rico, US Virgin Islands, Guam, American Samoa, Northern Mariana Islands. Agency name and official URL are verified for all 56 (official state domains returned by search on 2026-09-20). Procurement portal, MES modernization status and work-requirement implementation started `null` with `pending` on every row (the 2026-09-20 pass ran behind a proxy that blocked page fetches). A research pass fills them through `scripts/merge-state-medicaid-research.js`: a field is filled only with an https source and a retrieved date, leaves `pending` when filled, and its text ends with `As of YYYY-MM-DD.` naming the date of the source statement; `procurement_portal_name` accompanies `procurement_portal_url` for the link text; a portal already verified in `state-procurement.json` wins over research and a disagreement is reported. A field no source supports stays `null` and in `pending`, so the page and the API keep saying not yet covered for it.
 
 ### 4.4 `innovation-pathways.json`
 
