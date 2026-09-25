@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-25T14:25:54.132Z",
+  "generated_at": "2026-09-25T14:39:41.400Z",
   "total": 278,
   "note": "Public subset of mmt-content-corpus.json (premium=false items only). For unauthenticated endpoints. Per Sprint C 2026-05-14.",
   "counts": {
@@ -2486,16 +2486,16 @@
       "type": "contract_intel",
       "title": "VA Enterprise Imaging (NEIS + Multi-VISN PACS + Bi-Directional)",
       "slug": "va-enterprise-imaging-neis-multi-visn-pacs-bi-directional-",
-      "date": "2026-03-30",
-      "description": "Three connected VA imaging modernization procurements. (1) NEIS — National Enterprise Imaging Solution (36C10X25Q0015, est. $300-500M, FY2027) replacing fragmented PACS/VNA across 170+ VA medical centers. NEIS scope includes FedRAMP cloud s",
+      "date": "2026-09-25",
+      "description": "VA enterprise imaging modernization, verified 2026-09-25. (1) National Enterprise Imaging Systems (NEIS): VA Strategic Acquisition Center-Frederick issued an RFI and held an Industry Day seeking a VA-wide enterprise imaging system, PSC DA10",
       "tags": [
         "Department of Veterans Affairs",
         "upcoming",
         "334510"
       ],
       "url": "/contracts/va-enterprise-imaging-neis-multi-visn-pacs-bi-directional/",
-      "source_url": null,
-      "excerpt": "Three connected VA imaging modernization procurements. (1) NEIS — National Enterprise Imaging Solution (36C10X25Q0015, est. $300-500M, FY2027) replacing fragmented PACS/VNA across 170+ VA medical centers. NEIS scope includes FedRAMP cloud storage, viewers, workflow, AI, DICOM/non-DICOM, and EHR integration. Currently in Pre-RFP / Market Research phase. (2) Multi-VISN PACS (36C10X24Q0024, est. $50-90M, Q3 2026) modernizing imaging across multiple Veterans Integrated Service Networks. (3) Bi-Directional Imaging (36C10B26Q0076, est. $15-30M, Q2 2026 — most imminent) enabling imaging data from community care providers to return to VA. Currently, VA often receives only a bill from community radiologists — not the imaging data. Bi-Directional connects directly to CCN Next Gen's community care infrastructure.\nAgency: Department of Veterans Affairs\nVendor: TBD — multiple solicitations\nValue: $365–620M combined estimate\nStatus: upcoming\nNAICS: 334510\nMMT verdict: WATCH — Upcoming — action window within 6 months",
+      "source_url": "https://sam.gov/opp/d22d9e75769145ce8842a16233ee1955/view",
+      "excerpt": "VA enterprise imaging modernization, verified 2026-09-25. (1) National Enterprise Imaging Systems (NEIS): VA Strategic Acquisition Center-Frederick issued an RFI and held an Industry Day seeking a VA-wide enterprise imaging system, PSC DA10, with the stated purpose of shaping a future acquisition strategy. The notice says the system must be able to serve as a replacement PACS for VISNs as they come off their existing contracts. Still market research; no RFP, award or cancellation found. (2) Bi-Directional Image and Report Exchange: VA Technology Acquisition Center New Jersey issued Sources Sought 36C10B26Q0076 on 2025-11-25 with responses due 2025-12-18. No award or follow-on RFP found. Corrections on this pass: the solicitation number 36C10X25Q0015 previously carried here returns nothing in any procurement source and is treated as unverified; 36C10X24Q0024 is the NEIS RFI number rather than a separate Multi-VISN PACS buy, so this record no longer describes one; and the $300-500M, FY2027 and 170-plus medical center figures had no source and were removed rather than restated. Still open: no SAM permalink was found for 36C10B26Q0076 or 36C10X24Q0024, so none is published for them, and the NEIS RFI issue date is unresolved because sources point to both November 2023 and November 2025.\nAgency: Department of Veterans Affairs\nVendor: TBD — multiple solicitations\nValue: Not sourced. The prior $365-620M combined estimate was removed 2026-09-25: no public source supports it, and no dollar figure for any of these notices was found.\nStatus: upcoming\nNAICS: 334510\nMMT verdict: WATCH — Upcoming — action window within 6 months",
       "premium": false
     },
     {
@@ -2859,16 +2859,16 @@
       "type": "contract_intel",
       "title": "CDM DEFEND (Health Data Cybersecurity)",
       "slug": "cdm-defend-health-data-cybersecurity-",
-      "date": "2026-04-29",
-      "description": "Continuous Diagnostics and Mitigation DEFEND program. Protects health data and IT infrastructure across HHS agencies including CMS, CDC, NIH, FDA. Implements zero trust architecture and continuous monitoring. Specific vendor and ceiling for",
+      "date": "2026-09-25",
+      "description": "Continuous Diagnostics and Mitigation DEFEND program, run by DHS CISA, protecting health data and IT infrastructure across HHS agencies including CMS, CDC, NIH and FDA. Zero trust architecture and continuous monitoring. Verified 2026-09-25:",
       "tags": [
         "CISA / DHS",
         "active",
         "541512"
       ],
       "url": "/contracts/cdm-defend-health-data-cybersecurity/",
-      "source_url": null,
-      "excerpt": "Continuous Diagnostics and Mitigation DEFEND program. Protects health data and IT infrastructure across HHS agencies including CMS, CDC, NIH, FDA. Implements zero trust architecture and continuous monitoring. Specific vendor and ceiling for the current health-data DEFEND prime is being verified — do not display unsourced precise dollar amounts or vendor claims. Treat as Needs Source until DHS/CISA award notice is verified.\nAgency: CISA / DHS\nVendor: TBD — source required for current DEFEND health-data prime\nValue: TBD — source required\nStatus: active\nNAICS: 541512\nMMT verdict: WATCH — Needs source — verify current health-data DEFEND prime",
+      "source_url": "https://investors.boozallen.com/news-releases/news-release-details/booz-allen-awarded-421m-cdm-defend-contract",
+      "excerpt": "Continuous Diagnostics and Mitigation DEFEND program, run by DHS CISA, protecting health data and IT infrastructure across HHS agencies including CMS, CDC, NIH and FDA. Zero trust architecture and continuous monitoring. Verified 2026-09-25: HHS falls in DEFEND Group D, alongside GSA, NASA, SSA, Treasury and USPS, and Booz Allen Hamilton is the prime on that work, originally a $1.03B Group D task order through GSA Alliant and most recently an August 2024 task order with a $421M base and a $1.2B ceiling spanning 13 agencies including HHS. Worth knowing for anyone reading older coverage: CACI holds DEFEND Group A, which is DHS components, and CGI Federal holds Group C, so neither is the HHS prime. Sourcing here is trade press and the vendor's own investor release. No DHS or CISA award notice was located, so the classification stays Needs Source and the figures above are attributed rather than stated flat. Still open: no USASpending record for the Group D or combined Group BD award was located, so close this out against a government award record before stating the vendor or the figures flat.\nAgency: CISA / DHS\nVendor: Booz Allen Hamilton (reported). HHS sits in CDM DEFEND Group D, and Booz Allen holds the DEFEND work covering it.\nValue: Reported, not from a government award notice: an August 2024 CISA task order to Booz Allen with a three-year base of $421M and a $1.2B ceiling, covering 13 agencies including HHS.\nStatus: active\nNAICS: 541512\nMMT verdict: WATCH — Needs source — verify current health-data DEFEND prime",
       "premium": false
     },
     {
