@@ -24,7 +24,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "..", "..");
 const DATASET = JSON.parse(readFileSync(join(REPO, "data", "idiq-vehicles.json"), "utf8"));
 const ROWS = DATASET.vehicles;
-const TODAY = "2026-09-20";
+const TODAY = "2026-09-25";
 const BANNED = ["pivotal", "comprehensive", "robust", "transformative", "delve", "leverage", "synergy", "paradigm", "holistic", "streamline", "actionable", "ecosystem"];
 
 describe("baseline integrity", () => {
@@ -128,10 +128,11 @@ describe("registered in lib/data-freshness.js on a 90-day cadence", () => {
     for (const r of rows) expect(r.error, r.label).toBe(null);
     const t4 = rows.find((r) => r.label === "T4NG2");
     expect(t4.date).toBe("2026-09-10");
-    expect(t4.age_days).toBe(10);
+    expect(t4.age_days).toBe(15);
     expect(t4.stale).toBe(false);
-    // the entries whose only in-repo source is this file's April commit are honestly stale
-    for (const label of ["HITDSS", "DHITSC", "ITES-SW2"]) expect(rows.find((r) => r.label === label).stale, label).toBe(true);
+    // Staleness follows the verified date against the 90-day cadence, whichever
+    // entries happen to be old. Naming entries here broke on every re-verification.
+    for (const r of rows) expect(r.stale, r.label).toBe(r.age_days > 90);
     // and past 90 days every row would go stale
     const later = evaluate({ root: REPO, today: "2026-12-31" });
     expect(later.datasets.filter((r) => r.id === "known-vehicles").every((r) => r.stale)).toBe(true);

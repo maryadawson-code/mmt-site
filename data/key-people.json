@@ -1,7 +1,7 @@
 {
   "_schema": {
     "version": "1.0",
-    "last_updated": "2026-09-10",
+    "last_updated": "2026-09-25",
     "source_note": "Profiles sourced from official agency leadership pages. Each profile cites its source URL. Quarterly refresh cadence per PAYWALL-ENRICHMENT.md item 4. Per-person verified_date/verification_note override the block date when a name was last confirmed on an older page pull."
   },
   "agencies": [
@@ -9,7 +9,7 @@
       "agency_code": "DHA",
       "agency_name": "Defense Health Agency",
       "source_url": "https://www.dha.mil/About-DHA/Organizational-Structure-NEW",
-      "verified_date": "2026-07-09",
+      "verified_date": "2026-09-25",
       "people": [
         {
           "name": "Vice Adm. Darin K. Via, MC, USN",
@@ -38,14 +38,18 @@
         {
           "name": "Dr. Matthew G. Clark",
           "title": "Assistant Director, Research, Development & Acquisition; Component Acquisition Executive (Confirmed)",
-          "scope": "AD-RDA — DHA acquisition authority, including PEO DHMS and PEO Medical Systems oversight. Confirmed to the seat in 2026, succeeding RDML Ivonne Arena, who held it in an Acting capacity through the IOC stand-up.",
-          "why_watch": "The confirmed CAE for DHA — the seat is no longer Acting. Final acquisition decision authority for medical systems and informatics buys at the component level."
+          "scope": "Component Acquisition Executive for DHA: final component-level acquisition authority over medical systems, medical products and medical digital solutions. Named AD-RDA/CAE by the DHA Director on 21 SEP 2026. The Director says he came from command of NATO's Supreme Headquarters Allied Powers Europe Healthcare Facility and the Brussels Army Health Clinic in Belgium, with a career across defense, global public health, science and technology.",
+          "why_watch": "Every component-level health IT and medical systems buy runs through this seat. It is no longer acting, so a commitment made here holds. He inherits the three portfolio acquisition executives stood up through FOC.",
+          "verified_date": "2026-09-25",
+          "verification_note": "DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. Trade press reported the appointment separately (BioBuzz, OrangeSlices AI), rendering his experience as more than 26 years against the Director's 25, so MMT prints no year count. No dha.mil bio yet."
         },
         {
-          "name": "Mr. Brett Scheideman",
-          "title": "Acting Principal Deputy RDA / Deputy CAE (DCAE)",
-          "scope": "NH-IV. S&T, Chief Scientist, Research Support, Industry Engagement, Agreements & Partnerships, Category Management, Acquisition Workforce. Co-chairs WMSIB.",
-          "why_watch": "Industry-engagement and category-management decisions land here. First call for partnering and market research."
+          "name": "Rear Adm. Ivonne Arena",
+          "title": "Principal Deputy, AD-RDA/CAE",
+          "scope": "Principal deputy to the Component Acquisition Executive, the seat MMT's chart carries as Deputy CAE. Held AD-RDA/CAE in an acting capacity through the IOC stand-up until Dr. Clark was named on 21 SEP 2026. Not yet reflected on dha.mil as of 2026-09-25; pending official confirmation.",
+          "why_watch": "She ran the acquisition shop through the reorg, so she carries how the three portfolio acquisition executives were actually built. The Deputy CAE co-chairs the Warfighter Modernization and Support Integration Board with OWHA.",
+          "verified_date": "2026-09-25",
+          "verification_note": "DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. Her dha.mil bio still reads Acting Assistant Director for Research, Development and Acquisition/Component Acquisition Executive, so the Principal Deputy move is single-source."
         },
         {
           "name": "Mr. James Perkins",
@@ -84,16 +88,42 @@
           "why_watch": "Owns the financial machinery behind every DHA buy. Budget execution lives here."
         },
         {
-          "name": "Rear Adm. Tracy Farrill",
+          "name": "Brig. Gen. Jason Lennen",
           "title": "Director, Office of Warfighter Health Advantage (OWHA)",
-          "scope": "Leads the new OWHA, established in the April 2026 reorg and reporting to the DHA Deputy Director. Consolidates the former DIG, CDAO, BID, Digital Health Integration Office, and SIG functions — data, analytics, AI/ML, and digital health.",
-          "why_watch": "OWHA is the new front door for enterprise data, analytics, AI/ML, and digital-health modernization. Co-chairs the Warfighter Modernization & Support Integration Board (WMSIB) with the DCAE. AI/data/digital-health capability now routes through this office."
+          "scope": "Leads OWHA, created in the April 2026 reorg, which consolidated the former DIG, CDAO, BID, Digital Health Integration Office and SIG functions: data, analytics, AI and machine learning, and digital health. Came from the Air Force Surgeon General's office, where he was Director of Policy and Resources. Succeeds Rear Adm. Tracy Farrill. Not yet reflected on dha.mil as of 2026-09-25; pending official confirmation.",
+          "why_watch": "The DHA Director describes OWHA as setting strategy and determining what technologies and tools execute it, so this office frames the requirement before acquisition sees it. A policy and resources background points at funding lines and requirements rather than tooling.",
+          "verified_date": "2026-09-25",
+          "verification_note": "DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. His af.mil biography confirms the Air Force seat he leaves (Director of Policy and Resources, Office of the Surgeon General; the Air Force Medical Service renders it Director, Medical Policy and Resources). No public source places him at DHA yet."
+        },
+        {
+          "name": "Rear Adm. Tracy Farrill",
+          "title": "Retiring; former Director, Office of Warfighter Health Advantage (OWHA)",
+          "scope": "Stood up and led OWHA from the April 2026 reorg. The DHA Director announced on 21 SEP 2026 that she is retiring after 34 years of service, crediting roughly seven years at DHA on digital health integration and organizational and innovation work. No public retirement notice as of 2026-09-25; DHA's 14 AUG 2026 article still lists her as OWHA director.",
+          "why_watch": "If your digital health or AI relationship at DHA ran through her, it now runs through Brig. Gen. Jason Lennen. Re-introduce before the next requirement cycle.",
+          "verified_date": "2026-09-25",
+          "verification_note": "DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. MMT does not characterize her service branch: public sources are inconsistent about whether she is U.S. Public Health Service Commissioned Corps or Navy."
         },
         {
           "name": "Mr. Pat Flanders",
           "title": "Chief Information Officer (J-6) — Confirmed",
           "scope": "DHA enterprise IT and the J-6 Chief Information Office. J-6 transitions under AD-SPFO at FOC (19 July 2026).",
           "why_watch": "Confirmed as the DHA CIO after the June 9, 2026 All Hands. Owns the enterprise IT and cyber layer beneath MHS GENESIS and the DHMS portfolio; the J-6 CIO shop is a required stop for infrastructure, hosting, and cybersecurity requirements."
+        },
+        {
+          "name": "Col. Valerie Sams",
+          "title": "Chief, Joint Trauma System (JTS)",
+          "scope": "Leads the Joint Trauma System, a DHA subordinate activity carried under J-7 Education and Training on MMT's chart. Succeeds Army Col. (Dr.) Jennifer M. Gurney. Air Force trauma surgeon and ECMO physician; Director of the Center for Sustainment of Trauma and Readiness Skills in Cincinnati and Critical Care Air Transport Team training cadre.",
+          "why_watch": "JTS drives joint trauma clinical standards, which the DHA Director frames as elevating battlefield medicine. A new chief is a clinical requirements signal for trauma data, registry work and en route care.",
+          "verified_date": "2026-09-25",
+          "verification_note": "Defense Visual Information Distribution Service release, 20 SEP 2026: https://www.dvidshub.net/news/574850/ready-today-learning-always-saving-lives-defense-health-agencys-joint-trauma-system-welcomes-new-chief-aligning-focus-deliver-joint Also carried in the DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack."
+        },
+        {
+          "name": "Rear Adm. Sara Newman",
+          "title": "Director, DHA-Public Health",
+          "scope": "Leads DHA Public Health, one of the healthcare operations directorates under AD-HCAO. Took the directorate in July 2026. The DHA Director reported her promotion to Rear Adm. on 21 SEP 2026; DHA's own 30 JUL 2026 article still renders her as U.S. Public Health Service Capt. MMT carries the promotion as reported and pending official confirmation.",
+          "why_watch": "Public health carries surveillance, environmental health and disease control requirements under Healthcare Administration and Operations. A promotion in seat reads as continuity in that portfolio, not a change of direction.",
+          "verified_date": "2026-09-25",
+          "verification_note": "DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. Role and background confirmed by DHA, 30 JUL 2026: https://dha.mil/News/2026/07/30/13/12/Fitness-family-connection which renders her rank as Capt., U.S. Public Health Service. The flag-rank promotion has no public source as of 2026-09-25."
         }
       ]
     },
@@ -101,38 +131,48 @@
       "agency_code": "OASD-HA",
       "agency_name": "Office of the Assistant Secretary of War for Health Affairs (ASW(HA))",
       "source_url": "https://www.health.mil/About-MHS/Biographies",
-      "verified_date": "2026-05-07",
+      "verified_date": "2026-09-25",
       "note": "Office renamed from ASD(HA) to ASW(HA) following the Department of War rename. ASW(HA) reports through OUSD(P&R) to the Secretary of War.",
       "people": [
         {
           "name": "Hon. Keith Bass",
           "title": "Assistant Secretary of War for Health Affairs (ASW(HA))",
           "scope": "Civilian head of the Military Health System. Policy and oversight of DHA and the Service medical departments.",
-          "why_watch": "ASW(HA) sets MHS policy direction. Bass's priorities shape what DHA actually buys."
+          "why_watch": "ASW(HA) sets MHS policy direction. Bass's priorities shape what DHA actually buys.",
+          "verified_date": "2026-09-25",
+          "verification_note": "Confirmed in seat at the 2026 Military Health System Research Symposium, 2026-08-03: https://health.mil/News/Dvids-Articles/2026/08/03/news571397"
         },
         {
           "name": "Dr. Stephen Ferrara",
           "title": "Principal Deputy Assistant Secretary of War for Health Affairs",
           "scope": "Day-to-day ASW(HA) operations; acts when Bass is out.",
-          "why_watch": "Often the actual signature on policy memos and budget guidance to DHA."
+          "why_watch": "Often the actual signature on policy memos and budget guidance to DHA.",
+          "verified_date": "2026-01-12",
+          "verification_note": "Last confirmed 2026-01-12: https://www.health.mil/News/Videos/2026/01/12/Ferrara-Interview. Open question: a third-party directory lists his tenure in this office as ending May 2026, with no announcement of a departure or a successor found anywhere. Not restamped to the block date; re-check before relying on this name."
         },
         {
           "name": "Ms. Susan Orsega",
           "title": "Deputy Assistant Secretary of War, Health Services Policy and Oversight",
           "scope": "Health services policy, TRICARE-related oversight, MHS quality.",
-          "why_watch": "Owns the policy lens on TRICARE T-5 execution and managed-care contractor performance."
+          "why_watch": "Owns the policy lens on TRICARE T-5 execution and managed-care contractor performance.",
+          "verified_date": "2026-03-10",
+          "verification_note": "Last confirmed 2026-03-10 at a DoW civilian health pilot session. No source dated June 2026 or later found either way."
         },
         {
           "name": "Mr. Darrell Landreaux",
           "title": "Deputy Assistant Secretary of War for Health Resources Management and Policy",
           "scope": "Health resources management, including budget formulation across the MHS.",
-          "why_watch": "Where the Defense Health Program (DHP) budget guidance lands before flowing to DHA."
+          "why_watch": "Where the Defense Health Program (DHP) budget guidance lands before flowing to DHA.",
+          "verified_date": "2026-05-07",
+          "verification_note": "The only evidence is an undated health.mil biography, https://health.mil/About-MHS/Biographies/Darrell-Landreaux. No dated 2026 corroboration found. Weakest row in this block; re-check before relying on it."
         },
         {
           "name": "Terry M. Rauch, Ph.D., MPH, MBA",
           "title": "Acting Deputy Assistant Secretary of War for Health Readiness Policy and Oversight",
           "scope": "Health readiness policy — operational medicine, deployable systems.",
-          "why_watch": "JOMIS and operational health IT priorities flow through this office."
+          "why_watch": "JOMIS and operational health IT priorities flow through this office.",
+          "verified_date": "2026-09-25",
+          "verification_note": "Confirmed still acting at the DoW sleep and fatigue management convening, June 2026: https://cdp.usuhs.edu/blog/highlights-2026-sleep-and-fatigue-management-dow-convening. The permanent seat is posted on USAJOBS, so the acting status is live and likely to move."
         }
       ]
     },
@@ -140,38 +180,48 @@
       "agency_code": "SG",
       "agency_name": "Service Surgeons General",
       "source_url": "https://www.health.mil/About-MHS/Biographies",
-      "verified_date": "2026-05-07",
+      "verified_date": "2026-09-25",
       "note": "Each Service medical department retains its own leadership and partial budget authority for Service-specific medical systems and personnel.",
       "people": [
         {
           "name": "Lt. Gen. Mary K. Izaguirre",
           "title": "Surgeon General of the Army",
           "scope": "Army medical department; Army-specific clinical-IT and medical readiness systems.",
-          "why_watch": "Service SG retains some procurement authority outside DHA's enterprise IDIQs."
+          "why_watch": "Service SG retains some procurement authority outside DHA's enterprise IDIQs.",
+          "verified_date": "2026-09-25",
+          "verification_note": "Confirmed in seat presiding over the USAMEDCOM change of responsibility, 2026-08-28: https://www.army.mil/article/295155"
         },
         {
           "name": "Lt. Gen. (Dr.) John J. Degoes",
-          "title": "Surgeon General of the Air Force and Space Force",
+          "title": "Surgeon General of the Air Force and Space Force; Commander, Air Force Medical Command",
           "scope": "USAF and Space Force medical departments.",
-          "why_watch": "AF/SF flight medicine, aerospace medicine, and Service-specific medical research lines."
+          "why_watch": "AF/SF flight medicine, aerospace medicine, and Service-specific medical research lines.",
+          "verified_date": "2026-05-28",
+          "verification_note": "Seat confirmed at the 2026 MHS Conference senior leader panel, 2026-05-28 (https://www.dvidshub.net/news/569298/senior-military-medical-leaders-align-joint-mission-around-readiness). The Air Force Medical Command role has been held since 2025-07-01 (https://www.airforcemedicine.af.mil/News/Display/Article/4231290/lt-gen-degoes-confirmed-to-lead-afmedcom/). No source dated June 2026 or later found either way."
         },
         {
-          "name": "Rear Adm. Rick Freedman",
-          "title": "Acting Surgeon General of the Navy",
-          "scope": "Navy medical department.",
-          "why_watch": "Operational/deployed medicine, BUMED-managed medical systems."
+          "name": "Rear Adm. Matthew Case",
+          "title": "Acting Surgeon General of the Navy; Acting Chief, Bureau of Medicine and Surgery",
+          "scope": "Leads Navy Medicine as the acting surgeon general and acting BUMED chief. Succeeded Rear Adm. Rick Freedman, who retired 2026-06-26 after 35 years. Rear Adm. Kevin J. Brown, Commander of Naval Medical Forces Pacific, was nominated for the permanent seat on 2026-09-17 (PN1278, 119th Congress) and had not been confirmed as of 2026-09-25.",
+          "why_watch": "The Navy surgeon general seat is acting and a nominee is pending, so Navy Medicine commitments made now may be revisited by a confirmed successor. If your Navy Medicine relationship ran through Rear Adm. Freedman, it ended in June.",
+          "verified_date": "2026-09-25",
+          "verification_note": "Freedman retirement and Case acting: DVIDS, https://www.dvidshub.net/news/571817/navy-acting-surgeon-general-accounts-immeasurable-attributes-during-san-diego-visit and https://www.dvidshub.net/image/9788543/acting-navy-surgeon-general-rear-adm-matthew-case-official-portrait. Brown nomination: https://www.congress.gov/nomination/119th-congress/1278, announced 2026-09-17. No Senate confirmation found as of 2026-09-25."
         },
         {
           "name": "Maj. Gen. Clinton K. Murray",
           "title": "Joint Staff Surgeon",
           "scope": "Joint Staff medical advisor; coordinates joint health priorities.",
-          "why_watch": "Bridge between OSD-level policy and Combatant Command medical execution."
+          "why_watch": "Bridge between OSD-level policy and Combatant Command medical execution.",
+          "verified_date": "2026-09-25",
+          "verification_note": "Confirmed in seat at MHSRS 2026, August 2026: https://news.usuhs.edu/2026/08/as-mhsrs-2026-opens-usu-research-looks.html"
         },
         {
           "name": "Maj. Gen. Lisa J. Hou",
           "title": "Director, Office of the Joint Surgeon General, U.S. National Guard Bureau",
           "scope": "Guard medical readiness, RHRP-4 stakeholder.",
-          "why_watch": "RHRP-4 (Reserve Health Readiness Program) execution touches this office."
+          "why_watch": "RHRP-4 (Reserve Health Readiness Program) execution touches this office.",
+          "verified_date": "2024-07-01",
+          "verification_note": "Last confirmed on the 2024 appointment effective 2024-07-01. No source dated mid-2026 or later confirms or contradicts, so this row keeps its own older date rather than the block date."
         }
       ]
     },
@@ -179,13 +229,15 @@
       "agency_code": "USU",
       "agency_name": "Uniformed Services University of the Health Sciences",
       "source_url": "https://www.health.mil/About-MHS/Biographies",
-      "verified_date": "2026-05-07",
+      "verified_date": "2026-09-25",
       "people": [
         {
           "name": "Dr. Jonathan Woodson",
           "title": "President, Uniformed Services University of the Health Sciences (USU)",
           "scope": "USU — military medical school and research enterprise.",
-          "why_watch": "USU drives medical research priorities and partners on operational medicine and AI-for-health work."
+          "why_watch": "USU drives medical research priorities and partners on operational medicine and AI-for-health work.",
+          "verified_date": "2026-09-25",
+          "verification_note": "Confirmed in seat at USU Founders' Day, 2026-09-18: https://news.usuhs.edu/2026/09/usu-founders-day-looks-back-on-54-years.html"
         }
       ]
     },

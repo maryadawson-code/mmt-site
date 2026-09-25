@@ -568,6 +568,17 @@
 [functions."jul14-sdd-dha-placement-send"]
   schedule = "*/15 * * * *"
 
+# One-shot: the DHA Director's 21 SEP 2026 personnel message moved six HQ seats
+# (AD-RDA/CAE, Principal Deputy, OWHA director, JTS chief, DHA Public Health,
+# plus a retirement). Emails active premium subscribers and points them at the
+# updated /premium/org-charts/dha. Mary authorized the send 2026-09-25. Fires
+# every 15 min so it ships within 15 min of deploy on/after 2026-09-25 UTC;
+# idempotency-keyed in ops_events as sep25_dha_hq_leadership_sent (claimed
+# before the send loop). Kill switch: SEP25_DHA_HQ_DISABLED=true.
+# Retire by 2026-10-09.
+[functions."sep25-dha-hq-leadership-send"]
+  schedule = "*/15 * * * *"
+
 # Hourly Stripe -> mp_users safety-net sync.
 # Stripe Payment Links (the pricing page checkout) periodically produce
 # subscriptions whose webhook events never reach /.netlify/functions/

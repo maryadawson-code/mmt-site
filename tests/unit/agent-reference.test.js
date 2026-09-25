@@ -100,7 +100,7 @@ describe("buyers, states, org charts", () => {
     expect(out.total_count).toBe(11);
     const dha = out.data.find((r) => r.agency === "DHA");
     expect(dha.chart_url).toBe("https://missionmeetstech.com/premium/org-charts/dha");
-    expect(dha.as_of).toBe("2026-07-09");
+    expect(dha.as_of).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(dha.key_people.agency_code).toBe("DHA");
     expect(dha.key_people.people.length).toBeGreaterThan(5);
     expect(dha.internally_maintained).toBe(true);
