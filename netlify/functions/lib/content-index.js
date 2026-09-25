@@ -322,7 +322,7 @@ function formatCorpusContext(matches, query = "", phrase = "") {
 - Date: ${m.date || "undated"} | Type: ${m.type} | URL: ${absoluteUrl(m.url)}${source}
 - Excerpt: ${excerpt}`;
   }).join("\n\n");
-  return `\n\nMMT ORIGINAL CONTENT (Mary's own articles, premium briefs, tracker entries and reference tables. Cite these as "Mission Meets Tech" and link to the URL):\n\n${rows}`;
+  return `\n\nMMT ORIGINAL CONTENT (Mary's own articles, premium briefs, tracker entries and reference tables. Cite these as "Mission Meets Tech" with the item's date; do not write the URL):\n\n${rows}`;
 }
 
 /** Test hook: inject a fixture corpus (pass null to reload from disk). */

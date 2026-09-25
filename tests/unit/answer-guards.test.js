@@ -71,6 +71,32 @@ describe("enforceLinks", () => {
     expect(r.unlisted_link_count).toBe(0);
   });
 
+  it("checks a bare URL that follows an opening parenthesis, the citation shape the guard used to skip", () => {
+    const r = enforceLinks("Made up (https://missionmeetstech.com/made-up-page/). Real (https://missionmeetstech.com/contracts/dha-data-governance-wosb-set-aside/).", context, sources);
+    expect(r.answer).toBe("Made up (missionmeetstech.com). Real (https://missionmeetstech.com/contracts/dha-data-governance-wosb-set-aside/).");
+    expect(r.unlisted).toEqual(["https://missionmeetstech.com/made-up-page/"]);
+  });
+
+  it("drops an unlisted URL that closes a citation together with its separator, and leaves a listed one byte-identical", () => {
+    const r = enforceLinks("The protest cleared (Mission Meets Tech, https://missionmeetstech.com/premium/briefs/2026-04-11.html). Next.", context, sources);
+    expect(r.answer).toBe("The protest cleared (Mission Meets Tech). Next.");
+    expect(r.unlisted).toEqual(["https://missionmeetstech.com/premium/briefs/2026-04-11.html"]);
+    const kept = "See (Mission Meets Tech, https://missionmeetstech.com/contracts/dha-data-governance-wosb-set-aside/).";
+    expect(enforceLinks(kept, context, sources)).toEqual({ answer: kept, unlisted_link_count: 0, unlisted: [] });
+  });
+
+  it("a page that exists on the site is still unlisted when this answer did not retrieve it (the model never writes links)", () => {
+    const r = enforceLinks("(Mission Meets Tech, https://missionmeetstech.com/newsletter/the-scorecard-dha-already-publishes/)", context, sources);
+    expect(r.answer).toBe("(Mission Meets Tech)");
+    expect(r.unlisted_link_count).toBe(1);
+  });
+
+  it("keeps a link on the caller's allow list, which no context or source carries", () => {
+    const cta = "MarketPulse delivers a source-cited brief in 24 hours (https://missionmeetstech.com/marketpulse).";
+    expect(enforceLinks(cta, "", []).answer).toBe("MarketPulse delivers a source-cited brief in 24 hours (missionmeetstech.com).");
+    expect(enforceLinks(cta, "", [], { allow: ["https://missionmeetstech.com/marketpulse"] })).toEqual({ answer: cta, unlisted_link_count: 0, unlisted: [] });
+  });
+
   it("tolerates missing inputs", () => {
     expect(enforceLinks("", "", [])).toEqual({ answer: "", unlisted_link_count: 0, unlisted: [] });
     expect(enforceLinks("plain text", null, null).answer).toBe("plain text");
