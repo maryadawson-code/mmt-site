@@ -36,15 +36,23 @@ describe("Contract Tracker", () => {
 });
 
 describe("org charts", () => {
-  it("lists eleven charts; DHA is internally maintained and reads stale past 30 days", () => {
+  it("lists eleven charts and marks only DHA internally maintained", () => {
     const out = fed.listOrgCharts({ limit: 20, offset: 0 }, NOW);
     expect(out.total_count).toBe(11);
     const dha = out.data.find((r) => r.agency === "DHA");
     expect(dha.internally_maintained).toBe(true);
-    expect(dha.as_of).toBe("2026-07-09");
-    expect(dha.confidence).toBe("stale");
+    expect(dha.as_of).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(dha.key_people.people.length).toBeGreaterThan(5);
     expect(out.data.filter((r) => r.internally_maintained)).toHaveLength(1);
+  });
+
+  // Staleness is asserted against a pinned date rather than against whichever
+  // chart happens to be old: a chart refresh used to break this test.
+  it("a chart reads verified inside the 30-day window and stale past it", () => {
+    const dhaOn = (when) => fed.listOrgCharts({ limit: 20, offset: 0 }, new Date(when)).data.find((r) => r.agency === "DHA");
+    const asOf = Date.parse(dhaOn(NOW).retrieved_at);
+    expect(dhaOn(new Date(asOf + 29 * 86400000)).confidence).toBe("verified");
+    expect(dhaOn(new Date(asOf + 31 * 86400000)).confidence).toBe("stale");
   });
   it("getOrgChart resolves code or slug and HHS carries the structured roster", () => {
     const hhs = fed.getOrgChart("hhs", NOW).data;

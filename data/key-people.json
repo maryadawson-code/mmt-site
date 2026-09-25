@@ -1,7 +1,7 @@
 {
   "_schema": {
     "version": "1.0",
-    "last_updated": "2026-09-10",
+    "last_updated": "2026-09-25",
     "source_note": "Profiles sourced from official agency leadership pages. Each profile cites its source URL. Quarterly refresh cadence per PAYWALL-ENRICHMENT.md item 4. Per-person verified_date/verification_note override the block date when a name was last confirmed on an older page pull."
   },
   "agencies": [
@@ -9,7 +9,7 @@
       "agency_code": "DHA",
       "agency_name": "Defense Health Agency",
       "source_url": "https://www.dha.mil/About-DHA/Organizational-Structure-NEW",
-      "verified_date": "2026-07-09",
+      "verified_date": "2026-09-25",
       "people": [
         {
           "name": "Vice Adm. Darin K. Via, MC, USN",
@@ -38,14 +38,18 @@
         {
           "name": "Dr. Matthew G. Clark",
           "title": "Assistant Director, Research, Development & Acquisition; Component Acquisition Executive (Confirmed)",
-          "scope": "AD-RDA — DHA acquisition authority, including PEO DHMS and PEO Medical Systems oversight. Confirmed to the seat in 2026, succeeding RDML Ivonne Arena, who held it in an Acting capacity through the IOC stand-up.",
-          "why_watch": "The confirmed CAE for DHA — the seat is no longer Acting. Final acquisition decision authority for medical systems and informatics buys at the component level."
+          "scope": "Component Acquisition Executive for DHA: final component-level acquisition authority over medical systems, medical products and medical digital solutions. Named AD-RDA/CAE by the DHA Director on 21 SEP 2026. The Director says he came from command of NATO's Supreme Headquarters Allied Powers Europe Healthcare Facility and the Brussels Army Health Clinic in Belgium, with a career across defense, global public health, science and technology.",
+          "why_watch": "Every component-level health IT and medical systems buy runs through this seat. It is no longer acting, so a commitment made here holds. He inherits the three portfolio acquisition executives stood up through FOC.",
+          "verified_date": "2026-09-25",
+          "verification_note": "DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. Trade press reported the appointment separately (BioBuzz, OrangeSlices AI), rendering his experience as more than 26 years against the Director's 25, so MMT prints no year count. No dha.mil bio yet."
         },
         {
-          "name": "Mr. Brett Scheideman",
-          "title": "Acting Principal Deputy RDA / Deputy CAE (DCAE)",
-          "scope": "NH-IV. S&T, Chief Scientist, Research Support, Industry Engagement, Agreements & Partnerships, Category Management, Acquisition Workforce. Co-chairs WMSIB.",
-          "why_watch": "Industry-engagement and category-management decisions land here. First call for partnering and market research."
+          "name": "Rear Adm. Ivonne Arena",
+          "title": "Principal Deputy, AD-RDA/CAE",
+          "scope": "Principal deputy to the Component Acquisition Executive, the seat MMT's chart carries as Deputy CAE. Held AD-RDA/CAE in an acting capacity through the IOC stand-up until Dr. Clark was named on 21 SEP 2026. Not yet reflected on dha.mil as of 2026-09-25; pending official confirmation.",
+          "why_watch": "She ran the acquisition shop through the reorg, so she carries how the three portfolio acquisition executives were actually built. The Deputy CAE co-chairs the Warfighter Modernization and Support Integration Board with OWHA.",
+          "verified_date": "2026-09-25",
+          "verification_note": "DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. Her dha.mil bio still reads Acting Assistant Director for Research, Development and Acquisition/Component Acquisition Executive, so the Principal Deputy move is single-source."
         },
         {
           "name": "Mr. James Perkins",
@@ -84,16 +88,42 @@
           "why_watch": "Owns the financial machinery behind every DHA buy. Budget execution lives here."
         },
         {
-          "name": "Rear Adm. Tracy Farrill",
+          "name": "Brig. Gen. Jason Lennen",
           "title": "Director, Office of Warfighter Health Advantage (OWHA)",
-          "scope": "Leads the new OWHA, established in the April 2026 reorg and reporting to the DHA Deputy Director. Consolidates the former DIG, CDAO, BID, Digital Health Integration Office, and SIG functions — data, analytics, AI/ML, and digital health.",
-          "why_watch": "OWHA is the new front door for enterprise data, analytics, AI/ML, and digital-health modernization. Co-chairs the Warfighter Modernization & Support Integration Board (WMSIB) with the DCAE. AI/data/digital-health capability now routes through this office."
+          "scope": "Leads OWHA, created in the April 2026 reorg, which consolidated the former DIG, CDAO, BID, Digital Health Integration Office and SIG functions: data, analytics, AI and machine learning, and digital health. Came from the Air Force Surgeon General's office, where he was Director of Policy and Resources. Succeeds Rear Adm. Tracy Farrill. Not yet reflected on dha.mil as of 2026-09-25; pending official confirmation.",
+          "why_watch": "The DHA Director describes OWHA as setting strategy and determining what technologies and tools execute it, so this office frames the requirement before acquisition sees it. A policy and resources background points at funding lines and requirements rather than tooling.",
+          "verified_date": "2026-09-25",
+          "verification_note": "DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. His af.mil biography confirms the Air Force seat he leaves (Director of Policy and Resources, Office of the Surgeon General; the Air Force Medical Service renders it Director, Medical Policy and Resources). No public source places him at DHA yet."
+        },
+        {
+          "name": "Rear Adm. Tracy Farrill",
+          "title": "Retiring; former Director, Office of Warfighter Health Advantage (OWHA)",
+          "scope": "Stood up and led OWHA from the April 2026 reorg. The DHA Director announced on 21 SEP 2026 that she is retiring after 34 years of service, crediting roughly seven years at DHA on digital health integration and organizational and innovation work. No public retirement notice as of 2026-09-25; DHA's 14 AUG 2026 article still lists her as OWHA director.",
+          "why_watch": "If your digital health or AI relationship at DHA ran through her, it now runs through Brig. Gen. Jason Lennen. Re-introduce before the next requirement cycle.",
+          "verified_date": "2026-09-25",
+          "verification_note": "DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. MMT does not characterize her service branch: public sources are inconsistent about whether she is U.S. Public Health Service Commissioned Corps or Navy."
         },
         {
           "name": "Mr. Pat Flanders",
           "title": "Chief Information Officer (J-6) — Confirmed",
           "scope": "DHA enterprise IT and the J-6 Chief Information Office. J-6 transitions under AD-SPFO at FOC (19 July 2026).",
           "why_watch": "Confirmed as the DHA CIO after the June 9, 2026 All Hands. Owns the enterprise IT and cyber layer beneath MHS GENESIS and the DHMS portfolio; the J-6 CIO shop is a required stop for infrastructure, hosting, and cybersecurity requirements."
+        },
+        {
+          "name": "Col. Valerie Sams",
+          "title": "Chief, Joint Trauma System (JTS)",
+          "scope": "Leads the Joint Trauma System, a DHA subordinate activity carried under J-7 Education and Training on MMT's chart. Succeeds Army Col. (Dr.) Jennifer M. Gurney. Air Force trauma surgeon and ECMO physician; Director of the Center for Sustainment of Trauma and Readiness Skills in Cincinnati and Critical Care Air Transport Team training cadre.",
+          "why_watch": "JTS drives joint trauma clinical standards, which the DHA Director frames as elevating battlefield medicine. A new chief is a clinical requirements signal for trauma data, registry work and en route care.",
+          "verified_date": "2026-09-25",
+          "verification_note": "Defense Visual Information Distribution Service release, 20 SEP 2026: https://www.dvidshub.net/news/574850/ready-today-learning-always-saving-lives-defense-health-agencys-joint-trauma-system-welcomes-new-chief-aligning-focus-deliver-joint Also carried in the DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack."
+        },
+        {
+          "name": "Rear Adm. Sara Newman",
+          "title": "Director, DHA-Public Health",
+          "scope": "Leads DHA Public Health, one of the healthcare operations directorates under AD-HCAO. Took the directorate in July 2026. The DHA Director reported her promotion to Rear Adm. on 21 SEP 2026; DHA's own 30 JUL 2026 article still renders her as U.S. Public Health Service Capt. MMT carries the promotion as reported and pending official confirmation.",
+          "why_watch": "Public health carries surveillance, environmental health and disease control requirements under Healthcare Administration and Operations. A promotion in seat reads as continuity in that portfolio, not a change of direction.",
+          "verified_date": "2026-09-25",
+          "verification_note": "DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. Role and background confirmed by DHA, 30 JUL 2026: https://dha.mil/News/2026/07/30/13/12/Fitness-family-connection which renders her rank as Capt., U.S. Public Health Service. The flag-rank promotion has no public source as of 2026-09-25."
         }
       ]
     },
