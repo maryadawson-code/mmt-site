@@ -74,6 +74,22 @@
       </div>
       <div id="ask" data-cap-free="<!-- BUILD:ASK_MMT_CAP_FREE -->" data-cap-premium="<!-- BUILD:ASK_MMT_CAP_PREMIUM -->">
         <div id="mmt-ask-embed" aria-live="polite" style="min-height:600px;border:1px solid var(--mmt-border,#E5E7EB);border-radius:16px;background:var(--mmt-soft,#F3F4F6);display:flex;align-items:center;justify-content:center;color:var(--mmt-text-secondary,#6B7280);font-size:14px;">Loading Ask MMT&hellip;</div>
+        <script>
+          // If the widget never mounts (a blocked or stale cached script),
+          // say so and offer a reload instead of spinning forever.
+          setTimeout(function () {
+            var host = document.getElementById('mmt-ask-embed');
+            if (!host || document.getElementById('mmt-premium-chat-panel')) return;
+            host.style.flexDirection = 'column';
+            host.style.gap = '12px';
+            host.style.padding = '24px';
+            host.style.textAlign = 'center';
+            host.innerHTML = '<p style="margin:0;">Ask MMT did not load in this browser.</p>' +
+              '<a href="/ask?r=' + Date.now() + '" class="btn-primary no-underline">Reload Ask MMT</a>' +
+              '<p style="margin:0;font-size:13px;">Still stuck? Open this page in Safari or Chrome.</p>';
+            if (typeof plausible === 'function') plausible('ask_embed_timeout');
+          }, 8000);
+        </script>
       </div>
     </div>
 

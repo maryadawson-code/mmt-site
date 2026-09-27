@@ -408,7 +408,17 @@ function generateAskMmtSourcesRows(catalog, full) {
   return rows.join('\n            ');
 }
 
-const siteScriptTag = '  <script src="/js/site.js" defer></script>\n  <script src="/js/nav-active.js" defer></script>\n  <script src="/js/mmt-paywall.js" defer></script>\n  <script src="/js/support-widget.js" defer></script>\n  <script src="/js/premium-chat-widget.js" defer></script>';
+// The site scripts ship under stable URLs, so each tag carries a content
+// hash. HTML revalidates on every load; without the hash an in-app browser
+// (LinkedIn, Gmail) can pair fresh HTML with a weeks-old script. That pairing
+// left /ask stuck on "Loading Ask MMT" on mobile: the cached
+// premium-chat-widget.js predated the #mmt-ask-embed mount.
+function versionedScript(file) {
+  const src = fs.readFileSync(path.join(__dirname, 'js', file));
+  const v = require('crypto').createHash('sha256').update(src).digest('hex').slice(0, 10);
+  return `  <script src="/js/${file}?v=${v}" defer></script>`;
+}
+const siteScriptTag = ['site.js', 'nav-active.js', 'mmt-paywall.js', 'support-widget.js', 'premium-chat-widget.js'].map(versionedScript).join('\n');
 
 // --- Premium Gate HTML generators (per article category from PAYWALL_SPEC.md) ---
 
