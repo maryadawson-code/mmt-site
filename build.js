@@ -5977,6 +5977,17 @@ async function build() {
     }
   }
 
+  // 6b. Stamp every /js and /styles URL with its file's hash, so a browser
+  // holding an old cached copy (the pre-May `immutable` header) fetches the
+  // current one. Runs after every page is written. See scripts/lib/asset-version.js.
+  try {
+    const { stampDist } = require('./scripts/lib/asset-version.js');
+    const stamped = stampDist(DIST_DIR);
+    console.log(`Stamped ${stamped.urls} asset URLs across ${stamped.files} pages`);
+  } catch (err) {
+    console.warn('Asset URL stamping failed:', err.message);
+  }
+
   // 7. Write a deploy marker file. This is the simplest way to verify
   // from outside the build pipeline whether a given commit actually
   // reached production. The file is small and served as plain text at
