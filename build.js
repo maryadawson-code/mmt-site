@@ -2965,7 +2965,7 @@ function inlineTailwindCss(html) {
         <a href="/about.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text);">About</a>
         <span class="mobile-logged-out">
           <a href="/dashboard.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-text-secondary);">Sign In</a>
-          <a href="/pricing.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-teal);">★ Go Premium</a>
+          <a href="/pricing.html" class="text-sm font-semibold no-underline" style="color:var(--mmt-teal);">★ Premium</a>
         </span>
         <span class="mobile-logged-in" style="display:none;">
           <a href="/premium/dashboard/" class="text-sm font-semibold no-underline" style="color:var(--mmt-teal);">★ Dashboard</a>
@@ -3278,7 +3278,9 @@ function inlineTailwindCss(html) {
   // getting-started, contracting, events, newswire, agency-sources, glossary
   // Add Premium CTA block before footer on content pages (not tools, not pricing, not member pages)
   const isToolPage = html.includes('score-deck') || html.includes('tactical-brief-form') || html.includes('MMT_CONFIG');
-  const isMemberPage = html.includes('gate-email') || html.includes('welcome-premium') || html.includes('subscribed');
+  // Match the subscribed page by its title, not the word "subscribed", which
+  // appears in article prose and silently dropped the Premium band there.
+  const isMemberPage = html.includes('gate-email') || html.includes('welcome-premium') || html.includes("You're Subscribed");
   const hasContent = html.includes('<footer class="wrap"') && !isToolPage && !isMemberPage;
   if (hasContent && !html.includes('mmt-premium-cta-block')) {
     const premiumBlock = `

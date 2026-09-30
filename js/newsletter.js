@@ -7,7 +7,7 @@
       // Reset all chips
       document.querySelectorAll('[data-filter-topic]').forEach(function(c) {
         c.classList.remove('active');
-        c.style.background = 'rgba(0,229,250,0.1)';
+        c.style.background = 'rgba(69,123,157,0.1)';
         c.style.color = 'var(--mmt-teal)';
       });
       // Show all or filter

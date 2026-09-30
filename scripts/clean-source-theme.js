@@ -50,6 +50,8 @@ const replacements = [
 
   // Hex color values
   [/#00E5FA/gi, '#457B9D'],
+  [/rgba\(0,\s*229,\s*250,\s*/gi, 'rgba(69,123,157,'],
+  [/rgba\(0,\s*255,\s*133,\s*/gi, 'rgba(69,123,157,'],
   [/#00FF85/gi, '#457B9D'],
   [/#00050F/gi, '#0A192F'],
   [/#0D1117/gi, '#FFFFFF'],

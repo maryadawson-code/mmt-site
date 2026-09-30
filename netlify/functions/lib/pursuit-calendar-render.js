@@ -348,6 +348,18 @@ function renderPursuitCalendarHtml(rows, opts = {}) {
   .pc-empty { padding:24px; text-align:center; background:#F3F4F6; border:1px solid #D8E0E8; border-radius:12px; color:#4b5563; font-size:14px; }
   .pc-empty a { color:#457B9D; font-weight:600; text-decoration:none; }
 </style>
+<script>
+  // Premium gate (same check as premium/calendar.html source): a non-member
+  // is sent to /dashboard.html, never shown a blank calendar. build.js
+  // overwrote the page with this render, which until 2026-09-30 relied on
+  // CSS alone and shipped every pursuit row to anyone who viewed source.
+  (function() {
+    var isPremium = localStorage.getItem('mmt_premium') === 'true';
+    var ts = localStorage.getItem('mmt_premium_ts');
+    var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+    if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html'; }
+  })();
+</script>
 </head>
 <body data-access="premium" data-testid="pursuit-calendar">
   <div class="pc-wrap">
