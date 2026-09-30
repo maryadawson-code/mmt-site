@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-09-28T22:12:07.611Z",
-  "total": 278,
+  "generated_at": "2026-09-30T16:01:57.990Z",
+  "total": 280,
   "note": "Public subset of mmt-content-corpus.json (premium=false items only). For unauthenticated endpoints. Per Sprint C 2026-05-14.",
   "counts": {
-    "articles": 137,
-    "contracts": 64,
+    "articles": 138,
+    "contracts": 65,
     "glossary": 42,
     "idiq_vehicles": 35
   },
@@ -2397,6 +2397,30 @@
       "premium": false
     },
     {
+      "id": "article-the-floor-at-winston-salem",
+      "type": "article",
+      "title": "The Floor at Winston-Salem",
+      "slug": "the-floor-at-winston-salem",
+      "date": "2026-09-29",
+      "description": "In May 2012 VA's Inspector General walked the sixth floor of the Winston-Salem regional office and found 37,000 veterans' claims folders stacked on top of the file cabinets, the floor bowing under them. That fiscal year the average claim took 378 days. Last Tuesday VA reported three million claims completed this year at an average of about 76. The folder on that floor and the number in that release are the same object thirteen years apart, and what happened in between was built from parts any agency can buy, in an order the Department of War, Social Security, and the military disability system can copy.",
+      "tags": [
+        "VA",
+        "VBA",
+        "disability claims",
+        "claims backlog",
+        "automation",
+        "AI",
+        "Automated Decision Support",
+        "claims intake",
+        "National Work Queue",
+        "FY2027 budget",
+        "Inspector General"
+      ],
+      "url": "/newsletter/the-floor-at-winston-salem/",
+      "excerpt": "The Floor at Winston-Salem In May 2012 VA's Inspector General walked the sixth floor of the Winston-Salem regional office and found 37,000 veterans' claims folders stacked on top of the file cabinets, the floor bowing under them. That fiscal year the average claim took 378 days. Last Tuesday VA reported three million claims completed this year at an average of about 76. The folder on that floor and the number in that release are the same object thirteen years apart, and what happened in between was built from parts any agency can buy, in an order the Department of War, Social Security, and the military disability system can copy. Friends, The cabinets on the sixth floor were pushed so close together that the drawers would not open all the way, so the folders went on top. By May 2012 there were about 37,000 of them up there, two feet high and two rows deep, with more in boxes on the floor and more along the walls, and the Inspector General's team walking the Winston-Salem regional office noticed that the tops of the cabinets no longer sat level. The floor underneath was bowing. [1] The year before, a stack had come down on an employee and hurt his shoulder. [1] On June 13 the General Services Administration finished a load study and told VA the answer: the sixth floor was carrying 164 pounds per square foot, and it was rated for 125. [1] The report's phrase for it was that the paper appeared to have the potential to compromise the integrity of the building. [2] Every folder up there was a veteran waiting. The office served 770,000 veterans with 680 people, and a claim in 2012 was a thing that could be in exactly one place. [2] If it was on the sixth floor in Winston-Salem it was not on a rater's desk, and if a rater needed it, someone climbed for it. At the end of that fiscal year the average claim took 378 days from filing to decision. [3] That is where this issue starts, because the number VA published last Tuesday is the same folder, thirteen years on. On September 22 VA said it had completed more than three million disability claims in fiscal 2026 as of September 18, at an average of 75.6 days to a decision, against 141.5 days on January 20, 2025, with the count of claims older than 125 days down more than 70 percent over the same span. [4] I searched the release for the words automation, digitize, and decision support. None of them is in it. The how is in three other documents, the FY2027 budget book, an April House statement, and a July one, and read together they describe a sequence. [9][10][17] The sequence is the useful part, and it began with a promise made the spring after the floor study. The promise In March 2013 Allison Hickey, then Under Secretary for Benefits, told the Senate Veterans' Affairs Committee that VA would complete every claim in 125 days at 98 percent accuracy and eliminate the backlog in 2015, and that the way there was to stop the folder from being paper. [5] VA's chief information officer had said the same thing the previous August, on the day the Winston-Salem report came out: paperless processing in every regional office by the following year. [6] Both numbers are still on VA's books. The 125 days became the definition of a backlogged claim, the line VBA measures itself against every Monday. [7] The 98 became 96 after 2015. [8] One promise was about speed and the other about being right, and they have had different lives. The folder that is everywhere The backlog did not end in 2015. It came down, and then the PACT Act arrived in August 2022 with a generation of toxic-exposure claims behind it. VA projected the backlog would peak near 600,000 in March 2024. It peaked in January 2024 at about 400,000, and the VFW, which held power of attorney for more than 700,000 veterans and dependents at the end of FY2025, wrote in April that VA beat its own projection by raising rating output and automating the back end while keeping the non-PACT claims moving, which was the lesson of 2013. [3] Ryan Gallucci, who runs the VFW's Washington office, made a diagnosis in that statement that explains where the remaining days live. Today's bottlenecks, he wrote, are almost exclusive to development, meaning evidence and exams, because the steps VA controls directly, intake, rating, and award, are already automated or take days. [3] The folder that could only be in one place is now in every place at once, and the wait that is left is the wait for something to arrive in it. VA has measured where that wait sits. In its September 2025 baseline a claim spent about 13 days waiting to be assigned, 14.5 days in initial development, 49.9 days in active development, and 5.2 days in decision. [9] Five days to decide. Fifty to gather. Every dollar that moved the average was spent upstream of the rater, and it was spent in an order. The mail The first thing VA fixed was the thing that bowed the floor. The Veterans Claims Intake Program centralizes inbound paper, turns it into more than 55.5 million images a month, automates 80 percent or more of incoming compensation and pension mail, and gets a document in front of a processor in 2.1 hours on average. [9] Robert Orifici of the Veterans Benefits Administration told a House subcommittee in July that VA has digitized more than 1.2 billion claim documents, and separately that a search tool inside the Veterans Benefits Management System now finds evidence inside each electronic folder. [10] He described those as two things, and they are: first the paper became images, then the images became searchable, and only after that could anything automated read them. The VFW dates the end of the 2013 backlog to exactly this, the introduction of electronic tools to digitize the claims process. [3] None of it is artificial intelligence. A summarizer pointed at a scanned fax is a summarizer pointed at nothing, and once the folder was images and the images were searchable, VA could build something that reads them. The reading Automated Decision Support pulls federal records, writes what VA calls an Automated Review Summary Document, and orders or drafts the examinations a claim needs, before a human opens the file. [9][11] Orifici's description of its job was to help processors obtain, review, and synthesize evidence. [10] It covered 26 diagnostic codes when it started. It covers 202 now, it touched more than 540,000 compensation claims in 2025, and by September 2025 it was running on half of all compensation claims in the inventory. [9] VA reports two results from it. Claims worked with the tool close about 33 days faster than claims worked without it, and in quality review they scored 96.4 percent against 95.5 percent for traditional claims. [9] Both figures are VA's own, both are observational, and neither comes with a published method for matching case complexity, so the 33 days is a VA number and not a promise anyone else should make. The second number has a history worth more than its value. VA scores automated claims separately because its Inspector General told it to. The first automation project ran on hypertension claims, the Inspector General sampled 60 of them in 2023 and found 16 wrong, and the recommendation was that VBA compare automated work against traditional work side by side. [12] The separate scorecard is what VBA built in answer, and it is the most portable thing in this story: a quality number for the machine's work, reported apart from the average, because the first attempt failed and someone wrote it down. More than 43 percent of compensation claims now need a Toxic Exposure Risk Activity memo under the PACT Act, and VA has started auto-populating those memos from verified data with links back to the source documents, which it says cuts the time to produce one by up to 40 percent. [10][9] The link is the part that matters. A rater can click the summary and land on the page it came from. At the end of the reading there is still a person. Orifici's statement to the House is the sentence to keep: ",
+      "premium": false
+    },
+    {
       "id": "contract-community-care-network-next-gen-ccn-ng-",
       "type": "contract_intel",
       "title": "Community Care Network Next Gen (CCN NG)",
@@ -2903,6 +2927,23 @@
       "url": "/contracts/tpharm5-tricare-pharmacy/",
       "source_url": "https://sam.gov/opp/d0560f19a2734ac59e21d379b0cd1941/view",
       "excerpt": "Update Aug 17, 2026: Express Scripts holds TPharm5 (HT940221C0007), awarded Aug 5, 2021, up to $5.1B ceiling (~$4.3B potential); services run Jan 1, 2023 through 2029, in option-period execution. TRICARE pharmacy benefit management. Express Scripts (Evernorth) holds HT940221C0007 with a reported award value of approximately $4.29B; specific option-year exercise dollar amounts require source verification before display. Express Scripts manages Rx benefits, claims, mail-order pharmacy, and retail network for all TRICARE beneficiaries.\nAgency: Defense Health Agency (DHA)\nVendor: Express Scripts / Evernorth\nValue: Up to $5.1B ceiling (~$4.3B potential); in option-period execution through 2029\nStatus: active\nNAICS: 524292\nMMT verdict: WATCH — Active award — monitor option exercises",
+      "premium": false
+    },
+    {
+      "id": "contract-usfhp-data-integration-support-services-diss-",
+      "type": "contract_intel",
+      "title": "USFHP Data Integration Support Services (DISS)",
+      "slug": "usfhp-data-integration-support-services-diss-",
+      "date": "2026-09-30",
+      "description": "Update Sep 30, 2026: MicroHealth LLC holds GSA MAS task order HT001123F0047 (schedule GS35F413BA) for Uniformed Services Family Health Plan Data Integration Support Services. The work is the data plumbing behind the six USFHP Designated Pro",
+      "tags": [
+        "Defense Health Agency (DHA)",
+        "active",
+        "541512"
+      ],
+      "url": "/contracts/usfhp-diss-data-integration-support-services/",
+      "source_url": "https://www.war.gov/News/Contracts/Contract/Article/4600826/contracts-for-sept-14-2026/",
+      "excerpt": "Update Sep 30, 2026: MicroHealth LLC holds GSA MAS task order HT001123F0047 (schedule GS35F413BA) for Uniformed Services Family Health Plan Data Integration Support Services. The work is the data plumbing behind the six USFHP Designated Provider contracts: DP data collection, the DEERS interface for enrollment and eligibility, enrollment fee and catastrophic cap transmission, monthly enrollment and capitation reporting, the DP demographics database, and audit and reconciliation support. Base awarded Aug 18, 2023 as an 8(a) competed buy with two offers (FPDS); the EEE (Eligibility, Enrollment, Encounters) scope was added at P00003 in Nov 2023. Options One (Sep 2024) and Two (Jul 2025) each ran about $11M to $13M. War.gov announced Option Three ($11.2M, Sep 27, 2026 to Sep 26, 2027) on Sep 14, 2026; that mod had not posted to FPDS as of Sep 30, 2026. FPDS ultimate completion is Sep 26, 2028, so the recompete is an FY2028 event. Contracting office is HT0011, DHACA's Professional Services Contracting Division in Falls Church; funding office code HT0065 (labeled only 'Defense Health Agency' in FPDS); place of performance Aurora, CO. The requiring activity named in the 2022 special notice was the TRICARE Health Plan's Health Plan Design Branch, Policy and Programs Office. Size watch: MicroHealth's SAM registration (updated May 10, 2026) lists no active SBA 8(a) certification and marks NAICS 541512 as not small, while still self-certifying SDVOSB and SDB. If DHA repeats the 8(a) set-aside, the incumbent cannot prime. USAspending shows no FSRS subawards reported on the order. Watch for a PS-CD sources sought referencing USFHP or DISS in CY2027.\nAgency: Defense Health Agency (DHA)\nVendor: MicroHealth LLC (Vienna, VA; UEI C1RQANT6CG57)\nValue: $50.4M base plus all options (FPDS); $34.7M obligated through P00006; Option Three at $11.2M announced Sep 14, 2026\nStatus: active\nNAICS: 541512\nMMT verdict: WATCH — FY2028 recompete; the set-aside decision is the whole game",
       "premium": false
     },
     {

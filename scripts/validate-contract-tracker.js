@@ -53,6 +53,7 @@ const EXPECTED_SLUGS = [
   "dha-telehealth-programs", "cms-cloud-infrastructure-oci",
   "cdm-defend-health-data-cybersecurity",
   "tricare-managed-care-support-t-5-mcs", "tpharm5-tricare-pharmacy",
+  "usfhp-diss-data-integration-support-services",
   "dha-zero-trust-2-0-gsp", "mpsm-medicare-payment-systems-modernization",
   "tefca-rce-health-information-exchange",
   "cdc-dcipher-disease-surveillance",
