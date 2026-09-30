@@ -138,9 +138,9 @@ exports.handler = async () => {
       try {
         const payload = {
           session_id: order.session_id,
-          name: order.name || order.company_name || null,
+          name: order.name || null,
           email: order.email,
-          company: order.company || order.company_name || null,
+          company: order.company || null,
           topic: order.topic,
           audience: order.audience || null,
           additional_context: order.additional_context || order.company_context || null,

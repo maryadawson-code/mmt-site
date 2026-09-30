@@ -801,12 +801,26 @@ exports.handler = async (event) => {
 
       // Revoke premium tier
       if (isMmtPremium && subEmail) {
-        await supabase
+        const { error: revokeErr } = await supabase
           .from("mp_users")
           .update({ subscription_tier: "free", subscription_status: "canceled" })
           .eq("email", subEmail.toLowerCase().trim());
-
-        console.log(`stripe-webhook: ${subEmail} tier → free (subscription deleted)`);
+        if (revokeErr) {
+          // A cancelled customer must not keep Premium behind a log line that
+          // says it was revoked (2026-09-30 audit). Record it where the daily
+          // ops sweep and stripe-subscriber-sync can see it.
+          console.error(`stripe-webhook: premium revoke FAILED for ${subEmail}: ${revokeErr.message}`);
+          const { error: evErr } = await supabase.from("ops_events").insert({
+            event_type: "PREMIUM_REVOKE_FAILED",
+            source_function: "stripe-webhook",
+            severity: "error",
+            user_email: subEmail.toLowerCase().trim(),
+            details: { subscription_id: sub.id, error: revokeErr.message },
+          });
+          if (evErr) console.error(`stripe-webhook: could not record revoke failure: ${evErr.message}`);
+        } else {
+          console.log(`stripe-webhook: ${subEmail} tier → free (subscription deleted)`);
+        }
       }
 
       {

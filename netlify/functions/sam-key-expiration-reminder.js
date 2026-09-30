@@ -123,12 +123,17 @@ exports.handler = async () => {
   }
 
   try {
-    await sendEmail({
+    const sent = await sendEmail({
       to: NOTIFY_TO,
       from: "Mission Meets Tech <noreply@missionmeetstech.com>",
       subject: `[MMT] SAM.gov API key expires in ${days} day${days === 1 ? "" : "s"}`,
       html: buildEmailHtml({ days, expiresOn: SAM_KEY_EXPIRES_UTC }),
     });
+    // sendEmail resolves { success:false }, it does not throw; the marker is
+    // written only for a send Resend accepted, so a failed reminder retries.
+    if (!sent || !sent.success) {
+      throw new Error(`send not accepted: ${(sent && sent.error) || "unknown"}`);
+    }
     await supabase.from("ops_events").insert({
       event_type: "sam_key_expiration_reminder_sent",
       details: { threshold_days: matched, expires_on: SAM_KEY_EXPIRES_UTC, days_remaining: days, checked_at: checkedAt },

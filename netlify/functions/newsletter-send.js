@@ -27,7 +27,8 @@ async function alreadyOnButtondown(title) {
   const needle = title.substring(0, 40);
   for (const status of ISSUE_STATUSES) {
     const res = await fetch(`https://api.buttondown.com/v1/emails?status=${status}&count=5`, {
-      headers: { 'Authorization': `Token ${BUTTONDOWN_API_KEY}` }
+      headers: { 'Authorization': `Token ${BUTTONDOWN_API_KEY}` },
+      signal: AbortSignal.timeout(10000),
     });
     if (!res.ok) continue;
     const data = await res.json();
@@ -53,7 +54,7 @@ exports.handler = async (event) => {
   let claimKey = null;
   try {
     // Fetch the latest newsletters.json from the live site to find new articles
-    const articlesRes = await fetch(`${SITE_URL}/newsletters.json`);
+    const articlesRes = await fetch(`${SITE_URL}/newsletters.json`, { signal: AbortSignal.timeout(10000) });
     if (!articlesRes.ok) throw new Error(`Failed to fetch newsletters.json: ${articlesRes.status}`);
     const articles = await articlesRes.json();
 
@@ -150,6 +151,9 @@ exports.handler = async (event) => {
         body: body,
         status: 'about_to_send', // Buttondown's "send immediately" status; 'draft' = save as draft
       }),
+      // A hung create after the claim would strand the claim in "claimed" and
+      // the next tick would report lost_claim_race forever (2026-09-30 audit).
+      signal: AbortSignal.timeout(20000),
     });
 
     if (!sendRes.ok) {
@@ -158,9 +162,22 @@ exports.handler = async (event) => {
     }
 
     const result = await sendRes.json();
-    console.log(`Newsletter sent: "${subject}" — ID: ${result.id}`);
+    // A 2xx on create is acceptance, not delivery: read Buttondown's own
+    // status for the email and record that (rule: platform status before "sent").
+    let platformStatus = result.status || 'accepted';
+    try {
+      const statusRes = await fetch(`https://api.buttondown.com/v1/emails/${result.id}`, {
+        headers: { 'Authorization': `Token ${BUTTONDOWN_API_KEY}` },
+        signal: AbortSignal.timeout(10000),
+      });
+      if (statusRes.ok) platformStatus = (await statusRes.json()).status || platformStatus;
+      else console.warn(`newsletter-send: status read ${statusRes.status} for ${result.id}; recording create status "${platformStatus}"`);
+    } catch (e) {
+      console.warn(`newsletter-send: status read failed for ${result.id}: ${e.message}`);
+    }
+    console.log(`Newsletter accepted: "${subject}" — ID: ${result.id}, Buttondown status: ${platformStatus}`);
     if (claim && claim.claimId) {
-      await finalizeClaim(supabase, claim.claimId, { details: { article: claimKey, subject, status: 'sent', buttondown_id: result.id } });
+      await finalizeClaim(supabase, claim.claimId, { details: { article: claimKey, subject, status: platformStatus, buttondown_id: result.id } });
     }
 
     return {

@@ -39,7 +39,18 @@ exports.handler = async () => {
 
   for (const table of CRITICAL_TABLES) {
     try {
-      const { data, error } = await sb.from(table).select("*");
+      // PostgREST caps one request at 1,000 rows; a single select("*")
+      // backed up the first 1,000 of each table and reported 1000 as complete
+      // (2026-09-30 audit). Page until a short page.
+      const PAGE = 1000;
+      const data = [];
+      let error = null;
+      for (let from = 0; ; from += PAGE) {
+        const { data: page, error: pageErr } = await sb.from(table).select("*").order("id", { ascending: true }).range(from, from + PAGE - 1);
+        if (pageErr) { error = pageErr; break; }
+        data.push(...(page || []));
+        if (!page || page.length < PAGE) break;
+      }
       if (error) {
         results.errors.push({ table, error: error.message });
         continue;

@@ -17,13 +17,27 @@ exports.handler = async () => {
   console.log(`[cost-rollup] Processing ${dateStr}`);
 
   // 1. Fetch yesterday's cost events
-  const { data: events } = await supabase
-    .from("cost_events")
-    .select("function_name, product, provider, model, input_tokens, output_tokens, cost_cents, latency_ms, status, cache_hit")
-    .gte("created_at", dayStart)
-    .lte("created_at", dayEnd);
+  // Page: a busy day exceeds PostgREST's 1,000-row cap, and a query error
+  // must not roll up as "No events" (2026-09-30 audit).
+  const events = [];
+  const PAGE = 1000;
+  for (let from = 0; ; from += PAGE) {
+    const { data: page, error: pageErr } = await supabase
+      .from("cost_events")
+      .select("function_name, product, provider, model, input_tokens, output_tokens, cost_cents, latency_ms, status, cache_hit")
+      .gte("created_at", dayStart)
+      .lte("created_at", dayEnd)
+      .order("created_at", { ascending: true })
+      .range(from, from + PAGE - 1);
+    if (pageErr) {
+      console.error(`[cost-rollup] cost_events query failed: ${pageErr.message}`);
+      return { statusCode: 500, body: JSON.stringify({ error: pageErr.message, date: dateStr }) };
+    }
+    events.push(...(page || []));
+    if (!page || page.length < PAGE) break;
+  }
 
-  if (!events || events.length === 0) {
+  if (events.length === 0) {
     console.log("[cost-rollup] No events yesterday");
     return { statusCode: 200, body: "No events" };
   }

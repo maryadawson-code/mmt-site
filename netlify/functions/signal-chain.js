@@ -98,14 +98,17 @@ function race(ms, fn) {
 async function layerResearch(terms, agency) {
   const pubmedQuery = buildPubMedQuery(terms, agency);
   const [pm, trials] = await Promise.all([
-    searchPubMed({ query: pubmedQuery, retmax: 5, daysBack: 730 }).catch(() => ({ pmids: [], count: 0 })),
+    searchPubMed({ query: pubmedQuery, retmax: 5, daysBack: 730 }).catch((e) => ({ pmids: [], count: 0, error: (e && e.message) || "PubMed not reached" })),
     searchTrials({
       query: terms.base,
       sponsor: agency === "DHA" || agency === "DoD" ? "Defense Health Agency" : (agency === "VA" ? "VA Office of Research" : undefined),
       status: ["COMPLETED", "ACTIVE_NOT_RECRUITING", "RECRUITING"],
       limit: 5,
-    }).catch(() => ({ studies: [], total: 0 })),
+    }).catch((e) => ({ studies: [], total: 0, error: (e && e.message) || "ClinicalTrials.gov not reached" })),
   ]);
+  // A source that was not reached is reported as such, never as "no research
+  // found" (2026-09-30 audit: an NCBI outage told every member there was none).
+  const unreached = [pm.error ? "PubMed" : null, trials.error ? "ClinicalTrials.gov" : null].filter(Boolean);
   const articles = pm.pmids.length > 0
     ? (await fetchPubMedSummaries(pm.pmids).catch(() => ({ articles: [] }))).articles || []
     : [];
@@ -149,10 +152,12 @@ async function layerResearch(terms, agency) {
   ];
 
   const reason = signals.length === 0
-    ? `No recent federal-affiliated research found for these keywords in PubMed or ClinicalTrials.gov (${agency || "any agency"}).`
-    : null;
+    ? (unreached.length
+        ? `${unreached.join(" and ")} not reached; research layer unscored this run.`
+        : `No recent federal-affiliated research found for these keywords in PubMed or ClinicalTrials.gov (${agency || "any agency"}).`)
+    : (unreached.length ? `${unreached.join(" and ")} not reached; signals below come from the other source.` : null);
 
-  return { score: clamp(score, 0, 100), weight: 0.15, source: "PubMed + ClinicalTrials", signals, noSignalReason: reason };
+  return { score: clamp(score, 0, 100), weight: 0.15, source: "PubMed + ClinicalTrials", signals, noSignalReason: reason, notReached: unreached.length === 2, _apiErrors: unreached.length ? unreached : undefined };
 }
 
 // ------------------------------------------------------------

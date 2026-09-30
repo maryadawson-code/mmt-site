@@ -163,7 +163,7 @@ async function handleEvent({ supabase, payload, headers }) {
   if (eventType === "email.bounced" && recipient) {
     const emails = recipient.split(",").map((e) => e.trim()).filter(Boolean);
     for (const email of emails) {
-      await supabase.from("bounce_suppression").upsert(
+      const { error: suppressErr } = await supabase.from("bounce_suppression").upsert(
         {
           email,
           reason: record.bounce_message || "bounced",
@@ -171,6 +171,7 @@ async function handleEvent({ supabase, payload, headers }) {
         },
         { onConflict: "email" }
       );
+      if (suppressErr) console.error(`resend-webhook: bounce suppression failed for ${email}: ${suppressErr.message}`);
     }
   }
 

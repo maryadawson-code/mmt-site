@@ -162,13 +162,16 @@ exports.handler = async (event) => {
       if (sendResult && sendResult.success) {
         const resendId = sendResult.id || sendResult.messageId || null;
         const productKey = s.tier === "founding" ? "mmt_premium_founding" : "mmt_premium";
-        await supabase.from("customer_events").insert({
+        const { error: markerErr } = await supabase.from("customer_events").insert({
           email: s.email,
           event_type: "welcome_sent",
           product: productKey,
           amount_cents: 0,
           metadata: { subscription_id: s.sub_id, tier: s.tier, resend_message_id: resendId, sent_via: "welcome-reconciler", is_backfill: isBackfill },
         });
+        // An unrecorded welcome is re-sent by the next 30-minute tick, so a
+        // failed marker is an error, not a footnote (2026-09-30 audit).
+        if (markerErr) console.error(`welcome-reconciler: welcome_sent marker failed for ${s.email}: ${markerErr.message}`);
         const { error: logErr } = await supabase.from("ops_events").insert({
           event_type: "WELCOME_EMAIL_BACKFILLED",
           source_function: "welcome-reconciler",
