@@ -64,10 +64,16 @@ SAM.gov ignores the `q` parameter (#237, #238).
 
 ## Found, left for Mary (decisions, not bugs I should make)
 
-- **Ask MMT still sends `q` to SAM.gov**, which SAM ignores, so its SAM rows
-  are the newest notices in the department window filtered afterwards by
-  `filterRelevant`. Fix is `title=` plus running `filterRelevant` over SAM
-  rows; it changes eval behavior, so it ships with a fresh `--trials 3` run.
+- **Ask MMT sent `q` to SAM.gov**, which SAM ignores, so its SAM rows were
+  the newest notices in the department window and were never relevance
+  filtered. The fix (`title=` plus `filterRelevant` over SAM rows) is on
+  branch `fix/ask-mmt-sam-title-2026-09-30`, unit tests green. The
+  `--trials 3` eval gate was red on the night of 2026-09-30: 15 of 72 trials
+  hit `not reached: usaspending` (an 8-second budget against a slow
+  USASpending from this machine; the SAM path is not exercised by the eval,
+  which deletes the key), and the one `required_present` miss was in a
+  timed-out trial. Every failing row passed on a single-trial rerun earlier
+  the same day. Merge after a green `--trials 3` run.
 - 37 `premium/briefs/capture-corner-*.html`, two Friday briefs and the DHA and
   VA org charts are hidden by CSS only (no inline gate); a non-member sees a
   blank page and the text is in the source. Same fix as the calendar, per page.

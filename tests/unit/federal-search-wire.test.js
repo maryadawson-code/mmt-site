@@ -1,7 +1,8 @@
 // Wire-level check of what the federal fan-out actually sends. On
 // 2026-09-10 the question "Tell me all about data governence awards in the
 // DHA" reached USASpending as keywords ["Tell about data governence awards"]
-// and SAM.gov as q=<same>, scoped to all of DoD. These tests stub fetch and
+// and SAM.gov as q=<same>, scoped to all of DoD. (2026-09-30: SAM.gov ignores
+// `q` entirely; the keyword now goes out as `title`, a real filter.) These tests stub fetch and
 // read the outbound request bodies, so "works as marketed" is asserted at
 // the boundary the APIs see, not at the prompt.
 
@@ -91,7 +92,8 @@ describe("enrichWithFederalData on the wire", () => {
 
     const sam = calls.find((c) => c.url.includes("api.sam.gov"));
     const params = new URL(sam.url).searchParams;
-    expect(params.get("q")).toBe("data governance");
+    expect(params.get("title")).toBe("data governance");
+    expect(params.get("q")).toBeNull();
     expect(params.get("deptname")).toBe("DEPT OF DEFENSE");
     expect(params.get("api_key")).toBe("test-sam-key");
   });
@@ -174,7 +176,7 @@ describe("enrichWithFederalData on the wire", () => {
 
     const sam = new URL(calls.find((c) => c.url.includes("api.sam.gov")).url).searchParams;
     expect(sam.get("deptname")).toBe("HEALTH AND HUMAN SERVICES, DEPARTMENT OF");
-    expect(sam.get("q")).toBe("medical device software");
+    expect(sam.get("title")).toBe("medical device software");
 
     const fr = new URL(calls.find((c) => c.url.includes("federalregister.gov")).url).searchParams;
     expect(fr.getAll("conditions[agencies][]")).toContain("food-and-drug-administration");
@@ -219,7 +221,7 @@ describe("SAM.gov daily quota and cache on the wire", () => {
     const r = await api.searchSAMOpportunities({ keyword: "data governance", relaxKeyword: "governance", agency: "DHA", limit: 15 });
     expect(samQuery().length).toBe(2);
     expect(r.secondary_skipped).toBeUndefined();
-    expect(new URL(samQuery()[1].url).searchParams.get("q")).toBe("governance");
+    expect(new URL(samQuery()[1].url).searchParams.get("title")).toBe("governance");
     expect((await samQuota.samQuotaState()).used).toBe(2);
   });
 
@@ -296,7 +298,7 @@ describe("2026-09-14: rungs, per-call timeouts, windows, obligations, totals, se
     expect(filters[1].keywords).toEqual(["T4NG 2"]);
     expect(filters.length).toBe(2);
     // SAM.gov and the Federal Register get the bare canonical name too
-    expect(new URL(calls.find((c) => c.url.includes("api.sam.gov")).url).searchParams.get("q")).toBe("T4NG2");
+    expect(new URL(calls.find((c) => c.url.includes("api.sam.gov")).url).searchParams.get("title")).toBe("T4NG2");
     expect(new URL(calls.find((c) => c.url.includes("federalregister.gov")).url).searchParams.get("conditions[term]")).toBe("T4NG2");
   });
 
@@ -748,7 +750,7 @@ describe("2026-09-14 review: match counts, real award fields, topic-word obligat
   it("'What is VA's small business goal?': the set-aside wording is the subject, so SAM.gov and the Federal Register receive it and USASpending still gets the codes", async () => {
     globalThis.fetch = makeFetch({ toptierResults: [] });
     const out = await api.enrichWithFederalData({ topic: "What is VA's small business goal?", agency: "VA", today: TODAY });
-    expect(new URL(calls.find((c) => c.url.includes("api.sam.gov")).url).searchParams.get("q")).toBe("small business goal");
+    expect(new URL(calls.find((c) => c.url.includes("api.sam.gov")).url).searchParams.get("title")).toBe("small business goal");
     expect(new URL(calls.find((c) => c.url.includes("federalregister.gov")).url).searchParams.get("conditions[term]")).toBe("small business goal");
     expect(usaCalls()[0].keywords).toEqual(["small business goal"]);
     expect(usaCalls()[0].set_aside_type_codes.length).toBe(14);
