@@ -9,11 +9,15 @@
 //
 // Schedule configured in netlify.toml:
 //   [functions."newsletter-research"]
-//     schedule = "0 11 * * 1,4"
+// (no schedule here: netlify.toml is the only place a schedule counts)
 // ============================================================
 
 const { makeTriggerHandler } = require("./lib/trigger-background");
 
-exports.handler = makeTriggerHandler("newsletter-research-background", {
+const { scheduledOnly } = require("./lib/scheduled-only");
+
+// No live schedule (netlify.toml), so this URL is public: only the scheduler
+// or an admin token may fire the background research run.
+exports.handler = scheduledOnly("newsletter-research", makeTriggerHandler("newsletter-research-background", {
   label: "Newsletter research",
-});
+}));

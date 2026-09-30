@@ -7,7 +7,7 @@
 //
 // Schedule configured in netlify.toml:
 //   [functions."newsletter-research"]
-//     schedule = "0 11 * * 1,4"
+// (no schedule here: netlify.toml is the only place a schedule counts)
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");

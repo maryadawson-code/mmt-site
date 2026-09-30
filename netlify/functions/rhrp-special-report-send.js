@@ -16,6 +16,7 @@
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const { requireAdmin } = require("./lib/admin-auth");
 const { sendEmail } = require("./lib/send-email");
 const { checkKillSwitch, shouldHoldEmail, holdEmail } = require("./lib/kill-switch");
 const { logOpsEvent } = require("./lib/ops-ledger");
@@ -38,7 +39,7 @@ const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "mary@missionmeetstech.com,mar
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "https://missionmeetstech.com",
-  "Access-Control-Allow-Headers": "Content-Type, x-admin-email",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, x-subscriber-token, x-admin-email",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Content-Type": "application/json",
 };
@@ -52,10 +53,13 @@ exports.handler = async (event) => {
   }
 
   // Admin gate — only Mary can fire a broadcast
-  const adminEmail = ((event.headers || {})["x-admin-email"] || "").toLowerCase().trim();
-  if (!ADMIN_EMAILS.includes(adminEmail)) {
-    return { statusCode: 403, headers: CORS_HEADERS, body: JSON.stringify({ error: "admin email required" }) };
+  // Admin identity is the signed subscriber token (lib/admin-auth.js); the
+  // plaintext x-admin-email header alone authorized this until 2026-09-30.
+  const adminCheck = requireAdmin(event);
+  if (!adminCheck.ok) {
+    return { statusCode: adminCheck.status, headers: CORS_HEADERS, body: JSON.stringify({ error: adminCheck.reason }) };
   }
+  const adminEmail = adminCheck.email;
 
   const killCheck = checkKillSwitch("rhrp-special-report-send");
   if (killCheck.blocked) return killCheck.response;
