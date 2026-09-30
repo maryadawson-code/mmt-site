@@ -641,14 +641,6 @@
 # (The /pricing -> /pricing.html and /tools -> /tools.html 200-rewrites
 # live further down in this file and continue to serve the asset.)
 [[redirects]]
-  from = "/pricing.html"
-  to = "/pricing"
-  status = 301
-[[redirects]]
-  from = "/dashboard.html"
-  to = "/dashboard"
-  status = 301
-[[redirects]]
   from = "/dashboard"
   to = "/dashboard.html"
   status = 200

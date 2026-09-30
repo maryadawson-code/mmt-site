@@ -482,22 +482,22 @@ function showTimeoutMessage(type) {
   if (!msgDiv) {
     msgDiv = document.createElement('div');
     msgDiv.id = 'timeout-message';
-    msgDiv.style.cssText = 'max-width:560px;margin:2rem auto;padding:2rem;background:var(--mmt-slate,#0A1628);border:1px solid rgba(0,229,250,0.15);border-radius:12px;text-align:center;';
+    msgDiv.style.cssText = 'max-width:560px;margin:2rem auto;padding:2rem;background:var(--mmt-soft,#F3F4F6);border:1px solid var(--mmt-border,#E5E7EB);border-radius:12px;text-align:center;';
     container.appendChild(msgDiv);
   }
 
   if (type === 'soft') {
-    msgDiv.innerHTML = '<h3 style="color:#fff;font-family:\'Space Grotesk\',system-ui,sans-serif;font-size:1.25rem;margin-bottom:1rem;">Taking longer than usual</h3>' +
-      '<p style="color:rgba(255,255,255,0.8);line-height:1.75;margin-bottom:1rem;">Your assessment is still processing. You\'ll receive results at <strong style="color:#fff;">' + email + '</strong> when ready.</p>' +
-      '<p style="color:rgba(255,255,255,0.6);font-size:0.875rem;margin-bottom:1.5rem;">You can safely close this page.</p>' +
+    msgDiv.innerHTML = '<h3 style="color:var(--mmt-navy,#0A192F);font-family:Inter,system-ui,sans-serif;font-size:1.25rem;margin-bottom:1rem;">Taking longer than usual</h3>' +
+      '<p style="color:var(--mmt-text,#314155);line-height:1.75;margin-bottom:1rem;">Your assessment is still processing. You\'ll receive results at <strong style="color:var(--mmt-navy,#0A192F);">' + email + '</strong> when ready.</p>' +
+      '<p style="color:var(--mmt-text-secondary,#6B7280);font-size:0.875rem;margin-bottom:1.5rem;">You can safely close this page.</p>' +
       '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">' +
       '<button onclick="location.reload()" class="btn-secondary" style="padding:10px 24px;border-radius:8px;font-size:0.875rem;cursor:pointer;">Try Again</button>' +
       '<a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);font-size:0.875rem;text-decoration:none;display:inline-flex;align-items:center;">Questions? mary@missionmeetstech.com</a>' +
       '</div>';
   } else {
-    msgDiv.innerHTML = '<h3 style="color:#fff;font-family:\'Space Grotesk\',system-ui,sans-serif;font-size:1.25rem;margin-bottom:1rem;">We hit a snag</h3>' +
-      '<p style="color:rgba(255,255,255,0.8);line-height:1.75;margin-bottom:1rem;">We\'ve been notified and will email your results to <strong style="color:#fff;">' + email + '</strong> within 2 hours.</p>' +
-      '<p style="color:rgba(255,255,255,0.6);font-size:0.875rem;margin-bottom:1.5rem;">If you don\'t hear from us, email mary@missionmeetstech.com and reference your submission time.</p>' +
+    msgDiv.innerHTML = '<h3 style="color:var(--mmt-navy,#0A192F);font-family:Inter,system-ui,sans-serif;font-size:1.25rem;margin-bottom:1rem;">We hit a snag</h3>' +
+      '<p style="color:var(--mmt-text,#314155);line-height:1.75;margin-bottom:1rem;">We\'ve been notified and will email your results to <strong style="color:var(--mmt-navy,#0A192F);">' + email + '</strong> within 2 hours.</p>' +
+      '<p style="color:var(--mmt-text-secondary,#6B7280);font-size:0.875rem;margin-bottom:1.5rem;">If you don\'t hear from us, email mary@missionmeetstech.com and reference your submission time.</p>' +
       '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">' +
       '<button onclick="location.reload()" class="btn-secondary" style="padding:10px 24px;border-radius:8px;font-size:0.875rem;cursor:pointer;">Start Over</button>' +
       '<a href="mailto:mary@missionmeetstech.com" style="color:var(--mmt-teal);font-size:0.875rem;text-decoration:none;display:inline-flex;align-items:center;">mary@missionmeetstech.com</a>' +

@@ -67,8 +67,8 @@
           html += '<ul class="list-none p-0 m-0 space-y-3">' + intel.risks.map(function(r) { return '<li class="text-sm leading-relaxed pl-4" style="color:var(--mmt-text-secondary);border-left:2px solid rgba(248,113,113,0.3);">' + esc(r) + '</li>'; }).join('') + '</ul></div>';
         }
         if (intel.opportunities && intel.opportunities.length) {
-          html += '<div class="card rounded-xl p-6" style="border-color:rgba(0,255,133,0.2);"><h3 class="text-lg font-bold mb-4" style="color:var(--mmt-teal);">Opportunities</h3>';
-          html += '<ul class="list-none p-0 m-0 space-y-3">' + intel.opportunities.map(function(o) { return '<li class="text-sm leading-relaxed pl-4" style="color:var(--mmt-text-secondary);border-left:2px solid rgba(0,255,133,0.3);">' + esc(o) + '</li>'; }).join('') + '</ul></div>';
+          html += '<div class="card rounded-xl p-6" style="border-color:rgba(69,123,157,0.2);"><h3 class="text-lg font-bold mb-4" style="color:var(--mmt-teal);">Opportunities</h3>';
+          html += '<ul class="list-none p-0 m-0 space-y-3">' + intel.opportunities.map(function(o) { return '<li class="text-sm leading-relaxed pl-4" style="color:var(--mmt-text-secondary);border-left:2px solid rgba(69,123,157,0.3);">' + esc(o) + '</li>'; }).join('') + '</ul></div>';
         }
         html += '</div>';
       }
@@ -99,7 +99,7 @@
 
     function renderSmallBiz(sb) {
       if (!sb) return '';
-      var html = '<div class="rounded-xl p-6 md:p-8" style="background:rgba(0,255,133,0.04);border:1px solid rgba(0,255,133,0.2);">';
+      var html = '<div class="rounded-xl p-6 md:p-8" style="background:rgba(69,123,157,0.04);border:1px solid rgba(69,123,157,0.2);">';
       html += '<h2 class="text-xl md:text-2xl font-bold mb-6 flex items-center gap-3" style="color:var(--mmt-teal);"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 2A1.5 1.5 0 000 3.5v2A1.5 1.5 0 001.5 7h1v5.5A1.5 1.5 0 004 14h8a1.5 1.5 0 001.5-1.5V7h1A1.5 1.5 0 0016 5.5v-2A1.5 1.5 0 0014.5 2h-13zM4 7h8v5.5H4V7z"/></svg>Small Business Opportunities</h2>';
       if (sb.set_aside_types && sb.set_aside_types.length) {
         html += '<div class="flex flex-wrap gap-2 mb-4">';
@@ -118,7 +118,7 @@
         html += '</div>';
       }
       if (sb.subcontracting_note) {
-        html += '<div class="p-4 rounded-lg" style="background:rgba(0,255,133,0.06);border:1px solid rgba(69,123,157,0.08);"><p class="text-sm font-semibold mb-1" style="color:var(--mmt-teal);">Subcontracting</p><p class="text-sm leading-relaxed" style="color:var(--mmt-text-secondary);">' + esc(sb.subcontracting_note) + '</p></div>';
+        html += '<div class="p-4 rounded-lg" style="background:rgba(69,123,157,0.06);border:1px solid rgba(69,123,157,0.08);"><p class="text-sm font-semibold mb-1" style="color:var(--mmt-teal);">Subcontracting</p><p class="text-sm leading-relaxed" style="color:var(--mmt-text-secondary);">' + esc(sb.subcontracting_note) + '</p></div>';
       }
       html += '</div>';
       return html;
