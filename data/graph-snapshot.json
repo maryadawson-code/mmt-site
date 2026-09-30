@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-09-15T19:22:16.435Z",
-  "node_count": 469,
-  "edge_count": 687,
+  "generated_at": "2026-09-30T15:42:48.610Z",
+  "node_count": 471,
+  "edge_count": 697,
   "nodes": [
     {
       "id": "peo-dhms-deployment",
@@ -104,9 +104,9 @@
         "ceiling_usd": 969000000,
         "pop_start": "",
         "pop_end": "2025-10-31",
-        "set_aside": "Multiple Award IDIQ",
-        "vehicle_type": "",
-        "status": "614000000"
+        "set_aside": "",
+        "vehicle_type": "Multiple Award IDIQ",
+        "status": "Winding Down"
       }
     },
     {
@@ -214,11 +214,11 @@
       "properties": {
         "contract_number": "HHSM-500-2016-00051I",
         "ceiling_usd": 25000000000,
-        "pop_start": "2016-06-08",
-        "pop_end": "2026-06-07",
+        "pop_start": "2017-02-21",
+        "pop_end": "2027-02-20",
         "set_aside": "Multi-tier (LB/SB/WOSB)",
         "vehicle_type": "Multiple Award IDIQ",
-        "status": "Active nearing recompete"
+        "status": "Active: ordering period ends Feb 20 2027; no successor planned"
       }
     },
     {
@@ -376,10 +376,16 @@
         "ceiling_usd": 5000000000,
         "pop_start": "",
         "pop_end": "",
-        "set_aside": "",
-        "vehicle_type": "Unrestricted + regional",
-        "status": "TBD"
+        "set_aside": "Unrestricted + regional",
+        "vehicle_type": "Multiple Award IDIQ",
+        "status": "In Evaluation"
       }
+    },
+    {
+      "id": "naics-339113",
+      "type": "Topic",
+      "canonical_name": "NAICS 339113",
+      "properties": {}
     },
     {
       "id": "va-mspv-gen-z",
@@ -394,12 +400,6 @@
         "vehicle_type": "Multiple Award IDIQ",
         "status": "Active"
       }
-    },
-    {
-      "id": "naics-339113",
-      "type": "Topic",
-      "canonical_name": "NAICS 339113",
-      "properties": {}
     },
     {
       "id": "usace-medcom-dbmatoc",
@@ -1111,6 +1111,23 @@
       "id": "evernorth",
       "type": "Contractor",
       "canonical_name": "Evernorth",
+      "properties": {}
+    },
+    {
+      "id": "usfhp-data-integration-support-services-diss",
+      "type": "Program",
+      "canonical_name": "USFHP Data Integration Support Services (DISS)",
+      "properties": {
+        "classification": "Contract",
+        "status": "active",
+        "naics": "541512",
+        "last_verified": "2026-09-30"
+      }
+    },
+    {
+      "id": "microhealth-llc",
+      "type": "Contractor",
+      "canonical_name": "MicroHealth LLC",
       "properties": {}
     },
     {
@@ -3858,6 +3875,17 @@
       }
     },
     {
+      "id": "article-vas-manual-tells-raters-to-enter-service-that-never-happened",
+      "type": "Article",
+      "canonical_name": "VA's Manual Tells Raters to Enter Service That Never Happened",
+      "properties": {
+        "slug": "vas-manual-tells-raters-to-enter-service-that-never-happened",
+        "type": "article",
+        "url": "/newsletter/vas-manual-tells-raters-to-enter-service-that-never-happened/",
+        "published": "2026-09-15"
+      }
+    },
+    {
       "id": "article-capture-corner-2026-04-29",
       "type": "Article",
       "canonical_name": "DHA Reorganization: Sixteen Changes, Five That Move Your Pipeline",
@@ -4232,6 +4260,17 @@
       }
     },
     {
+      "id": "article-capture-corner-2026-09-15",
+      "type": "Article",
+      "canonical_name": "The Clause That Opens on January 6",
+      "properties": {
+        "slug": "capture-corner-2026-09-15",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-09-15.html",
+        "published": "2026-09-15"
+      }
+    },
+    {
       "id": "article-premium-briefs-2026-03-21",
       "type": "Article",
       "canonical_name": "Week of March 21, 2026",
@@ -4547,28 +4586,6 @@
         "slug": "peo-dhms-cso-competitive-solutions-opening-",
         "type": "contract_intel",
         "url": "/contracts/peo-dhms-cso-competitive-solutions-opening/",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-va-health-connect-iht-2-0",
-      "type": "Article",
-      "canonical_name": "VA Health Connect / IHT 2.0",
-      "properties": {
-        "slug": "va-health-connect-iht-2-0",
-        "type": "contract_intel",
-        "url": "/contracts/va-health-connect-iht-2-0/",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-enterprise-intelligence-data-solutions-eids",
-      "type": "Article",
-      "canonical_name": "Enterprise Intelligence & Data Solutions (EIDS)",
-      "properties": {
-        "slug": "enterprise-intelligence-data-solutions-eids-",
-        "type": "contract_intel",
-        "url": "/contracts/enterprise-intelligence-data-solutions-eids/",
         "published": "2026-08-17"
       }
     }
@@ -4903,6 +4920,13 @@
       "properties": {
         "sub_agency": "DLA Troop Support Medical"
       },
+      "weight": 1
+    },
+    {
+      "from_id": "dla-mspv-gen-vi",
+      "to_id": "naics-339113",
+      "relation": "covers_naics",
+      "properties": {},
       "weight": 1
     },
     {
@@ -5760,6 +5784,27 @@
     {
       "from_id": "tpharm5-tricare-pharmacy",
       "to_id": "evernorth",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "dha",
+      "to_id": "usfhp-data-integration-support-services-diss",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "microhealth-llc",
+      "to_id": "usfhp-data-integration-support-services-diss",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "usfhp-data-integration-support-services-diss",
+      "to_id": "microhealth-llc",
       "relation": "awarded_to",
       "properties": {},
       "weight": 1
@@ -7649,6 +7694,27 @@
       "weight": 1
     },
     {
+      "from_id": "article-vas-manual-tells-raters-to-enter-service-that-never-happened",
+      "to_id": "dmdc",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-vas-manual-tells-raters-to-enter-service-that-never-happened",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-vas-manual-tells-raters-to-enter-service-that-never-happened",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-capture-corner-2026-04-29",
       "to_id": "dhmsm",
       "relation": "mentions",
@@ -8419,6 +8485,55 @@
       "weight": 1
     },
     {
+      "from_id": "article-capture-corner-2026-09-15",
+      "to_id": "dmdc",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-15",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-15",
+      "to_id": "federal-ehr",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-15",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-15",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-15",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-15",
+      "to_id": "va-ehrm",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-premium-briefs-2026-03-21",
       "to_id": "federal-ehr",
       "relation": "mentions",
@@ -9175,41 +9290,6 @@
       "weight": 1
     },
     {
-      "from_id": "article-va-health-connect-iht-2-0",
-      "to_id": "va-health-connect-iht-2-0",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-enterprise-intelligence-data-solutions-eids",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-enterprise-intelligence-data-solutions-eids",
-      "to_id": "enterprise-intelligence-data-solutions-eids",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-enterprise-intelligence-data-solutions-eids",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-enterprise-intelligence-data-solutions-eids",
-      "to_id": "peo-dhms",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
       "from_id": "dha",
       "to_id": "leidos",
       "relation": "incumbent_of",
@@ -9325,6 +9405,16 @@
       "relation": "incumbent_of",
       "properties": {
         "via_contract": "tpharm5-tricare-pharmacy",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "dha",
+      "to_id": "microhealth-llc",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "usfhp-data-integration-support-services-diss",
         "derived": true
       },
       "weight": 0.8

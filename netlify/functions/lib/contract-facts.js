@@ -128,6 +128,16 @@ const KNOWN_FACTS = {
     lastVerified: "2026-03-17",
     sources: ["https://sam.gov/opp/d0560f19a2734ac59e21d379b0cd1941/view"],
   },
+  "usfhp-diss-data-integration-support-services": {
+    name: "USFHP Data Integration Support Services (DISS)",
+    agency: "Defense Health Agency (DHA)",
+    vendor: "MicroHealth LLC",
+    value: "$50.4M base plus all options; $34.7M obligated through P00006",
+    status: "active",
+    naics: "541512",
+    lastVerified: "2026-09-30",
+    sources: ["https://www.war.gov/News/Contracts/Contract/Article/4600826/contracts-for-sept-14-2026/", "https://www.usaspending.gov/award/CONT_AWD_HT001123F0047_9700_GS35F413BA_4732"],
+  },
   "cdm-defend-health-data-cybersecurity": {
     name: "CDM DEFEND (Health Data Cybersecurity)",
     agency: "CISA/DHS",

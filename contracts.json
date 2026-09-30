@@ -879,6 +879,35 @@
     "content_gap": false
   },
   {
+    "name": "USFHP Data Integration Support Services (DISS)",
+    "agency": "Defense Health Agency (DHA)",
+    "vendor": "MicroHealth LLC (Vienna, VA; UEI C1RQANT6CG57)",
+    "value": "$50.4M base plus all options (FPDS); $34.7M obligated through P00006; Option Three at $11.2M announced Sep 14, 2026",
+    "status": "active",
+    "classification": "Contract",
+    "naics": "541512",
+    "psc": "DA01",
+    "description": "Update Sep 30, 2026: MicroHealth LLC holds GSA MAS task order HT001123F0047 (schedule GS35F413BA) for Uniformed Services Family Health Plan Data Integration Support Services. The work is the data plumbing behind the six USFHP Designated Provider contracts: DP data collection, the DEERS interface for enrollment and eligibility, enrollment fee and catastrophic cap transmission, monthly enrollment and capitation reporting, the DP demographics database, and audit and reconciliation support. Base awarded Aug 18, 2023 as an 8(a) competed buy with two offers (FPDS); the EEE (Eligibility, Enrollment, Encounters) scope was added at P00003 in Nov 2023. Options One (Sep 2024) and Two (Jul 2025) each ran about $11M to $13M. War.gov announced Option Three ($11.2M, Sep 27, 2026 to Sep 26, 2027) on Sep 14, 2026; that mod had not posted to FPDS as of Sep 30, 2026. FPDS ultimate completion is Sep 26, 2028, so the recompete is an FY2028 event. Contracting office is HT0011, DHACA's Professional Services Contracting Division in Falls Church; funding office code HT0065 (labeled only 'Defense Health Agency' in FPDS); place of performance Aurora, CO. The requiring activity named in the 2022 special notice was the TRICARE Health Plan's Health Plan Design Branch, Policy and Programs Office. Size watch: MicroHealth's SAM registration (updated May 10, 2026) lists no active SBA 8(a) certification and marks NAICS 541512 as not small, while still self-certifying SDVOSB and SDB. If DHA repeats the 8(a) set-aside, the incumbent cannot prime. USAspending shows no FSRS subawards reported on the order. Watch for a PS-CD sources sought referencing USFHP or DISS in CY2027.",
+    "link": "https://www.war.gov/News/Contracts/Contract/Article/4600826/contracts-for-sept-14-2026/",
+    "small_business_eligible": true,
+    "sb_note": "Awarded as an 8(a) competed order on GSA MAS SIN 54151HEAL. The incumbent's own SAM record now marks 541512 as not small and shows no 8(a) certification, so the FY2028 set-aside decision decides who can prime.",
+    "source": "https://www.war.gov/News/Contracts/Contract/Article/4600826/contracts-for-sept-14-2026/",
+    "source_urls": [
+      "https://www.war.gov/News/Contracts/Contract/Article/4600826/contracts-for-sept-14-2026/",
+      "https://www.fpds.gov/ezsearch/FEEDS/ATOM?FEEDNAME=PUBLIC&q=PIID:%22HT001123F0047%22",
+      "https://www.usaspending.gov/award/CONT_AWD_HT001123F0047_9700_GS35F413BA_4732",
+      "https://sam.gov/entity/C1RQANT6CG57"
+    ],
+    "last_verified": "2026-09-30",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "FY2028 recompete; the set-aside decision is the whole game",
+      "factors": {}
+    },
+    "slug": "usfhp-diss-data-integration-support-services",
+    "content_gap": false
+  },
+  {
     "name": "DHA Zero Trust 2.0 / GSP",
     "agency": "Defense Health Agency (DHA)",
     "vendor": "TBD",
