@@ -19,6 +19,7 @@ const { createClient } = require("@supabase/supabase-js");
 const { sendEmail } = require("./lib/send-email");
 const { checkKillSwitch, shouldHoldEmail, holdEmail } = require("./lib/kill-switch");
 const { logOpsEvent } = require("./lib/ops-ledger");
+const { claimOnce } = require("./lib/cron-claim");
 const { isRootDomainUrl } = require("./lib/url-validator");
 
 const SITE_URL = "https://missionmeetstech.com";
@@ -66,16 +67,17 @@ exports.handler = async (event) => {
   // above before any marker existed and re-sent the digest to every
   // subscriber. This double-sent daily from 2026-05-20. Writing the claim
   // up front shrinks the race window from the whole send to a few ms.
-  try {
-    await logOpsEvent(supabase, {
-      event_type: "DIGEST_CLAIMED",
-      source_function: "premium-digest-send",
-      severity: "info",
-      signature: "premium_digest_sent",
-      affected_entity: todayStr,
-      details: { claimed_at: now.toISOString() },
-    });
-  } catch (e) { /* if the claim write fails, proceed rather than skip a day */ }
+  // Earliest-wins claim (lib/cron-claim.js). The old claim was a plain
+  // ops_ledger write with no tiebreak that proceeded when it failed, so two
+  // same-second fires could both pass (2026-09-30 audit).
+  const claim = await claimOnce(supabase, {
+    eventType: "DIGEST_CLAIMED", sourceFunction: "premium-digest-send", key: todayStr, keyField: "digest_date",
+    details: { claimed_at: now.toISOString() },
+  });
+  if (!claim.ok) {
+    console.log(`premium-digest-send: ${claim.reason} for ${todayStr}${claim.error ? ` (${claim.error})` : ""}`);
+    return { statusCode: 200, body: JSON.stringify({ skipped: claim.reason, date: todayStr, winner: claim.winner || null }) };
+  }
 
   // Get all premium subscribers with preferences. TKT-4: prior filter
   // matched ANY active subscription_status without a subscription_tier

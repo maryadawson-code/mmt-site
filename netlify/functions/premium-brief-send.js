@@ -15,6 +15,7 @@ const { createClient } = require("@supabase/supabase-js");
 const { sendEmail } = require("./lib/send-email");
 const { checkKillSwitch, shouldHoldEmail, holdEmail } = require("./lib/kill-switch");
 const { logOpsEvent } = require("./lib/ops-ledger");
+const { claimOnce } = require("./lib/cron-claim");
 const { withOpsLogging } = require("./lib/scheduled-fn-wrapper");
 const {
   extractBriefContent,
@@ -174,16 +175,18 @@ async function _handler(event) {
   // the race window from the whole send to a few ms. Same fix the daily
   // digest got after it double-sent from 2026-05-20 (premium-digest-send.js).
   // The trailing BRIEF_SEND_COMPLETE row still records the real send stats.
-  try {
-    await logOpsEvent(supabase, {
-      event_type: "BRIEF_CLAIMED",
-      source_function: "premium-brief-send",
-      severity: "info",
-      signature: "premium_brief_sent",
-      affected_entity: dateStr,
-      details: { claimed_at: checkedAt },
-    });
-  } catch (e) { /* if the claim write fails, proceed rather than skip the brief */ }
+  // Earliest-wins claim (lib/cron-claim.js): the 3x same-second fire seen on
+  // 2026-09-14 passed the ops_ledger check above before any marker landed,
+  // and the old claim proceeded when its own write failed. A claim that
+  // cannot be proven first does not send; the next tick retries.
+  const claim = await claimOnce(supabase, {
+    eventType: "BRIEF_CLAIMED", sourceFunction: "premium-brief-send", key: dateStr, keyField: "brief_date",
+    details: { claimed_at: checkedAt },
+  });
+  if (!claim.ok) {
+    console.log(`premium-brief-send: ${claim.reason} for ${dateStr}${claim.error ? ` (${claim.error})` : ""}`);
+    return { statusCode: 200, body: JSON.stringify({ skipped: claim.reason, briefDate: dateStr, winner: claim.winner || null }) };
+  }
 
   // Render the authored markdown. Title = first "# ..." line; the email
   // template supplies its own date header, so subtitle stays empty.

@@ -341,7 +341,7 @@ async function processJob({
       ? job.total_recipients
       : allRecipients.length;
 
-  await supabase
+  const { error: finalWriteErr } = await supabase
     .from("scheduled_emails")
     .update({
       status: finalStatus,
@@ -356,6 +356,17 @@ async function processJob({
       updated_at: now(),
     })
     .eq("id", job.id);
+  if (finalWriteErr) {
+    // The worker only picks status "queued"; a row left in "sending" after a
+    // failed terminal write would never be retried while this run reported
+    // it sent (2026-09-30 audit). Put it back in the queue with the error.
+    console.error(`scheduled-email-worker: terminal write failed for ${job.id}: ${finalWriteErr.message}`);
+    const { error: requeueErr } = await supabase
+      .from("scheduled_emails")
+      .update({ status: "queued", last_error: JSON.stringify({ terminal_write_failed: finalWriteErr.message, intended_status: finalStatus }), updated_at: now() })
+      .eq("id", job.id);
+    if (requeueErr) console.error(`scheduled-email-worker: requeue also failed for ${job.id}: ${requeueErr.message}`);
+  }
 
   if (logEvt) {
     await logEvt(supabase, {

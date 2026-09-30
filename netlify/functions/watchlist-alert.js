@@ -88,12 +88,17 @@ async function run() {
     const recompetes = contracts.filter((c) => recompeteDue(c, wl.lead_time_days, now));
     if (!matches.length && !recompetes.length) { skipped++; continue; }
     try {
-      await sendEmail({
+      const sendResult = await sendEmail({
         to: wl.user_email,
         from: "Mary at Mission Meets Tech <mary@missionmeetstech.com>",
         subject: `Watchlist update: ${matches.length} match${matches.length === 1 ? "" : "es"}${recompetes.length ? ` + ${recompetes.length} recompete` : ""}`,
         html: buildAlertHtml(wl, matches, recompetes),
       });
+      if (!sendResult || !sendResult.success) {
+        failed++;
+        console.error(`[watchlist-alert] send not accepted for watchlist ${wl.id}: ${(sendResult && sendResult.error) || "unknown"}`);
+        continue;
+      }
       await supabase.from("vote_watchlists").update({ last_alerted_at: new Date().toISOString() }).eq("id", wl.id);
       sent++;
       await new Promise((r) => setTimeout(r, 220)); // reuse the 220ms sender pacing.

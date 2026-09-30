@@ -66,34 +66,10 @@ async function collectAwards() {
     }
   }
 
-  // --- SAM.gov Contract Awards (system key; returns configured:false if absent) ---
-  for (const naics of NAICS_CODES) {
-    try {
-      const res = await searchContractAwards({ naicsCode: naics, limit: 25 });
-      if (res && res.configured === false) {
-        console.log("award-tracker: SAM contract awards not configured (no system key) — USASpending only.");
-        break;
-      }
-      for (const a of res.awards || []) {
-        if (!a.award_id) continue;
-        rows.push({
-          award_id: a.award_id,
-          recipient: a.awardee_name || null,
-          agency: a.agency_id || null,
-          naics: a.naics || naics,
-          value: a.award_amount != null ? String(a.award_amount) : null,
-          action_date: a.award_date || null,
-          description: (a.description || "").substring(0, 500),
-          source_url: null,
-          contract_vehicle: null,
-          scan_date,
-        });
-      }
-      console.log(`award-tracker: SAM NAICS ${naics} → ${(res.awards || []).length}`);
-    } catch (err) {
-      console.error(`award-tracker: SAM NAICS ${naics} failed:`, err.message);
-    }
-  }
+  // SAM.gov Contract Data API: dead since 2026-02-24 (platform rules); award
+  // data comes from USASpending v2 above. The old loop here logged "SAM NAICS
+  // X → 0" from a helper that resolved { awards: [], error } (2026-09-30 audit).
+
 
   // Dedupe by award_id (first source — USASpending — wins).
   const seen = new Set();

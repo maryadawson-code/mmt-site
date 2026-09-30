@@ -193,7 +193,10 @@ async function scoreBudgetMomentum({ topic, agency, naics, federalResult, govinf
   // Uses searchUSASpending directly so we don't fanout through the full enrich helper.
   const now = new Date();
   const fy = now.getMonth() >= 9 ? now.getFullYear() + 1 : now.getFullYear();
-  const safe = (p) => p.catch(() => ({ awards: [] }));
+  // A failed USASpending call resolves to awards:null (not an empty list) so
+  // the evidence says "not reached" and the trend is withheld, never "No
+  // obligations matched" (2026-09-30 audit).
+  const safe = (p) => p.catch((e) => ({ awards: null, error: (e && e.message) || "USASpending not reached" }));
   const [currentFY, priorFY] = await Promise.all([
     safe(searchUSASpending({
       keyword: topic,
@@ -213,10 +216,11 @@ async function scoreBudgetMomentum({ topic, agency, naics, federalResult, govinf
     })),
   ]);
 
+  const usaReached = Array.isArray(currentFY.awards) && Array.isArray(priorFY.awards);
   const sumObligated = (r) => (r.awards || []).reduce((s, a) => s + (a.obligated || 0), 0);
-  const currentTotal = sumObligated(currentFY);
-  const priorTotal = sumObligated(priorFY);
-  const yoyChange = priorTotal > 0 ? (currentTotal - priorTotal) / priorTotal : (currentTotal > 0 ? 1 : 0);
+  const currentTotal = usaReached ? sumObligated(currentFY) : 0;
+  const priorTotal = usaReached ? sumObligated(priorFY) : 0;
+  const yoyChange = !usaReached ? 0 : priorTotal > 0 ? (currentTotal - priorTotal) / priorTotal : (currentTotal > 0 ? 1 : 0);
 
   // IT Dashboard match — look for programs whose name/description matches query keywords
   const investments = itDashboardResult?.investments || [];
@@ -229,8 +233,9 @@ async function scoreBudgetMomentum({ topic, agency, naics, federalResult, govinf
   const cioRating = matchedInvestment?.cio_rating ? String(matchedInvestment.cio_rating).toLowerCase() : null;
 
   let score = 0;
-  // YoY sub-score (0–10)
-  if (yoyChange > 0.20) score += 10;
+  // YoY sub-score (0–10); withheld entirely when USASpending was not reached
+  if (!usaReached) { /* no trend evidence this run */ }
+  else if (yoyChange > 0.20) score += 10;
   else if (yoyChange > 0.10) score += 8;
   else if (yoyChange > 0) score += 6;
   else if (yoyChange > -0.05) score += 4;
@@ -254,9 +259,11 @@ async function scoreBudgetMomentum({ topic, agency, naics, federalResult, govinf
   const yoyPct = (yoyChange * 100).toFixed(0);
   const yoySign = yoyChange >= 0 ? "+" : "";
   const evidence = [
-    currentTotal > 0
-      ? `${formatDollarsShort(currentTotal)} obligated in FY${fy} at ${agency || "covered agencies"} — ${yoySign}${yoyPct}% vs FY${fy - 1}`
-      : `No obligations matched at ${agency || "covered agencies"} for FY${fy}`,
+    !usaReached
+      ? `USASpending not reached this run (${currentFY.error || priorFY.error || "timeout"}); obligation trend withheld, not scored`
+      : currentTotal > 0
+        ? `${formatDollarsShort(currentTotal)} obligated in FY${fy} at ${agency || "covered agencies"} — ${yoySign}${yoyPct}% vs FY${fy - 1}`
+        : `No obligations matched at ${agency || "covered agencies"} for FY${fy}`,
     itDashboardMatch
       ? `Listed as IT Dashboard investment: "${matchedInvestment.name}"${cioRating ? ` (CIO rating: ${cioRating})` : ""}`
       : `Not declared as a matched IT Dashboard investment`,
