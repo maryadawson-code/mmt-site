@@ -141,7 +141,7 @@ exports.handler = async (event) => {
   // --- Anthropic (research + contract intel via web_search) ---
   checks.anthropic_research = {
     status: process.env.ANTHROPIC_API_KEY ? "configured" : "missing",
-    note: "Replaces Perplexity sonar-pro for all web search tasks",
+    note: "Anthropic web_search is unreliable from serverless; MarketPulse research runs on Perplexity sonar-pro (see CLAUDE.md)",
   };
 
   // --- Edge functions list ---

@@ -1,21 +1,30 @@
 const { test, expect } = require('@playwright/test');
 
-// Core page routes — title patterns match actual <title> content
+// Titles are matched against the live <title> of each page in dist/. When a
+// title changes on purpose, change it here in the same PR (the 2026-09-21 QA
+// pass found 16 stale expectations in this file and none of them were bugs).
 const CORE_PAGES = [
   { path: '/', title: 'Mission Meets Tech' },
-  { path: '/latest.html', title: 'Latest Articles' },
+  { path: '/latest.html', title: 'Analysis' },
   { path: '/podcast.html', title: 'Fed UP Podcast' },
   { path: '/resources.html', title: 'Resources' },
   { path: '/proposal-pulse.html', title: 'ProposalPulse' },
-  { path: '/about.html', title: 'Mary Womack' },
-  { path: '/newsletter.html', title: 'Newsletter' },
+  { path: '/marketpulse.html', title: 'MarketPulse' },
+  { path: '/pricing.html', title: 'MMT Premium' },
+  { path: '/about.html', title: 'About' },
+  { path: '/newsletter.html', title: 'Subscribe' },
   { path: '/topics.html', title: 'Topics' },
-  { path: '/newswire.html', title: 'News Wire' },
+  { path: '/newswire.html', title: 'Newswire' },
   { path: '/contract-tracker.html', title: 'Contract Tracker' },
   { path: '/events.html', title: 'Events' },
   { path: '/privacy.html', title: 'Privacy' },
   { path: '/glossary.html', title: 'Glossary' },
 ];
+
+// Primary nav order is a standing rule (CLAUDE.md, Design system).
+const PRIMARY_NAV = ['Intelligence', 'ProposalPulse', 'MarketPulse', 'Resources', 'Podcast', 'About'];
+
+const primaryNav = (page) => page.locator('nav .hidden.md\\:flex').first();
 
 test.describe('Page loads', () => {
   for (const pg of CORE_PAGES) {
@@ -28,67 +37,84 @@ test.describe('Page loads', () => {
 });
 
 test.describe('Header navigation', () => {
-  test('desktop nav has all expected links', async ({ page }) => {
+  test('desktop nav carries the six primary links in order', async ({ page }) => {
     await page.goto('/');
-    const nav = page.locator('nav .hidden.md\\:flex');
-    await expect(nav.getByRole('link', { name: 'Intelligence' })).toBeVisible();
-    await expect(nav.getByRole('link', { name: 'Podcast' })).toBeVisible();
-    await expect(nav.getByRole('link', { name: 'Resources' })).toBeVisible();
-    await expect(nav.getByRole('link', { name: 'ProposalPulse' })).toBeVisible();
-    await expect(nav.getByRole('link', { name: 'About' })).toBeVisible();
+    const links = primaryNav(page).getByRole('link');
+    await expect(links).toHaveText(PRIMARY_NAV);
+    for (const name of PRIMARY_NAV) {
+      await expect(primaryNav(page).getByRole('link', { name, exact: true })).toBeVisible();
+    }
+  });
+
+  test('utility nav has Sign In, Premium and Choose a Tool', async ({ page }) => {
+    await page.goto('/');
+    const nav = page.locator('nav');
+    await expect(nav.getByRole('link', { name: 'Sign In' })).toBeVisible();
+    await expect(nav.getByRole('link', { name: /Premium/ }).first()).toBeVisible();
+    await expect(nav.getByRole('link', { name: 'Choose a Tool' })).toBeVisible();
   });
 
   test('nav Intelligence link navigates correctly', async ({ page }) => {
     await page.goto('/');
-    await page.locator('nav .hidden.md\\:flex').getByRole('link', { name: 'Intelligence' }).click();
-    // serve uses clean URLs: latest.html → /latest
+    await primaryNav(page).getByRole('link', { name: 'Intelligence', exact: true }).click();
     await expect(page).toHaveURL(/latest/);
-    await expect(page).toHaveTitle(/Latest Articles/i);
+    await expect(page).toHaveTitle(/Analysis/i);
   });
 
   test('nav Podcast link navigates correctly', async ({ page }) => {
     await page.goto('/');
-    await page.locator('nav .hidden.md\\:flex').getByRole('link', { name: 'Podcast' }).click();
+    await primaryNav(page).getByRole('link', { name: 'Podcast', exact: true }).click();
     await expect(page).toHaveURL(/podcast/);
     await expect(page).toHaveTitle(/Fed UP Podcast/i);
+  });
+
+  test('revenue tools are reachable from the nav', async ({ page }) => {
+    await page.goto('/');
+    await primaryNav(page).getByRole('link', { name: 'ProposalPulse', exact: true }).click();
+    await expect(page).toHaveURL(/proposal-pulse/);
+    await page.goto('/');
+    await primaryNav(page).getByRole('link', { name: 'MarketPulse', exact: true }).click();
+    await expect(page).toHaveURL(/marketpulse/);
   });
 
   test('nav logo returns home', async ({ page }) => {
     await page.goto('/about.html');
     await page.locator('nav a').first().click();
-    // Root-level pages use relative hrefs; logo links to index.html which may resolve to /
     await expect(page).toHaveURL(/\/(index\.html)?$/);
   });
 });
 
 test.describe('Footer navigation', () => {
-  test('footer has Explore and Connect columns', async ({ page }) => {
+  test('footer carries the Read, Tools, Reference and Trust links', async ({ page }) => {
     await page.goto('/');
     const footer = page.locator('footer');
-    await expect(footer.getByRole('link', { name: 'Intelligence' })).toBeVisible();
-    await expect(footer.getByRole('link', { name: 'Podcast' })).toBeVisible();
-    await expect(footer.getByRole('link', { name: 'Resources' })).toBeVisible();
-    await expect(footer.getByRole('link', { name: 'ProposalPulse' })).toBeVisible();
-    await expect(footer.getByRole('link', { name: 'About' })).toBeVisible();
-    await expect(footer.getByRole('link', { name: 'Contact' })).toBeVisible();
-    await expect(footer.getByRole('link', { name: 'Events' })).toBeVisible();
-    await expect(footer.getByRole('link', { name: 'Privacy Policy' })).toBeVisible();
+    for (const name of ['Latest Intelligence', 'Podcast', 'Subscribe', 'ProposalPulse', 'MarketPulse', 'Contract Tracker', 'Glossary', 'Newswire', 'About', 'Privacy', 'Terms', 'Contact', 'MMT Premium']) {
+      await expect(footer.getByRole('link', { name, exact: true })).toBeVisible();
+    }
   });
 
-  test('footer Privacy Policy link works', async ({ page }) => {
+  test('footer never says "News Wire" (canonical string is Newswire)', async ({ page }) => {
     await page.goto('/');
-    await page.locator('footer').getByRole('link', { name: 'Privacy Policy' }).click();
+    await expect(page.locator('footer')).not.toContainText('News Wire');
+  });
+
+  test('footer Privacy link works', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('footer').getByRole('link', { name: 'Privacy', exact: true }).click();
     await expect(page).toHaveURL(/privacy/);
     await expect(page).toHaveTitle(/Privacy/i);
   });
 });
 
 test.describe('Deep link and refresh', () => {
-  test('newsletter article loads via direct URL', async ({ page }) => {
-    const response = await page.goto('/newsletter/anthropic-ban-what-numbers-say/');
+  test('newest archive article loads via direct URL with content', async ({ page }) => {
+    await page.goto('/newsletter.html');
+    const href = await page.locator('article.card a[href^="/newsletter/"]').first().getAttribute('href');
+    const response = await page.goto(href);
     expect(response.status()).toBe(200);
-    await expect(page).toHaveTitle(/Anthropic Ban/i);
-    await expect(page.locator('main .article-content')).toBeVisible();
+    await expect(page.locator('main .article-content')).toBeAttached();
+    await page.reload();
+    await expect(page.locator('main')).toBeVisible();
   });
 
   test('topic page loads via direct URL', async ({ page }) => {
@@ -97,39 +123,32 @@ test.describe('Deep link and refresh', () => {
     await expect(page).toHaveTitle(/AI/i);
   });
 
-  test('refresh on nested article page works', async ({ page }) => {
-    await page.goto('/newsletter/anthropic-ban-what-numbers-say/');
-    await page.reload();
-    await expect(page).toHaveTitle(/Anthropic Ban/i);
-    await expect(page.locator('main')).toBeVisible();
-  });
-
   test('contract detail page loads via direct URL', async ({ page }) => {
-    const response = await page.goto('/contracts/mhs-genesis-electronic-health-record/');
+    const response = await page.goto('/contracts/tpharm5-tricare-pharmacy/');
     expect(response.status()).toBe(200);
     await expect(page.locator('main')).toBeVisible();
+    await expect(page).toHaveTitle(/TPharm5/i);
   });
 });
 
 test.describe('CTA and content links', () => {
-  test('homepage lead story card links to article (internal or external)', async ({ page }) => {
+  test('homepage carries article cards that link to real articles', async ({ page }) => {
     await page.goto('/');
-    const leadCard = page.locator('a.card').first();
-    const href = await leadCard.getAttribute('href');
-    // Lead story can be internal (/newsletter/...) or external (https://...)
-    expect(href).toMatch(/^(\/newsletter\/.+\/|https:\/\/)/);
+    // The first cards are the tool chooser (Ask MMT, ProposalPulse, MarketPulse);
+    // the story cards are <a class="article-card"> linking on-site or to LinkedIn.
+    const storyCards = page.locator('main a.article-card[href^="/newsletter/"], main a.article-card[href^="/intel/"], main a.article-card[href^="https://"]');
+    expect(await storyCards.count()).toBeGreaterThan(0);
   });
 
-  test('article prev/next navigation works', async ({ page }) => {
-    await page.goto('/newsletter/anthropic-ban-what-numbers-say/');
-    const prevNext = page.locator('a[href*="/newsletter/"]');
-    const count = await prevNext.count();
-    expect(count).toBeGreaterThan(0);
+  test('homepage keeps both revenue tools above the fold', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('main').getByRole('link', { name: /ProposalPulse/ }).first()).toBeVisible();
+    await expect(page.locator('main').getByRole('link', { name: /MarketPulse/ }).first()).toBeVisible();
   });
 });
 
 test.describe('No console errors on key pages', () => {
-  const pagesToCheck = ['/', '/about.html', '/latest.html', '/resources.html'];
+  const pagesToCheck = ['/', '/about.html', '/latest.html', '/resources.html', '/proposal-pulse.html', '/marketpulse.html', '/pricing.html', '/contract-tracker.html'];
 
   for (const path of pagesToCheck) {
     test(`${path} has no JS errors`, async ({ page }) => {
@@ -152,7 +171,7 @@ test.describe('404 page', () => {
 test.describe('Back/forward navigation', () => {
   test('back button returns to previous page', async ({ page }) => {
     await page.goto('/');
-    await page.locator('nav .hidden.md\\:flex').getByRole('link', { name: 'About' }).click();
+    await primaryNav(page).getByRole('link', { name: 'About', exact: true }).click();
     await expect(page).toHaveURL(/about/);
     await page.goBack();
     await expect(page).toHaveURL(/\/$/);

@@ -108,7 +108,7 @@ The integrity checker (`npm run test:integrity`) enforces:
 ### Adding a new newsletter edition
 
 1. Add entry to `newsletters.json` (title, date, description, url, tags)
-2. Update `EXPECTED_NEWSLETTER_COUNT` in `scripts/verify-integrity.js` and `tests/newsletter-integrity.spec.js`
+2. Nothing else to update: the archive count is read from `newsletters.json` by the build and the e2e specs (`scripts/verify-integrity.js` was retired 2026-09-30; `scripts/validate-links.js` in the build chain covers links and `rel="noopener"`)
 3. Optionally: add markdown to `content/newsletter/` for full on-site article
 4. Run `npm run verify` to confirm
 
