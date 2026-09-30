@@ -18,7 +18,7 @@ const { enrichProposal } = require("./lib/proposal-enrichment");
 const { MMT_PRICING } = require("./lib/mmt-pricing");
 const { getFlag } = require("./lib/feature-flags");
 const { loadToolContext, buildToolEnvelope, buildEvidencePanel, renderBlockedResponse } = require("./lib/premium-tools-core");
-const { searchSAMOpportunities } = require("./lib/federal-data-apis");
+const { searchSAMOpportunities, filterBySolicitation } = require("./lib/federal-data-apis");
 const { loadEntitlement, blockMessageFor, logEntitlementMismatch } = require("./lib/entitlement");
 
 // Solicitation-number patterns commonly seen in the wild. Lenient on
@@ -50,13 +50,15 @@ function extractSolicitationNumbers(text) {
 async function lookupSamOpportunities(text) {
   const solNums = extractSolicitationNumbers(text);
   if (solNums.length === 0) return { solicitations: [], looked_up: false };
-  // SAM.gov search-by-title is the most permissive way to fetch
-  // a solicitation. We don't have a notice-id direct lookup here
-  // (the v2 search supports `solnum`), so we use the keyword path.
+  // Exact lookup by solicitation number (`solnum`), one SAM request per
+  // number, then keep only notices that carry that number. Before
+  // 2026-09-30 this went through the free-text `q` path, which SAM.gov
+  // ignores, so the report cited whatever DoD notices were newest.
+  // A year-long window: a proposal usually cites a notice posted months ago.
   const results = await Promise.all(
-    solNums.slice(0, 2).map((sol) => searchSAMOpportunities({ keyword: sol, limit: 3 }).catch(() => ({ opportunities: [] })))
+    solNums.slice(0, 2).map((sol) => searchSAMOpportunities({ solnum: sol, limit: 3, daysBack: 365 }).catch(() => ({ opportunities: [] })))
   );
-  const flat = results.flatMap((r) => r.opportunities || []);
+  const flat = filterBySolicitation(results.flatMap((r) => r.opportunities || []), solNums);
   return { solicitations: flat, looked_up: true, queried: solNums };
 }
 
