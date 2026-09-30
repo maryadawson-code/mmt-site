@@ -546,7 +546,13 @@ async function searchSAMOpportunities({ keyword, relaxKeyword, naics, agency, so
   }
 
   const now = new Date();
-  const startWindow = new Date(now.getTime() - daysBack * 86400000);
+  // SAM.gov rejects a postedFrom/postedTo span of more than one year with
+  // 400 "Date range must be no more than 1 year apart", and 365 days
+  // measured from today is that span (verified live 2026-09-30, when the
+  // compliance sidecar's one-year lookup came back as "0 matches").
+  const SAM_MAX_DAYS_BACK = 364;
+  const boundedDaysBack = Math.min(Number(daysBack) || 180, SAM_MAX_DAYS_BACK);
+  const startWindow = new Date(now.getTime() - boundedDaysBack * 86400000);
   const formatDate = (d) => `${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}/${d.getFullYear()}`;
   // SAM.gov filters at the department level; the registry maps every
   // sub-agency (DHA, CMS, FDA, Army...) to its department name.

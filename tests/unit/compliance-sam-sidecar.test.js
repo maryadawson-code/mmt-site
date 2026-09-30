@@ -46,6 +46,17 @@ describe("solicitation-number lookup on the SAM.gov wire", () => {
     expect(r.opportunities.map((o) => o.solicitation_number)).toEqual(["HT940226R0001"]);
   });
 
+  it("never asks SAM.gov for more than one year (365 days from today is rejected as over a year)", async () => {
+    globalThis.fetch = async (url) => { calls.push(String(url)); return jsonRes({ totalRecords: 0, opportunitiesData: [] }); };
+    await api.searchSAMOpportunities({ solnum: "HT940226R0001", daysBack: 365 });
+    const params = new URL(calls.find((u) => u.includes("api.sam.gov"))).searchParams;
+    const [fm, fd, fy] = params.get("postedFrom").split("/").map(Number);
+    const [tm, td, ty] = params.get("postedTo").split("/").map(Number);
+    const span = (Date.UTC(ty, tm - 1, td) - Date.UTC(fy, fm - 1, fd)) / 86400000;
+    expect(span).toBeLessThanOrEqual(364);
+    expect(span).toBeGreaterThanOrEqual(363);
+  });
+
   it("skips the relaxed secondary call even when the primary is thin", async () => {
     globalThis.fetch = async (url) => { calls.push(String(url)); return jsonRes({ totalRecords: 0, opportunitiesData: [] }); };
     await api.searchSAMOpportunities({ solnum: "HT001126RE011", relaxKeyword: "data governance", agency: "DHA" });

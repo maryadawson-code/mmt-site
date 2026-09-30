@@ -56,10 +56,13 @@ async function lookupSamOpportunities(text) {
   // ignores, so the report cited whatever DoD notices were newest.
   // A year-long window: a proposal usually cites a notice posted months ago.
   const results = await Promise.all(
-    solNums.slice(0, 2).map((sol) => searchSAMOpportunities({ solnum: sol, limit: 3, daysBack: 365 }).catch(() => ({ opportunities: [] })))
+    solNums.slice(0, 2).map((sol) => searchSAMOpportunities({ solnum: sol, limit: 3, daysBack: 364 }).catch((e) => ({ opportunities: [], error: e && e.message ? e.message : String(e) })))
   );
+  // The helper resolves with { error } instead of throwing; "0 matches"
+  // and "SAM.gov was not reached" are different facts and the report says which.
+  const errors = results.map((r) => r && r.error).filter(Boolean);
   const flat = filterBySolicitation(results.flatMap((r) => r.opportunities || []), solNums);
-  return { solicitations: flat, looked_up: true, queried: solNums };
+  return { solicitations: flat, looked_up: errors.length < results.length, queried: solNums, error: errors[0] || null };
 }
 
 // --- Documentation flag detection ---
@@ -277,9 +280,11 @@ exports.handler = async (event) => {
           url: o.url,
         })),
         severity: "INFO",
-        note: samContext.looked_up
-          ? `${(samContext.solicitations || []).length} SAM.gov match${(samContext.solicitations || []).length === 1 ? "" : "es"} for solicitation numbers detected in this document.`
-          : "No solicitation number detected in the document — SAM.gov sidecar skipped.",
+        note: samContext.error && !samContext.looked_up
+          ? `SAM.gov was not reached for ${(samContext.queried || []).join(", ")} (${samContext.error}); no match claimed either way.`
+          : samContext.looked_up
+            ? `${(samContext.solicitations || []).length} SAM.gov match${(samContext.solicitations || []).length === 1 ? "" : "es"} for solicitation numbers detected in this document.`
+            : "No solicitation number detected in the document — SAM.gov sidecar skipped.",
       },
     },
     top_fixes: buildTopFixes(enrichment, docs),
