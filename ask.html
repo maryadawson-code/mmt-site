@@ -74,6 +74,20 @@
       </div>
       <div id="ask" data-cap-free="<!-- BUILD:ASK_MMT_CAP_FREE -->" data-cap-premium="<!-- BUILD:ASK_MMT_CAP_PREMIUM -->">
         <div id="mmt-ask-embed" aria-live="polite" style="min-height:600px;border:1px solid var(--mmt-border,#E5E7EB);border-radius:16px;background:var(--mmt-soft,#F3F4F6);display:flex;align-items:center;justify-content:center;color:var(--mmt-text-secondary,#6B7280);font-size:14px;">Loading Ask MMT&hellip;</div>
+        <script>
+          // If the widget never mounts (a blocked or stale script), say so
+          // instead of showing "Loading" forever.
+          setTimeout(function () {
+            var host = document.getElementById('mmt-ask-embed');
+            if (!host || document.getElementById('mmt-premium-chat-panel')) return;
+            host.innerHTML = '<div style="text-align:center;padding:24px;max-width:360px;line-height:1.5;">' +
+              '<p style="margin:0 0 14px;color:var(--mmt-navy,#0A192F);">Ask MMT didn’t load on this browser.</p>' +
+              '<button type="button" id="mmt-ask-reload" class="btn-primary" style="min-height:44px;cursor:pointer;">Reload the page</button></div>';
+            var b = document.getElementById('mmt-ask-reload');
+            if (b) b.addEventListener('click', function () { window.location.reload(); });
+            try { if (typeof window.plausible === 'function') window.plausible('ask_embed_failed'); } catch (_) { /* noop */ }
+          }, 10000);
+        </script>
       </div>
     </div>
 

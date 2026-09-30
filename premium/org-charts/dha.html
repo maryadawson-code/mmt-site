@@ -155,9 +155,10 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
     <h1 class="hero-title">Defense Health Agency<br>Organizational Structure</h1>
     <div class="hero-meta">
       <span>Structure effective 20 APR 2026</span>
-      <span>Leadership as of 09 JUL 2026 &middot; DHA R&amp;D and J-6 updated 15 SEP 2026</span>
+      <span>Leadership as of 21 SEP 2026 &middot; DHA R&amp;D and J-6 updated 15 SEP 2026</span>
       <span>IOC: 20 APR 2026 (in execution) &middot; FOC Target: 19 JUL 2026</span>
       <span>Source: AD-RDA All Hands 09 JUN 2026 (UNCLASSIFIED)</span>
+      <span>HQ personnel updates: DHA Director leadership message 21 SEP 2026 &middot; JTS chief: DVIDS 20 SEP 2026</span>
     </div>
   </div>
 </div>
@@ -224,11 +225,14 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
         <div class="node-name">Mr. Stephen Marty</div>
         <div class="node-role">Director, Headquarters Operations</div>
       </div>
-      <div class="node-card" onclick="showDetail('farrill')" style="max-width:230px;border-color:var(--new-border);background:var(--new-bg)">
-        <div class="node-tier tier-2" style="color:var(--new)">OWHA &middot; New</div>
-        <div class="node-name">RDML Tracy Farrill</div>
-        <div class="node-role">Director, Office of Warfighter Health Advantage</div>
-        <span class="node-badge new-org">New Entity</span>
+      <div style="display:flex;flex-direction:column;align-items:center;max-width:230px">
+        <div class="node-card" onclick="showDetail('lennen')" style="border-color:var(--new-border);background:var(--new-bg)">
+          <div class="node-tier tier-2" style="color:var(--new)">OWHA &middot; New Director</div>
+          <div class="node-name">BG Jason Lennen</div>
+          <div class="node-role">Director, Office of Warfighter Health Advantage</div>
+          <span class="node-badge new-org">Reported 21 SEP 2026</span>
+        </div>
+        <div onclick="showDetail('farrill')" style="font-size:0.68rem;color:var(--text-faint);margin-top:5px;cursor:pointer;text-decoration:underline">Departing: RDML Tracy Farrill</div>
       </div>
       <div class="node-card" style="max-width:200px">
         <div class="node-tier tier-3">Special Staff</div>
@@ -268,14 +272,14 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
             <div class="pmo-card"><div class="pmo-card-title">Healthcare Operations</div></div>
             <div class="pmo-card"><div class="pmo-card-title">Medical Affairs</div></div>
             <div class="pmo-card"><div class="pmo-card-title">DSPO</div><div class="pmo-card-sub">Defense Suicide Prevention Office</div></div>
-            <div class="pmo-card"><div class="pmo-card-title">Public Health</div></div>
+            <div class="pmo-card" onclick="showDetail('newman')" style="cursor:pointer"><div class="pmo-card-title">Public Health</div><div class="pmo-card-sub">RDML Sara Newman (reported)</div></div>
             <div class="pmo-card"><div class="pmo-card-title">TRICARE Health Plan</div></div>
           </div>
           <div class="section-label" style="font-size:0.62rem;margin-top:10px">Subordinate Activities</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
             <div class="pmo-card"><div class="pmo-card-title">METC</div><div class="pmo-card-sub">Fort Sam Houston</div></div>
             <div class="pmo-card"><div class="pmo-card-title">Armed Services Blood Program</div></div>
-            <div class="pmo-card"><div class="pmo-card-title">Joint Trauma System</div></div>
+            <div class="pmo-card" onclick="showDetail('sams')" style="cursor:pointer"><div class="pmo-card-title">Joint Trauma System</div><div class="pmo-card-sub">Col. Valerie Sams, Chief</div></div>
             <div class="pmo-card"><div class="pmo-card-title">Armed Forces Medical Examiner System</div></div>
           </div>
         </div>
@@ -292,11 +296,11 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
         <div class="connector-v thick"></div>
         <button class="expand-btn" id="rda-toggle" onclick="toggleSection('rda')" style="font-size:0.72rem;margin-bottom:8px">&#9660; AD-RDA Sub-Units (IOC)</button>
         <div id="rda-section" style="width:100%;text-align:left">
-          <div class="node-card" onclick="showDetail('scheideman')" style="margin-bottom:8px;border-color:var(--acting-border);width:100%">
+          <div class="node-card" onclick="showDetail('arena')" style="margin-bottom:8px;border-color:var(--primary);width:100%">
             <div class="node-tier tier-3">Principal Deputy RDA / DCAE</div>
-            <div class="node-name">Mr. Brett Scheideman</div>
-            <div class="node-role">Acting NH-IV &middot; S&amp;T, Chief Scientist, Industry Engagement, Category Mgmt</div>
-            <span class="node-badge acting">Acting NH-IV</span>
+            <div class="node-name">RDML Ivonne Arena</div>
+            <div class="node-role">S&amp;T, Chief Scientist, Industry Engagement, Category Mgmt</div>
+            <span class="node-badge new-org">Reported 21 SEP 2026</span>
           </div>
           <div class="node-card" style="margin-bottom:8px;width:100%">
             <div class="node-tier tier-3">MILDEP AD-RDA</div>
@@ -496,10 +500,13 @@ const leaders={
   smith:{tier:'Deputy Director',name:'Dr. David J. Smith',role:'Deputy Director, Defense Health Agency',sections:[{title:'Background',items:['SES Civilian: Senate-confirmed','Acted as DHA Director for ~1 year before Via arrived','Present during 2017 MTF transfer: key institutional memory','Confirmed Deputy Director April 6, 2026']}],tags:['SES Civilian','Deputy Director','Institutional Memory']},
   mangaran:{tier:'Command Senior Enlisted Leader',name:'FORCM PatrickPaul "PaP" Mangaran',role:'Command Senior Enlisted Leader, DHA',sections:[{title:'Role',items:['Force Master Chief: E-9','Voice of the enlisted medical force','Bridges unit-level concerns to DHA strategy']}],tags:['E-9 Force Master Chief','CSEL']},
   marty:{tier:'Director HQ Operations',name:'Mr. Stephen Marty',role:'Director, Headquarters Operations',sections:[{title:'Role',items:['Manages DHA HQ administrative operations','Coordination of staff, schedules, internal communications']}],tags:['HQ Operations']},
-  farrill:{tier:'OWHA Director',name:'RDML Tracy Farrill',role:'Director, Office of Warfighter Health Advantage',sections:[{title:'About OWHA',items:['New entity: created April 20, 2026 reorg','Consolidates: CDAO, BID, Digital Health Integration, DIG, SIG elements','Focused on warfighter health data, AI/ML, digital health modernization','Reports directly to DHA Director']},{title:'Background',items:['Rear Admiral: O-7, U.S. Navy','Former DHA Deputy CIO and digital health leader']}],tags:['O-7 RDML','OWHA','New Entity','Digital Health','AI/ML']},
+  lennen:{tier:'OWHA Director',name:'BG Jason Lennen',role:'Director, Office of Warfighter Health Advantage',sections:[{title:'About OWHA',items:['New entity: created April 20, 2026 reorg','Consolidates: CDAO, BID, Digital Health Integration, DIG, SIG elements','Focused on warfighter health data, AI/ML, digital health modernization','Reports directly to DHA Director','The DHA Director describes OWHA as setting strategy and determining what technologies and tools execute it']},{title:'Background',items:['Brigadier General: O-7, U.S. Air Force','Came from the Air Force Surgeon General office, Director of Policy and Resources','Succeeds RDML Tracy Farrill, who is retiring']},{title:'Sourcing',items:['DHA Director leadership message, 21 SEP 2026','No public source places him at DHA yet: pending official confirmation']}],tags:['O-7 BGen','OWHA','Digital Health','AI/ML','Pending confirmation']},
+  farrill:{tier:'OWHA Director (departing)',name:'RDML Tracy Farrill',role:'Retiring; former Director, Office of Warfighter Health Advantage',sections:[{title:'Departure',items:['Retiring after 34 years of service per the DHA Director, 21 SEP 2026','Stood up and led OWHA from the April 2026 reorg','Credited with roughly seven years at DHA on digital health integration and organizational and innovation work']},{title:'What it means for you',items:['A digital health, data or AI relationship that ran through OWHA now runs through BG Jason Lennen','Re-introduce before the next requirement cycle']},{title:'Sourcing',items:['DHA Director leadership message, 21 SEP 2026','No public retirement notice as of 25 SEP 2026; the DHA article of 14 AUG 2026 still lists her as OWHA director','MMT does not characterize her service branch: public sources are inconsistent']}],tags:['O-7 RDML','OWHA','Departing','Pending confirmation']},
   soliz:{tier:'Acting AD-HCAO',name:'BG Bill A. Soliz',role:'Acting Assistant Director: Healthcare Administration & Operations',sections:[{title:'Background',items:['Brigadier General: O-7, U.S. Army','Acting AD-HCAO as of April 2026 restructuring','Oversees direct care, TRICARE, public health, behavioral health, readiness ops']},{title:'Budget Oversight',items:['COMP direct care accounts','TRICARE Health Plan program management','DSPO program ($23M+ FY2027)']}],tags:['O-7 BGen','Acting AD-HCAO','Healthcare Ops','TRICARE']},
-  clark:{tier:'AD-RDA / CAE (Confirmed)',name:'Dr. Matthew G. Clark',role:'Assistant Director: Research, Development & Acquisition / Component Acquisition Executive',sections:[{title:'Status',items:['Confirmed as the DHA Component Acquisition Executive (2026): the AD-RDA / CAE seat is no longer Acting','Succeeds RDML Ivonne Arena, who held AD-RDA / CAE in an Acting capacity through the IOC stand-up']},{title:'Background',items:['PhD; PMP','Joint Project Manager, CBRN Medical (JPEO-CBRND)','Lead Program Manager, vaccine team, Operation Warp Speed','Director, COVID-19 International Response Operations, White House COVID-19 Response Team','Former Director, Office of Medical Systems, ASA(ALT)']},{title:'Acquisition Authority',items:['CAE for DHA: all component-level acquisition authority','Oversees the PEO DHMS and PEO Medical Systems portfolios in transition','Standing up 3 PAEs (Medical Systems / Medical Products / Medical Digital Solutions) by FOC 19 JUL 2026','Manages DHACA and DHA R&D/MRDC']}],tags:['Confirmed CAE','AD-RDA','PhD / PMP']},
-  scheideman:{tier:'Acting Principal Deputy RDA / DCAE',name:'Mr. Brett Scheideman',role:'Acting Principal Deputy RDA / Deputy CAE',sections:[{title:'Role',items:['NH-IV civilian (highest non-SES acq pay band)','S&T, Chief Scientist, Research Support, Industry Engagement, Agreements & Partnerships, Category Management, Acquisition Workforce']}],tags:['Acting NH-IV','Principal Deputy RDA','DCAE']},
+  clark:{tier:'AD-RDA / CAE (Confirmed)',name:'Dr. Matthew G. Clark',role:'Assistant Director: Research, Development & Acquisition / Component Acquisition Executive',sections:[{title:'Status',items:['Confirmed as the DHA Component Acquisition Executive (2026): the AD-RDA / CAE seat is no longer Acting','Named AD-RDA / CAE by the DHA Director, 21 SEP 2026','Succeeds RDML Ivonne Arena, who held AD-RDA / CAE in an Acting capacity through the IOC stand-up and now serves as Principal Deputy']},{title:'Background',items:['PhD; PMP','Came from command of the NATO SHAPE Healthcare Facility and Brussels Army Health Clinic, Belgium','Joint Project Manager, CBRN Medical (JPEO-CBRND)','Lead Program Manager, vaccine team, Operation Warp Speed','Director, COVID-19 International Response Operations, White House COVID-19 Response Team','Former Director, Office of Medical Systems, ASA(ALT)']},{title:'Acquisition Authority',items:['CAE for DHA: all component-level acquisition authority','Oversees the PEO DHMS and PEO Medical Systems portfolios in transition','Standing up 3 PAEs (Medical Systems / Medical Products / Medical Digital Solutions) by FOC 19 JUL 2026','Manages DHACA and DHA R&D/MRDC']}],tags:['Confirmed CAE','AD-RDA','PhD / PMP']},
+  arena:{tier:'Principal Deputy RDA / DCAE',name:'RDML Ivonne Arena',role:'Principal Deputy, AD-RDA / Deputy CAE',sections:[{title:'Role',items:['Principal deputy to the Component Acquisition Executive','S&T, Chief Scientist, Research Support, Industry Engagement, Agreements & Partnerships, Category Management, Acquisition Workforce','Deputy CAE co-chairs the Warfighter Modernization and Support Integration Board with OWHA']},{title:'Why it matters',items:['She held AD-RDA / CAE in an Acting capacity through the IOC stand-up, so she carries how the three PAEs were actually built','Succeeds Mr. Brett Scheideman, who held the seat in an Acting capacity']},{title:'Sourcing',items:['DHA Director leadership message, 21 SEP 2026','Her dha.mil bio still reads Acting AD-RDA / CAE: pending official confirmation']}],tags:['O-7 RDML','Principal Deputy RDA','DCAE','Pending confirmation']},
+  sams:{tier:'JTS Chief',name:'Col. Valerie Sams',role:'Chief, Joint Trauma System',sections:[{title:'Role',items:['Leads the Joint Trauma System, a DHA subordinate activity carried under J-7','Succeeds Army Col. Jennifer M. Gurney']},{title:'Background',items:['Air Force trauma surgeon and ECMO physician','Director, Center for Sustainment of Trauma and Readiness Skills, Cincinnati','Critical Care Air Transport Team training cadre','Deployed twice as Trauma Czar for Bagram Airfield, Afghanistan']},{title:'Sourcing',items:['DVIDS release, 20 SEP 2026 (public)','Also carried in the DHA Director leadership message, 21 SEP 2026']}],tags:['O-6 Col','Joint Trauma System','Clinical','Public source']},
+  newman:{tier:'DHA Public Health',name:'RDML Sara Newman',role:'Director, DHA-Public Health',sections:[{title:'Role',items:['Leads DHA Public Health, a healthcare operations directorate under AD-HCAO','Took the directorate in July 2026']},{title:'Background',items:['Academic research, emergency response, infectious disease control, environmental health','More than 30 years of public health experience']},{title:'Sourcing',items:['Promotion to Rear Adm. reported in the DHA Director leadership message, 21 SEP 2026','The DHA article of 30 JUL 2026 renders her as Capt., U.S. Public Health Service','MMT carries the promotion as reported and pending official confirmation']}],tags:['Public Health','AD-HCAO','Pending confirmation']},
   collins:{tier:'AD-RDA Senior Enlisted Leader (Acting)',name:'CMSgt Christine Collins',role:'Acting Senior Enlisted Leader, AD-RDA',sections:[{title:'Role',items:['Senior enlisted advisor to the AD-RDA / CAE','Front-office leadership node per the 09 JUN 2026 All Hands','Distinct from the DHA-wide Command Senior Enlisted Leader']}],tags:['Acting','Senior Enlisted Leader','AD-RDA Front Office']},
   perkins:{tier:'PEO DHMS to PAE MDS (Confirmed)',name:'Mr. James Perkins',role:'Confirmed Portfolio Acquisition Executive, Medical Digital Solutions (PAE MDS): the seat succeeding PEO DHMS',sections:[{title:'Status',items:['Confirmed in his PAE seat (Portfolio Acquisition Executive, Medical Digital Solutions) in 2026, after the 09 JUN 2026 All Hands','PAE MDS absorbs the PEO DHMS and PEO Medical Systems portfolios (MHS GENESIS, JOMIS, EIDS) at FOC 19 JUL 2026','Fills the PAE MDS leadership assignment the 09 JUN All Hands still listed as a Key Next Step']},{title:'Key Watch',items:['HCDS recompete: Leidos bridge active; projected award July 2026','Oracle Cerner interoperability dependency','Terry Dover named Chief of Products, April 2026']}],tags:['PAE MDS','Confirmed','PEO DHMS','HCDS Recompete']},
   moss:{tier:'Acting PEO Medical Systems',name:'COL Marcus Moss',role:'Acting PEO Medical Systems (IOC only)',sections:[{title:'Role',items:['Acting PEO Medical Systems at IOC','Construct transitions to PAE structure by FOC 19 JUL 2026','PAE Medical Services and PAE Medical Products absorb MS mission areas']}],tags:['Acting PEO','O-6 Colonel','IOC Leadership']},

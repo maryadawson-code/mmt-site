@@ -1,49 +1,88 @@
 {
   "_schema": {
-    "version": "1.0",
-    "last_verified": "2026-05-07",
-    "source": "https://www.crfb.org/blogs/upcoming-congressional-fiscal-policy-deadlines",
-    "note": "Curated to deadlines that materially affect federal-health-IT procurement. Each entry links to authoritative source plus MMT's read on capture impact."
+    "version": "1.1",
+    "last_verified": "2026-09-25",
+    "source": "https://www.congress.gov/crs-product/R49353",
+    "note": "Curated to deadlines that materially affect federal-health-IT procurement. Each entry links to an authoritative source plus MMT's read on capture impact. Re-verified 2026-09-25 against the enacted FY2027 continuing resolution; the prior version still described FY2027 appropriations as underway and treated 2026-09-30 as shutdown risk, which the 2026-09-02 CR had already resolved."
   },
   "deadlines": [
     {
-      "date": "2026-06-30",
-      "label": "Q3 FY26 close",
-      "headline": "Mid-year obligation push window",
-      "fy_impact": "Final ~3 months to obligate remaining FY26 funds before fiscal-year close pressure",
-      "agencies_affected": ["VA", "DHA", "HHS", "ARPA-H", "GSA"],
-      "capture_read": "Agencies push to obligate remaining FY26 dollars in Q4 FY26 (Jul–Sep). Watch for accelerated task-order awards on existing IDIQs and small-dollar buys clearing in this window. Capture teams that respond fast win.",
-      "source_url": "https://www.crfb.org/blogs/upcoming-congressional-fiscal-policy-deadlines"
-    },
-    {
       "date": "2026-09-30",
       "label": "FY26 fiscal year end",
-      "headline": "FY27 funding gap risk — CR or shutdown territory",
-      "fy_impact": "FY27 begins Oct 1. If appropriations don't pass, agencies operate under Continuing Resolution: capped at FY26 levels, limited new starts, restrictions on contract awards above the CR rate.",
+      "headline": "FY26 appropriations lapse, and the CR is already law, so there is no October 1 shutdown",
+      "fy_impact": "All twelve FY2026 bills were enacted in the Consolidated Appropriations Act, 2026 and expire tonight. FY2027 opens the next morning under a continuing resolution signed 2026-09-02, so there is no funding gap at the turn of the fiscal year.",
       "agencies_affected": ["VA", "DHA", "HHS", "ARPA-H", "CMS", "ONC", "GSA"],
-      "capture_read": "The biggest deadline on this calendar for federal-health-IT capture. New solicitations slow under CR. Task orders against existing IDIQs are the safest bet — they're authorized at the IDIQ level and don't require new appropriations. If your pipeline depends on FY27 new starts, build a CR scenario and a back-up TO pursuit list now.",
+      "capture_read": "The usual end-of-year obligation push still applies: anything the agency meant to award off FY26 money lands by tonight. What is different from most years is that October 1 carries no shutdown drama, so a slipped award is a program decision, not a funding excuse. If a contracting officer told you the delay was about appropriations, that answer expires with the fiscal year.",
+      "source_url": "https://www.crfb.org/blogs/appropriations-watch-fy-2026"
+    },
+    {
+      "date": "2026-10-01",
+      "label": "FY27 begins under a continuing resolution",
+      "headline": "New starts are barred until the CR lifts",
+      "fy_impact": "P.L. 119-103 funds all twelve bills at FY2026 rates from 2026-10-01 through 2026-12-11. Section 104 bars new starts. The Defense provisions separately bar DoD from beginning new programs, entering multiyear contracts, or increasing production rates without an exception.",
+      "agencies_affected": ["VA", "DHA", "HHS", "ARPA-H", "CMS", "ONC", "GSA"],
+      "capture_read": "This is the line that decides your Q1. A new program start needs an enacted appropriation, so anything that was going to begin life in October now waits on December at the earliest. Task orders against an IDIQ you already hold are the safe ground, because the authority sits at the vehicle and does not need new money. If your FY27 pipeline leans on new starts, build the December scenario now and have a task-order list ready to pull forward. For DHA specifically, the multiyear and production-rate bars mean a program hoping to scale this fall will hold at current rate instead.",
       "related_expirations": [
-        "VA health care extenders expire",
-        "Surface transportation authorization expires",
-        "Export-Import Bank authorization expires",
-        "New Medicaid provider tax limits take effect",
-        "Farm Bill provisions expire"
+        "Section 104 new-start prohibition applies government wide",
+        "DoD barred from new programs, multiyear contracts and production-rate increases absent an exception",
+        "Division B extends the VA and DoD health care resource sharing incentive program",
+        "Division B extends VA authority to collect for nursing home care"
       ],
-      "source_url": "https://www.crfb.org/blogs/upcoming-congressional-fiscal-policy-deadlines"
+      "source_url": "https://www.congress.gov/crs-product/R49353"
+    },
+    {
+      "date": "2026-12-11",
+      "label": "Continuing resolution expires",
+      "headline": "The real FY27 cliff, 38 days after the midterms",
+      "fy_impact": "The CR runs out. Congress passes full-year bills, another CR, or the government shuts down. No FY2027 regular appropriations bill has been enacted, and the Senate Appropriations Committee had not reported any as of the CR's enactment.",
+      "agencies_affected": ["VA", "DHA", "HHS", "ARPA-H", "CMS", "ONC", "GSA"],
+      "capture_read": "Put this date on every FY27 capture plan. The midterms land first, so whoever controls each chamber in December sets the leverage, and a change in either one raises the odds of a long fight. The FY26 year opened with a 42-day shutdown, so the precedent for a bad December is recent and real. Plan for the new-start freeze to run into January and price the risk into anything whose start date you are promising a customer.",
+      "source_url": "https://www.congress.gov/crs-product/R49353"
     },
     {
       "date": "2026-12-31",
       "label": "Calendar year end",
-      "headline": "Medicare Physician Payment increase expires",
-      "fy_impact": "Direct CMS reimbursement impact; physician practices and Medicare-touching IT vendors see margin pressure. Indirect: CMS administrative budget pressure may delay non-essential IT modernization buys.",
-      "agencies_affected": ["CMS", "HHS"],
-      "capture_read": "Not a contract deadline directly, but if you sell to CMS or to Medicare-billing health systems, watch for downstream RFP slips. Vendors whose revenue model depends on physician-practice IT investment should expect Q1 2027 buying-cycle softness.",
-      "source_url": "https://www.crfb.org/blogs/upcoming-congressional-fiscal-policy-deadlines"
+      "headline": "Health program funding cliffs land twenty days after the CR expires",
+      "fy_impact": "The Community Health Center Fund expires, and it carries roughly seventy percent of federal health center grant funding. National Health Service Corps funding, Medicare clinical laboratory payment relief, and the temporary 2.5 percent Medicare physician payment increase expire the same day.",
+      "agencies_affected": ["HHS", "HRSA", "CMS"],
+      "capture_read": "Two cliffs inside three weeks is the thing to watch. If the December appropriations fight runs long, these extenders are the hostages, and HRSA grantees and Medicare-billing health systems feel it first. If you sell into community health centers or to physician-practice IT, expect buying decisions to stall through Q1 2027. The health center funding cliff is the one most people miss, because it does not look like an IT deadline until a grantee freezes a project.",
+      "related_expirations": [
+        "Community Health Center Fund",
+        "National Health Service Corps funding",
+        "Medicare clinical laboratory payment relief",
+        "Temporary 2.5 percent Medicare physician payment increase"
+      ],
+      "source_url": "https://thornrun.com/wp-content/uploads/2026/09/2026-EOY-Health-Policy-Landscape.pdf"
     }
   ],
   "appropriations_status": {
-    "fy26_status": "Enacted — current law in effect through 2026-09-30",
-    "fy27_status": "Pending — FY27 budget request submitted by White House April 2026; appropriations process underway in Congress",
-    "cr_history_note": "Federal fiscal years frequently begin under a Continuing Resolution rather than full-year appropriations. Plan capture timelines assuming a 30–90-day CR runway in Q1 FY27."
+    "fy26_status": "Enacted. All twelve bills, Consolidated Appropriations Act, 2026 (H.R. 7148), signed 2026-02-03. Expires 2026-09-30. FY2026 opened with a 42-day shutdown from 2025-10-01 to 2025-11-11.",
+    "fy27_status": "No regular appropriations bill enacted. Funded by continuing resolution: H.R. 6500, the Continuing Appropriations and Extensions Act, 2027 (P.L. 119-103), signed 2026-09-02, covering all twelve bills from 2026-10-01 through 2026-12-11 at FY2026 rates, with a government-wide new-start prohibition.",
+    "cr_history_note": "Verified 2026-09-25. The CR is a clean 72-day extension with anomalies, not a full-year measure for any bill, so the December 11 date is a real cliff rather than a formality. An earlier House CR (H.R. 9770, passed 2026-07-21, proposing a December 4 end date) never became law; cite P.L. 119-103 and December 11, not that bill or that date."
+  },
+  "fy27_bills": {
+    "_note": "Status of the three FY2027 bills that fund MMT's coverage agencies, as of 2026-09-25. None is enacted. Stage matters: committee approval is not House passage, and House passage is not law.",
+    "labor_hhs_education": {
+      "funds": ["HHS", "CDC", "NIH", "HRSA"],
+      "bill": "H.R. 9260",
+      "stage": "Approved by the House Appropriations Committee, 34 to 28. No House floor vote found. Not enacted.",
+      "discretionary_allocation": "$189.3 billion, about 3 percent below the FY2026 enacted level",
+      "source_url": "https://appropriations.house.gov/news/press-releases/committee-approves-fy27-labor-health-and-human-services-and-education"
+    },
+    "milcon_va": {
+      "funds": ["VA"],
+      "bill": "H.R. 8469",
+      "stage": "Passed the House 400 to 15 on 2026-05-21. No Senate action found. Not enacted.",
+      "discretionary_allocation": "$157 billion, nearly $4 billion above the FY2026 enacted level",
+      "source_url": "https://appropriations.house.gov/news/press-releases/house-passes-first-fy27-bill-fully-funding-veteran-care-and-supporting-military"
+    },
+    "defense": {
+      "funds": ["DHA", "Defense Health Program"],
+      "bill": "H.R. 9495",
+      "stage": "Reported by the House Appropriations Committee 2026-06-26, approved 34 to 27, and scheduled for floor consideration the week of 2026-06-29. House floor passage is not confirmed, so MMT carries this as committee-reported only. Not enacted.",
+      "discretionary_allocation": "$1.072 trillion",
+      "source_url": "https://www.congress.gov/bill/119th-congress/house-bill/9495",
+      "pending": ["House floor vote status not confirmed in the 2026-09-25 verification pass"]
+    }
   }
 }

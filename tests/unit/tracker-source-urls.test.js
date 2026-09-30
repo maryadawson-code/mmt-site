@@ -139,9 +139,15 @@ describe("validate-contract-tracker.js source-URL guard has teeth", () => {
   });
 
   it("fails an entry left with no sources and no source_pending", () => {
+    // Build the invalid state directly. This used to strip source_pending off
+    // whichever entry still carried it, which broke on 2026-09-25 when the last
+    // two pending entries were sourced and the backlog went to zero.
     const { code, out } = runValidatorWith((d) => {
-      const e = d.find((x) => x.source_pending);
+      const e = d[0];
       delete e.source_pending;
+      e.source_urls = [];
+      delete e.link;
+      delete e.source;
     });
     expect(code).not.toBe(0);
     expect(out).toMatch(/source_pending/);
