@@ -105,6 +105,10 @@ const PATTERNS = [
   // Real gates use the `data-gate-overlay="premium"` chip + locked
   // labels (see build.js generateContractTrackerHtml).
   { name: 'block-character redaction (████)',  re: /████/ },
+  // A BUILD: marker without an injection is decoration; dist must contain
+  // zero raw markers (CLAUDE.md). 2026-09-30: EVENTS_FEATURED, TOPIC_COUNT and
+  // JSONLD_NEWSLETTER on archive pages 2+ shipped as HTML comments for months.
+  { name: 'raw BUILD marker',                  re: /<!--\s*BUILD:[A-Z0-9_]+\s*-->|BUILD:[A-Z][A-Z0-9_]{3,}/ },
   // Sprint A 2026-05-13 anti-regression gates. These patterns were the
   // root cause of the P0 leaks closed in this sprint — any reintroduction
   // ships premium content to anyone who runs atob() in DevTools.

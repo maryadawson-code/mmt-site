@@ -35,11 +35,18 @@ const REDIRECT_FROMS = parseRedirects(NETLIFY_TOML);
 
 function matchesRedirect(href) {
   if (REDIRECT_FROMS.has(href)) return true;
-  // Splat / wildcard support: from = "/lethality-test*" matches /lethality-test/anything
   for (const from of REDIRECT_FROMS) {
+    // Splat / wildcard support: from = "/lethality-test*" matches /lethality-test/anything
     if (from.endsWith('*')) {
       const prefix = from.slice(0, -1);
       if (href.startsWith(prefix)) return true;
+    }
+    // Placeholder support: from = "/premium/monthly/:slug" matches one path
+    // segment per :param (Netlify semantics). Function-served pages such as
+    // /premium/monthly/2026-04 live only behind these rules.
+    if (from.includes('/:')) {
+      const re = new RegExp('^' + from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\/:[A-Za-z0-9_]+/g, '/[^/]+') + '$');
+      if (re.test(href)) return true;
     }
   }
   return false;
@@ -74,6 +81,11 @@ function resolves(href) {
 
 const files = findHtmlFiles(DIST);
 let broken = 0;
+let unsafeBlank = 0;
+// Every target="_blank" anchor carries rel="noopener" (older browsers do not
+// imply it). This sweep moved here from scripts/verify-integrity.js, retired
+// 2026-09-30 because its link resolver and newsletter counts had drifted.
+const BLANK_RE = /<a\s[^>]*target="_blank"[^>]*>/g;
 
 for (const file of files) {
   const content = fs.readFileSync(file, 'utf8');
@@ -87,6 +99,18 @@ for (const file of files) {
       broken++;
     }
   }
+  let blank;
+  while ((blank = BLANK_RE.exec(content)) !== null) {
+    if (!/rel="[^"]*noopener/.test(blank[0])) {
+      console.error(`UNSAFE target=_blank without rel=noopener in ${rel}: ${blank[0].slice(0, 120)}`);
+      unsafeBlank++;
+    }
+  }
+}
+
+if (unsafeBlank > 0) {
+  console.error(`\n${unsafeBlank} target="_blank" link(s) without rel="noopener"`);
+  process.exit(1);
 }
 
 if (broken === 0) {

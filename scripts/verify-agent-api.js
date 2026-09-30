@@ -8,7 +8,7 @@
 //   node scripts/verify-agent-api.js https://missionmeetstech.com   # prod
 // ============================================================================
 
-const BASE = (process.argv[2] || "https://deploy-preview-103--curious-pony-0dec76.netlify.app").replace(/\/$/, "");
+const BASE = (process.argv[2] || "https://missionmeetstech.com").replace(/\/$/, "");
 
 const checks = [
   { name: "Read API rejects no-token", method: "GET", path: "/api/v1/opportunities", expect: 401 },

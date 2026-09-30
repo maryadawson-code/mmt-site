@@ -1074,7 +1074,7 @@ async function generateOgImages(articles, tags, contracts) {
     { filename: 'topics.png', title: 'Coverage Topics', subtitle: 'Browse all federal health IT topics', label: 'TOPICS' },
     { filename: 'proposal-pulse.png', title: 'ProposalPulse', subtitle: 'AI-scored federal proposal assessment', label: 'ASSESSMENT' },
     { filename: 'latest.png', title: 'Latest Articles', subtitle: 'All federal health IT intelligence', label: 'ARCHIVE' },
-    { filename: 'newswire.png', title: 'News Wire', subtitle: 'Federal health IT headlines from 10 sources', label: 'NEWS WIRE' },
+    { filename: 'newswire.png', title: 'Newswire', subtitle: 'Federal health IT headlines from 10 sources', label: 'NEWSWIRE' },
     { filename: 'contract-tracker.png', title: 'Contract Tracker', subtitle: 'Federal health IT procurement intelligence', label: 'CONTRACTS' },
     { filename: 'community.png', title: 'Community', subtitle: 'Join the Mission Meets Tech community', label: 'COMMUNITY' },
     { filename: 'events.png', title: 'Events Calendar', subtitle: 'Federal health IT conferences and deadlines', label: 'EVENTS' },
@@ -2163,6 +2163,48 @@ function generateContractPages(contracts) {
 
 // --- Events Calendar ---
 
+// The three next upcoming events, for the "Coming up" band on events.html.
+// events.json is hand-maintained; when nothing is upcoming the band says so
+// instead of leaving the <!-- BUILD:EVENTS_FEATURED --> marker in dist.
+function generateEventsFeaturedHtml() {
+  const eventsPath = path.join(__dirname, 'events.json');
+  let events = [];
+  try {
+    if (fs.existsSync(eventsPath)) events = JSON.parse(fs.readFileSync(eventsPath, 'utf8'));
+  } catch (err) {
+    console.error('Error parsing events.json for the featured band:', err.message);
+  }
+  const now = new Date();
+  const upcoming = events
+    .filter(e => e && e.date && new Date(e.date) >= now)
+    .sort((a, b) => new Date(a.date) - new Date(b.date))
+    .slice(0, 3);
+  if (upcoming.length === 0) {
+    return '<p class="text-sm text-center" style="color:var(--mmt-text-secondary);">Nothing on the calendar yet. The next dated event lands here as soon as it is confirmed.</p>';
+  }
+  return `<div class="grid md:grid-cols-3 gap-4">
+` + upcoming.map(e => {
+    const dateStr = new Date(e.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    const attrs = e.url ? `href="${escapeHtml(e.url)}" target="_blank" rel="noopener"` : 'href="#all-events"';
+    return `          <a ${attrs} class="card rounded-xl p-5 no-underline block transition-all">
+            <p class="text-xs font-medium mb-1 capitalize" style="color:var(--mmt-teal);">${escapeHtml(e.type || 'event')}</p>
+            <h3 class="text-base font-bold mb-1" style="color:var(--mmt-navy);">${escapeHtml(e.name || '')}</h3>
+            <p class="text-xs" style="color:var(--mmt-text-secondary);">${escapeHtml(dateStr)}${e.location ? ` &middot; ${escapeHtml(e.location)}` : ''}</p>
+          </a>`;
+  }).join('\n') + `
+        </div>`;
+}
+
+// Distinct topic tags across the archive, the number topics.html states.
+function countTopics(archive) {
+  const tags = new Set();
+  archive.forEach(item => (item.tags || []).forEach(tag => {
+    const clean = typeof tag === 'string' ? tag.trim() : '';
+    if (clean) tags.add(clean);
+  }));
+  return tags.size;
+}
+
 function generateEventsListHtml() {
   const eventsPath = path.join(__dirname, 'events.json');
   if (!fs.existsSync(eventsPath)) return '<p class="text-center py-10" style="color:var(--mmt-text-secondary);">Events data coming soon.</p>';
@@ -2341,7 +2383,7 @@ function injectBreadcrumbJsonLd(html, filename) {
     'topics.html': 'Topics',
     'latest.html': 'Intelligence',
     'proposal-pulse.html': 'ProposalPulse',
-    'newswire.html': 'News Wire',
+    'newswire.html': 'Newswire',
     'contract-tracker.html': 'Contracts',
     'events.html': 'Events',
     'privacy.html': 'Privacy',
@@ -2980,7 +3022,7 @@ function inlineTailwindCss(html) {
         <a href="/contracting.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Contracting Hub</a>
         <a href="/glossary.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Glossary</a>
         <a href="/agency-sources.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Agency Sources</a>
-        <a href="/newswire.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">News Wire</a>
+        <a href="/newswire.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">Newswire</a>
         <a href="/idiq-tracker.html" class="no-underline hover:opacity-70" style="color:var(--mmt-text-secondary);">IDIQ Tracker</a>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
@@ -3519,6 +3561,8 @@ async function copyStaticFiles({ archive, feed, newsItems, contracts, contractAr
     '<!-- BUILD:GAO_SUSTAIN_FRESHNESS -->': generateGaoSustainFreshnessHtml(),
     '<!-- BUILD:CONTRACT_SUMMARY -->': generateContractSummaryHtml(contracts),
     '<!-- BUILD:EVENTS_LIST -->': generateEventsListHtml(),
+    '<!-- BUILD:EVENTS_FEATURED -->': generateEventsFeaturedHtml(),
+    '<!-- BUILD:TOPIC_COUNT -->': String(countTopics(archive)),
     '<!-- BUILD:LATEST_ANALYSIS -->': generateLatestAnalysisHtml(articles || []),
     // Capture Intelligence teasers (source: capture-intelligence.json)
     '<!-- BUILD:CAPTURE_SIGNALS -->': generateCaptureSignalsHtml(captureSheet, captureShown),
@@ -4719,7 +4763,7 @@ function generateNewsWidgetHtml(newsItems) {
             </a>\n`;
   });
 
-  html += `            <a href="/newswire.html" class="text-sm font-semibold no-underline hover:opacity-80 inline-block mt-3" style="color:var(--mmt-teal);">View all on News Wire &rarr;</a>
+  html += `            <a href="/newswire.html" class="text-sm font-semibold no-underline hover:opacity-80 inline-block mt-3" style="color:var(--mmt-teal);">View all on Newswire &rarr;</a>
           </div>`;
 
   return html;
@@ -5672,6 +5716,8 @@ function generatePaginatedNewsletterPages(archive) {
     let html = baseHtml;
     html = html.replace('<!-- BUILD:ALL_ISSUES -->', pageArchiveHtml + '\n' + pagination);
     html = html.replace('<!-- BUILD:TOPIC_FILTER_CHIPS -->', '');
+    // Page one carries the archive JSON-LD; later pages must not ship the raw marker.
+    html = html.replace('<!-- BUILD:JSONLD_NEWSLETTER -->', '');
     html = html.replace(/<link rel="canonical" href="[^"]*">/, `<link rel="canonical" href="${SITE_URL}/newsletter/page/${page}/">`);
     html = inlineTailwindCss(html);
 
