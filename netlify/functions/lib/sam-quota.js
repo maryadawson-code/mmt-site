@@ -5,6 +5,9 @@
 //   personal key, no role in SAM.gov ..... 10 requests/day   <- MMT today
 //   personal key, with a role in SAM.gov . 1,000 requests/day
 //   system account ....................... 1,000+ requests/day
+// 2026-09-30: key re-set in Netlify without the stray curly quotes that had
+// wrapped the value (SAM.gov answered 400 to the quoted key); this comment
+// exists so every SAM consumer re-bundles and picks up the clean value.
 // The quota is shared by EVERY SAM API the key touches (Opportunities and
 // Assistance Listings both answered 429 "900804" together on 2026-09-13)
 // and by every consumer of the key: Ask MMT (2 requests a question), Signal
