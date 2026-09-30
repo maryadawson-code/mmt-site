@@ -6,7 +6,7 @@
 //
 // Schedule configured in netlify.toml:
 //   [functions."ops-pattern-detector"]
-//     schedule = "0 13 * * *"
+// (no schedule here: netlify.toml is the only place a schedule counts)
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
@@ -15,7 +15,9 @@ const { sendEmail } = require("./lib/send-email");
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
-exports.handler = async () => {
+const { scheduledOnly } = require("./lib/scheduled-only");
+
+exports.handler = scheduledOnly("ops-pattern-detector", async () => {
   if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
     return { statusCode: 500, body: "Not configured" };
   }
@@ -95,4 +97,4 @@ exports.handler = async () => {
     console.error("ops-pattern-detector error:", err);
     return { statusCode: 500, body: err.message };
   }
-};
+});

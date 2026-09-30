@@ -7,7 +7,7 @@
 //
 // Schedule configured in netlify.toml:
 //   [functions."monthly-brief-send"]
-//     schedule = "0 11 1 * *"   (1st of month, 6 AM ET)
+// (no schedule here: netlify.toml is the only place a schedule counts)
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
@@ -23,7 +23,9 @@ const {
 const SITE_URL = "https://missionmeetstech.com";
 const ADMIN_EMAIL = "mary@missionmeetstech.com";
 
-exports.handler = async (event) => {
+const { scheduledOnly } = require("./lib/scheduled-only");
+
+exports.handler = scheduledOnly("monthly-brief-send", async (event) => {
   console.log("monthly-brief-send: triggered", new Date().toISOString());
 
   const killCheck = checkKillSwitch("monthly-brief-send");
@@ -231,4 +233,4 @@ exports.handler = async (event) => {
       failed: failCount,
     }),
   };
-};
+});

@@ -8,7 +8,7 @@
 //
 // Schedule configured in netlify.toml:
 //   [functions."contract-intel-refresh"]
-//     schedule = "0 11 * * *"
+// (no schedule here: netlify.toml is the only place a schedule counts)
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");

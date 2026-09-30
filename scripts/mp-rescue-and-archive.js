@@ -160,7 +160,10 @@ const ADMIN_ARCHIVE_IDS = [
     }
 
     // Requeue once via replay-tactical-brief-background.
-    const headers = { "Content-Type": "application/json", "x-admin-email": "mary@missionmeetstech.com" };
+    // Admin functions take a signed subscriber token (lib/admin-auth.js); mint
+    // one from SUPABASE_SERVICE_KEY under `netlify dev:exec`.
+    const { mint } = require("./lib/mint-subscriber-token");
+    const headers = { "Content-Type": "application/json", "x-admin-email": "mary@missionmeetstech.com", Authorization: `Bearer ${mint("mary@missionmeetstech.com")}` };
     try {
       const resp = await fetch(`${SITE_URL}/.netlify/functions/replay-tactical-brief-background`, {
         method: "POST",

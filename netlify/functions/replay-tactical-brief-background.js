@@ -27,6 +27,7 @@
 // ============================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const { requireAdmin } = require("./lib/admin-auth");
 const Stripe = require("stripe");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { fetchWithTimeout } = require("./lib/fetch-with-timeout");
@@ -43,7 +44,7 @@ const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "mary@missionmeetstech.com,mar
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "https://missionmeetstech.com",
-  "Access-Control-Allow-Headers": "Content-Type, x-admin-email",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, x-subscriber-token, x-admin-email",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
@@ -108,10 +109,13 @@ exports.handler = async (event) => {
   }
 
   // Admin auth
-  const adminEmail = ((event.headers || {})["x-admin-email"] || "").toLowerCase().trim();
-  if (!ADMIN_EMAILS.includes(adminEmail)) {
-    return jsonResponse(403, { error: "admin only" });
+  // Admin identity is the signed subscriber token (lib/admin-auth.js); the
+  // plaintext x-admin-email header alone authorized this until 2026-09-30.
+  const adminCheck = requireAdmin(event);
+  if (!adminCheck.ok) {
+    return jsonResponse(403, { error: adminCheck.reason });
   }
+  const adminEmail = adminCheck.email;
 
   // Parse body
   let body;
