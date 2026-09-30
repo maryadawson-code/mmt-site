@@ -527,7 +527,20 @@ async function getSpendingByCategory({ agency, naics, fiscal_year }) {
  * @param {number} [params.daysBack] - Lookback window (default 180 days)
  * @returns {Promise<{opportunities: Array, total: number, error?: string}>}
  */
-async function searchSAMOpportunities({ keyword, relaxKeyword, naics, agency, limit = 25, daysBack = 180, priority = "interactive" }) {
+// A solicitation-number lookup keeps only the notices that carry that
+// number. SAM.gov's `solnum` filter is exact, but the guard stays here so
+// no caller can ever cite a notice for a number it did not ask about
+// (2026-09-30: compliance-check cited a Navy research vessel and an Army
+// CSO as "matches" for a DHA solicitation because the free-text `q`
+// parameter is not a filter in the v2 search; SAM.gov ignores it and
+// returns the newest notices in the window).
+function filterBySolicitation(opportunities, solNums) {
+  const wanted = new Set((solNums || []).map((s) => String(s || "").replace(/[\s-]/g, "").toUpperCase()).filter(Boolean));
+  if (wanted.size === 0) return [];
+  return (opportunities || []).filter((o) => wanted.has(String(o.solicitation_number || "").replace(/[\s-]/g, "").toUpperCase()));
+}
+
+async function searchSAMOpportunities({ keyword, relaxKeyword, naics, agency, solnum, limit = 25, daysBack = 180, priority = "interactive" }) {
   if (!SAM_API_KEY) {
     return { opportunities: [], total: 0, error: "SAM_GOV_API_KEY not configured" };
   }
@@ -563,7 +576,12 @@ async function searchSAMOpportunities({ keyword, relaxKeyword, naics, agency, li
 
   // Primary call: full-text + ptype + (optional) deptname
   const primaryParams = baseParams();
-  if (keyword && String(keyword).trim()) {
+  // `solnum` is an exact server-side filter (verified live 2026-09-30:
+  // solnum=HT940226R0001 returned exactly that notice). One request, no
+  // relaxed secondary call.
+  if (solnum && String(solnum).trim()) {
+    primaryParams.set("solnum", String(solnum).trim());
+  } else if (keyword && String(keyword).trim()) {
     primaryParams.set("q", String(keyword).trim());
   }
 
@@ -694,7 +712,7 @@ async function searchSAMOpportunities({ keyword, relaxKeyword, naics, agency, li
     const allowSecondary = dailyQuota() > 10;
     let secondarySkipped = null;
     if (!allowSecondary) secondarySkipped = "daily quota is 10 or fewer; one request per question";
-    if (allowSecondary && (deptName || relaxKeyword) && primaryRaw.length < PRIMARY_THRESHOLD && (await reserveSam(1, { priority })).ok) {
+    if (allowSecondary && !solnum && (deptName || relaxKeyword) && primaryRaw.length < PRIMARY_THRESHOLD && (await reserveSam(1, { priority })).ok) {
       secondary = await callSam(secondaryParams).catch((e) => ({ __error: e && e.message ? e.message : String(e) }));
       if (secondary && !secondary.__error) {
         secondaryRaw = secondary.opportunitiesData || secondary.opportunities || [];
@@ -1346,6 +1364,7 @@ function deriveAcquisitionState(opp, { now = Date.now(), staleDays = 120 } = {})
 }
 
 module.exports = {
+  filterBySolicitation,
   searchUSASpendingRecipients,
   searchRecipientObligationsByYear,
   mapAward,
