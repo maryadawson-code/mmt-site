@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-09-30T15:42:48.610Z",
-  "node_count": 471,
-  "edge_count": 697,
+  "generated_at": "2026-09-30T16:01:34.042Z",
+  "node_count": 476,
+  "edge_count": 695,
   "nodes": [
     {
       "id": "peo-dhms-deployment",
@@ -673,7 +673,7 @@
         "classification": "Solicitation",
         "status": "upcoming",
         "naics": "334510",
-        "last_verified": "2026-03-30"
+        "last_verified": "2026-09-25"
       }
     },
     {
@@ -1058,13 +1058,25 @@
         "classification": "Needs Source",
         "status": "active",
         "naics": "541512",
-        "last_verified": "2026-04-29"
+        "last_verified": "2026-09-25"
       }
     },
     {
       "id": "cisa-dhs",
       "type": "Agency",
       "canonical_name": "CISA / DHS",
+      "properties": {}
+    },
+    {
+      "id": "booz-allen-hamilton-hhs-sits-in-cdm-defend-group-d",
+      "type": "Contractor",
+      "canonical_name": "Booz Allen Hamilton . HHS sits in CDM DEFEND Group D,",
+      "properties": {}
+    },
+    {
+      "id": "booz-allen-holds-the-defend-work-covering-it",
+      "type": "Contractor",
+      "canonical_name": "Booz Allen holds the DEFEND work covering it.",
       "properties": {}
     },
     {
@@ -2040,11 +2052,11 @@
       }
     },
     {
-      "id": "mr-brett-scheideman",
+      "id": "rear-adm-ivonne-arena",
       "type": "Person",
-      "canonical_name": "Mr. Brett Scheideman",
+      "canonical_name": "Rear Adm. Ivonne Arena",
       "properties": {
-        "title": "Acting Principal Deputy RDA / Deputy CAE (DCAE)"
+        "title": "Principal Deputy, AD-RDA/CAE"
       }
     },
     {
@@ -2096,11 +2108,19 @@
       }
     },
     {
+      "id": "brig-gen-jason-lennen",
+      "type": "Person",
+      "canonical_name": "Brig. Gen. Jason Lennen",
+      "properties": {
+        "title": "Director, Office of Warfighter Health Advantage (OWHA)"
+      }
+    },
+    {
       "id": "rear-adm-tracy-farrill",
       "type": "Person",
       "canonical_name": "Rear Adm. Tracy Farrill",
       "properties": {
-        "title": "Director, Office of Warfighter Health Advantage (OWHA)"
+        "title": "Retiring; former Director, Office of Warfighter Health Advantage (OWHA)"
       }
     },
     {
@@ -2109,6 +2129,22 @@
       "canonical_name": "Mr. Pat Flanders",
       "properties": {
         "title": "Chief Information Officer (J-6) — Confirmed"
+      }
+    },
+    {
+      "id": "col-valerie-sams",
+      "type": "Person",
+      "canonical_name": "Col. Valerie Sams",
+      "properties": {
+        "title": "Chief, Joint Trauma System (JTS)"
+      }
+    },
+    {
+      "id": "rear-adm-sara-newman",
+      "type": "Person",
+      "canonical_name": "Rear Adm. Sara Newman",
+      "properties": {
+        "title": "Director, DHA-Public Health"
       }
     },
     {
@@ -2168,15 +2204,15 @@
       "type": "Person",
       "canonical_name": "Lt. Gen. (Dr.) John J. Degoes",
       "properties": {
-        "title": "Surgeon General of the Air Force and Space Force"
+        "title": "Surgeon General of the Air Force and Space Force; Commander, Air Force Medical Command"
       }
     },
     {
-      "id": "rear-adm-rick-freedman",
+      "id": "rear-adm-matthew-case",
       "type": "Person",
-      "canonical_name": "Rear Adm. Rick Freedman",
+      "canonical_name": "Rear Adm. Matthew Case",
       "properties": {
-        "title": "Acting Surgeon General of the Navy"
+        "title": "Acting Surgeon General of the Navy; Acting Chief, Bureau of Medicine and Surgery"
       }
     },
     {
@@ -3886,6 +3922,28 @@
       }
     },
     {
+      "id": "article-a-question-from-the-floor",
+      "type": "Article",
+      "canonical_name": "A Question From the Floor",
+      "properties": {
+        "slug": "a-question-from-the-floor",
+        "type": "article",
+        "url": "/newsletter/a-question-from-the-floor/",
+        "published": "2026-09-25"
+      }
+    },
+    {
+      "id": "article-the-floor-at-winston-salem",
+      "type": "Article",
+      "canonical_name": "The Floor at Winston-Salem",
+      "properties": {
+        "slug": "the-floor-at-winston-salem",
+        "type": "article",
+        "url": "/newsletter/the-floor-at-winston-salem/",
+        "published": "2026-09-29"
+      }
+    },
+    {
       "id": "article-capture-corner-2026-04-29",
       "type": "Article",
       "canonical_name": "DHA Reorganization: Sixteen Changes, Five That Move Your Pipeline",
@@ -4271,6 +4329,28 @@
       }
     },
     {
+      "id": "article-capture-corner-2026-09-25",
+      "type": "Article",
+      "canonical_name": "The Requirement With No Program",
+      "properties": {
+        "slug": "capture-corner-2026-09-25",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-09-25.html",
+        "published": "2026-09-25"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-09-29",
+      "type": "Article",
+      "canonical_name": "The Receiving End",
+      "properties": {
+        "slug": "capture-corner-2026-09-29",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-09-29.html",
+        "published": "2026-09-29"
+      }
+    },
+    {
       "id": "article-premium-briefs-2026-03-21",
       "type": "Article",
       "canonical_name": "Week of March 21, 2026",
@@ -4443,7 +4523,7 @@
         "slug": "va-enterprise-imaging-neis-multi-visn-pacs-bi-directional-",
         "type": "contract_intel",
         "url": "/contracts/va-enterprise-imaging-neis-multi-visn-pacs-bi-directional/",
-        "published": "2026-03-30"
+        "published": "2026-09-25"
       }
     },
     {
@@ -4542,50 +4622,6 @@
         "slug": "mhs-genesis-dhmsm-bridge-",
         "type": "contract_intel",
         "url": "/contracts/mhs-genesis-dhmsm-bridge/",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-federal-electronic-health-record-modernization-fehrm",
-      "type": "Article",
-      "canonical_name": "Federal Electronic Health Record Modernization (FEHRM)",
-      "properties": {
-        "slug": "federal-electronic-health-record-modernization-fehrm-",
-        "type": "contract_intel",
-        "url": "/contracts/federal-electronic-health-record-modernization-fehrm/",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-t4ng2-va-it-services",
-      "type": "Article",
-      "canonical_name": "T4NG2 (VA IT Services)",
-      "properties": {
-        "slug": "t4ng2-va-it-services-",
-        "type": "contract_intel",
-        "url": "/contracts/t4ng2-va-it-services/",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-dha-enterprise-wide-cso-ht003826sc005",
-      "type": "Article",
-      "canonical_name": "DHA Enterprise-Wide CSO (HT003826SC005)",
-      "properties": {
-        "slug": "dha-enterprise-wide-cso-ht003826sc005-",
-        "type": "contract_intel",
-        "url": "/contracts/dha-enterprise-wide-cso-ht003826sc005/",
-        "published": "2026-08-20"
-      }
-    },
-    {
-      "id": "article-peo-dhms-cso-competitive-solutions-opening",
-      "type": "Article",
-      "canonical_name": "PEO DHMS CSO (Competitive Solutions Opening)",
-      "properties": {
-        "slug": "peo-dhms-cso-competitive-solutions-opening-",
-        "type": "contract_intel",
-        "url": "/contracts/peo-dhms-cso-competitive-solutions-opening/",
         "published": "2026-08-17"
       }
     }
@@ -5719,6 +5755,34 @@
       "weight": 1
     },
     {
+      "from_id": "booz-allen-hamilton-hhs-sits-in-cdm-defend-group-d",
+      "to_id": "cdm-defend-health-data-cybersecurity",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cdm-defend-health-data-cybersecurity",
+      "to_id": "booz-allen-hamilton-hhs-sits-in-cdm-defend-group-d",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "booz-allen-holds-the-defend-work-covering-it",
+      "to_id": "cdm-defend-health-data-cybersecurity",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cdm-defend-health-data-cybersecurity",
+      "to_id": "booz-allen-holds-the-defend-work-covering-it",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "dha",
       "to_id": "tricare-managed-care-support-t-5-mcs",
       "relation": "manages",
@@ -6387,11 +6451,11 @@
       "weight": 1
     },
     {
-      "from_id": "mr-brett-scheideman",
+      "from_id": "rear-adm-ivonne-arena",
       "to_id": "dha",
       "relation": "leads",
       "properties": {
-        "title": "Acting Principal Deputy RDA / Deputy CAE (DCAE)"
+        "title": "Principal Deputy, AD-RDA/CAE"
       },
       "weight": 1
     },
@@ -6450,11 +6514,20 @@
       "weight": 1
     },
     {
-      "from_id": "rear-adm-tracy-farrill",
+      "from_id": "brig-gen-jason-lennen",
       "to_id": "dha",
       "relation": "leads",
       "properties": {
         "title": "Director, Office of Warfighter Health Advantage (OWHA)"
+      },
+      "weight": 1
+    },
+    {
+      "from_id": "rear-adm-tracy-farrill",
+      "to_id": "dha",
+      "relation": "leads",
+      "properties": {
+        "title": "Retiring; former Director, Office of Warfighter Health Advantage (OWHA)"
       },
       "weight": 1
     },
@@ -6464,6 +6537,24 @@
       "relation": "leads",
       "properties": {
         "title": "Chief Information Officer (J-6) — Confirmed"
+      },
+      "weight": 1
+    },
+    {
+      "from_id": "col-valerie-sams",
+      "to_id": "dha",
+      "relation": "leads",
+      "properties": {
+        "title": "Chief, Joint Trauma System (JTS)"
+      },
+      "weight": 1
+    },
+    {
+      "from_id": "rear-adm-sara-newman",
+      "to_id": "dha",
+      "relation": "leads",
+      "properties": {
+        "title": "Director, DHA-Public Health"
       },
       "weight": 1
     },
@@ -6526,16 +6617,16 @@
       "to_id": "sg",
       "relation": "leads",
       "properties": {
-        "title": "Surgeon General of the Air Force and Space Force"
+        "title": "Surgeon General of the Air Force and Space Force; Commander, Air Force Medical Command"
       },
       "weight": 1
     },
     {
-      "from_id": "rear-adm-rick-freedman",
+      "from_id": "rear-adm-matthew-case",
       "to_id": "sg",
       "relation": "leads",
       "properties": {
-        "title": "Acting Surgeon General of the Navy"
+        "title": "Acting Surgeon General of the Navy; Acting Chief, Bureau of Medicine and Surgery"
       },
       "weight": 1
     },
@@ -7715,6 +7806,41 @@
       "weight": 1
     },
     {
+      "from_id": "article-a-question-from-the-floor",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-a-question-from-the-floor",
+      "to_id": "federal-ehr",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-a-question-from-the-floor",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-a-question-from-the-floor",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-floor-at-winston-salem",
+      "to_id": "general-services-administration",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-capture-corner-2026-04-29",
       "to_id": "dhmsm",
       "relation": "mentions",
@@ -8534,6 +8660,41 @@
       "weight": 1
     },
     {
+      "from_id": "article-capture-corner-2026-09-25",
+      "to_id": "dha-director",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-25",
+      "to_id": "federal-ehr",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-25",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-25",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-09-25",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-premium-briefs-2026-03-21",
       "to_id": "federal-ehr",
       "relation": "mentions",
@@ -8941,13 +9102,6 @@
     },
     {
       "from_id": "article-va-enterprise-imaging-neis-multi-visn-pacs-bi-directional",
-      "to_id": "fedramp",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-va-enterprise-imaging-neis-multi-visn-pacs-bi-directional",
       "to_id": "va-enterprise-imaging-neis-multi-visn-pacs-bi-directional",
       "relation": "mentions",
       "properties": {},
@@ -9145,146 +9299,6 @@
     {
       "from_id": "article-mhs-genesis-dhmsm-bridge",
       "to_id": "mosa",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-federal-electronic-health-record-modernization-fehrm",
-      "to_id": "federal-ehr",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-federal-electronic-health-record-modernization-fehrm",
-      "to_id": "federal-electronic-health-record-modernization-fehrm",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-federal-electronic-health-record-modernization-fehrm",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-federal-electronic-health-record-modernization-fehrm",
-      "to_id": "mhs-genesis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-federal-electronic-health-record-modernization-fehrm",
-      "to_id": "vista",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-t4ng2-va-it-services",
-      "to_id": "t4ng2",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-t4ng2-va-it-services",
-      "to_id": "t4ng2-va-it-services",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-t4ng2-va-it-services",
-      "to_id": "va-t4ng2",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dha-enterprise-wide-cso-ht003826sc005",
-      "to_id": "dfars",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dha-enterprise-wide-cso-ht003826sc005",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dha-enterprise-wide-cso-ht003826sc005",
-      "to_id": "far",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dha-enterprise-wide-cso-ht003826sc005",
-      "to_id": "peo-dhms",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-peo-dhms-cso-competitive-solutions-opening",
-      "to_id": "dfars",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-peo-dhms-cso-competitive-solutions-opening",
-      "to_id": "dhmsm",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-peo-dhms-cso-competitive-solutions-opening",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-peo-dhms-cso-competitive-solutions-opening",
-      "to_id": "far",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-peo-dhms-cso-competitive-solutions-opening",
-      "to_id": "hcds",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-peo-dhms-cso-competitive-solutions-opening",
-      "to_id": "ota",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-peo-dhms-cso-competitive-solutions-opening",
-      "to_id": "peo-dhms",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-peo-dhms-cso-competitive-solutions-opening",
-      "to_id": "peo-dhms-cso-competitive-solutions-opening",
       "relation": "mentions",
       "properties": {},
       "weight": 1
@@ -9755,6 +9769,26 @@
       "relation": "incumbent_of",
       "properties": {
         "via_contract": "cms-cloud-infrastructure-oci",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cisa-dhs",
+      "to_id": "booz-allen-hamilton-hhs-sits-in-cdm-defend-group-d",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cdm-defend-health-data-cybersecurity",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cisa-dhs",
+      "to_id": "booz-allen-holds-the-defend-work-covering-it",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cdm-defend-health-data-cybersecurity",
         "derived": true
       },
       "weight": 0.8
