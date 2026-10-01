@@ -62,7 +62,43 @@ SAM.gov ignores the `q` parameter (#237, #238).
   drawer said "Go Premium". Dead `/pricing.html` and `/dashboard.html` 301s.
   "TBD" placeholders in contracting.html and events.json.
 
-## Found, left for Mary (decisions, not bugs I should make)
+## 2026-10-01: the list below, closed
+
+Mary: "do everything left for Mary dont assume I'm doing anything on this."
+
+- **Ask MMT SAM `q` to `title` (#243)** merged after the `--trials 3` eval:
+  22 of 24 rows passed in the full run (the two misses were an `hhs_open`
+  timeout and one acronym-wording variance in a single trial, neither on
+  the SAM path), and both rows passed 3/3 on their own rerun.
+- **Every premium page carries the inline gate.** `build.js
+  ensurePremiumGates()` adds the calendar.html check to any page under
+  `dist/premium` that lacks it (41 pages on the day: 37 Capture Corner
+  briefs, two Friday briefs, the DHA and VA org charts); `validate-dist`
+  fails the build if one slips through. Allowlist: `premium/api-health`,
+  which the admin-only function gates.
+- **Nested dash-main.** `injectDashShell()` unwraps an inline
+  `<main|div class="dash-main">` as it already did for `dash-shell` and
+  `dash-nav`; `validate-dist` fails on two `dash-main` in one page.
+- **Org charts** get a slim top bar back to the Premium dashboard, Key
+  People and Agency Profiles.
+- **Archive pages 2+** render the same card as page one (`renderArchiveCard`),
+  with topics and read time; the plain second template is gone.
+- **ARCHITECTURE_SPEC §4** states the nav as shipped and keeps the original
+  proposal for the reasoning; "Newswire" and "every Tuesday and Friday"
+  throughout.
+- **`MARKETPULSE_INTERNAL_SECRET`** was present in Netlify with an empty
+  value, so the tactical-brief background gate was open; set to a random
+  48-hex value for production, deploy-preview and branch-deploy, and the four
+  functions that read it carry a one-line change so their bundles pick up
+  the env (the gateway, webhook and replay send it; the background checks).
+  `OAUTH_SIGNING_SECRET` is left unset on purpose: the code falls back to
+  the service key, and setting a new secret would invalidate every issued
+  agent token.
+- **Not done, cannot be done by me:** `capture-intelligence.json` (66 days)
+  and `content/gao-sustain` (147 days) are Mary's published analysis; the
+  freshness validator keeps warning until a new sheet and a new month land.
+
+## Found on 2026-09-30 and handed to Mary (all closed above on 2026-10-01 except the two content items)
 
 - **Ask MMT sent `q` to SAM.gov**, which SAM ignores, so its SAM rows were
   the newest notices in the department window and were never relevance

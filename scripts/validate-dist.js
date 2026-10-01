@@ -463,6 +463,24 @@ if (fs.existsSync(corpusFile)) {
   }
 }
 
+// 3. Every premium page carries the inline mmt_premium gate (build.js
+// ensurePremiumGates), and no page nests two dash-main elements
+// (injectDashShell unwraps inline shells). Both regressed silently before
+// 2026-10-01: 41 CSS-only premium pages and 26 double-padded dash pages.
+const PREMIUM_GATE_ALLOW = new Set(['premium/api-health.html', 'premium/api-health/index.html']);
+for (const file of files) {
+  // `files` holds dist-relative paths.
+  const rel = String(file).split(path.sep).join('/');
+  const html = fs.readFileSync(path.join(DIST_DIR, rel), 'utf8');
+  if (rel.startsWith('premium/') && !PREMIUM_GATE_ALLOW.has(rel) && !/localStorage\.getItem\(['"]mmt_premium['"]\)/.test(html)) {
+    addFailure('premium page without the inline mmt_premium gate', rel, 'add the calendar.html gate or list the page in PREMIUM_GATE_ALLOW with a reason');
+  }
+  const dashMains = (html.match(/class="dash-main"/g) || []).length;
+  if (dashMains > 1) {
+    addFailure('nested dash-main (inline shell survived injectDashShell)', rel, `${dashMains} dash-main elements`);
+  }
+}
+
 // --- Report ---
 
 const totalFiles = files.length;
