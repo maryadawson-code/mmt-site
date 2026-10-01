@@ -138,3 +138,34 @@ describe("golden set", () => {
     expect(s.overall).toBe(false);
   });
 });
+
+describe("unlistedLinksFor: what links_grounded names", () => {
+  const { unlistedLinksFor, extractLinks, PROMPT_LINKS } = evalHarness;
+
+  it("names the URLs the server de-linked, never the cleaned answer's own grounded links", () => {
+    const result = { answer: "cleared (Mission Meets Tech). See https://missionmeetstech.com/contracts/x/ too.", sources: [{ url: "https://missionmeetstech.com/contracts/x/" }], unlisted_link_count: 1, unlisted_links: ["https://missionmeetstech.com/premium/briefs/2026-04-11.html"] };
+    expect(unlistedLinksFor({ result, links: extractLinks(result.answer), contextText: null, contextError: null })).toEqual(["https://missionmeetstech.com/premium/briefs/2026-04-11.html"]);
+  });
+
+  it("a server count of zero is clean whatever the answer links", () => {
+    const result = { answer: "See https://missionmeetstech.com/contracts/x/", sources: [], unlisted_link_count: 0, unlisted_links: [] };
+    expect(unlistedLinksFor({ result, links: extractLinks(result.answer), contextText: null, contextError: null })).toEqual([]);
+  });
+
+  it("a server count without URLs still fails, and says so", () => {
+    const result = { answer: "x", sources: [], unlisted_link_count: 2 };
+    expect(unlistedLinksFor({ result, links: [], contextText: null, contextError: null })).toEqual(["2 link(s) de-linked by the server, URLs not reported"]);
+  });
+
+  it("without a server count: the sources, the prompt's own link and the context account for a link, nothing else does", () => {
+    const result = { answer: "a https://missionmeetstech.com/marketpulse b https://example.gov/in-ctx c https://example.gov/nowhere", sources: [] };
+    const links = extractLinks(result.answer);
+    expect(unlistedLinksFor({ result, links, contextText: "see https://example.gov/in-ctx", contextError: null })).toEqual(["https://example.gov/nowhere"]);
+    expect(unlistedLinksFor({ result, links, contextText: null, contextError: "boom" })).toEqual(["https://example.gov/in-ctx (context unavailable: boom)", "https://example.gov/nowhere (context unavailable: boom)"]);
+  });
+
+  it("the harness's prompt links are the assistant's, so the two cannot drift", () => {
+    const assistant = cjsRequire("../../netlify/functions/lib/premium-assistant.js");
+    expect([...PROMPT_LINKS]).toEqual([...assistant.PROMPT_LINKS]);
+  });
+});
