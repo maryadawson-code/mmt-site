@@ -89,17 +89,21 @@ Mission Meets Tech delivers independent federal health IT intelligence for peopl
 ## Recommended top-level navigation
 Replace the current simple nav with a more intentional global structure:
 
-**Desktop global nav**
-- Analysis
+**Desktop global nav** (as shipped; CLAUDE.md "Design system" is the standing rule)
+- Intelligence
+- ProposalPulse
+- MarketPulse
+- Resources
 - Podcast
-- Intelligence Center
 - About
-- Subscribe
 
 **Utility nav / header secondary actions**
-- Search icon
-- Contact
-- LinkedIn
+- Search
+- Sign In
+- ★ Premium
+- Choose a Tool
+
+The original proposal below (Analysis, Podcast, Intelligence Center, About, Subscribe) is kept for the reasoning; the nav above is what the site runs. Updated 2026-10-01.
 
 ### Why this is better
 - “Analysis” is clearer than “Intelligence” for many first-time users while preserving editorial seriousness.
@@ -113,7 +117,7 @@ Replace the current simple nav with a more intentional global structure:
 - Contracting Hub
 - Glossary
 - Agency Sources
-- News Wire
+- Newswire
 - Events
 - ProposalPulse
 - MarketPulse
@@ -137,7 +141,7 @@ The footer should become a real orientation device, not just a repeated nav.
 - Contracting Hub
 - Agency Sources
 - Events
-- News Wire
+- Newswire
 
 **Footer group 4: Trust**
 - About
@@ -970,7 +974,7 @@ Get the sources interpreted, not just linked
 
 ---
 
-## 19. News Wire Redesign Brief
+## 19. Newswire Redesign Brief
 
 ## Current issue
 The page promise is tighter than some of the visible story selection. It must feel more editorially filtered, not more aggregated.
@@ -981,7 +985,7 @@ Surface high-relevance federal health IT headlines with clear categorization and
 ## Wireframe
 
 ### Section 1 — Hero
-- H1: News Wire
+- H1: Newswire
 - subhead: High-signal federal health IT headlines, filtered for operational relevance.
 - metadata: updated every X hours, source count, editorial note
 
@@ -1060,7 +1064,7 @@ Close the subscription with minimal friction and maximal confidence.
 ## Wireframe
 
 ### Section 1 — Hero form split
-- H1: Get Mission Meets Tech free, twice weekly
+- H1: Get Mission Meets Tech free, every Tuesday and Friday
 - short value paragraph
 - three bullets
 - inline form
@@ -1387,7 +1391,7 @@ Long-form editorial pages should feel exceptionally fast.
 
 ## Phase 4 — Live intelligence surface
 14. Contract Tracker redesign
-15. News Wire redesign
+15. Newswire redesign
 16. Events redesign
 17. Search and best-of pages
 
@@ -1461,7 +1465,7 @@ Long-form editorial pages should feel exceptionally fast.
 - clearly curated
 - notes explain why each source matters
 
-### News Wire
+### Newswire
 - tighter topical relevance
 - featured stories prioritized
 

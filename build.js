@@ -1270,6 +1270,66 @@ function generateLatestIssuesHtml(archive, count) {
   }).join('\n        ');
 }
 
+// One card markup for the archive, page one and pages 2+ alike (pages 2+
+// used a second, plainer template with no topics or read time until 2026-10-01).
+function renderArchiveCard(item, issueNum) {
+  const topicSlugs = (item.tags || []).map(t => slugify(t)).join(',');
+  const tags = (item.tags || []).map(t =>
+    `<a href="/topics/${slugify(t)}/" class="tag no-underline">${escapeHtml(t)}</a>`
+  ).join('');
+  const isExternal = item.url && item.url.startsWith('http');
+  const linkAttrs = isExternal ? 'target="_blank" rel="noopener"' : '';
+  const externalIcon = isExternal ? ' <svg width="0.75em" height="0.75em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:baseline;opacity:0.5;" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>' : '';
+  return `<article class="card article-card p-6 md:p-8" data-topics="${topicSlugs}">
+          <div class="flex items-start justify-between gap-4 mb-2">
+            <h3 class="text-subsection" style="font-size:clamp(1.1rem, 1.5vw, 1.35rem);"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-navy);">${escapeHtml(item.title)}${externalIcon}</a></h3>
+            <span class="text-eyebrow whitespace-nowrap" style="font-size:0.7rem;">#${issueNum}</span>
+          </div>
+          <p class="text-caption mb-3">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
+          <p class="text-caption leading-relaxed mb-4">${escapeHtml(item.description)}</p>
+          <div class="flex flex-wrap gap-2">${tags}</div>
+        </article>`;
+}
+
+
+// Every page under dist/premium carries the inline mmt_premium gate (the
+// check copied from premium/calendar.html). Pages that arrive here without
+// one (Capture Corner briefs, Friday briefs, two org charts on 2026-10-01)
+// used to rely on CSS alone: a non-member saw a blank page and the text sat
+// in the source. scripts/validate-dist.js fails the build if one slips through.
+const PREMIUM_GATE_SCRIPT = `  <script>
+    (function() {
+      var isPremium = localStorage.getItem('mmt_premium') === 'true';
+      var ts = localStorage.getItem('mmt_premium_ts');
+      var withinWindow = ts && (Date.now() - parseInt(ts)) < 30 * 24 * 60 * 60 * 1000;
+      if (!isPremium || !withinWindow) { window.location.href = '/dashboard.html'; }
+    })();
+  </script>
+`;
+const PREMIUM_GATE_ALLOWLIST = new Set(['premium/api-health.html', 'premium/api-health/index.html']);
+function ensurePremiumGates() {
+  const root = path.join(DIST_DIR, 'premium');
+  if (!fs.existsSync(root)) return;
+  let added = 0;
+  const walk = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) { walk(full); continue; }
+      if (!entry.name.endsWith('.html')) continue;
+      const rel = path.relative(DIST_DIR, full).split(path.sep).join('/');
+      if (PREMIUM_GATE_ALLOWLIST.has(rel)) continue;
+      let html = fs.readFileSync(full, 'utf8');
+      if (html.includes("localStorage.getItem('mmt_premium')") || html.includes('localStorage.getItem("mmt_premium")')) continue;
+      if (!html.includes('</head>')) continue;
+      html = html.replace('</head>', PREMIUM_GATE_SCRIPT + '</head>');
+      fs.writeFileSync(full, html);
+      added++;
+    }
+  };
+  walk(root);
+  console.log(`Premium gate: ${added} page(s) under dist/premium gained the inline mmt_premium check`);
+}
+
 function generateArchiveHtml(archive) {
   if (archive.length === 0) return '<p class="text-center py-10" style="color:var(--mmt-text-secondary);">No issues yet.</p>';
   const total = archive.length;
@@ -1285,22 +1345,7 @@ function generateArchiveHtml(archive) {
 
   return page1Items.map((item, i) => {
     const issueNum = total - i;
-    const topicSlugs = (item.tags || []).map(t => slugify(t)).join(',');
-    const tags = (item.tags || []).map(t =>
-      `<a href="/topics/${slugify(t)}/" class="tag no-underline">${escapeHtml(t)}</a>`
-    ).join('');
-    const isExternal = item.url && item.url.startsWith('http');
-    const linkAttrs = isExternal ? 'target="_blank" rel="noopener"' : '';
-    const externalIcon = isExternal ? ' <svg width="0.75em" height="0.75em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:baseline;opacity:0.5;" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>' : '';
-    const card = `<article class="card article-card p-6 md:p-8" data-topics="${topicSlugs}">
-          <div class="flex items-start justify-between gap-4 mb-2">
-            <h3 class="text-subsection" style="font-size:clamp(1.1rem, 1.5vw, 1.35rem);"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-navy);">${escapeHtml(item.title)}${externalIcon}</a></h3>
-            <span class="text-eyebrow whitespace-nowrap" style="font-size:0.7rem;">#${issueNum}</span>
-          </div>
-          <p class="text-caption mb-3">${calendarSvg}${escapeHtml(item.date)}${readTimeBadge(item.readTime)}</p>
-          <p class="text-caption leading-relaxed mb-4">${escapeHtml(item.description)}</p>
-          <div class="flex flex-wrap gap-2">${tags}</div>
-        </article>`;
+    const card = renderArchiveCard(item, issueNum);
     // Insert subscribe CTA after 3rd article
     return i === 2 ? card + '\n        ' + subscribeCta : card;
   }).join('\n        ') + pagination;
@@ -3323,6 +3368,16 @@ function injectDashShell(html, activePage) {
   if (/class\s*=\s*"dash-header"/i.test(html)) {
     html = html.replace(/<div\s+class="dash-header"[\s\S]*?<\/div>\s*<\/div>/gi, '');
   }
+  // 2026-10-01: 13 source pages also carried an inline dash-main; the shell
+  // injected below adds its own, so dist nested two (double padding).
+  const inlineMain = html.match(/<(main|div)\s+class="dash-main"[^>]*>/i);
+  if (inlineMain) {
+    html = html.replace(inlineMain[0], '<div data-dash-main-stripped="true">');
+    if (inlineMain[1].toLowerCase() === 'main') {
+      const closeAt = html.lastIndexOf('</main>');
+      if (closeAt > -1) html = html.slice(0, closeAt) + '</div>' + html.slice(closeAt + '</main>'.length);
+    }
+  }
 
   const dashCss = `
     .dash-shell { display:grid; grid-template-columns:220px 1fr; min-height:100dvh; }
@@ -3807,6 +3862,16 @@ ${innerHtml}
       // pattern is `</div>\s*</div>` (inner close, then outer close).
       html = html.replace(/<div\s+class="dash-header"[\s\S]*?<\/div>\s*<\/div>/gi, '');
     }
+    // 2026-10-01: the same source pages carried an inline dash-main; the shell
+    // injected below adds its own, so dist nested two (double padding).
+    const inlineMain = html.match(/<(main|div)\b[^>]*\bclass="dash-main"[^>]*>/i);
+    if (inlineMain) {
+      html = html.replace(inlineMain[0], '<div data-dash-main-stripped="true">');
+      if (inlineMain[1].toLowerCase() === 'main') {
+        const closeAt = html.lastIndexOf('</main>');
+        if (closeAt > -1) html = html.slice(0, closeAt) + '</div>' + html.slice(closeAt + '</main>'.length);
+      }
+    }
 
     const dashCss = `
     .dash-shell { display:grid; grid-template-columns:220px 1fr; min-height:100dvh; }
@@ -4114,6 +4179,15 @@ ${innerHtml}
         '  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n' +
         '  <meta name="apple-mobile-web-app-title" content="MMT">\n</head>'
       );
+      // Org charts are full-width pages outside the dash shell; give members a
+      // way back in (2026-10-01: 11 pages had no nav and no sidebar).
+      const topbar = '<div class="premium-topbar" style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;padding:10px 20px;background:var(--mmt-soft,#F3F4F6);border-bottom:1px solid var(--mmt-border,#D8E0E8);font-size:13px;font-family:Inter,system-ui,sans-serif;">'
+        + '<a href="/premium/dashboard/" style="font-weight:700;color:var(--mmt-navy,#0A192F);text-decoration:none;">&#9733; MMT Premium</a>'
+        + '<a href="/premium/key-people/" style="color:var(--mmt-teal,#457B9D);text-decoration:none;">Key People</a>'
+        + '<a href="/agencies/" style="color:var(--mmt-teal,#457B9D);text-decoration:none;">Agency Profiles</a>'
+        + '<a href="/" style="margin-left:auto;color:var(--mmt-text-secondary,#5C6B7A);text-decoration:none;">missionmeetstech.com</a>'
+        + '</div>';
+      html = html.replace(/<body([^>]*)>/, `<body$1>\n${topbar}`);
       html = html.replace('</body>', siteScriptTag + '\n</body>');
       html = inlineTailwindCss(html);
       fs.writeFileSync(destPath, html);
@@ -5698,20 +5772,7 @@ function generatePaginatedNewsletterPages(archive) {
     const total = archive.length;
     const pageArchiveHtml = pageItems.map((item, i) => {
       const issueNum = total - (start + i);
-      const tags = (item.tags || []).map(t =>
-        `<a href="/topics/${slugify(t)}/" class="tag no-underline">${escapeHtml(t)}</a>`
-      ).join('');
-      const isExternal = item.url && item.url.startsWith('http');
-      const linkAttrs = isExternal ? 'target="_blank" rel="noopener"' : '';
-      return `<article class="card p-6 md:p-8">
-          <div class="flex items-start justify-between gap-4 mb-2">
-            <h3 class="text-subsection" style="font-size:clamp(1.1rem, 1.5vw, 1.35rem);"><a href="${item.url}" ${linkAttrs} class="no-underline hover:opacity-80" style="color:var(--mmt-navy);">${escapeHtml(item.title)}</a></h3>
-            <span class="text-eyebrow whitespace-nowrap" style="font-size:0.7rem;">#${issueNum}</span>
-          </div>
-          <p class="text-caption mb-3">${escapeHtml(item.date)}</p>
-          <p class="text-caption leading-relaxed mb-4">${escapeHtml(item.description)}</p>
-          <div class="flex flex-wrap gap-2">${tags}</div>
-        </article>`;
+      return renderArchiveCard(item, issueNum);
     }).join('\n        ');
 
     const pagination = generatePaginationHtml(page, totalPages, '/newsletter/');
@@ -6103,6 +6164,7 @@ async function build() {
     console.warn('Content corpus build failed:', err.message);
   }
 
+  ensurePremiumGates();
   console.log('\n=== Build complete! ===');
 
   // Summary

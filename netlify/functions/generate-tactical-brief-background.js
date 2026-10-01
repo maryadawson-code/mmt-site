@@ -1,3 +1,5 @@
+// 2026-10-01: MARKETPULSE_INTERNAL_SECRET set in Netlify; this line changes the
+// bundle so the Lambda reads the new env (a code-free rebuild would not).
 // ============================================================
 // generate-tactical-brief-background.js — Netlify Background Function
 //

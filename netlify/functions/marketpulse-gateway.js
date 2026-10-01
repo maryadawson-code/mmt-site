@@ -1,3 +1,5 @@
+// 2026-10-01: MARKETPULSE_INTERNAL_SECRET set in Netlify; this line changes the
+// bundle so the Lambda reads the new env (a code-free rebuild would not).
 // ============================================================
 // marketpulse-gateway.js — Netlify Function
 //
