@@ -588,7 +588,11 @@ async function searchSAMOpportunities({ keyword, relaxKeyword, naics, agency, so
   if (solnum && String(solnum).trim()) {
     primaryParams.set("solnum", String(solnum).trim());
   } else if (keyword && String(keyword).trim()) {
-    primaryParams.set("q", String(keyword).trim());
+    // `title` is a real filter (substring of the notice title). The free-text
+    // `q` this sent until 2026-09-30 is ignored by the v2 search (q=zzzzqqqxx
+    // returned every DoD notice in the window), so SAM.gov handed back the
+    // newest notices of any subject and only the post-filter hid the noise.
+    primaryParams.set("title", String(keyword).trim());
   }
 
   // Secondary call: same window, RELAXED keyword (the most specific term
@@ -610,7 +614,7 @@ async function searchSAMOpportunities({ keyword, relaxKeyword, naics, agency, so
   if (deptName) secondaryParams.set("deptname", deptName);
   if (naics) secondaryParams.set("ncode", naics);
   if (relaxKeyword && String(relaxKeyword).trim() && String(relaxKeyword).trim() !== String(keyword || "").trim()) {
-    secondaryParams.set("q", String(relaxKeyword).trim());
+    secondaryParams.set("title", String(relaxKeyword).trim());
   }
 
   const mapOpp = (o) => ({
@@ -1076,7 +1080,7 @@ async function enrichWithFederalData(args) {
   console.log(`[FEDERAL-API] Enriching: "${keywords}" agency=${agency || "all"} naics=${(naics || []).join(",")} since=${windowStart || "default"} setAside=${setAsideCodes ? setAsideCodes.length + " codes" : "none"}`);
 
   // Every query runs in parallel and under its own bound (TIMEOUTS_MS).
-  const [awards, categories, samOpps, fedRegRaw, gaoReports, agencySpending, recipientAwards, recipientObligations] = await Promise.all([
+  const [awards, categories, samOppsRaw, fedRegRaw, gaoReports, agencySpending, recipientAwards, recipientObligations] = await Promise.all([
     guardedAwards(plan, budget, TIMEOUTS_MS.awards),
     bounded(getSpendingByCategory({
       agency: agency || undefined,
@@ -1111,6 +1115,15 @@ async function enrichWithFederalData(args) {
   if (fedRegRaw && Array.isArray(fedRegRaw.documents) && fedRegRaw.documents.length) {
     const kept = filterRelevant(fedRegRaw.documents, terms, ["title", "abstract"]);
     fedRegDocs = { ...fedRegRaw, documents: kept, total: kept.length, filtered_out: fedRegRaw.documents.length - kept.length };
+  }
+  // SAM.gov rows get the same treatment: only a notice whose title or
+  // description carries the terms is shown to the model (2026-09-30 audit:
+  // the SAM rows were never filtered, so Navy ship repairs could be cited
+  // for a DHA question).
+  let samOpps = samOppsRaw;
+  if (samOppsRaw && Array.isArray(samOppsRaw.opportunities) && samOppsRaw.opportunities.length) {
+    const kept = filterRelevant(samOppsRaw.opportunities, terms, ["title", "description"]);
+    samOpps = { ...samOppsRaw, opportunities: kept, total: kept.length, filtered_out: samOppsRaw.opportunities.length - kept.length };
   }
 
   const summary = [];
