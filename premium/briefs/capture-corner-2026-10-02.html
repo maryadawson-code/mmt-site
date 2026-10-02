@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capture Corner: Where the Recapture Money Moves &middot; MMT Premium</title>
+  <meta name="description" content="October 2, 2026. FY2027 MHS budget lines read as a buy · the insourcing exposure inside In-House Care · three appropriation scenarios and what each does to your pipeline · recapture as a market · the retiree math · calendar through September 2027">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; --ci-gold-bg:#FEF9E7; --mmt-red:#E63946; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .brief-body { font-size:15px; line-height:1.75; color:#314155; }
+    .brief-body h2 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:40px 0 14px; letter-spacing:-0.02em; }
+    .brief-body h3 { font-size:17px; font-weight:700; color:var(--mmt-navy); margin:28px 0 10px; }
+    .brief-body h4 { font-size:15px; font-weight:700; color:var(--mmt-navy); margin:20px 0 8px; }
+    .brief-body p { margin-bottom:16px; max-width:65ch; }
+    .brief-body ul { margin-bottom:16px; padding-left:1.25rem; }
+    .brief-body ol { margin-bottom:16px; padding-left:1.5rem; }
+    .brief-body li { margin-bottom:8px; }
+    .brief-body a { color:var(--mmt-teal); text-decoration:underline; text-underline-offset:3px; }
+    .brief-body strong { color:var(--mmt-navy); }
+    .brief-body em { color:var(--mmt-text-secondary); }
+    .brief-body hr { border:none; border-top:1px solid var(--mmt-border); margin:36px 0; }
+    .brief-body blockquote { border-left:3px solid var(--mmt-teal); padding:8px 16px; margin:16px 0; color:var(--mmt-text-secondary); background:rgba(69,123,157,0.04); border-radius:0 6px 6px 0; }
+    .brief-body img { max-width:100%; height:auto; display:block; margin:24px 0; border:1px solid var(--mmt-border); border-radius:8px; }
+    .brief-body table { width:100%; border-collapse:collapse; margin:16px 0 24px; font-size:14px; }
+    .brief-body th, .brief-body td { border:1px solid var(--mmt-border); padding:10px 12px; text-align:left; vertical-align:top; }
+    .brief-body th { background:var(--mmt-soft); color:var(--mmt-navy); font-weight:700; }
+    .pills { margin:8px 0 24px; }
+    .pill { display:inline-block; padding:4px 10px; background:rgba(69,123,157,0.08); color:var(--mmt-teal); border-radius:14px; font-size:11px; font-weight:600; margin:2px 4px 2px 0; }
+    .pill-red { background:rgba(230,57,70,0.08); color:var(--mmt-red); }
+    .pill-gold { background:var(--ci-gold-bg); color:var(--ci-gold); }
+    .back-link { font-size:13px; font-weight:600; color:var(--mmt-teal); text-decoration:none; }
+    .back-link:hover { opacity:0.7; }
+    .gate-notice { background:linear-gradient(180deg,#FFFFFF 0%,#F3F4F6 100%); border:1px solid var(--mmt-border); border-radius:12px; padding:32px 28px; text-align:center; margin:32px auto; max-width:540px; }
+    .gate-notice h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin-bottom:10px; }
+    .gate-notice p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:16px; line-height:1.55; }
+    .gate-cta { display:inline-block; padding:12px 24px; background:var(--mmt-navy); color:var(--mmt-white); font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; }
+    .section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ci-gold); }
+    .deep-dive-card { margin:48px 0 16px; padding:32px 28px; border:2px solid var(--ci-gold); border-radius:12px; background:linear-gradient(180deg,#FFFFFF 0%,var(--ci-gold-bg) 100%); }
+    .deep-dive-card h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:0 0 12px; letter-spacing:-0.01em; }
+    .deep-dive-card p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:14px; line-height:1.6; max-width:none; }
+    .deep-dive-price { display:inline-flex; align-items:baseline; gap:8px; margin:4px 0 16px; font-weight:800; color:var(--mmt-navy); }
+    .deep-dive-price .amount { font-size:28px; }
+    .deep-dive-price .unit { font-size:13px; font-weight:600; color:var(--mmt-text-secondary); text-transform:uppercase; letter-spacing:0.06em; }
+    .brief-body a.deep-dive-cta,
+    a.deep-dive-cta { display:inline-block; padding:14px 26px; background:var(--ci-gold); color:#FFFFFF; font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; letter-spacing:0.02em; }
+    .brief-body a.deep-dive-cta:hover,
+    a.deep-dive-cta:hover { opacity:0.92; color:#FFFFFF; }
+    .deep-dive-examples { font-size:13px; color:var(--mmt-text-secondary); font-style:italic; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <main class="wrap" style="padding:48px 0 80px; max-width:820px;">
+    <a href="/capture-corner.html" class="back-link">&larr; Capture Corner</a>
+
+    <div style="margin-top:20px; margin-bottom:8px;">
+      <div class="section-label">MMT Premium &middot; Capture Corner &middot; October 2, 2026</div>
+    </div>
+    <h1 style="font-size:clamp(26px,3.2vw,38px);line-height:1.1;letter-spacing:-0.03em;margin-bottom:10px;">Where the Recapture Money Moves</h1>
+    <p style="font-size:15px;color:var(--mmt-text-secondary);margin-bottom:20px;"><em>FY2027 MHS budget lines read as a buy · the insourcing exposure inside In-House Care · three appropriation scenarios and what each does to your pipeline · recapture as a market · the retiree math · calendar through September 2027</em></p>
+
+    <div class="pills">
+      <span class="pill pill-gold">Capture Corner</span>
+      <span class="pill ">FY2027 MHS budget</span>
+      <span class="pill pill-red">Risk: MTF support descoping</span>
+    </div>
+
+    <div data-gate="free" style="display:block;">
+      <div class="gate-notice">
+        <h3>&#9733; Premium Capture Corner</h3>
+        <p>This issue is the companion to &quot;The Recapture Year,&quot; published this week. The public piece maps the six conditions that make recapture succeed in fiscal 2027, drawn from the Director's lines of effort and the Military Health System budget justification. This one works the money underneath: which lines shrink and which grow, which contract types sit inside the insourcing language, what happens to your pipeline under each of three appropriation outcomes, where recapture creates demand instead of cutting it, why the retiree half of the strategy runs on a different fund, and every dated event between now and the end of the fiscal year.</p>
+        <a class="gate-cta" href="/pricing">See premium plans</a>
+      </div>
+    </div>
+
+    <div data-access="premium" data-gate="premium" class="brief-body">
+
+<p><em>Capture Corner is the premium BD intelligence companion to Mission Meets Tech. Public-record sourced. Independent analysis. Not a recommendation, not vendor advocacy, not capture material. Built for federal health BD, capture, and proposal leaders who need analytical depth, not headlines.</em></p>
+<p><em>This issue is the companion to &quot;The Recapture Year,&quot; published this week. The public piece maps the six conditions that make recapture succeed in fiscal 2027, drawn from the Director&#39;s lines of effort and the Military Health System budget justification. This one works the money underneath: which lines shrink and which grow, which contract types sit inside the insourcing language, what happens to your pipeline under each of three appropriation outcomes, where recapture creates demand instead of cutting it, why the retiree half of the strategy runs on a different fund, and every dated event between now and the end of the fiscal year.</em></p>
+<hr>
+<h2>1. The picture at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Funding status</td>
+<td>Continuing resolution through December 11, 2026 at FY2026 levels; no new starts, no production-rate increases above FY2026 [CC1][CC2]</td>
+</tr>
+<tr>
+<td>Organizing strategy</td>
+<td>Recapture of care into key MTFs; MTFs and DTFs the primary assignment for uniformed medical and dental personnel; reattract beneficiaries including family members and retirees [CC3]</td>
+</tr>
+<tr>
+<td>Director&#39;s frame</td>
+<td>Four lines of effort; a core group of 15 hospitals to bring more complex cases inside through VA and civilian partnerships; FY2027 campaign order to finalize the plan [CC4][CC5][CC6]</td>
+</tr>
+<tr>
+<td>Account structure requested</td>
+<td>Combat and Operational Medicine Program (0130D) and Private Sector Care Program (0146D, O&amp;M only, $22.18 billion, +6.7 percent, all of it price change) [CC3]</td>
+</tr>
+<tr>
+<td>Largest cut to contract dollars</td>
+<td>$331.9 million in contract services across COMP, $294.3 million of it in In-House Care (BAG 1) [CC3]</td>
+</tr>
+<tr>
+<td>Insourcing signal</td>
+<td>+$52.8 million civilian pay to reduce reliance on contracted labor for administrative, clinical support, and operational functions in MTFs; In-House Care contractor FTEs down 1,260 from FY2025 to FY2026 [CC3]</td>
+</tr>
+<tr>
+<td>Largest growth line</td>
+<td>+$200.4 million digital health: ambient listening, expanded video visits, Tele-Critical Care [CC3]</td>
+</tr>
+<tr>
+<td>Partnership and priority MTF money</td>
+<td>+$51.0 million Improve Wartime Readiness: rescoping MTFs with underutilized capabilities; military-civilian and VA partnerships at priority MTF locations; deployment planning, operations and training offices, medical materiel, and medical logistics offices in MTFs [CC3]</td>
+</tr>
+<tr>
+<td>Status of the split</td>
+<td>House appropriations supports two accounts; House NDAA section 724 enacts them; Senate NDAA stalled since July 14 cloture failure [CC7][CC8][CC9]</td>
+</tr>
+<tr>
+<td>Nearest hard dates</td>
+<td>EO 14426 discharge records October 8; contract review January 6; magnet clause January 1 [CC10][CC11]</td>
+</tr>
+</tbody></table>
+<p><strong>Confidence: High on every budget figure</strong>, read from the FY2027 MHS justification (Volume 1, PBA-19, OP-5, and PB-31R exhibits). <strong>High on the CR terms and legislative status.</strong> <strong>Medium on the timing calls in Sections 3 and 4</strong>, which are analytical reads of how standard CR language and option cycles interact. <strong>Analytical on the scenarios in Section 4.</strong></p>
+<p><strong>The lead finding for a capture team: fiscal 2027 moves money from hospital support labor to hospital capability. The contract dollars come out of In-House Care, the same budget activity that runs the military hospitals, and the growth goes to digital health, partnership infrastructure at priority hospitals, data, blood, and trauma systems. The stopgap freezes both moves at last year&#39;s rate, so the cut and the growth arrive together when a full-year bill passes. A support contractor whose option date falls after that bill, and a technology firm whose growth pursuit depends on it, are watching the same vote.</strong></p>
+<hr>
+<h2>2. The lines that move</h2>
+<p><strong>Confidence: High on amounts. Analytical on the capture consequence column.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Line (FY2027 request)</th>
+<th>Change</th>
+<th>What it funds</th>
+<th>Capture consequence</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Contract services reduction</td>
+<td>-$331.9M ($294.3M BAG 1)</td>
+<td>&quot;Cost efficiency and the consolidation of services&quot; [CC3]</td>
+<td>Descoping and consolidation risk on MTF support task orders at option or recompete</td>
+</tr>
+<tr>
+<td>Civilian pay, In-House Care</td>
+<td>+$52.8M</td>
+<td>Oversight, internal capability, less contracted labor in admin, clinical support, operational functions [CC3]</td>
+<td>Insourcing pressure on the same functions; targeted recruitment and retention in critical skills</td>
+</tr>
+<tr>
+<td>Digital health</td>
+<td>+$200.4M</td>
+<td>Ambient listening, video visits, Tele-Critical Care [CC3]</td>
+<td>Largest IT growth line; implementation, integration, change management, clinical workflow</td>
+</tr>
+<tr>
+<td>Improve Wartime Readiness</td>
+<td>+$51.0M</td>
+<td>Rescoping, partnerships at priority MTFs, deployment planning and operations offices, medical materiel and logistics offices [CC3]</td>
+<td>Partnership administration, readiness operations support, and logistics at the Core 15</td>
+</tr>
+<tr>
+<td>Combat casualty care data and trauma systems</td>
+<td>+$38.6M</td>
+<td>Modernization and a Joint Trauma Education and Training Directorate [CC3]</td>
+<td>Registry, data standards, training content; the down payment on the Joint Warfighter Health System [CC6]</td>
+</tr>
+<tr>
+<td>Blood program</td>
+<td>+$42.5M</td>
+<td>Freeze-dried plasma, pre-deployment donor screening, Armed Services Blood Program staffing and modernization [CC3]</td>
+<td>Product, screening, and blood logistics support</td>
+</tr>
+<tr>
+<td>Pharmaceutical supply</td>
+<td>+$81.4M</td>
+<td>Securing supply and new manufacturing pathways for critical medications [CC3]</td>
+<td>Industrial base and onshoring plays; aligned with the new CAE&#39;s published supply chain views [CC12]</td>
+</tr>
+<tr>
+<td>IT contract support, engineering, equipment</td>
+<td>+$93.3M</td>
+<td>Rising contract and equipment costs [CC3]</td>
+<td>Price relief on existing IT support, not new scope</td>
+</tr>
+<tr>
+<td>Federated data ecosystem</td>
+<td>+$21.1M</td>
+<td>Rapid access and integration across a distributed enterprise [CC3]</td>
+<td>Data integration and governance</td>
+</tr>
+<tr>
+<td>EIDS</td>
+<td>+$10.6M</td>
+<td>Completing the data transition by end of FY2027 [CC3]</td>
+<td>A dated deliverable; transition support and downstream reporting</td>
+</tr>
+<tr>
+<td>Workforce optimization</td>
+<td>-$40.4M and -$24.4M</td>
+<td>Manpower reductions and structure realignment in BAG 4 and BAG 5 [CC3]</td>
+<td>Headquarters and management activities shrink; watch advisory and assistance support</td>
+</tr>
+</tbody></table>
+<p>Two things in that table deserve a second look. The +$93.3 million for IT contract support is price, so it protects existing IT support contracts from inflation while the In-House Care contract line shrinks; the cut and the protection sit in different budget activities. And the +$51.0 million line is the only place the budget puts a dollar figure on the Core 15, which makes its narrative the closest thing in the public record to a statement of work for the priority hospitals. [CC3]</p>
+<hr>
+<h2>3. The insourcing exposure, function by function</h2>
+<p><strong>Confidence: High on the budget language. Analytical on which contract types it reaches.</strong></p>
+<p>The justification names three function families for reduced reliance on contracted labor inside MTFs: administrative, clinical support, and operational. [CC3] It does not define them. Read against how MTF support is typically bought, my read of where the language lands first:</p>
+<table>
+<thead>
+<tr>
+<th>Function family</th>
+<th>Typical contracted work in MTFs</th>
+<th>Exposure read</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Administrative</td>
+<td>Front desk and appointing, medical records and release of information, coding and billing support, credentialing, administrative support to clinical departments</td>
+<td>High. Lowest barrier to civil service replacement; already the target of the FY2026 contractor FTE reduction</td>
+</tr>
+<tr>
+<td>Clinical support</td>
+<td>Medical assistants, LPNs, technicians, sterile processing, pharmacy technicians, scribes</td>
+<td>Medium. Hiring lag and pay competition limit how fast civil servants replace contractors; ambient listening growth substitutes for part of the scribe workforce</td>
+</tr>
+<tr>
+<td>Operational</td>
+<td>Facility operations support, patient movement, logistics support inside the hospital, readiness and training administration</td>
+<td>Medium. Some of this work likely migrates into the +$51.0M readiness and logistics offices at priority MTFs</td>
+</tr>
+</tbody></table>
+<p>Three facts sharpen the read. In-House Care already shed 1,260 contractor FTEs between FY2025 and FY2026, and the justification attributes that to planned increases in military and civilian personnel inside the hospitals. [CC3] Average uniformed strength in In-House Care rises by 1,486 in FY2027 while In-House Care civilian FTEs are flat, which means the uniformed side carries the growth. [CC3] And the contract services cut is $294.3 million in dollars against a flat contractor FTE count for FY2027, which reads as consolidation and repricing of the remaining work more than a headcount purge. [CC3]</p>
+<p><strong>Timing.</strong> A continuing resolution funds last year&#39;s rate, and last year&#39;s rate includes last year&#39;s contracts. My read is that the reduction executes after a full-year appropriation, which puts option exercises, bridge decisions, and recompetes for MTF administrative and clinical support services between roughly February and September 2027 at the most risk of descoping. A contract whose option falls inside the CR window is likelier to be exercised as is.</p>
+<p><strong>Where the work goes.</strong> Rescoping of MTFs with underutilized capabilities is in the same paragraph as the priority-MTF investment. [CC3] Support contracts at facilities outside the priority set carry two risks at once: the insourcing language and the rescoping language. Support contracts at Core 15 facilities carry the insourcing risk and a demand offset, because recapture adds patients.</p>
+<hr>
+<h2>4. Three appropriation scenarios</h2>
+<p><strong>Confidence: Analytical. Built on the CR terms, 31 U.S.C. 1532, the House bills, and reported analysis of a full-year CR&#39;s effect on the new account.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>What it looks like</th>
+<th>What happens to the split</th>
+<th>Capture consequence</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A. Full-year appropriation with the split and transfer authority</td>
+<td>Two accounts enacted with a capped, reported authority to move funds between them</td>
+<td>Recapture savings in PSCP can follow workload into COMP</td>
+<td>Cleanest year for recapture; growth lines execute from mid-year; insourcing proceeds on schedule</td>
+</tr>
+<tr>
+<td>B. Full-year appropriation with the split, no transfer authority</td>
+<td>Two accounts enacted, no cross-account authority beyond general transfer limits</td>
+<td>Every recaptured case costs COMP while its network savings stay in PSCP [CC13]</td>
+<td>Core 15 hospitals hit COMP cost pressure by summer; expect reprogramming requests and caution on recapture targets; support contract cuts may deepen to offset</td>
+</tr>
+<tr>
+<td>C. Full-year continuing resolution</td>
+<td>Government funded at FY2026 structure for the year</td>
+<td>The new 0146D account lacks a prior-year appropriation to continue; reported analysis says a full-year CR would leave it unfunded as a separate account, so the split slides to FY2028 [CC14]</td>
+<td>Growth increases never arrive; the In-House Care contract cut never arrives either; status quo with FY2026 money and FY2027 prices</td>
+</tr>
+</tbody></table>
+<p>Scenario B is the one to plan for, because it is the default if conference does nothing special. The bill summaries and the administration&#39;s statement on H.R. 8800 say nothing about transfer authority between the two accounts. [CC7][CC8] Scenario C is the one that looks like relief for support contractors and is a loss for everyone selling growth.</p>
+<p>The calendar makes C more plausible than usual. The midterms fall November 3, the CR expires December 11 inside the lame-duck session, and the Senate has not taken up its authorization bill since July. [CC1][CC9] Watch the first week of December.</p>
+<hr>
+<h2>5. Recapture as a market</h2>
+<p><strong>Confidence: High on the policy statements. Analytical on the demand map.</strong></p>
+<p>Recapture cuts purchased care spending only if military hospitals can find, schedule, treat, and document the returning patients. Every step in that chain is a buy.</p>
+<p><strong>Referral routing.</strong> DHA said in June that referrals to its new Specialty Care Centers of Excellence will be managed by central referral management centers, with specialty-specific eligibility criteria going to providers, referral managers, and the managed care support contractors. [CC15] The T-5 contractors route the referrals; Humana Government Business holds the East Region and received a CY2026 option of about $7.34 billion, with the CY2027 option decision reported for December. [CC16] Referral management workflow, criteria logic, and leakage reporting sit between DHA and the contractors who control the referral stream today.</p>
+<p><strong>Specialty capacity.</strong> The TRICARE Prime specialty access standard is four weeks. [CC17] Via has committed to reducing the time service members spend nondeployable, and the justification reports active duty access below the benchmark since FY2023. [CC5][CC3] My read is that active duty specialty access tightens in FY2027 while the Core 15 pursue more complex cases, which makes specialty scheduling, capacity modeling, and template management the first operational choke point. The Inspector General found DHA&#39;s access dashboards unreliable enough that staff built workarounds, so measurement work comes bundled with it. [CC18]</p>
+<p><strong>Patient experience.</strong> Military Prime enrollees scored below the CAHPS benchmark in FY2025 while civilian Prime and Select met it. [CC3] The $200.4 million digital health line, video visits in particular, is the budget&#39;s answer to getting beneficiaries back through the door. [CC3]</p>
+<p><strong>Partnership data.</strong> GAO found DHA cannot count its civilian partnerships and that 39 percent of personnel with partnership clinical activity on readiness dashboards logged no partnership hours in the timecard system; DHA concurred with guidance to collect complete clinical activity data and partially concurred on the inventory. [CC19] Inventory, timekeeping integration, and readiness credit for partnership hours are an unfunded requirement with a GAO recommendation behind it.</p>
+<p><strong>Pharmacy.</strong> The justification calls the MTF pharmacy the lowest-cost option and expects medication delivery inside MTFs to rise with care. [CC3] Direct care pharmacy operations, automation, and supply move with recapture.</p>
+<hr>
+<h2>6. The retiree math</h2>
+<p><strong>Confidence: High on the payer rules and the fund. Analytical on the implication.</strong></p>
+<p>The justification names retirees among the beneficiaries military hospitals must reattract, and DHA&#39;s June Centers of Excellence announcement promised more specialty choice inside the system to beneficiaries past, present, and future. [CC3][CC15] Older beneficiaries carry the complexity surgical currency needs.</p>
+<p>Their care runs on different money. The Medicare-Eligible Retiree Health Care Fund pays the Department&#39;s share of care for Medicare-eligible retirees in both direct care and private sector care, and the new Private Sector Care Program excludes TRICARE For Life. [CC3][CC20] In the network, Medicare pays first and TRICARE For Life second; in a military hospital, those beneficiaries are seen on a space-available basis and the Department carries the cost. [CC21]</p>
+<p>For a capture team that means two things. Retiree recapture creates direct care workload without creating PSCP savings, so any business case that sells retiree volume as a cost reduction will fail review; sell it as currency and readiness. And the hospitals taking that volume need the specialty capacity, scheduling, and pharmacy support in Section 5 more than anyone, because space-available care is exactly the care that loses its slot when active duty demand rises.</p>
+<hr>
+<h2>7. Vehicles and executives in the window</h2>
+<p><strong>Confidence: Medium. Vehicle facts as reported in prior Capture Corner analysis; verify current status before positioning.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Vehicle or office</th>
+<th>Status as last reported</th>
+<th>Relevance to recapture year</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Enterprise CSO HT003826SC005</td>
+<td>Standing vehicle usable by any PAE or program office; white paper, demonstration, proposal phases; sole-source follow-on production authority [CC22]</td>
+<td>The fastest path for digital health, referral, and capacity tools when growth money arrives late</td>
+</tr>
+<tr>
+<td>Workforce 3.0</td>
+<td>Ordering period closes January 2027; CTO5 sole-source justification July 31, 2026; no successor solicitation located [CC23]</td>
+<td>The largest managed-services decision inside the CR window; the successor strategy shows how far insourcing reaches</td>
+</tr>
+<tr>
+<td>OMNIBUS IV</td>
+<td>8(a) on-ramp expected; base ordering period ends June 19, 2027 [CC24]</td>
+<td>Small business door for data, digital, and support work</td>
+</tr>
+<tr>
+<td>MHS GENESIS platform contracts</td>
+<td>Oracle Health direct by November 2026; Henry Schein and Solventum by July 2027; services layers competed [CC25]</td>
+<td>The first DHA contracts likely written under the EO 14426 interoperability requirement</td>
+</tr>
+<tr>
+<td>Component Acquisition Executive</td>
+<td>Matt Clark, effective end of September 2026 [CC26]</td>
+<td>Signs the first milestone decisions of the year; has published supply chain views that match the pharmaceutical line [CC12]</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>8. Calendar through September 2027</h2>
+<p><strong>Confidence: High on statutory and executive order dates. Medium on reported contract milestones.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Event</th>
+<th>Capture consequence</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>October 8, 2026</td>
+<td>EO 14426 records at discharge [CC10]</td>
+<td>First test of how DoW and VA read the order; FOIA the implementing memos</td>
+</tr>
+<tr>
+<td>November 2026</td>
+<td>Oracle Health direct platform contract target [CC25]</td>
+<td>Services layers begin to separate from the platform</td>
+</tr>
+<tr>
+<td>November 3, 2026</td>
+<td>Midterm elections [CC1]</td>
+<td>Lame-duck session decides the CR exit</td>
+</tr>
+<tr>
+<td>November 9 to December 8, 2026</td>
+<td>TRICARE Open Season (expected) [CC27]</td>
+<td>First public signal on Prime enrollment toward MTFs</td>
+</tr>
+<tr>
+<td>December 2026</td>
+<td>T-5 CY2027 option decisions (reported) [CC16]</td>
+<td>Purchased care contractors&#39; footing for the recapture year</td>
+</tr>
+<tr>
+<td>December 11, 2026</td>
+<td>CR expires [CC1]</td>
+<td>Scenario A, B, or C begins to resolve</td>
+</tr>
+<tr>
+<td>January 1, 2027</td>
+<td>DFARS magnet restriction reaches the mine; EO 14415 limits nonavailability determinations [CC11][CC28]</td>
+<td>Medical equipment supplier certifications</td>
+</tr>
+<tr>
+<td>January 6, 2027</td>
+<td>EO 14426 contract review and forward interoperability clause [CC10]</td>
+<td>Modifications and solicitation language for medical and personnel IT</td>
+</tr>
+<tr>
+<td>January 2027</td>
+<td>Workforce 3.0 ordering period closes [CC23]</td>
+<td>Successor strategy reveals services posture</td>
+</tr>
+<tr>
+<td>March 7, 2027</td>
+<td>EO 14426 permanent sharing and AI tools [CC10]</td>
+<td>AI and records integration demand</td>
+</tr>
+<tr>
+<td>February to September 2027</td>
+<td>Window when In-House Care contract reductions most likely execute (analytical) [CC3]</td>
+<td>Option exercises and recompetes for MTF support at risk</td>
+</tr>
+<tr>
+<td>June 19, 2027</td>
+<td>OMNIBUS IV base ordering period ends [CC24]</td>
+<td>Option decision</td>
+</tr>
+<tr>
+<td>July 2027</td>
+<td>GENESIS direct contracts complete (target) [CC25]</td>
+<td>Competed services layers awarded</td>
+</tr>
+<tr>
+<td>September 30, 2027</td>
+<td>EIDS transition due; fiscal year ends [CC3]</td>
+<td>Year-end obligation surge for growth lines</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>9. The counterargument, stated fairly</h2>
+<p><strong>Confidence: This is the strongest case against the reads above, and parts of it are right.</strong></p>
+<p><em>Insourcing announcements rarely survive contact with hiring.</em> Civilian hiring lags, pay competition in clinical support is brutal, and the justification itself describes FY2026 civilian growth as overcoming hiring lags. [CC3] A contract cut the hospitals cannot backfill turns into a bridge. That is a fair prediction for clinical support, and the reason Section 3 rates it medium. It is weaker for administrative work, which is where the FY2026 contractor reduction already landed.</p>
+<p><em>The budget is a request.</em> Congress can restore contract services, reject the split, or pass a full-year CR, and appropriators historically protect hospital operations. All true. The direction still matters, because DHA writes its option decisions and acquisition strategies to the request it submitted, and the incumbents who wait for the final number lose the months when requirements get written.</p>
+<p><em>Recapture has been promised before.</em> The reforms that followed the December 2016 legislation moved hospital management to DHA and pushed care into the network, and the system&#39;s capacity problems are documented by GAO. [CC29] The answer is that this budget names the mechanism, puts uniformed staff growth behind it, and ties it to a readiness rationale with a Director&#39;s personal commitment. That does not guarantee execution. It does guarantee that the requirements, the white papers, and the evaluation criteria for FY2027 buys will be written in recapture language.</p>
+<hr>
+<h2>10. What to do in the next ninety days</h2>
+<p><strong>Confidence: Analytical.</strong></p>
+<ol>
+<li><p><strong>Map every MTF support contract you hold to the three function families in Section 3.</strong> For each, list the option or end date, the facility, and whether the facility is a likely priority hospital. Contracts with administrative scope at facilities off the priority list and option dates after a full-year bill are the top of the risk list.</p>
+</li>
+<li><p><strong>Build the insourcing transition offer before the government asks.</strong> A priced, fixed-fee transition and knowledge transfer service for functions moving to civil service positions turns a cut into a smaller, defensible task order. The government needs someone to train the replacements.</p>
+</li>
+<li><p><strong>Reposition growth capture onto the five lines that rise.</strong> Digital health, the Improve Wartime Readiness line at priority hospitals, trauma and registry data, blood, and pharmaceutical supply. Write white papers to the enterprise CSO now so they are in the queue when the money arrives. [CC22]</p>
+</li>
+<li><p><strong>Write the recapture business case in readiness terms.</strong> Lead with currency and access for active duty, show the purchased care effect only for Prime enrollees, and never claim savings on retiree volume. Section 6 explains why a reviewer will catch it.</p>
+</li>
+<li><p><strong>Ask for the transfer authority answer.</strong> If you have a relationship with DHA J-8 or with appropriations staff, the question of cross-account authority is the single most useful piece of intelligence for the year. Scenario B changes the size of every Core 15 requirement.</p>
+</li>
+<li><p><strong>Prepare for the January 6 language.</strong> Every medical or personnel IT proposal after that date should carry an interoperability paragraph traceable to EO 14426, with a named standard and a measure. [CC10]</p>
+</li>
+<li><p><strong>Track the open season and CAHPS signals.</strong> Prime enrollment shifts after December 8 and the next CAHPS release are the earliest public evidence of whether recapture is working, and they move requirement priorities by spring.</p>
+</li>
+</ol>
+<hr>
+<p>Mary</p>
+<p>Mission Meets Tech Premium</p>
+<hr>
+<p><em>Next Capture Corner: scheduled for the next major federal health or defense-health opportunity in active capture. Subscribers will receive an alert when the next issue publishes.</em></p>
+<p><em>Capture Corner is an independent intelligence product. It is not affiliated with the Defense Health Agency, the Department of War, or any company named here, and it is not connected to any offeror&#39;s bid strategy. Premium subscription includes access to the standing intelligence sidebar plus the searchable archive.</em></p>
+<hr>
+<h2>Sources</h2>
+<p>[CC1] American Association of Colleges of Osteopathic Medicine, &quot;President Trump Signs Continuing Resolution to Fund Government Through December 11,&quot; September 8, 2026. Source for: H.R. 6500 passage and signature, the December 11 expiration, and timing ahead of the November midterms. <a href="https://www.aacom.org/news-reports/news/2026/09/08/president-trump-signs-continuing-resolution-to-fund-government-through-december-11">https://www.aacom.org/news-reports/news/2026/09/08/president-trump-signs-continuing-resolution-to-fund-government-through-december-11</a></p>
+<p>[CC2] GovConWire, &quot;New CR Blocks New Defense Production Starts,&quot; September 2026. Source for: FY2026 funding levels, the bar on new production and production-rate increases, and the prohibition on activities lacking FY2026 appropriations. <a href="https://www.govconwire.com/articles/continuing-resolution-fy2027-funding-signed">https://www.govconwire.com/articles/continuing-resolution-fy2027-funding-signed</a></p>
+<p>[CC3] Department of War, Office of the Under Secretary of War (Comptroller), &quot;Military Health System, Fiscal Year 2027 Budget Estimates, Volume 1, Combat and Operational Medicine Program (0130D) and Private Sector Care Program (0146D),&quot; April 2026. Source for: every budget figure and quotation in Sections 1 through 3, 5, 6, and 8, including the PBA-19 introductory statement and program change summary; the In-House Care OP-5 program increases and personnel summary; the Improve Wartime Readiness narrative ($50,970 thousand); the PSC OP-5 reconciliation; the MERHCF statement; FY2025 performance measures including CAHPS and active duty access; and the PB-31R and In-House Care personnel summaries. <a href="https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf">https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf</a></p>
+<p>[CC4] Defense Health Agency, &quot;We Are a Combat Support Agency says new DHA Director,&quot; February 12, 2026. Source for: the four lines of effort. <a href="https://dha.mil/News/2026/02/12/18/57/We-Are-a-Combat-Support-Agency-says-new-DHA-Director">https://dha.mil/News/2026/02/12/18/57/We-Are-a-Combat-Support-Agency-says-new-DHA-Director</a></p>
+<p>[CC5] Defense Health Agency, &quot;Operational medical readiness preparing the medical warrior,&quot; March 10, 2026. Source for: reducing time nondeployable and the core group of 15 hospitals. <a href="https://dha.mil/News/2026/03/10/15/57/Operational-medical-readiness-preparing-the-medical-warrior">https://dha.mil/News/2026/03/10/15/57/Operational-medical-readiness-preparing-the-medical-warrior</a></p>
+<p>[CC6] Defense Health Agency, Robert Hammer, &quot;Data is Defense Health Agency&#39;s &#39;North Star&#39; delivering decisive warfighter support,&quot; September 8, 2026. Source for: the FY2027 campaign order finalizing the plan and the Joint Warfighter Health System. <a href="https://dha.mil/News/2026/09/09/14/24/North-Star-of-Defense-Health-Agency">https://dha.mil/News/2026/09/09/14/24/North-Star-of-Defense-Health-Agency</a></p>
+<p>[CC7] House Committee on Appropriations, &quot;Defense Appropriations Bill, 2027,&quot; subcommittee markup summary, June 10, 2026. Source for: $43.3 billion and support for two distinct appropriations. <a href="https://appropriations.house.gov/sites/evo-subsites/republicans-appropriations.house.gov/files/evo-media-document/fy27-defense-subcommittee-bill-summary.pdf">https://appropriations.house.gov/sites/evo-subsites/republicans-appropriations.house.gov/files/evo-media-document/fy27-defense-subcommittee-bill-summary.pdf</a></p>
+<p>[CC8] Office of Management and Budget, &quot;Statement of Administration Policy, H.R. 8800,&quot; July 21, 2026. Source for: section 724. <a href="https://www.whitehouse.gov/wp-content/uploads/2026/07/SAP-HR8800.pdf">https://www.whitehouse.gov/wp-content/uploads/2026/07/SAP-HR8800.pdf</a></p>
+<p>[CC9] Congressional Research Service, &quot;FY2027 NDAA: Status of Legislative Activity,&quot; IN12704, updated September 1, 2026. Source for: the July 14 cloture failure and no further Senate action. <a href="https://www.everycrsreport.com/reports/IN12704.html">https://www.everycrsreport.com/reports/IN12704.html</a></p>
+<p>[CC10] The White House, Executive Order 14426, &quot;Accelerating Access to Veterans&#39; Benefits and Employment Opportunities,&quot; September 8, 2026; 91 FR 58003. Source for: the 30, 120, and 180 day requirements. Detailed analysis in Capture Corner, &quot;The Clause That Opens on January 6,&quot; September 2026. <a href="https://www.whitehouse.gov/presidential-actions/2026/09/accelerating-access-to-veterans-benefits-and-employment-opportunities/">https://www.whitehouse.gov/presidential-actions/2026/09/accelerating-access-to-veterans-benefits-and-employment-opportunities/</a></p>
+<p>[CC11] DFARS 252.225-7052, &quot;Restriction on the Acquisition of Certain Magnets, Tantalum, and Tungsten.&quot; Source for: the January 1, 2027 step-change. <a href="https://www.acquisition.gov/dfars/252.225-7052-restriction-acquisition-certain-magnets-tantalum-and-tungsten">https://www.acquisition.gov/dfars/252.225-7052-restriction-acquisition-certain-magnets-tantalum-and-tungsten</a>.</p>
+<p>[CC12] Mission Meets Tech, &quot;The Man Who Publishes His Plan,&quot; September 4, 2026, and Capture Corner, &quot;The Calendar Under the Seat,&quot; September 4, 2026. Source for: Clark&#39;s published supply chain recommendations, including the Military Review essay on treating medicine as ammunition. Author&#39;s prior work.</p>
+<p>[CC13] 31 U.S.C. 1532, &quot;Prohibition against transfers.&quot; <a href="https://www.law.cornell.edu/uscode/text/31/1532">https://www.law.cornell.edu/uscode/text/31/1532</a></p>
+<p>[CC14] CSIS, &quot;Tracking FY 2027 Defense Appropriations, Reconciliation, and the Supplemental Request.&quot; Source for: the reported effect of a full-year CR on the new 0146D account. Reported; carried from prior Capture Corner analysis. <a href="https://www.csis.org/analysis/tracking-fy-2027-defense-appropriations-reconciliation-and-supplemental-request">https://www.csis.org/analysis/tracking-fy-2027-defense-appropriations-reconciliation-and-supplemental-request</a></p>
+<p>[CC15] DVIDS, Andrew Ortuzar, &quot;6 military hospitals and clinics recognized as Centers of Excellence to continue delivering high-quality, specialty care,&quot; June 24, 2026. Source for: central referral management centers, referral criteria for managed care support contractors, the past, present, and future beneficiaries language, and reducing private sector costs. <a href="https://www.dvidshub.net/news/568475/6-military-hospitals-and-clinics-recognized-centers-excellence-continue-delivering-high-quality-specialty-care">https://www.dvidshub.net/news/568475/6-military-hospitals-and-clinics-recognized-centers-excellence-continue-delivering-high-quality-specialty-care</a></p>
+<p>[CC16] Department of War contract announcements, December 17, 2025, Humana Government Business option period two for CY2026 at $7,342,637,605. Source for: the T-5 option cadence. Reported; carried from prior Capture Corner analysis. <a href="https://www.war.gov/News/Contracts/Contract/Article/4362955/contracts-for-dec-17-2025/">https://www.war.gov/News/Contracts/Contract/Article/4362955/contracts-for-dec-17-2025/</a></p>
+<p>[CC17] TRICARE, &quot;TRICARE Prime Access to Care Standards.&quot; Source for: the four-week specialty standard. <a href="https://tricare.mil/GettingCare/TRICARE-Prime-Access-Standards">https://tricare.mil/GettingCare/TRICARE-Prime-Access-Standards</a></p>
+<p>[CC18] Department of War Office of Inspector General, DODIG-2026-025, December 8, 2025, press release. Source for: dashboard workarounds and urgent wait variation. <a href="https://www.dodig.mil/In-the-Spotlight/Article/4356078/press-releaseaudit-of-the-defense-health-agencys-management-of-military-medical/">https://www.dodig.mil/In-the-Spotlight/Article/4356078/press-releaseaudit-of-the-defense-health-agencys-management-of-military-medical/</a></p>
+<p>[CC19] U.S. Government Accountability Office, GAO-26-107677, June 4, 2026. Source for: partnership inventory, timecard findings, and DoD concurrence. <a href="https://files.gao.gov/reports/GAO-26-107677/index.html">https://files.gao.gov/reports/GAO-26-107677/index.html</a></p>
+<p>[CC20] Military Officers Association of America, &quot;Inside the Military Health Care Budget: Big Changes … But What About Beneficiaries?,&quot; 2026. Source for: PSCP excluding TRICARE For Life. <a href="https://www.moaa.org/content/publications-and-media/news-articles/2026-news-articles/advocacy/inside-the-military-health-care-budget-big-changes--but-what-about-beneficiaries/">https://www.moaa.org/content/publications-and-media/news-articles/2026-news-articles/advocacy/inside-the-military-health-care-budget-big-changes--but-what-about-beneficiaries/</a></p>
+<p>[CC21] TRICARE, &quot;TRICARE For Life.&quot; Source for: Medicare paying first and space-available MTF care. <a href="https://tricare.mil/Plans/HealthPlans/TFL">https://tricare.mil/Plans/HealthPlans/TFL</a></p>
+<p>[CC22] OrangeSlices AI, &quot;DHA Opens Enterprise-Wide Commercial Solutions Opportunity,&quot; August 2026, describing HT003826SC005. Reported; carried from prior Capture Corner analysis. <a href="https://orangeslices.ai/dha-opens-enterprise-wide-commercial-solutions-opportunity/">https://orangeslices.ai/dha-opens-enterprise-wide-commercial-solutions-opportunity/</a></p>
+<p>[CC23] HigherGov vehicle and IDV records for Workforce 3.0 and HT003822D0001; GovDash record of the July 31, 2026 justification for exception to fair opportunity. Reported; carried from prior Capture Corner analysis; verify current status. <a href="https://www.highergov.com/vehicle/workforce-3-0-wf3-3093/">https://www.highergov.com/vehicle/workforce-3-0-wf3-3093/</a></p>
+<p>[CC24] SAM.gov presolicitation, &quot;On-Ramp for the Department of Defense OMNIBUS IV,&quot; January 2026, and Washington Technology coverage, August 2026. Reported; carried from prior Capture Corner analysis. <a href="https://sam.gov/workspace/contract/opp/87d03cafa68e4eeb9ecd870fe636f405/view">https://sam.gov/workspace/contract/opp/87d03cafa68e4eeb9ecd870fe636f405/view</a></p>
+<p>[CC25] SAM.gov notice, &quot;Sole Source to MHS GENESIS Solution providers,&quot; June 9, 2026, and trade coverage of the transition targets. Reported targets; carried from prior Capture Corner analysis. <a href="https://sam.gov/workspace/contract/opp/947fe670c6184824a5def4e406548a8c/view">https://sam.gov/workspace/contract/opp/947fe670c6184824a5def4e406548a8c/view</a></p>
+<p>[CC26] OrangeSlices AI, &quot;Matt Clark named DHA Assistant Director for Research, Development, and Acquisition and the Component Acquisition Executive,&quot; September 3, 2026. <a href="https://orangeslices.ai/matt-clark-named-dha-assistant-director-for-research-development-and-acquisition-and-the-component-acquisition-executive/">https://orangeslices.ai/matt-clark-named-dha-assistant-director-for-research-development-and-acquisition-and-the-component-acquisition-executive/</a></p>
+<p>[CC27] FedTools, &quot;TRICARE Open Season for 2027 coverage,&quot; updated August 24, 2026. Secondary; confirm against tricare.mil/openseason. <a href="https://www.fedtools.com/blog/tricare-open-season-2027-switch-guide">https://www.fedtools.com/blog/tricare-open-season-2027-switch-guide</a></p>
+<p>[CC28] The White House, Executive Order 14415, July 20, 2026. <a href="https://www.whitehouse.gov/presidential-actions/2026/07/securing-americas-defense-supply-chains-and-ensuring-domestic-acquisition-of-critical-materials/">https://www.whitehouse.gov/presidential-actions/2026/07/securing-americas-defense-supply-chains-and-ensuring-domestic-acquisition-of-critical-materials/</a></p>
+<p>[CC29] U.S. Government Accountability Office, Military Health System open recommendations, GAO-26-109066, June 25, 2026. Source for: MHS reforms since 2016 and the capacity constraint. <a href="https://www.gao.gov/products/gao-26-109066">https://www.gao.gov/products/gao-26-109066</a></p>
+<p>Sources verified as of October 1, 2026.</p>
+
+
+    <div class="deep-dive-card">
+  <div class="section-label" style="color:var(--ci-gold);margin-bottom:8px;">Custom Deep Dive &middot; Premium Add-On</div>
+  <h3>Want a custom deep-dive on any line in this brief?</h3>
+  <p>This brief maps the FY2027 budget lines that move, the three function families inside the insourcing language, and three appropriation scenarios through September 2027. It stops short of your position: which of your MTF support contracts sit at facilities off the priority list, where your option dates fall against the full-year bill, and which growth line your past performance fits. A custom deep-dive picks it up there.</p>
+  <div class="deep-dive-price"><span class="amount">$50</span><span class="unit">one-time &middot; 5&ndash;7 business day turnaround</span></div>
+  <p>I will pull the additional public-record sources, read the visible signal, and write a 4&ndash;6 page custom intelligence memo on the area you select. You name the question; I do the BD-grade analysis.</p>
+  <p style="margin-bottom:18px;"><a class="deep-dive-cta" href="https://buy.stripe.com/6oUdRb2NEaQI3uM6KL4c803">Buy a Custom Deep Dive &mdash; $50 &rarr;</a></p>
+  <p class="deep-dive-examples">Examples: <em>Deep Dive &mdash; MTF support contract exposure by facility and option date &middot; Deep Dive &mdash; Core 15 specialty capacity and referral routing demand</em></p>
+</div>
+
+    </div>
+  </main>
+
+  <footer class="footer"></footer>
+</body>
+</html>
