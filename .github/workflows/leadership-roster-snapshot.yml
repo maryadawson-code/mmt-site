@@ -61,10 +61,13 @@ jobs:
         id: snap
         run: node scripts/snapshot-leadership-pages.js
 
+      # index.json carries retrieved_at, so the tree is dirty after every run.
+      # Only a visible-line change or a first snapshot is worth a commit or a
+      # PR; an unchanged week leaves main alone (the run log is the record).
       - name: Detect changes
         id: changes
         run: |
-          if [ -n "$(git status --porcelain data/leadership-snapshots)" ]; then
+          if [ -n "$(git status --porcelain data/leadership-snapshots)" ] && { [ "${{ steps.snap.outputs.changed }}" != "0" ] || [ "${{ steps.snap.outputs.first }}" != "0" ]; }; then
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
           else
             echo "has_changes=false" >> "$GITHUB_OUTPUT"

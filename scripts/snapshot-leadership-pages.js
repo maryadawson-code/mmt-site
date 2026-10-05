@@ -147,6 +147,7 @@ async function main() {
   const report = [];
   let changed = 0;
   let failed = 0;
+  let first = 0;
 
   for (const t of TARGETS) {
     if (only && !only.includes(t.slug) && !only.includes(t.agency)) continue;
@@ -175,7 +176,7 @@ async function main() {
     // Changed means a reader would see a line appear or disappear. The hash
     // moves when nav order or a duplicate line shifts; that is not news.
     const isChanged = prevText ? added.length > 0 || removed.length > 0 : false;
-    const first = !prevText;
+    const isFirst = !prevText;
 
     index.pages[t.agency] = {
       slug: t.slug,
@@ -187,7 +188,7 @@ async function main() {
       http_status: r.status,
       sha256: hash,
       lines: text.split("\n").length,
-      last_changed_at: first ? now : isChanged ? now : prevMeta.last_changed_at || null,
+      last_changed_at: isFirst ? now : isChanged ? now : prevMeta.last_changed_at || null,
       last_diff: isChanged ? { added, removed } : prevMeta.last_diff || null,
       last_error: null,
     };
@@ -197,7 +198,8 @@ async function main() {
       fs.writeFileSync(txtPath, text + "\n");
     }
 
-    if (first) {
+    if (isFirst) {
+      first += 1;
       report.push(`### ${t.agency}\n\nFirst snapshot (${index.pages[t.agency].lines} lines). Nothing to compare yet.`);
       console.log(`${t.agency}: first snapshot, ${index.pages[t.agency].lines} lines`);
     } else if (isChanged) {
@@ -220,7 +222,7 @@ async function main() {
     note: "Visible text of each official leadership page behind /premium/org-charts. A page that was not reached keeps its previous snapshot and carries last_error; that is 'not reached', never 'unchanged'.",
   };
   index.last_run_at = now;
-  index.last_run = { changed, failed, checked: Object.keys(index.pages).length };
+  index.last_run = { changed, failed, first, checked: Object.keys(index.pages).length };
 
   const header =
     `# Leadership roster snapshot ${now.slice(0, 10)}\n\n` +
@@ -237,7 +239,7 @@ async function main() {
   }
 
   if (process.env.GITHUB_OUTPUT) {
-    fs.appendFileSync(process.env.GITHUB_OUTPUT, `changed=${changed}\nfailed=${failed}\n`);
+    fs.appendFileSync(process.env.GITHUB_OUTPUT, `changed=${changed}\nfailed=${failed}\nfirst=${first}\n`);
   }
   if (process.env.GITHUB_STEP_SUMMARY) {
     fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, header + report.join("\n\n") + "\n");
