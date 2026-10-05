@@ -172,7 +172,9 @@ async function main() {
     const text = pageText(r.body);
     const hash = sha256(text);
     const { added, removed } = lineDiff(prevText, text);
-    const isChanged = prevText ? hash !== sha256(prevText) : false;
+    // Changed means a reader would see a line appear or disappear. The hash
+    // moves when nav order or a duplicate line shifts; that is not news.
+    const isChanged = prevText ? added.length > 0 || removed.length > 0 : false;
     const first = !prevText;
 
     index.pages[t.agency] = {

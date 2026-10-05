@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-05T14:18:31.112Z",
+  "generated_at": "2026-10-05T14:35:55.542Z",
   "node_count": 478,
   "edge_count": 691,
   "nodes": [
@@ -2036,11 +2036,11 @@
       }
     },
     {
-      "id": "brig-gen-bill-a-soliz",
+      "id": "mr-william-walker",
       "type": "Person",
-      "canonical_name": "Brig. Gen. Bill A. Soliz",
+      "canonical_name": "Mr. William Walker",
       "properties": {
-        "title": "Acting Assistant Director, Healthcare Administration & Operations"
+        "title": "Assistant Director, Healthcare Administration & Operations"
       }
     },
     {
@@ -6449,11 +6449,11 @@
       "weight": 1
     },
     {
-      "from_id": "brig-gen-bill-a-soliz",
+      "from_id": "mr-william-walker",
       "to_id": "dha",
       "relation": "leads",
       "properties": {
-        "title": "Acting Assistant Director, Healthcare Administration & Operations"
+        "title": "Assistant Director, Healthcare Administration & Operations"
       },
       "weight": 1
     },

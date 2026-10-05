@@ -64,6 +64,12 @@ describe("org-chart-monitor decide()", () => {
     expect(d.diff).toEqual({ added: ["New Name"], removed: ["Old Name"] });
   });
 
+  it("is unchanged when only line order or a duplicate line moved", () => {
+    const d = _internal.decide({ text: "b\na\na", prevText: "a\nb", prevHash: "x" });
+    expect(d.changed).toBe(false);
+    expect(d.diff).toBeNull();
+  });
+
   it("is unchanged when the text matches", () => {
     const d = _internal.decide({ text: "same", prevText: "same", prevHash: "x" });
     expect(d.changed).toBe(false);

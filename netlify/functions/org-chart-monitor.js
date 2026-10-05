@@ -80,8 +80,12 @@ async function fetchTarget(target, fetchImpl) {
 function decide({ text, prevText, prevHash }) {
   const hash = sha256(text);
   if (prevText) {
-    const changed = sha256(prevText) !== hash;
-    return { hash, changed, baseline: false, diff: changed ? lineDiff(prevText, text) : null };
+    // A reader-visible change is a line added or removed. The hash also moves
+    // when nav order or a duplicate line shifts, which is not news (the
+    // 2026-10-05 snapshot showed four pages "changed" with an empty diff).
+    const diff = lineDiff(prevText, text);
+    const changed = diff.added.length > 0 || diff.removed.length > 0;
+    return { hash, changed, baseline: false, diff: changed ? diff : null };
   }
   return { hash, changed: false, baseline: true, diff: null, note: prevHash ? "no stored text; new baseline" : "first run" };
 }
