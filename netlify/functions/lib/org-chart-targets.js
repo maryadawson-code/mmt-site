@@ -155,13 +155,25 @@ function isBotBlock(status) {
   return [401, 403, 406, 429, 503].includes(Number(status));
 }
 
+/**
+ * A line worth reporting has at least two words. A roster change always
+ * moves a name or a title line ("Acting Director", "Jane Doe, MD"); the
+ * lines that move on their own are share widgets and nav tokens
+ * ("Comments", "Facebook", "X/Twitter": healthit.gov rotated those three
+ * times in one hour on 2026-10-05). A single-word line is still part of
+ * the snapshot text, it just does not count as a change by itself.
+ */
+function significant(line) {
+  return /\S\s+\S/.test(line);
+}
+
 /** Lines in `next` that are not in `prev`, and the reverse. Order-insensitive. */
 function lineDiff(prev, next) {
   const a = new Set(String(prev || "").split("\n").filter(Boolean));
   const b = new Set(String(next || "").split("\n").filter(Boolean));
-  const added = [...b].filter((l) => !a.has(l));
-  const removed = [...a].filter((l) => !b.has(l));
+  const added = [...b].filter((l) => !a.has(l) && significant(l));
+  const removed = [...a].filter((l) => !b.has(l) && significant(l));
   return { added, removed };
 }
 
-module.exports = { TARGETS, USER_AGENT, pageText, lineDiff, urlsFor, isBotBlock };
+module.exports = { TARGETS, USER_AGENT, pageText, lineDiff, significant, urlsFor, isBotBlock };

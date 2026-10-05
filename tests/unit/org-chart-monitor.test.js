@@ -37,9 +37,9 @@ describe("org-chart-targets", () => {
     expect(text).not.toContain("Nobody");
   });
 
-  it("lineDiff is a set difference in both directions", () => {
-    const d = lineDiff("a\nb\nc", "b\nc\nd");
-    expect(d).toEqual({ added: ["d"], removed: ["a"] });
+  it("lineDiff is a set difference in both directions and ignores single-word lines", () => {
+    const d = lineDiff("Jane Doe\nDirector of X\nFacebook\nc", "Director of X\nJohn Roe\nComments\nd");
+    expect(d).toEqual({ added: ["John Roe"], removed: ["Jane Doe"] });
   });
 
   it("isBotBlock separates a refused client from a missing page", () => {
@@ -65,7 +65,7 @@ describe("org-chart-monitor decide()", () => {
   });
 
   it("is unchanged when only line order or a duplicate line moved", () => {
-    const d = _internal.decide({ text: "b\na\na", prevText: "a\nb", prevHash: "x" });
+    const d = _internal.decide({ text: "b b\na a\na a", prevText: "a a\nb b", prevHash: "x" });
     expect(d.changed).toBe(false);
     expect(d.diff).toBeNull();
   });
@@ -144,8 +144,8 @@ describe("org-chart-monitor runMonitor()", () => {
   it("reports a failed send as not emailed", async () => {
     const supabase = fakeSupabase();
     const blobs = fakeBlobs();
-    for (const t of TARGETS) blobs.data[`org-chart-text/${t.agency}`] = "Old";
-    const fetchImpl = async () => ({ ok: true, status: 200, text: async () => page(["New"]) });
+    for (const t of TARGETS) blobs.data[`org-chart-text/${t.agency}`] = "Old Person";
+    const fetchImpl = async () => ({ ok: true, status: 200, text: async () => page(["New Person"]) });
     const out = await _internal.runMonitor({ supabase, fetchImpl, blobs, mail: async () => ({ success: false, error: "resend down" }) });
     expect(out.changes_detected).toBe(12);
     expect(out.emailed).toBe(false);
