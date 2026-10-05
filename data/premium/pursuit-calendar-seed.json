@@ -1,26 +1,26 @@
 {
   "_meta": {
     "description": "Pursuit Calendar seed events. Source of truth when Supabase pursuit_calendar table is unreachable. Times are America/New_York (ET). Status is computed dynamically by the renderer for date-based events; explicit status values (Protest, Protest Due, Watch, Needs Source) are honored as-is.",
-    "last_curated_at": "2026-09-28",
+    "last_curated_at": "2026-10-05",
     "curator": "automated",
     "timezone": "America/New_York",
-    "window_start": "2026-09-28",
-    "window_end": "2026-12-27"
+    "window_start": "2026-10-05",
+    "window_end": "2027-01-03"
   },
   "events": [
     {
-      "id": "71af6ea8-8f85-4a92-bf65-c4fd52af92cc",
-      "title": "Advanced Research Projects Agency for Health (ARPA-H) Small Business Innovation Research (SBIR)/Small Business Technology Transfer (STTR) Program",
-      "event_date": "2026-10-01",
+      "id": "21956287-2085-49ad-968a-f3bbfac85272",
+      "title": "Restorative and health-Enhancing Sleep Time (REST)",
+      "event_date": "2026-10-13",
       "event_time_et": null,
       "agency": "ARPA-H",
-      "vehicle": "7599226SN106",
+      "vehicle": "ARPA-H-SOL-26-159",
       "ref": null,
       "category": "deadline",
       "status_override": null,
-      "source_url": "https://sam.gov/workspace/contract/opp/0e6b5119ca2540868b047f155d57ea9d/view",
+      "source_url": "https://sam.gov/workspace/contract/opp/acd4fb0c0e9645108e05585940ab97f9/view",
       "source_system": "sam.gov",
-      "notes": "Sol: 7599226SN106 · NAICS 541715 · Set-aside: Small Business Set Aside - Total"
+      "notes": "Sol: ARPA-H-SOL-26-159 · NAICS 541715 · Set-aside: No Set aside used"
     }
   ]
 }
