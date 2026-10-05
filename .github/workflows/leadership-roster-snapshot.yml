@@ -19,6 +19,13 @@ on:
   schedule:
     - cron: '30 10 * * 1'
   workflow_dispatch:
+  # A working session that needs today's rosters pushes a leadership-watch-*
+  # branch and gets a snapshot committed back to it. workflow_dispatch only
+  # works once the file is on main; a push trigger works from any branch.
+  # The bot's own push uses GITHUB_TOKEN, which never starts another run.
+  push:
+    branches:
+      - 'leadership-watch-**'
 
 permissions:
   contents: write
