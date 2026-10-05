@@ -11,19 +11,32 @@
 // New chart => add its official roster page here, its slug to
 // build.js ORG_CHART_AGENCIES, and nothing else. `slug` is the chart file
 // name under premium/org-charts/ (IHS has two source pages, one chart).
+// `fallback_urls` are tried in order when the primary is not 200; which one
+// answered is recorded, so a moved page shows up as "fallback used", not as
+// weeks of silent fetch failures.
 // ============================================================
 
 const TARGETS = [
   {
     agency: "DHA",
     slug: "dha",
-    url: "https://www.health.mil/About-MHS/OASDHA/Defense-Health-Agency",
+    // The original health.mil page returned 404 on 2026-10-05 (every weekly
+    // run since it moved counted as "fetch failed", never as a change).
+    url: "https://dha.mil/About-DHA/Organizational-Structure",
+    fallback_urls: [
+      "https://www.health.mil/About-MHS/Defense-Health-Agency",
+      "https://dha.mil/About-DHA/Leadership",
+      "https://www.health.mil/About-MHS/OASDHA/Defense-Health-Agency",
+    ],
     chart_url: "https://missionmeetstech.com/premium/org-charts/dha",
   },
   {
     agency: "VA",
     slug: "va",
-    url: "https://www.va.gov/oig/leadership/",
+    // va.gov/oig/leadership returned 404 on 2026-10-05; the chart's own
+    // cited source is the Official Biographies index.
+    url: "https://www.va.gov/opa/bios/",
+    fallback_urls: ["https://department.va.gov/about/leadership/", "https://www.va.gov/oig/leadership/"],
     chart_url: "https://missionmeetstech.com/premium/org-charts/va",
   },
   // Added 2026-08-25 with the 8 new org charts. Each URL is the official
@@ -81,13 +94,17 @@ const TARGETS = [
   {
     agency: "FDA",
     slug: "fda",
-    url: "https://www.fda.gov/about-fda/fda-organization",
+    // fda-organization names no people (verified 2026-10-05); the chart
+    // cites the leadership profiles page.
+    url: "https://www.fda.gov/about-fda/fda-organization/fda-leadership-profiles",
+    fallback_urls: ["https://www.fda.gov/about-fda/fda-commissioner", "https://www.fda.gov/about-fda/fda-organization"],
     chart_url: "https://missionmeetstech.com/premium/org-charts/fda",
   },
   {
     agency: "NIH",
     slug: "nih-nitaac",
-    url: "https://www.nih.gov/about-nih/who-we-are/nih-director",
+    url: "https://www.nih.gov/about-nih/organization/nih-leadership",
+    fallback_urls: ["https://www.nih.gov/about-nih/who-we-are/nih-director"],
     chart_url: "https://missionmeetstech.com/premium/org-charts/nih-nitaac",
   },
 ];
@@ -128,6 +145,16 @@ function pageText(html) {
   return lines.join("\n");
 }
 
+/** Every URL to try for a target, primary first. */
+function urlsFor(target) {
+  return [target.url, ...(Array.isArray(target.fallback_urls) ? target.fallback_urls : [])];
+}
+
+/** A status that means "this host refuses scripted clients", not "this page is gone". */
+function isBotBlock(status) {
+  return [401, 403, 406, 429, 503].includes(Number(status));
+}
+
 /** Lines in `next` that are not in `prev`, and the reverse. Order-insensitive. */
 function lineDiff(prev, next) {
   const a = new Set(String(prev || "").split("\n").filter(Boolean));
@@ -137,4 +164,4 @@ function lineDiff(prev, next) {
   return { added, removed };
 }
 
-module.exports = { TARGETS, USER_AGENT, pageText, lineDiff };
+module.exports = { TARGETS, USER_AGENT, pageText, lineDiff, urlsFor, isBotBlock };

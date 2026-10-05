@@ -1,7 +1,7 @@
 {
   "_schema": {
     "version": "1.0",
-    "last_updated": "2026-09-25",
+    "last_updated": "2026-10-05",
     "source_note": "Profiles sourced from official agency leadership pages. Each profile cites its source URL. Quarterly refresh cadence per PAYWALL-ENRICHMENT.md item 4. Per-person verified_date/verification_note override the block date when a name was last confirmed on an older page pull."
   },
   "agencies": [
@@ -245,8 +245,8 @@
       "agency_code": "ARPA-H",
       "agency_name": "Advanced Research Projects Agency for Health (ARPA-H)",
       "source_url": "https://arpa-h.gov/about/people",
-      "verified_date": "2026-08-25",
-      "note": "ARPA-H is HHS's high-risk biomedical R&D agency. Program managers run individual programs with significant autonomy. Capture work focuses on the four mission offices: Health Science Futures, Proactive Health, Resilient Systems (no director or program managers listed as of Aug 25, 2026), Scalable Solutions. The Business Innovation Division Director seat is vacant and recruiting; the Deputy Director is the working Acting Head of Contracting Activity.",
+      "verified_date": "2026-10-05",
+      "note": "ARPA-H is HHS's high-risk biomedical R&D agency. Program managers run individual programs with significant autonomy. Capture work focuses on the four mission offices: Health Science Futures (Director Gene Civillico, Deputy Tyler Best), Proactive Health, Resilient Systems (no director or program managers listed as of Oct 5, 2026), Scalable Solutions (program managers listed, no office leadership listed as of Oct 5, 2026). The Business Innovation Division Director seat, in recruitment since April 2026, is held by Catherine Stevens on the Oct 5, 2026 People page; the HHS HCA roster last fetched Aug 25, 2026 still names Deputy Director Benjamin Bryant as Acting Head of Contracting Activity, so the HCA designation is pending official confirmation.",
       "people": [
         {
           "name": "Alicia Jackson",
@@ -267,22 +267,22 @@
           "why_watch": "Often the execution-side gatekeeper for program-level decisions."
         },
         {
+          "name": "Gene Civillico",
+          "title": "Director, Health Science Futures",
+          "scope": "Mission office; high-risk basic-to-translational health science. 12 program managers.",
+          "why_watch": "New permanent Director listed Oct 5, 2026 after the office ran on an Acting Director. Sets which HSF programs get funded next."
+        },
+        {
           "name": "Tyler Best",
-          "title": "Acting Director, Health Science Futures",
+          "title": "Deputy Director, Health Science Futures",
           "scope": "Mission office — high-risk basic-to-translational health science.",
-          "why_watch": "One of four mission offices; programs span from foundational science to platform technology."
+          "why_watch": "Acting Director of HSF through Aug 2026; now Deputy under Gene Civillico. Still the continuity contact for HSF programs."
         },
         {
           "name": "Glen Coppersmith",
           "title": "Director, Proactive Health",
           "scope": "Mission office — prevention, wellness, behavioral and mental health.",
           "why_watch": "Active program area for AI-driven health monitoring and digital therapeutics."
-        },
-        {
-          "name": "Natalie Kates",
-          "title": "Acting Director, Scalable Solutions",
-          "scope": "Mission office — manufacturing, supply chain, deployable health technology.",
-          "why_watch": "Procurement and scale-up programs land here."
         },
         {
           "name": "Nikolaos Ipiotis",
@@ -310,19 +310,15 @@
         },
         {
           "name": "Andrew Carney",
-          "title": "Program Manager, Resilient Systems",
-          "scope": "Programs in the Resilient Systems mission office.",
-          "why_watch": "PMs at ARPA-H run their programs with significant autonomy. Direct relationships matter.",
-          "verified_date": "2026-05-07",
-          "verification_note": "Program-level role; not listed on the Aug 25, 2026 leadership page. Last confirmed May 7, 2026."
+          "title": "Program Manager, Proactive Health",
+          "scope": "Programs in the Proactive Health mission office.",
+          "why_watch": "PMs at ARPA-H run their programs with significant autonomy. Direct relationships matter."
         },
         {
           "name": "James Coburn",
-          "title": "Portfolio Lead, Scalable Solutions",
-          "scope": "Portfolio-level coordination across multiple Scalable Solutions programs.",
-          "why_watch": "Sets cross-program priorities within Scalable Solutions.",
-          "verified_date": "2026-05-07",
-          "verification_note": "Program-level role; not listed on the Aug 25, 2026 leadership page. Last confirmed May 7, 2026."
+          "title": "Program Manager, Scalable Solutions",
+          "scope": "Programs in the Scalable Solutions mission office, which lists no office leadership as of Oct 5, 2026.",
+          "why_watch": "Sets cross-program priorities within Scalable Solutions."
         },
         {
           "name": "Karen Schmaling",
@@ -330,21 +326,25 @@
           "scope": "Portfolio-level coordination across multiple Proactive Health programs.",
           "why_watch": "Sets cross-program priorities within Proactive Health.",
           "verified_date": "2026-05-07",
-          "verification_note": "Program-level role; not listed on the Aug 25, 2026 leadership page. Last confirmed May 7, 2026."
+          "verification_note": "Program-level role; not listed on the Aug 25 or Oct 5, 2026 People page. Last confirmed May 7, 2026."
         },
         {
           "name": "David Gunning",
           "title": "Program Manager, Proactive Health",
           "scope": "Specific program in the Proactive Health portfolio.",
-          "why_watch": "AI/ML-adjacent program manager — historically connected to defense AI work.",
-          "verified_date": "2026-05-07",
-          "verification_note": "Program-level role; not listed on the Aug 25, 2026 leadership page. Last confirmed May 7, 2026."
+          "why_watch": "AI/ML-adjacent program manager — historically connected to defense AI work."
         },
         {
           "name": "Jen Cama",
           "title": "Director, Division of Government Relations and Strategy",
           "scope": "ARPA-H external affairs; congressional and interagency engagement.",
           "why_watch": "Where Hill engagement and strategic positioning flows."
+        },
+        {
+          "name": "Sara Reistad-Long",
+          "title": "Chief Strategy Officer, Strategic Affairs Office",
+          "scope": "Agency strategy and the Strategic Affairs Office.",
+          "why_watch": "New listing Oct 5, 2026. Strategy seats shape which mission-office themes get the next solicitation cycle."
         },
         {
           "name": "Keith Martin",
@@ -359,10 +359,16 @@
           "why_watch": "The commercialization office is where prototype-to-production conversations start; relevant to any performer planning a follow-on."
         },
         {
+          "name": "Catherine Stevens",
+          "title": "Director, Business Innovation Division",
+          "scope": "ARPA-H's acquisition organization. The April 2026 vacancy announcement described this billet as the agency's highest acquisition authority, holding Head of Contracting authority.",
+          "why_watch": "Listed Oct 5, 2026 after the seat sat in recruitment since April 2026. Her HCA designation is pending official confirmation on the HHS HCA roster. A new BID Director resets acquisition risk tolerance across every open ISO."
+        },
+        {
           "name": "Benjamin Bryant",
-          "title": "Deputy Director, Business Innovation Division; Acting Head of Contracting Activity",
-          "scope": "Runs the acquisition shop day to day and signs as Acting HCA while the BID Director seat is vacant.",
-          "why_watch": "Both the deputy running the shop and the Acting HCA signing for it. The working POC for OT, CSO, and SBIR acquisition questions. A new BID Director hire resets acquisition risk tolerance across every open solicitation."
+          "title": "Deputy Director, Business Innovation Division; Acting Head of Contracting Activity per the HHS HCA roster",
+          "scope": "Runs the acquisition shop day to day. Named Acting HCA on the HHS HCA roster (reviewed Apr 27, 2026; fetched Aug 25, 2026); the roster has not been re-fetched since Catherine Stevens was listed as BID Director.",
+          "why_watch": "The working POC for OT, CSO, and SBIR acquisition questions until the HHS roster moves the HCA designation. When it does, acquisition risk tolerance resets across every open solicitation."
         }
       ]
     },

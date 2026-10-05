@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-09-30T16:01:34.042Z",
-  "node_count": 476,
-  "edge_count": 695,
+  "generated_at": "2026-10-05T14:18:31.112Z",
+  "node_count": 478,
+  "edge_count": 691,
   "nodes": [
     {
       "id": "peo-dhms-deployment",
@@ -2276,11 +2276,19 @@
       }
     },
     {
+      "id": "gene-civillico",
+      "type": "Person",
+      "canonical_name": "Gene Civillico",
+      "properties": {
+        "title": "Director, Health Science Futures"
+      }
+    },
+    {
       "id": "tyler-best",
       "type": "Person",
       "canonical_name": "Tyler Best",
       "properties": {
-        "title": "Acting Director, Health Science Futures"
+        "title": "Deputy Director, Health Science Futures"
       }
     },
     {
@@ -2289,14 +2297,6 @@
       "canonical_name": "Glen Coppersmith",
       "properties": {
         "title": "Director, Proactive Health"
-      }
-    },
-    {
-      "id": "natalie-kates",
-      "type": "Person",
-      "canonical_name": "Natalie Kates",
-      "properties": {
-        "title": "Acting Director, Scalable Solutions"
       }
     },
     {
@@ -2336,7 +2336,7 @@
       "type": "Person",
       "canonical_name": "Andrew Carney",
       "properties": {
-        "title": "Program Manager, Resilient Systems"
+        "title": "Program Manager, Proactive Health"
       }
     },
     {
@@ -2344,7 +2344,7 @@
       "type": "Person",
       "canonical_name": "James Coburn",
       "properties": {
-        "title": "Portfolio Lead, Scalable Solutions"
+        "title": "Program Manager, Scalable Solutions"
       }
     },
     {
@@ -2372,6 +2372,14 @@
       }
     },
     {
+      "id": "sara-reistad-long",
+      "type": "Person",
+      "canonical_name": "Sara Reistad-Long",
+      "properties": {
+        "title": "Chief Strategy Officer, Strategic Affairs Office"
+      }
+    },
+    {
       "id": "keith-martin",
       "type": "Person",
       "canonical_name": "Keith Martin",
@@ -2388,11 +2396,19 @@
       }
     },
     {
+      "id": "catherine-stevens",
+      "type": "Person",
+      "canonical_name": "Catherine Stevens",
+      "properties": {
+        "title": "Director, Business Innovation Division"
+      }
+    },
+    {
       "id": "benjamin-bryant",
       "type": "Person",
       "canonical_name": "Benjamin Bryant",
       "properties": {
-        "title": "Deputy Director, Business Innovation Division; Acting Head of Contracting Activity"
+        "title": "Deputy Director, Business Innovation Division; Acting Head of Contracting Activity per the HHS HCA roster"
       }
     },
     {
@@ -3944,6 +3960,17 @@
       }
     },
     {
+      "id": "article-the-recapture-year",
+      "type": "Article",
+      "canonical_name": "The Recapture Year",
+      "properties": {
+        "slug": "the-recapture-year",
+        "type": "article",
+        "url": "/newsletter/the-recapture-year/",
+        "published": "2026-10-02"
+      }
+    },
+    {
       "id": "article-capture-corner-2026-04-29",
       "type": "Article",
       "canonical_name": "DHA Reorganization: Sixteen Changes, Five That Move Your Pipeline",
@@ -4351,6 +4378,17 @@
       }
     },
     {
+      "id": "article-capture-corner-2026-10-02",
+      "type": "Article",
+      "canonical_name": "Where the Recapture Money Moves",
+      "properties": {
+        "slug": "capture-corner-2026-10-02",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-10-02.html",
+        "published": "2026-10-02"
+      }
+    },
+    {
       "id": "article-premium-briefs-2026-03-21",
       "type": "Article",
       "canonical_name": "Week of March 21, 2026",
@@ -4601,28 +4639,6 @@
         "type": "contract_intel",
         "url": "/contracts/cio-cs-follow-on-the-store/",
         "published": "2026-09-10"
-      }
-    },
-    {
-      "id": "article-va-ehrm-electronic-health-record-modernization",
-      "type": "Article",
-      "canonical_name": "VA EHRM (Electronic Health Record Modernization)",
-      "properties": {
-        "slug": "va-ehrm-electronic-health-record-modernization-",
-        "type": "contract_intel",
-        "url": "/contracts/va-ehrm-electronic-health-record-modernization/",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-mhs-genesis-dhmsm-bridge",
-      "type": "Article",
-      "canonical_name": "MHS GENESIS (DHMSM Bridge)",
-      "properties": {
-        "slug": "mhs-genesis-dhmsm-bridge-",
-        "type": "contract_intel",
-        "url": "/contracts/mhs-genesis-dhmsm-bridge/",
-        "published": "2026-08-17"
       }
     }
   ],
@@ -6685,11 +6701,20 @@
       "weight": 1
     },
     {
+      "from_id": "gene-civillico",
+      "to_id": "arpa-h",
+      "relation": "leads",
+      "properties": {
+        "title": "Director, Health Science Futures"
+      },
+      "weight": 1
+    },
+    {
       "from_id": "tyler-best",
       "to_id": "arpa-h",
       "relation": "leads",
       "properties": {
-        "title": "Acting Director, Health Science Futures"
+        "title": "Deputy Director, Health Science Futures"
       },
       "weight": 1
     },
@@ -6699,15 +6724,6 @@
       "relation": "leads",
       "properties": {
         "title": "Director, Proactive Health"
-      },
-      "weight": 1
-    },
-    {
-      "from_id": "natalie-kates",
-      "to_id": "arpa-h",
-      "relation": "leads",
-      "properties": {
-        "title": "Acting Director, Scalable Solutions"
       },
       "weight": 1
     },
@@ -6752,7 +6768,7 @@
       "to_id": "arpa-h",
       "relation": "leads",
       "properties": {
-        "title": "Program Manager, Resilient Systems"
+        "title": "Program Manager, Proactive Health"
       },
       "weight": 1
     },
@@ -6761,7 +6777,7 @@
       "to_id": "arpa-h",
       "relation": "leads",
       "properties": {
-        "title": "Portfolio Lead, Scalable Solutions"
+        "title": "Program Manager, Scalable Solutions"
       },
       "weight": 1
     },
@@ -6793,6 +6809,15 @@
       "weight": 1
     },
     {
+      "from_id": "sara-reistad-long",
+      "to_id": "arpa-h",
+      "relation": "leads",
+      "properties": {
+        "title": "Chief Strategy Officer, Strategic Affairs Office"
+      },
+      "weight": 1
+    },
+    {
       "from_id": "keith-martin",
       "to_id": "arpa-h",
       "relation": "leads",
@@ -6811,11 +6836,20 @@
       "weight": 1
     },
     {
+      "from_id": "catherine-stevens",
+      "to_id": "arpa-h",
+      "relation": "leads",
+      "properties": {
+        "title": "Director, Business Innovation Division"
+      },
+      "weight": 1
+    },
+    {
       "from_id": "benjamin-bryant",
       "to_id": "arpa-h",
       "relation": "leads",
       "properties": {
-        "title": "Deputy Director, Business Innovation Division; Acting Head of Contracting Activity"
+        "title": "Deputy Director, Business Innovation Division; Acting Head of Contracting Activity per the HHS HCA roster"
       },
       "weight": 1
     },
@@ -7841,6 +7875,27 @@
       "weight": 1
     },
     {
+      "from_id": "article-the-recapture-year",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-recapture-year",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-recapture-year",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-capture-corner-2026-04-29",
       "to_id": "dhmsm",
       "relation": "mentions",
@@ -8695,6 +8750,13 @@
       "weight": 1
     },
     {
+      "from_id": "article-capture-corner-2026-10-02",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-premium-briefs-2026-03-21",
       "to_id": "federal-ehr",
       "relation": "mentions",
@@ -9229,76 +9291,6 @@
     {
       "from_id": "article-cio-cs-follow-on-the-store",
       "to_id": "polaris",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-va-ehrm-electronic-health-record-modernization",
-      "to_id": "va-ehrm",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-va-ehrm-electronic-health-record-modernization",
-      "to_id": "va-ehrm-electronic-health-record-modernization",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-va-ehrm-electronic-health-record-modernization",
-      "to_id": "vista",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-dhmsm-bridge",
-      "to_id": "dhmsm",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-dhmsm-bridge",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-dhmsm-bridge",
-      "to_id": "hcds",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-dhmsm-bridge",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-dhmsm-bridge",
-      "to_id": "mhs-genesis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-dhmsm-bridge",
-      "to_id": "mhs-genesis-dhmsm-bridge",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-dhmsm-bridge",
-      "to_id": "mosa",
       "relation": "mentions",
       "properties": {},
       "weight": 1

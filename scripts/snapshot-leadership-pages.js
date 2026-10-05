@@ -29,7 +29,7 @@
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
-const { TARGETS, USER_AGENT, pageText, lineDiff } = require("../netlify/functions/lib/org-chart-targets");
+const { TARGETS, USER_AGENT, pageText, lineDiff, urlsFor, isBotBlock } = require("../netlify/functions/lib/org-chart-targets");
 
 const ROOT = path.resolve(__dirname, "..");
 const OUT_DIR = path.join(ROOT, "data", "leadership-snapshots");
@@ -68,12 +68,71 @@ async function fetchPage(url) {
       },
     });
     const body = await res.text();
-    return { status: res.status, ok: res.ok, body, final_url: res.url };
+    return { status: res.status, ok: res.ok, body, final_url: res.url, via: "fetch" };
   } catch (err) {
     return { status: 0, ok: false, error: err && err.name === "AbortError" ? `timeout after ${TIMEOUT_MS}ms` : String(err && err.message) };
   } finally {
     clearTimeout(timer);
   }
+}
+
+// hhs.gov and nih.gov answer 403 to every non-browser client. A real
+// Chromium (playwright ships with the repo's @playwright/test devDependency;
+// the workflow installs the browser) gets the page. Off with
+// SNAPSHOT_BROWSER=0; unavailable locally is reported, never faked.
+let browserPromise = null;
+async function fetchWithBrowser(url) {
+  if (process.env.SNAPSHOT_BROWSER === "0") return { status: 0, ok: false, error: "browser fallback disabled" };
+  let chromium;
+  try {
+    ({ chromium } = require("playwright"));
+  } catch (e) {
+    return { status: 0, ok: false, error: `browser fallback unavailable (${e.message})` };
+  }
+  try {
+    if (!browserPromise) browserPromise = chromium.launch({ headless: true });
+    const browser = await browserPromise;
+    const context = await browser.newContext({ userAgent: USER_AGENT.replace(/ MMT-OrgChartMonitor.*$/, ""), locale: "en-US" });
+    const page = await context.newPage();
+    const res = await page.goto(url, { waitUntil: "domcontentloaded", timeout: TIMEOUT_MS });
+    await page.waitForTimeout(1500);
+    const status = res ? res.status() : 0;
+    const body = await page.content();
+    const final_url = page.url();
+    await context.close();
+    return { status, ok: status >= 200 && status < 300, body, final_url, via: "browser" };
+  } catch (err) {
+    return { status: 0, ok: false, error: `browser: ${String(err && err.message).slice(0, 200)}` };
+  }
+}
+
+async function closeBrowser() {
+  if (!browserPromise) return;
+  try {
+    const b = await browserPromise;
+    await b.close();
+  } catch {
+    // nothing to release
+  }
+}
+
+/**
+ * Primary URL first, then each fallback. A bot-block status on a URL gets
+ * one browser attempt before moving on. Returns the first 2xx plus the
+ * trail of attempts so index.json can say which URL answered.
+ */
+async function fetchTarget(t) {
+  const attempts = [];
+  for (const url of urlsFor(t)) {
+    let r = await fetchPage(url);
+    attempts.push({ url, status: r.status, error: r.error, via: r.via });
+    if (!r.ok && isBotBlock(r.status)) {
+      r = await fetchWithBrowser(url);
+      attempts.push({ url, status: r.status, error: r.error, via: "browser" });
+    }
+    if (r.ok) return { ...r, url, attempts };
+  }
+  return { ok: false, attempts, error: attempts.map((a) => `${a.url} -> ${a.error || `HTTP ${a.status}`}${a.via === "browser" ? " (browser)" : ""}`).join("; ") };
 }
 
 function clip(lines, max = 60) {
@@ -95,7 +154,7 @@ async function main() {
     const prevText = fs.existsSync(txtPath) ? fs.readFileSync(txtPath, "utf8") : "";
     const prevMeta = index.pages[t.agency] || {};
 
-    const r = await fetchPage(t.url);
+    const r = await fetchTarget(t);
     if (!r.ok) {
       failed++;
       index.pages[t.agency] = {
@@ -103,10 +162,10 @@ async function main() {
         slug: t.slug,
         url: t.url,
         last_attempt_at: now,
-        last_error: r.error || `HTTP ${r.status}`,
+        last_error: r.error,
       };
-      report.push(`### ${t.agency}\n\nNot reached (${r.error || `HTTP ${r.status}`}). Previous snapshot kept${prevMeta.retrieved_at ? ` (retrieved ${prevMeta.retrieved_at})` : ""}.`);
-      console.warn(`${t.agency}: not reached: ${r.error || `HTTP ${r.status}`}`);
+      report.push(`### ${t.agency}\n\nNot reached. ${r.error}. Previous snapshot kept${prevMeta.retrieved_at ? ` (retrieved ${prevMeta.retrieved_at})` : ""}.`);
+      console.warn(`${t.agency}: not reached: ${r.error}`);
       continue;
     }
 
@@ -119,7 +178,9 @@ async function main() {
     index.pages[t.agency] = {
       slug: t.slug,
       url: t.url,
-      final_url: r.final_url && r.final_url !== t.url ? r.final_url : undefined,
+      fetched_url: r.url !== t.url ? r.url : undefined,
+      final_url: r.final_url && r.final_url !== r.url ? r.final_url : undefined,
+      via: r.via === "browser" ? "browser" : undefined,
       retrieved_at: now,
       http_status: r.status,
       sha256: hash,
@@ -179,6 +240,7 @@ async function main() {
   if (process.env.GITHUB_STEP_SUMMARY) {
     fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, header + report.join("\n\n") + "\n");
   }
+  await closeBrowser();
   console.log(`done: ${changed} changed, ${failed} not reached`);
 }
 

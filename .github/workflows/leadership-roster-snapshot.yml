@@ -47,6 +47,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      # hhs.gov and nih.gov refuse every non-browser client (403). The
+      # snapshot script falls back to headless Chromium for those hosts.
+      - name: Install Chromium for the bot-blocked hosts
+        run: npx playwright install --with-deps chromium
 
       - name: Snapshot leadership pages
         id: snap
