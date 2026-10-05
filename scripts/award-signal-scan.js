@@ -146,7 +146,9 @@ function matchReason(item, contract) {
   const vendorWords = new Set(vendors.flatMap((v) => v.toLowerCase().split(/\s+/)));
   const vendor = vendors.find((v) => hayLower.includes(v.toLowerCase()));
   const t = terms(contract.name).filter((w) => !vendorWords.has(w));
-  const hits = t.filter((w) => hayLower.includes(w));
+  // Whole words only: "str" matched inside "industry" on the first live run.
+  const hasWord = (w) => new RegExp(`(^|[^a-z0-9])${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([^a-z0-9]|$)`).test(hayLower);
+  const hits = t.filter(hasWord);
   const specific = hits.filter((w) => !GENERIC.has(w) && w.length >= 4);
   if (vendor && hits.length >= 1) return { kind: "vendor", detail: `${vendor} + ${hits.join(", ")}` };
   if (hits.length >= 2 && specific.length >= 1) return { kind: "terms", detail: hits.join(", ") };

@@ -38,6 +38,7 @@ describe("award-signal-scan", () => {
     const ccn = { name: "Community Care Network Next Gen (CCN NG)", agency: va, vendor: "TBD", description: "", source_urls: [], signal_terms: ["community care network"] };
     expect(matchReason({ title: "VA awards suicide prevention grants to strengthen community support for Veterans", summary: "" }, ccn)).toBeNull();
     expect(matchReason({ title: "VA awards Community Care Network Next Generation contracts to TriWest and Optum", summary: "" }, ccn)).toEqual({ kind: "phrase", detail: "community care network" });
+    expect(matchReason({ title: "Leidos wins $672M airport security equipment recompete", summary: "industry strategy" }, leidos)).toBeNull();
     const market = { name: "Swingtide — Market Intelligence Support", agency: va, vendor: "Swingtide", description: "", source_urls: [] };
     expect(matchReason({ title: "DISA takes second shot at expanding a market intelligence contract at VA", summary: "award" }, market)).toBeNull();
   });
