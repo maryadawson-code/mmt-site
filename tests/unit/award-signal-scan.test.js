@@ -29,6 +29,19 @@ describe("award-signal-scan", () => {
     expect(matchReason({ title: "VA posts amendment", summary: "36C10B26Q0376 amended" }, helm)).toEqual({ kind: "identifier", detail: "36C10B26Q0376" });
   });
 
+  it("ignores sector words, vendor-only hits and unrelated items that happened to mention the agency", () => {
+    const va = "Department of Veterans Affairs";
+    const leidos = { name: "STR Zero Day — Leidos", agency: "Defense Health Agency", vendor: "Leidos", description: "", source_urls: [] };
+    expect(matchReason({ title: "DISA takes second shot at expanding Leidos' Enclave contract", summary: "award" }, leidos)).toBeNull();
+    const hopss = { name: "HHS HOPSS - HHS One Professional Services Solutions", agency: "HHS", vendor: "TBD", description: "", source_urls: [] };
+    expect(matchReason({ title: "GAO clears the protest deck for $50B Army MAPS vehicle", summary: "one professional services" }, hopss)).toBeNull();
+    const ccn = { name: "Community Care Network Next Gen (CCN NG)", agency: va, vendor: "TBD", description: "", source_urls: [], signal_terms: ["community care network"] };
+    expect(matchReason({ title: "VA awards suicide prevention grants to strengthen community support for Veterans", summary: "" }, ccn)).toBeNull();
+    expect(matchReason({ title: "VA awards Community Care Network Next Generation contracts to TriWest and Optum", summary: "" }, ccn)).toEqual({ kind: "phrase", detail: "community care network" });
+    const market = { name: "Swingtide — Market Intelligence Support", agency: va, vendor: "Swingtide", description: "", source_urls: [] };
+    expect(matchReason({ title: "DISA takes second shot at expanding a market intelligence contract at VA", summary: "award" }, market)).toBeNull();
+  });
+
   it("runs end to end on fixtures without writing, and reports feeds it could not load", async () => {
     const contracts = [
       { slug: "ccn-dental-36c10g26r0004", name: "CCN Dental (36C10G26R0004)", agency: "Department of Veterans Affairs", vendor: "TBD", description: "x", status: "active", source_urls: [] },

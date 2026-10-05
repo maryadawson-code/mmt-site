@@ -44,7 +44,11 @@
       }
     },
     "slug": "community-care-network-next-gen-ccn-ng",
-    "content_gap": false
+    "content_gap": false,
+    "signal_terms": [
+      "community care network",
+      "ccn next gen"
+    ]
   },
   {
     "name": "CCN Next Gen Dental (36C10G26R0004)",
@@ -69,7 +73,12 @@
       "factors": {}
     },
     "slug": "ccn-dental-36c10g26r0004",
-    "content_gap": false
+    "content_gap": false,
+    "signal_terms": [
+      "community care dental",
+      "ccn next gen dental",
+      "dental network"
+    ]
   },
   {
     "name": "VA Ambient Scribe IDIQ (36C10B26R0006)",
@@ -281,7 +290,11 @@
       "factors": {}
     },
     "slug": "va-health-services-devsecops",
-    "content_gap": false
+    "content_gap": false,
+    "signal_terms": [
+      "36C10B26R0033",
+      "health services portfolio application"
+    ]
   },
   {
     "name": "VA Data Center and Telecommunications Modernization",
@@ -340,7 +353,13 @@
     "slug": "va-supply-chain-devsecops-helm",
     "content_gap": false,
     "psc": "DA01",
-    "research_focus": "Check SAM.gov 36C10B26Q0376 for RFP release. Track CO Michelle Prinston communications. Monitor Cognosante MVH, Booz Allen, and SDVOSB positioning. Check for iFAMS/EHRM integration scope changes in PWS revisions."
+    "research_focus": "Check SAM.gov 36C10B26Q0376 for RFP release. Track CO Michelle Prinston communications. Monitor Cognosante MVH, Booz Allen, and SDVOSB positioning. Check for iFAMS/EHRM integration scope changes in PWS revisions.",
+    "signal_terms": [
+      "36C10B26Q0376",
+      "scmdso",
+      "scm dso",
+      "healthcare environment and logistics"
+    ]
   },
   {
     "name": "VA IE&O (TISTA, task order 36C10B26F0468)",

@@ -38,6 +38,11 @@ const FEEDS = [
   { id: "fedhealthit", name: "FedHealthIT", url: "https://www.fedhealthit.com/feed/" },
 ];
 
+// Words that name a sector, not a contract. One of these alone (or two of
+// them together) never makes a match: the first live run matched "community",
+// "care", "systems" and "market" to unrelated DISA and grant items.
+const GENERIC = new Set(["community", "care", "network", "systems", "system", "market", "one", "professional", "solutions", "solution", "management", "medical", "information", "technology", "data", "enterprise", "digital", "modernization", "operations", "national", "center", "office", "agency", "clinical", "research", "development", "integration", "security", "cloud", "platform", "portfolio", "sustainment", "engineering", "innovation", "intelligence", "analytics", "software", "application", "applications", "infrastructure", "federal", "government", "zero", "day", "next"]);
+
 const STOP = new Set(["the", "and", "for", "of", "to", "va", "dha", "hhs", "cms", "dod", "department", "veterans", "affairs", "health", "services", "service", "support", "program", "contract", "contracts", "task", "order", "idiq", "new", "next", "gen", "generation", "watch", "tbd", "follow", "on", "recompete", "update", "phase", "ii", "iii", "iv", "v"]);
 
 const args = process.argv.slice(2);
@@ -75,6 +80,21 @@ function identifiers(text) {
 
 function terms(name) {
   return [...new Set(String(name || "").toLowerCase().replace(/\(.*?\)/g, " ").replace(/[^a-z0-9&+ ]/g, " ").split(/\s+/).filter((w) => w.length > 2 && !STOP.has(w)))];
+}
+
+/** Multi-word phrases from the name (each " / ", ":" or dash segment, first three real words) plus any hand-set signal_terms. */
+function phrases(c) {
+  const out = new Set();
+  for (const t of c.signal_terms || []) if (String(t).trim().length > 3) out.add(String(t).toLowerCase().trim());
+  const base = String(c.name || "").toLowerCase().replace(/\(.*?\)/g, " ");
+  for (const seg of base.split(/\s+\/\s+|:|\u2014|\u2013| - /)) {
+    const words = seg.replace(/[^a-z0-9& ]/g, " ").split(/\s+/).filter((w) => w && !["va", "dha", "hhs", "the", "and", "of", "for"].includes(w));
+    // A derived phrase needs one word that names this contract, not a sector
+    // ("one professional services" is not a signal; "community care network"
+    // is set by hand in signal_terms on the entries that need it).
+    if (words.length >= 2 && words.slice(0, 3).some((w) => !GENERIC.has(w) && !STOP.has(w) && w.length >= 4)) out.add(words.slice(0, 3).join(" "));
+  }
+  return [...out];
 }
 
 function vendorNames(c) {
@@ -120,12 +140,17 @@ function matchReason(item, contract) {
   if (hit) return { kind: "identifier", detail: hit };
   const awardish = /\baward|\bwins?\b|\bwon\b|\bselect|\bprotest|\bcancel|\bnotice to proceed|\bbeat/i.test(hay);
   if (!awardish) return null;
-  const vendor = vendorNames(contract).find((v) => hayLower.includes(v.toLowerCase()));
-  const t = terms(contract.name);
+  const phrase = phrases(contract).find((p) => hayLower.includes(p));
+  if (phrase) return { kind: "phrase", detail: phrase };
+  const vendors = vendorNames(contract);
+  const vendorWords = new Set(vendors.flatMap((v) => v.toLowerCase().split(/\s+/)));
+  const vendor = vendors.find((v) => hayLower.includes(v.toLowerCase()));
+  const t = terms(contract.name).filter((w) => !vendorWords.has(w));
   const hits = t.filter((w) => hayLower.includes(w));
+  const specific = hits.filter((w) => !GENERIC.has(w) && w.length >= 4);
   if (vendor && hits.length >= 1) return { kind: "vendor", detail: `${vendor} + ${hits.join(", ")}` };
-  if (hits.length >= 2) return { kind: "terms", detail: hits.join(", ") };
-  if (hits.length === 1 && agencyMentioned(contract, hayLower)) return { kind: "term+agency", detail: hits[0] };
+  if (hits.length >= 2 && specific.length >= 1) return { kind: "terms", detail: hits.join(", ") };
+  if (specific.length === 1 && agencyMentioned(contract, hayLower)) return { kind: "term+agency", detail: specific[0] };
   return null;
 }
 
@@ -204,4 +229,4 @@ if (require.main === module) {
   main().catch((err) => { console.error("award-signal-scan failed:", err); process.exit(1); });
 }
 
-module.exports = { parseFeed, identifiers, terms, vendorNames, matchReason, FEEDS, main };
+module.exports = { parseFeed, identifiers, terms, phrases, vendorNames, matchReason, FEEDS, main };
