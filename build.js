@@ -2376,6 +2376,117 @@ function captureProgramShort(program) {
 
 const CAPTURE_LOCK_SVG = '<svg width="12" height="12" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>';
 
+
+// --- Capture Intelligence sheet page (intel-capture-intelligence.html) ---
+// Since 2026-10-05 the summary table, the deep-dive accordions, the strategic
+// context and the sources grid render from capture-intelligence.json, so a new
+// issue is a JSON edit. Markers: BUILD:CAPTURE_SHEET_*.
+const CAPTURE_CONF = {
+  verified: ['badge-verified', 'Verified'],
+  confirmed: ['badge-verified', 'Confirmed'],
+  directional: ['badge-directional', 'Directional'],
+  analytical: ['badge-analytical', 'Analytical'],
+  mmt_projection: ['badge-analytical', 'MMT projection'],
+  proposed: ['badge-proposed', 'Proposed'],
+};
+function captureConfBadge(conf) {
+  const [cls, label] = CAPTURE_CONF[String(conf || '').toLowerCase()] || ['badge-directional', escapeHtml(String(conf || 'Directional'))];
+  return `<span class="badge ${cls}">${label}</span>`;
+}
+function captureLongDate(iso) {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return escapeHtml(String(iso || ''));
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+}
+function captureSheetRows(sheet) {
+  return (sheet.signals || []).map((sg) => `              <tr>
+                <td class="agency">${escapeHtml(sg.agency)}</td>
+                <td class="program">${sg.deep_dive ? `<a href="#${escapeHtml(sg.id)}">${escapeHtml(sg.program)}</a>` : escapeHtml(sg.program)}</td>
+                <td>${escapeHtml(sg.signal)}</td>
+                <td>${captureConfBadge(sg.confidence)}</td>
+                <td class="window">${sg.urgent ? `<span class="urgent">${escapeHtml(sg.action_window)}</span>` : escapeHtml(sg.action_window)}</td>
+              </tr>`).join('\n');
+}
+function captureSourceLinks(sources) {
+  return (sources || []).map((src) => `<a href="${escapeHtml(src.url)}" rel="noopener">${escapeHtml(src.label)}</a>${src.grade ? ` (${escapeHtml(src.grade)})` : ''}`).join('; ');
+}
+function captureSheetDeepDive(sheet) {
+  let n = 0;
+  return (sheet.signals || []).filter((sg) => sg.deep_dive).map((sg) => {
+    n += 1;
+    const dd = sg.deep_dive;
+    const block = (title, text) => text ? `            <h3>${title}</h3>\n            <p>${escapeHtml(text)}</p>\n` : '';
+    return `        <details class="ci-accordion" id="${escapeHtml(sg.id)}">
+          <summary>
+            <span class="acc-number">${String(n).padStart(2, '0')}</span>
+            <div class="acc-header">
+              <div class="acc-title">${escapeHtml(sg.program)}</div>
+              <div class="acc-meta">
+                <span class="acc-agency">${escapeHtml(sg.agency)}</span>
+                ${captureConfBadge(sg.confidence)}
+                ${sg.badge ? `<span class="badge badge-corroborated">${escapeHtml(sg.badge)}</span>` : ''}
+              </div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="acc-body">
+${block('What it funds', dd.what_it_funds)}${block('What changed', dd.what_changed)}${block('Competitive landscape', dd.competitive)}${block('Timeline', dd.timeline)}            <div class="action-box"><div class="action-label">Action Window</div><p>${escapeHtml(sg.what_to_do)}</p></div>
+            <div class="source-note">Sources: ${captureSourceLinks(sg.sources)}</div>
+          </div>
+        </details>`;
+  }).join('\n\n');
+}
+function captureSheetContext(sheet) {
+  const ctx = sheet.context;
+  if (!ctx || !Array.isArray(ctx.paragraphs) || ctx.paragraphs.length === 0) return '';
+  return `<section style="padding:48px 0;border-top:2px solid var(--ci-gold);">
+      <div class="wrap">
+        <h2 style="font-size:1.5rem;font-weight:700;color:var(--mmt-navy);margin-bottom:6px;">${escapeHtml(ctx.heading || 'Strategic Context')}</h2>
+${ctx.paragraphs.map((t) => `        <p style="font-size:15px;line-height:1.7;color:var(--mmt-text-secondary);margin:14px 0 0;">${escapeHtml(t)}</p>`).join('\n')}
+      </div>
+    </section>`;
+}
+function captureSheetSources(sheet) {
+  // One group per agency, every distinct source once, official and SAM first.
+  const groups = new Map();
+  for (const sg of sheet.signals || []) {
+    const key = String(sg.agency || 'Other').split(' / ')[0];
+    if (!groups.has(key)) groups.set(key, new Map());
+    for (const src of sg.sources || []) if (src && src.url && !groups.get(key).has(src.url)) groups.get(key).set(src.url, src);
+  }
+  return [...groups.entries()].map(([agency, srcs]) => `          <div class="sources-group">
+            <h3>${escapeHtml(agency)}</h3>
+            <ul>
+${[...srcs.values()].map((src) => `              <li><a href="${escapeHtml(src.url)}" rel="noopener">${escapeHtml(src.label)}</a></li>`).join('\n')}
+            </ul>
+          </div>`).join('\n');
+}
+function renderCaptureSheetPage(html, sheet) {
+  if (!sheet) return html;
+  const title = String(sheet.title || 'Capture Intelligence');
+  const rest = title.replace(/^Capture Intelligence:\s*/i, '');
+  const agencyCount = sheet.agency_count || new Set((sheet.signals || []).map((x) => String(x.agency).split(/\s*\/\s*/)[0])).size;
+  const counts = `${(sheet.signals || []).length} live signals · ${agencyCount} agencies`;
+  const map = {
+    '<!-- BUILD:CAPTURE_SHEET_TITLE -->': escapeHtml(title),
+    '<!-- BUILD:CAPTURE_SHEET_TITLE_REST -->': escapeHtml(rest),
+    '<!-- BUILD:CAPTURE_SHEET_DESCRIPTION -->': escapeHtml(sheet.description || ''),
+    '<!-- BUILD:CAPTURE_SHEET_SUBTITLE -->': escapeHtml(sheet.subtitle || ''),
+    '<!-- BUILD:CAPTURE_SHEET_MONTH -->': escapeHtml(sheet.month || ''),
+    '<!-- BUILD:CAPTURE_SHEET_DATE -->': escapeHtml(String(sheet.published_at || '').slice(0, 10)),
+    '<!-- BUILD:CAPTURE_SHEET_DATE_LONG -->': captureLongDate(sheet.published_at),
+    '<!-- BUILD:CAPTURE_SHEET_NEXT_REVIEW -->': captureLongDate(sheet.next_review || sheet.published_at),
+    '<!-- BUILD:CAPTURE_SHEET_COUNTS -->': counts,
+    '<!-- BUILD:CAPTURE_SHEET_ROWS -->': captureSheetRows(sheet),
+    '<!-- BUILD:CAPTURE_SHEET_DEEP_DIVE -->': captureSheetDeepDive(sheet),
+    '<!-- BUILD:CAPTURE_SHEET_CONTEXT -->': captureSheetContext(sheet),
+    '<!-- BUILD:CAPTURE_SHEET_SOURCES -->': captureSheetSources(sheet),
+  };
+  let out = html;
+  for (const [k, v] of Object.entries(map)) out = out.split(k).join(v);
+  return out;
+}
+
 // Number of free-preview signal cards shown on the homepage.
 function captureShownCount(sheet, n) {
   if (!sheet || !Array.isArray(sheet.signals)) return 0;
@@ -3812,6 +3923,7 @@ ${innerHtml}
     if (fs.existsSync(srcPath)) {
       ensureDir(path.dirname(dest));
       let html = fs.readFileSync(srcPath, 'utf8');
+      if (src === 'intel-capture-intelligence.html') html = renderCaptureSheetPage(html, loadCaptureSheet());
       html = injectBreadcrumbJsonLd(html, src);
       html = html.replace('</head>',
         '  <link rel="manifest" href="/manifest.json">\n' +

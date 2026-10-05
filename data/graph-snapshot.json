@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-10-05T14:54:38.951Z",
-  "node_count": 482,
-  "edge_count": 696,
+  "generated_at": "2026-10-05T15:37:11.732Z",
+  "node_count": 486,
+  "edge_count": 708,
   "nodes": [
     {
       "id": "peo-dhms-deployment",
@@ -690,7 +690,7 @@
         "classification": "Solicitation",
         "status": "upcoming",
         "naics": "541512, 541519, 541611",
-        "last_verified": "2026-08-17"
+        "last_verified": "2026-10-05"
       }
     },
     {
@@ -898,7 +898,7 @@
         "classification": "Solicitation",
         "status": "active",
         "naics": "541512",
-        "last_verified": "2026-08-17"
+        "last_verified": "2026-10-05"
       }
     },
     {
@@ -909,7 +909,7 @@
         "classification": "IDIQ",
         "status": "awarded",
         "naics": "621999",
-        "last_verified": "2026-08-17"
+        "last_verified": "2026-10-05"
       }
     },
     {
@@ -1019,7 +1019,7 @@
         "classification": "Contract",
         "status": "awarded",
         "naics": "541512",
-        "last_verified": "2026-08-17"
+        "last_verified": "2026-10-05"
       }
     },
     {
@@ -1471,7 +1471,7 @@
         "classification": "Program Watch",
         "status": "active",
         "naics": "541512",
-        "last_verified": "2026-08-17"
+        "last_verified": "2026-10-05"
       }
     },
     {
@@ -1499,7 +1499,7 @@
         "classification": "Solicitation",
         "status": "upcoming",
         "naics": "541511",
-        "last_verified": "2026-08-17"
+        "last_verified": "2026-10-05"
       }
     },
     {
@@ -1510,13 +1510,19 @@
         "classification": "Program Watch",
         "status": "upcoming",
         "naics": "541511",
-        "last_verified": "2026-05-29"
+        "last_verified": "2026-10-05"
       }
     },
     {
-      "id": "wrma-recompete-watch",
+      "id": "wrma",
       "type": "Contractor",
-      "canonical_name": "WRMA — recompete watch",
+      "canonical_name": "WRMA",
+      "properties": {}
+    },
+    {
+      "id": "recompete-watch",
+      "type": "Contractor",
+      "canonical_name": "recompete watch",
       "properties": {}
     },
     {
@@ -1524,11 +1530,29 @@
       "type": "Program",
       "canonical_name": "CDC Electronic Case Reporting (eCR) Modernization",
       "properties": {
-        "classification": "Program Watch",
-        "status": "upcoming",
+        "classification": "Vendor-Announced",
+        "status": "awarded",
         "naics": "541511",
-        "last_verified": "2026-05-29"
+        "last_verified": "2026-10-05"
       }
+    },
+    {
+      "id": "j-michael-consulting-with-deloitte-per-orangeslices",
+      "type": "Contractor",
+      "canonical_name": "J Michael Consulting with Deloitte, per OrangeSlices",
+      "properties": {}
+    },
+    {
+      "id": "sep-11-2026",
+      "type": "Contractor",
+      "canonical_name": "Sep 11, 2026",
+      "properties": {}
+    },
+    {
+      "id": "value-not-reported",
+      "type": "Contractor",
+      "canonical_name": "value not reported",
+      "properties": {}
     },
     {
       "id": "va-edge-enterprise-digital-government-enablement",
@@ -4601,7 +4625,7 @@
         "slug": "hhs-hopss-hhs-one-professional-services-solutions",
         "type": "contract_intel",
         "url": "/contracts/hhs-hopss-hhs-one-professional-services-solutions/",
-        "published": "2026-08-17"
+        "published": "2026-10-05"
       }
     },
     {
@@ -6276,7 +6300,7 @@
       "weight": 1
     },
     {
-      "from_id": "wrma-recompete-watch",
+      "from_id": "wrma",
       "to_id": "hrsa-ryan-white-rsr-data-modernization",
       "relation": "incumbent_of",
       "properties": {},
@@ -6284,7 +6308,21 @@
     },
     {
       "from_id": "hrsa-ryan-white-rsr-data-modernization",
-      "to_id": "wrma-recompete-watch",
+      "to_id": "wrma",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "recompete-watch",
+      "to_id": "hrsa-ryan-white-rsr-data-modernization",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "hrsa-ryan-white-rsr-data-modernization",
+      "to_id": "recompete-watch",
       "relation": "awarded_to",
       "properties": {},
       "weight": 1
@@ -6293,6 +6331,48 @@
       "from_id": "cdc",
       "to_id": "cdc-electronic-case-reporting-ecr-modernization",
       "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "j-michael-consulting-with-deloitte-per-orangeslices",
+      "to_id": "cdc-electronic-case-reporting-ecr-modernization",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cdc-electronic-case-reporting-ecr-modernization",
+      "to_id": "j-michael-consulting-with-deloitte-per-orangeslices",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "sep-11-2026",
+      "to_id": "cdc-electronic-case-reporting-ecr-modernization",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cdc-electronic-case-reporting-ecr-modernization",
+      "to_id": "sep-11-2026",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "value-not-reported",
+      "to_id": "cdc-electronic-case-reporting-ecr-modernization",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cdc-electronic-case-reporting-ecr-modernization",
+      "to_id": "value-not-reported",
+      "relation": "awarded_to",
       "properties": {},
       "weight": 1
     },
@@ -9869,8 +9949,48 @@
       "weight": 0.8
     },
     {
+      "from_id": "cdc",
+      "to_id": "j-michael-consulting-with-deloitte-per-orangeslices",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cdc-electronic-case-reporting-ecr-modernization",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cdc",
+      "to_id": "sep-11-2026",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cdc-electronic-case-reporting-ecr-modernization",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cdc",
+      "to_id": "value-not-reported",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cdc-electronic-case-reporting-ecr-modernization",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
       "from_id": "health-resources-services-administration-hrsa",
-      "to_id": "wrma-recompete-watch",
+      "to_id": "wrma",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "hrsa-ryan-white-rsr-data-modernization",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "health-resources-services-administration-hrsa",
+      "to_id": "recompete-watch",
       "relation": "incumbent_of",
       "properties": {
         "via_contract": "hrsa-ryan-white-rsr-data-modernization",
