@@ -7,123 +7,231 @@
   "pages": {
     "DHA": {
       "slug": "dha",
-      "url": "https://www.health.mil/About-MHS/OASDHA/Defense-Health-Agency",
-      "last_attempt_at": "2026-10-05T14:08:33.649Z",
-      "last_error": "HTTP 404"
+      "url": "https://dha.mil/About-DHA/Organizational-Structure",
+      "retrieved_at": "2026-10-05T14:31:03.210Z",
+      "http_status": 200,
+      "sha256": "bd17524ffe79b9162cad7e69fa4bf2129dc2f6159117637c11d518f32f6c1be8",
+      "lines": 197,
+      "last_changed_at": "2026-10-05T14:31:03.210Z",
+      "last_diff": null,
+      "last_error": null
     },
     "VA": {
       "slug": "va",
-      "url": "https://www.va.gov/oig/leadership/",
-      "last_attempt_at": "2026-10-05T14:08:33.649Z",
-      "last_error": "HTTP 404"
+      "url": "https://www.va.gov/opa/bios/",
+      "final_url": "https://department.va.gov/biographies/?_bio_position=assistant-secretary%2Cchairman%2Cdeputy-secretary%2Cgeneral-counsel%2Cinspector-general%2Cprincipal-executive-director%2Csecretary%2Cunder-secretary%2Cva-chief-of-staff/?redirect=1",
+      "retrieved_at": "2026-10-05T14:31:03.210Z",
+      "http_status": 200,
+      "sha256": "6aeada447aaf408f90ccb3226ee1880351633aa5b1bb399611d4687645e26c57",
+      "lines": 268,
+      "last_changed_at": "2026-10-05T14:31:03.210Z",
+      "last_diff": null,
+      "last_error": null
     },
     "HHS": {
       "slug": "hhs",
       "url": "https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html",
-      "last_attempt_at": "2026-10-05T14:08:33.649Z",
-      "last_error": "HTTP 403"
+      "last_attempt_at": "2026-10-05T14:31:03.210Z",
+      "last_error": "https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html -> HTTP 403; https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html -> HTTP 403 (browser)"
     },
     "ONC": {
       "slug": "onc",
       "url": "https://www.healthit.gov/about/leadership/",
       "final_url": "https://healthit.gov/about/leadership/",
-      "retrieved_at": "2026-10-05T14:08:33.649Z",
+      "retrieved_at": "2026-10-05T14:31:03.210Z",
       "http_status": 200,
-      "sha256": "9819eef4646fcc338e8aff3adaeeac23dcccb8f490bf5090776dbbf895f7ed91",
+      "sha256": "86afd75e1d5d3ba2c24afd1faa654d6703a855f58579427896b71b056726ddeb",
       "lines": 364,
-      "last_changed_at": "2026-10-05T14:08:33.649Z",
-      "last_diff": null,
+      "last_changed_at": "2026-10-05T14:31:03.210Z",
+      "last_diff": {
+        "added": [
+          "X/Twitter",
+          "Facebook"
+        ],
+        "removed": [
+          "Email",
+          "Name"
+        ]
+      },
       "last_error": null
     },
     "IHS": {
       "slug": "ihs",
       "url": "https://www.ihs.gov/aboutihs/keyleaders/",
-      "retrieved_at": "2026-10-05T14:08:33.649Z",
+      "retrieved_at": "2026-10-05T14:31:03.210Z",
       "http_status": 200,
       "sha256": "cb3c46d71baf025767c5fc4fb3d98d35a858900067318422809fa4c920fc1dd5",
       "lines": 300,
-      "last_changed_at": "2026-10-05T14:08:33.649Z",
-      "last_diff": null,
+      "last_changed_at": "2026-10-05T14:31:03.210Z",
+      "last_diff": {
+        "added": [],
+        "removed": []
+      },
       "last_error": null
     },
     "IHS-DAP": {
       "slug": "ihs-dap",
       "url": "https://www.ihs.gov/DAP/staff/",
-      "retrieved_at": "2026-10-05T14:08:33.649Z",
+      "retrieved_at": "2026-10-05T14:31:03.210Z",
       "http_status": 200,
       "sha256": "54c998b762714d4145435357f4fba285337c23d801becf3c4c47f39c3e35890f",
       "lines": 367,
-      "last_changed_at": "2026-10-05T14:08:33.649Z",
-      "last_diff": null,
+      "last_changed_at": "2026-10-05T14:31:03.210Z",
+      "last_diff": {
+        "added": [],
+        "removed": []
+      },
       "last_error": null
     },
     "CDC": {
       "slug": "cdc",
       "url": "https://www.cdc.gov/about/leadership/index.html",
-      "retrieved_at": "2026-10-05T14:08:33.649Z",
+      "retrieved_at": "2026-10-05T14:31:03.210Z",
       "http_status": 200,
       "sha256": "8ed5fbb06eed8dbb7561c905131a9af9d72d44e89e1741034d6db1821fe0f831",
       "lines": 263,
-      "last_changed_at": "2026-10-05T14:08:33.649Z",
-      "last_diff": null,
+      "last_changed_at": "2026-10-05T14:31:03.210Z",
+      "last_diff": {
+        "added": [],
+        "removed": []
+      },
       "last_error": null
     },
     "ARPA-H": {
       "slug": "arpa-h",
       "url": "https://arpa-h.gov/about/people",
-      "retrieved_at": "2026-10-05T14:08:33.649Z",
+      "retrieved_at": "2026-10-05T14:31:03.210Z",
       "http_status": 200,
       "sha256": "ac5be232cc358458f85b008825ffcedc9cd8bdec6fb8a6961d64289123635456",
       "lines": 186,
-      "last_changed_at": "2026-10-05T14:08:33.649Z",
-      "last_diff": null,
+      "last_changed_at": "2026-10-05T14:31:03.210Z",
+      "last_diff": {
+        "added": [],
+        "removed": []
+      },
       "last_error": null
     },
     "GSA": {
       "slug": "gsa",
       "url": "https://www.gsa.gov/about-gsa/organization/leadership-directory",
-      "retrieved_at": "2026-10-05T14:08:33.649Z",
+      "retrieved_at": "2026-10-05T14:31:03.210Z",
       "http_status": 200,
       "sha256": "ee693e81c787847de4ef5ed563836e6726e37525eb5fe289e207a1a2cfc6565d",
       "lines": 629,
-      "last_changed_at": "2026-10-05T14:08:33.649Z",
-      "last_diff": null,
+      "last_changed_at": "2026-10-05T14:31:03.210Z",
+      "last_diff": {
+        "added": [],
+        "removed": []
+      },
       "last_error": null
     },
     "CMS": {
       "slug": "cms",
       "url": "https://www.cms.gov/about-cms/leadership",
       "final_url": "https://www.cms.gov/about-cms/who-we-are/leadership",
-      "retrieved_at": "2026-10-05T14:08:33.649Z",
+      "retrieved_at": "2026-10-05T14:31:03.210Z",
       "http_status": 200,
       "sha256": "0b7ddb3fe22cbf591b037669c61193ab9981a3255977fa57617a45fa09ed4f17",
       "lines": 588,
-      "last_changed_at": "2026-10-05T14:08:33.649Z",
-      "last_diff": null,
+      "last_changed_at": "2026-10-05T14:31:03.210Z",
+      "last_diff": {
+        "added": [],
+        "removed": []
+      },
       "last_error": null
     },
     "FDA": {
       "slug": "fda",
-      "url": "https://www.fda.gov/about-fda/fda-organization",
-      "retrieved_at": "2026-10-05T14:08:33.649Z",
+      "url": "https://www.fda.gov/about-fda/fda-organization/fda-leadership-profiles",
+      "retrieved_at": "2026-10-05T14:31:03.210Z",
       "http_status": 200,
-      "sha256": "f9a9d7a828eadf586255c6d4ff9467ad97b363e26d04c08b8045c85f92f058c0",
-      "lines": 113,
-      "last_changed_at": "2026-10-05T14:08:33.649Z",
-      "last_diff": null,
+      "sha256": "14146a20df07edd2285946008b0893116c290ce90c86790715facd6db8e0be68",
+      "lines": 151,
+      "last_changed_at": "2026-10-05T14:31:03.210Z",
+      "last_diff": {
+        "added": [
+          "FDA Leadership Profiles",
+          "Acting Commissioner of Food and Drugs",
+          "Kyle Diamantas, J.D.",
+          "Principal Deputy Commissioner",
+          "Vacant",
+          "Chief Counsel",
+          "Sean R. Keveney J.D.",
+          "Chief Financial Officer",
+          "Benjamin D. Moncarz",
+          "Acting Chief Information Officer",
+          "Sanjay Kumar Sahoo",
+          "Chief Scientist",
+          "Steven Kozlowski, M.D.",
+          "Acting Chief of Staff",
+          "Deputy Commissioner for Strategic Initiatives",
+          "Special Counsel for FDA, Office of the Chief Counsel",
+          "Lowell M. Zeta, J.D.",
+          "Deputy Commissioner for Policy, Legislation, and International Affairs",
+          "Grace Graham",
+          "Acting Deputy Commissioner for Food",
+          "Donald A. Prater, D.V.M.",
+          "Deputy Commissioner for Operations and Chief Operating Officer",
+          "Melanie Keller, MBA",
+          "Deputy Commissioner for Technology and Artificial Intelligence",
+          "Jared Seehafer, M.S.",
+          "Acting Associate Commissioner for External Affairs",
+          "Caleb Michaud",
+          "Associate Commissioner for Minority Health",
+          "Associate Commissioner for Women's Health",
+          "Kaveeta Vasisht, M.D., Pharm.D.",
+          "Dr. Elizabeth Miller",
+          "Associate Commissioner for Inspections and Investigations",
+          "Elizabeth Miller, Pharm.D.",
+          "Director, Center for Biologics Evaluation and Research",
+          "Karim Mikhail, B.Pharm, MSc",
+          "Director, Center for Devices and Radiological Health",
+          "Michelle E. Tarver, M.D., Ph.D.",
+          "Director, Center for Drug Evaluation and Research",
+          "Michael Davis M.D., Ph.D.",
+          "Director, Oncology Center of Excellence",
+          "Angelo de Claro, M.D.",
+          "Director, Center for Tobacco Products",
+          "Bret Koplow Ph.D., J.D.",
+          "Director, Center for Veterinary Medicine",
+          "Timothy C. Schell, Ph.D.",
+          "Resources For You",
+          "09/09/2026"
+        ],
+        "removed": [
+          "The U.S. Food and Drug Administration is a federal regulatory agency in the Department of Health and Human Services.",
+          "Sub-Topic Paragraphs",
+          "FDA Organizational Charts",
+          "FDA Overview Organization Chart",
+          "All FDA Organizational Charts",
+          "FDA Leadership",
+          "FDA Commissioner",
+          "Previous FDA Commissioners",
+          "Leadership Profiles",
+          "Congressional Testimony",
+          "Speeches",
+          "03/25/2025"
+        ]
+      },
       "last_error": null
     },
     "NIH": {
       "slug": "nih-nitaac",
-      "url": "https://www.nih.gov/about-nih/who-we-are/nih-director",
-      "last_attempt_at": "2026-10-05T14:08:33.649Z",
-      "last_error": "HTTP 403"
+      "url": "https://www.nih.gov/about-nih/organization/nih-leadership",
+      "via": "browser",
+      "retrieved_at": "2026-10-05T14:31:03.210Z",
+      "http_status": 200,
+      "sha256": "1603228b5126437f5c060029bcf791d0ac78c29c85de6822f44dc46a6085d4cf",
+      "lines": 140,
+      "last_changed_at": "2026-10-05T14:31:03.210Z",
+      "last_diff": null,
+      "last_error": null
     }
   },
-  "last_run_at": "2026-10-05T14:08:33.649Z",
+  "last_run_at": "2026-10-05T14:31:03.210Z",
   "last_run": {
-    "changed": 0,
-    "failed": 4,
+    "changed": 8,
+    "failed": 1,
     "checked": 12
   }
 }
