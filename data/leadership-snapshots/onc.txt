@@ -293,7 +293,7 @@ Last Updated: April 1, 2026
 Submit Feedback
 Step 1 of 3
 33%
-X/Twitter
+Facebook
 This field is for validation purposes and should be left unchanged.
 Name (Required)
 First
@@ -323,7 +323,7 @@ If you have any screenshots or files related to the issue, please upload them he
 Previous Submit
 Cancel
 Subscribe for Email Updates
-Facebook
+Comments
 This field is for validation purposes and should be left unchanged.
 Email (Required)
 Submit

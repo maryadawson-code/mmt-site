@@ -8,7 +8,7 @@
     "DHA": {
       "slug": "dha",
       "url": "https://dha.mil/About-DHA/Organizational-Structure",
-      "retrieved_at": "2026-10-05T14:31:03.210Z",
+      "retrieved_at": "2026-10-05T14:37:45.603Z",
       "http_status": 200,
       "sha256": "bd17524ffe79b9162cad7e69fa4bf2129dc2f6159117637c11d518f32f6c1be8",
       "lines": 197,
@@ -20,7 +20,7 @@
       "slug": "va",
       "url": "https://www.va.gov/opa/bios/",
       "final_url": "https://department.va.gov/biographies/?_bio_position=assistant-secretary%2Cchairman%2Cdeputy-secretary%2Cgeneral-counsel%2Cinspector-general%2Cprincipal-executive-director%2Csecretary%2Cunder-secretary%2Cva-chief-of-staff/?redirect=1",
-      "retrieved_at": "2026-10-05T14:31:03.210Z",
+      "retrieved_at": "2026-10-05T14:37:45.603Z",
       "http_status": 200,
       "sha256": "6aeada447aaf408f90ccb3226ee1880351633aa5b1bb399611d4687645e26c57",
       "lines": 268,
@@ -31,26 +31,24 @@
     "HHS": {
       "slug": "hhs",
       "url": "https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html",
-      "last_attempt_at": "2026-10-05T14:31:03.210Z",
+      "last_attempt_at": "2026-10-05T14:37:45.603Z",
       "last_error": "https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html -> HTTP 403; https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html -> HTTP 403 (browser)"
     },
     "ONC": {
       "slug": "onc",
       "url": "https://www.healthit.gov/about/leadership/",
       "final_url": "https://healthit.gov/about/leadership/",
-      "retrieved_at": "2026-10-05T14:31:03.210Z",
+      "retrieved_at": "2026-10-05T14:37:45.603Z",
       "http_status": 200,
-      "sha256": "86afd75e1d5d3ba2c24afd1faa654d6703a855f58579427896b71b056726ddeb",
+      "sha256": "b03913bf5970c7b03441b02de79afa7baad01d2ac2c256052465bce3dd72b423",
       "lines": 364,
-      "last_changed_at": "2026-10-05T14:31:03.210Z",
+      "last_changed_at": "2026-10-05T14:37:45.603Z",
       "last_diff": {
         "added": [
-          "X/Twitter",
-          "Facebook"
+          "Comments"
         ],
         "removed": [
-          "Email",
-          "Name"
+          "X/Twitter"
         ]
       },
       "last_error": null
@@ -58,7 +56,7 @@
     "IHS": {
       "slug": "ihs",
       "url": "https://www.ihs.gov/aboutihs/keyleaders/",
-      "retrieved_at": "2026-10-05T14:31:03.210Z",
+      "retrieved_at": "2026-10-05T14:37:45.603Z",
       "http_status": 200,
       "sha256": "cb3c46d71baf025767c5fc4fb3d98d35a858900067318422809fa4c920fc1dd5",
       "lines": 300,
@@ -72,7 +70,7 @@
     "IHS-DAP": {
       "slug": "ihs-dap",
       "url": "https://www.ihs.gov/DAP/staff/",
-      "retrieved_at": "2026-10-05T14:31:03.210Z",
+      "retrieved_at": "2026-10-05T14:37:45.603Z",
       "http_status": 200,
       "sha256": "54c998b762714d4145435357f4fba285337c23d801becf3c4c47f39c3e35890f",
       "lines": 367,
@@ -86,7 +84,7 @@
     "CDC": {
       "slug": "cdc",
       "url": "https://www.cdc.gov/about/leadership/index.html",
-      "retrieved_at": "2026-10-05T14:31:03.210Z",
+      "retrieved_at": "2026-10-05T14:37:45.603Z",
       "http_status": 200,
       "sha256": "8ed5fbb06eed8dbb7561c905131a9af9d72d44e89e1741034d6db1821fe0f831",
       "lines": 263,
@@ -100,7 +98,7 @@
     "ARPA-H": {
       "slug": "arpa-h",
       "url": "https://arpa-h.gov/about/people",
-      "retrieved_at": "2026-10-05T14:31:03.210Z",
+      "retrieved_at": "2026-10-05T14:37:45.603Z",
       "http_status": 200,
       "sha256": "ac5be232cc358458f85b008825ffcedc9cd8bdec6fb8a6961d64289123635456",
       "lines": 186,
@@ -114,7 +112,7 @@
     "GSA": {
       "slug": "gsa",
       "url": "https://www.gsa.gov/about-gsa/organization/leadership-directory",
-      "retrieved_at": "2026-10-05T14:31:03.210Z",
+      "retrieved_at": "2026-10-05T14:37:45.603Z",
       "http_status": 200,
       "sha256": "ee693e81c787847de4ef5ed563836e6726e37525eb5fe289e207a1a2cfc6565d",
       "lines": 629,
@@ -129,7 +127,7 @@
       "slug": "cms",
       "url": "https://www.cms.gov/about-cms/leadership",
       "final_url": "https://www.cms.gov/about-cms/who-we-are/leadership",
-      "retrieved_at": "2026-10-05T14:31:03.210Z",
+      "retrieved_at": "2026-10-05T14:37:45.603Z",
       "http_status": 200,
       "sha256": "0b7ddb3fe22cbf591b037669c61193ab9981a3255977fa57617a45fa09ed4f17",
       "lines": 588,
@@ -143,7 +141,7 @@
     "FDA": {
       "slug": "fda",
       "url": "https://www.fda.gov/about-fda/fda-organization/fda-leadership-profiles",
-      "retrieved_at": "2026-10-05T14:31:03.210Z",
+      "retrieved_at": "2026-10-05T14:37:45.603Z",
       "http_status": 200,
       "sha256": "14146a20df07edd2285946008b0893116c290ce90c86790715facd6db8e0be68",
       "lines": 151,
@@ -219,7 +217,7 @@
       "slug": "nih-nitaac",
       "url": "https://www.nih.gov/about-nih/organization/nih-leadership",
       "via": "browser",
-      "retrieved_at": "2026-10-05T14:31:03.210Z",
+      "retrieved_at": "2026-10-05T14:37:45.603Z",
       "http_status": 200,
       "sha256": "1603228b5126437f5c060029bcf791d0ac78c29c85de6822f44dc46a6085d4cf",
       "lines": 140,
@@ -228,9 +226,9 @@
       "last_error": null
     }
   },
-  "last_run_at": "2026-10-05T14:31:03.210Z",
+  "last_run_at": "2026-10-05T14:37:45.603Z",
   "last_run": {
-    "changed": 8,
+    "changed": 1,
     "failed": 1,
     "checked": 12
   }
