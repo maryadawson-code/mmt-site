@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-10-01T23:13:47.755Z",
-  "total": 280,
+  "generated_at": "2026-10-05T14:54:38.748Z",
+  "total": 282,
   "note": "Public subset of mmt-content-corpus.json (premium=false items only). For unauthenticated endpoints. Per Sprint C 2026-05-14.",
   "counts": {
-    "articles": 138,
-    "contracts": 65,
+    "articles": 139,
+    "contracts": 66,
     "glossary": 42,
     "idiq_vehicles": 35
   },
@@ -2421,12 +2421,36 @@
       "premium": false
     },
     {
+      "id": "article-the-recapture-year",
+      "type": "article",
+      "title": "The Recapture Year",
+      "slug": "the-recapture-year",
+      "date": "2026-10-02",
+      "description": "Fiscal 2027 opened Thursday on a stopgap that runs to December 11. Read the Director's four lines of effort beside the Military Health System's own budget justification and the plan for the year is clear: bring complex care back inside military hospitals, move active duty patients through faster, and staff the hospitals to carry the load. The pieces for success are already on the page. Here is how recapture works in 2027, the date each piece becomes visible, and what every reader can do to help it land.",
+      "tags": [
+        "Defense Health Agency",
+        "Military Health System",
+        "Recapture",
+        "FY2027 Budget",
+        "TRICARE",
+        "Military Treatment Facilities",
+        "Continuing Resolution",
+        "Medical Readiness",
+        "Private Sector Care",
+        "Insourcing",
+        "Digital Health"
+      ],
+      "url": "/newsletter/the-recapture-year/",
+      "excerpt": "The Recapture Year Fiscal 2027 opened Thursday on a stopgap that runs to December 11. Read the Director's four lines of effort beside the Military Health System's own budget justification and the plan for the year is clear: bring complex care back inside military hospitals, move active duty patients through faster, and staff the hospitals to carry the load. The pieces for success are already on the page. Here is how recapture works in 2027, the date each piece becomes visible, and what every reader can do to help it land. Friends, The fiscal year ended Wednesday at midnight, and the new one started on borrowed time. The President signed a continuing resolution on September 2 that funds the government at fiscal 2026 levels until December 11, so the Defense Health Agency opens fiscal 2027 with ten weeks of last year's money. [1][2] After last year's 43-day shutdown, ten weeks of stopgap counts as good news in this town. [3] I want to start in Baltimore. The R Adams Cowley Shock Trauma Center at the University of Maryland is on GAO's list of the Air Force's civilian training partners, one of the places military trauma teams go to treat the gunshot wounds and crushed pelvises a peacetime military hospital rarely sees. [4] By GAO's count the Department operates one Level I trauma center of its own, so a military trauma surgeon who intends to be ready for a war builds a large share of that readiness in someone else's hospital. [4] That arrangement works, and across fiscal 2020 through 2024 military medical personnel logged about 723,800 hours in civilian partnerships. [4] The plan for 2027 is to bring more of those cases home. Vice Adm. Darin Via has been clear about direction since February. His four lines of effort are warfighter medical readiness, medical warrior currency, joint warfighting capabilities, and high-quality health care for every beneficiary, and he said in Bethesda in August that his FY2027 campaign order would finalize the plan to deliver them. [5][6] In March he told military medical leaders that a core group of 15 hospitals would spearhead the currency effort, using VA and civilian partnerships to bring more complex cases inside military walls. [7] The budget justification Congress received in April turns that intent into a strategy. Staffing shortfalls in fiscal 2025 pushed care into the private sector, it says, and efforts are underway to focus the key military treatment facilities on recapturing that care, with those facilities named as the primary choice for assigning uniformed medical and dental personnel. [8] Recapture is the organizing strategy of fiscal 2027, and it can work. The budget, the Director's priorities, and the public record already hold most of what success requires. What follows is my map of the six conditions that make it work, where each one stands today, and when you will know. Why recapture is the right bet The justification makes the case on its own numbers. Medical cost per TRICARE Prime enrollee grew 8.8 percent in fiscal 2025 against a 6.7 percent goal, and the document says the system would have hit its target without pharmaceuticals, where cost per enrollee rose more than 24 percent on specialty and brand drugs including GLP-1 medications. [8] Most of that growth landed in purchased care. Care delivered inside military hospitals brings prescriptions into the hospital pharmacy, which the justification calls the lowest-cost option the system has. [8] The justification expects medication delivery inside military hospitals to rise as care rises, and it projects that a return to normal Prime workload and improved productivity will hold medical cost growth in line with the goal for the next couple of years. [8] Recapture improves readiness and bends cost in the same motion. The starting position is stronger than the headlines suggest. The Military Health System reported 91.1 percent total force medical readiness in the last quarter of fiscal 2025, above the 90 percent goal. [8] Satisfaction among Prime enrollees at military hospitals and clinics improved over fiscal 2024, access for active duty patients has risen every year since fiscal 2023, and the claims and access problems that came with the new T-5 managed care contracts were largely resolved by the end of the year. [8] In May, fifteen military hospitals earned an A in the Leapfrog safety assessment. [9] A system with those numbers has something to offer the beneficiaries it is asking to come back. Condition one: build the complex caseload the surgeons need A surgeon stays current on volume and complexity, and the complex cases live with the older and sicker beneficiaries. The justification names retirees alongside family members as the people military hospitals should reattract, and DHA's June designation of six Specialty Care Centers of Excellence promised every beneficiary, past, present, and future, more choice in timely specialty care inside the system. [8][9] The model already has a result. DHA reported that its maxillofacial restoration pilot returned 94 percent of active duty patients to full duty within 16 weeks of surgery, with referrals managed through central referral management centers and specialty criteria shared with the managed care support contractors. [9] My read is that Medicare-eligible retirees on TRICARE For Life become the center of the currency strategy in 2027, because they bring the cardiac, orthopedic, oncologic, and surgical complexity the Core 15 needs. Success here means framing that volume correctly. The new Private Sector Care Program excludes TRICARE For Life, and the budget states that the Medicare-Eligible Retiree Health Care Fund pays the Department's share of care for Medicare-eligible retirees in military hospitals and in the network alike. [8][10] In the network, Medicare pays first; in a military hospital, where those beneficiaries are seen on a space-available basis, the Department carries the cost. [11] Retiree recapture is a readiness investment, and it succeeds when DHA measures it in surgical currency. You will see the first signal in caseload mix at the Core 15 by spring. Condition two: let the savings follow the patient Recapture of Prime enrollees from the network does show up in the new account, and the budget sets it up to be visible. The Private Sector Care Program is requested at $22.18 billion, up 6.7 percent, with the growth coming entirely from price changes. [8] That is prudent budgeting: the request banks no savings before the hospitals produce them, so every case that comes home in 2027 shows up as upside. The account split is broadly supported. The House defense appropriations bill funds the Military Health Program at $43.3 billion and backs the two accounts, and the White House called section 724 of the House authorization bill the most significant adoption of an administration-proposed military health reform in about three decades. [12][13] The piece that turns that transparency into a working incentive is transfer authority. Once there are two appropriations, money moves between them only where a statute allows it. [14] A capped, reported authority to shift funds from private sector care to the hospital that recaptured the case lets savings follow the patient and rewards the Core 15 for succeeding. The design can be simple: a percentage cap on movement between the accounts, notification to the defense committees before each transfer, and a quarterly report showing the workload that moved with the money. That gives appropriators the transparency the split was built for and gives hospital commanders a reason to compete for every case. The final bill text and conference language are where that provision would appear, and the full-year appropriation is when you will know. The Senate's authorization bill has been waiting since July. [15] Condition three: give active duty the fast lane and keep the door open The TRICARE Prime access standards have been fixed in regulation for decades: urgent care wi",
+      "premium": false
+    },
+    {
       "id": "contract-community-care-network-next-gen-ccn-ng-",
       "type": "contract_intel",
       "title": "Community Care Network Next Gen (CCN NG)",
       "slug": "community-care-network-next-gen-ccn-ng-",
       "date": "2026-08-17",
-      "description": "Update Aug 17, 2026: VA released solicitation 36C10G26R0003 on March 6, 2026 for the CCN Next Gen Medical multiple-award IDIQ with a potential 10-year, $700B ceiling; proposals were due March 16, 2026 and no award had been announced as of A",
+      "description": "Update Oct 5, 2026: an industry contact reports that award notification letters went out in late September 2026. Nothing on SAM.gov, VA News or trade press confirmed an award as of Oct 5, so the status stays active (source selection) and th",
       "tags": [
         "Department of Veterans Affairs",
         "active",
@@ -2434,24 +2458,24 @@
       ],
       "url": "/contracts/community-care-network-next-gen-ccn-ng/",
       "source_url": "https://sam.gov/opp/7b2734002e4048bfa2ac4cc5b0479930/view",
-      "excerpt": "Update Aug 17, 2026: VA released solicitation 36C10G26R0003 on March 6, 2026 for the CCN Next Gen Medical multiple-award IDIQ with a potential 10-year, $700B ceiling; proposals were due March 16, 2026 and no award had been announced as of August 2026, so it is in source selection. Next-generation VA community care MA-IDIQ (Solicitation 36C10G26R0003) for CCN Next Gen Medical, replacing current CCN regional contracts. Two new mechanisms enter that do not exist in current CCN: (1) value-based payments starting with lower-extremity joint replacement episodes, with at least three more VBP models added over the performance period; (2) utilization management requiring clinical decision support at the point of authorization. Corporate Experience gate is binary across three references: implementation, program management, and IT integration across multiple states — missing any one factor = Unacceptable. Forces teaming between healthcare payers and systems integrators. MOSA structure with No-Bid provision allows specialized firms to win bench positions and respond only to matching task orders.\nAgency: Department of Veterans Affairs\nVendor: TBD — proposals received Apr 17, 2026; award TBD\nValue: Est. $700B IDIQ ceiling; $56.2B FY2027 community care account (+17%)\nStatus: active\nNAICS: 524292\nMMT verdict: WATCH — High ceiling but complex teaming required\nFactors: vehicle_fit: pass — IDIQ with MOSA structure allows bench positioning | agency_alignment: pass — VA community care — active relationship signals required | timeline: watch — Proposals due April 17 — very tight runway | competition: watch — 4-5 major payer-integrator teams expected | scope_fit: pass — Multi-region structure allows right-sized participation",
+      "excerpt": "Update Oct 5, 2026: an industry contact reports that award notification letters went out in late September 2026. Nothing on SAM.gov, VA News or trade press confirmed an award as of Oct 5, so the status stays active (source selection) and the award is pending official confirmation; the companion Dental IDIQ was awarded to Optum Serve on September 30, 2026. Update Aug 17, 2026: VA released solicitation 36C10G26R0003 on March 6, 2026 for the CCN Next Gen Medical multiple-award IDIQ with a potential 10-year, $700B ceiling; proposals were due March 16, 2026 and no award had been announced as of August 2026, so it is in source selection. Next-generation VA community care MA-IDIQ (Solicitation 36C10G26R0003) for CCN Next Gen Medical, replacing current CCN regional contracts. Two new mechanisms enter that do not exist in current CCN: (1) value-based payments starting with lower-extremity joint replacement episodes, with at least three more VBP models added over the performance period; (2) utilization management requiring clinical decision support at the point of authorization. Corporate Experience gate is binary across three references: implementation, program management, and IT integration across multiple states — missing any one factor = Unacceptable. Forces teaming between healthcare payers and systems integrators. MOSA structure with No-Bid provision allows specialized firms to win bench positions and respond only to matching task orders.\nAgency: Department of Veterans Affairs\nVendor: TBD — proposals received Apr 17, 2026; award TBD\nValue: Est. $700B IDIQ ceiling; $56.2B FY2027 community care account (+17%)\nStatus: active\nNAICS: 524292\nMMT verdict: WATCH — High ceiling but complex teaming required\nFactors: vehicle_fit: pass — IDIQ with MOSA structure allows bench positioning | agency_alignment: pass — VA community care — active relationship signals required | timeline: watch — Proposals due April 17 — very tight runway | competition: watch — 4-5 major payer-integrator teams expected | scope_fit: pass — Multi-region structure allows right-sized participation",
       "premium": false
     },
     {
-      "id": "contract-ccn-dental-36c10g26r0004-",
+      "id": "contract-ccn-next-gen-dental-36c10g26r0004-",
       "type": "contract_intel",
-      "title": "CCN Dental (36C10G26R0004)",
-      "slug": "ccn-dental-36c10g26r0004-",
-      "date": "2026-08-17",
-      "description": "Update Aug 17, 2026: CCN Next Gen Dental solicitation 36C10G26R0004, a WOSB set-aside multiple-award IDIQ valued near $47M, posted December 2025 with proposals due March 16, 2026; past its proposal deadline and in source selection with no a",
+      "title": "CCN Next Gen Dental (36C10G26R0004)",
+      "slug": "ccn-next-gen-dental-36c10g26r0004-",
+      "date": "2026-10-05",
+      "description": "Update Oct 5, 2026: VA announced on September 30, 2026 that Optum Serve won the CCN Next Generation Dental contract, a 10-year single-award IDIQ worth up to $30 billion. Optum Serve becomes the dental care administrator that builds and runs",
       "tags": [
         "Department of Veterans Affairs",
-        "active",
+        "awarded",
         "621210"
       ],
       "url": "/contracts/ccn-dental-36c10g26r0004/",
-      "source_url": "https://www.federalcompass.com/rfp-opportunity-detail/36C10G26R0004",
-      "excerpt": "Update Aug 17, 2026: CCN Next Gen Dental solicitation 36C10G26R0004, a WOSB set-aside multiple-award IDIQ valued near $47M, posted December 2025 with proposals due March 16, 2026; past its proposal deadline and in source selection with no award announced. Companion dental network management vehicle to the CCN Next Gen medical IDIQ. Separate procurement, same structural logic: multiple-award IDIQ for nationwide dental network coordination for veterans using community care. New vehicle — no standalone dental companion existed in prior CCN generations. Has received less scrutiny than the medical vehicle, increasing the chance of evaluation inconsistencies that could support a protest. GAO protests must be filed within 10 calendar days of debriefing request or debriefing.\nAgency: Department of Veterans Affairs\nVendor: TBD — closed March 16, 2026; awards pending\nValue: ~$47M\nStatus: active\nNAICS: 621210\nMMT verdict: WATCH — Upcoming — action window within 6 months",
+      "source_url": "https://news.va.gov/149989/va-optum-serve-30-billion-community-care-dental/",
+      "excerpt": "Update Oct 5, 2026: VA announced on September 30, 2026 that Optum Serve won the CCN Next Generation Dental contract, a 10-year single-award IDIQ worth up to $30 billion. Optum Serve becomes the dental care administrator that builds and runs a single national network of community dental providers for 9.1 million enrolled Veterans across every state and territory: general and specialty dental care, preventive services and pharmacy support, with the network scheduled to be fully implemented within a year of award (VA News). Correction: the tracker carried this from December 2025 to August 2026 as a WOSB set-aside multiple-award IDIQ near $47M, taken from a third-party listing; the solicitation (36C10G26R0004, posted December 15, 2025, proposals due March 16, 2026) was a single-award national dental network IDIQ. Companion to the CCN Next Gen Medical IDIQ, which remains in source selection. Watch for protests: a losing offeror has 10 calendar days from its debriefing to file at GAO, and this is the first standalone dental companion in any CCN generation.\nAgency: Department of Veterans Affairs\nVendor: Optum Serve (awarded Sep 30, 2026, per VA News)\nValue: Up to $30B over 10 years, single-award IDIQ (VA News, Sep 30, 2026)\nStatus: awarded\nNAICS: 621210\nMMT verdict: WATCH — Awarded to Optum Serve Sep 30, 2026; subcontracting and protest watch only",
       "premium": false
     },
     {
@@ -2578,16 +2602,16 @@
       "type": "contract_intel",
       "title": "VA Health Services DevSecOps",
       "slug": "va-health-services-devsecops",
-      "date": "2026-08-17",
-      "description": "Update Aug 17, 2026: Solicitation 36C10B26Q0163 response deadline extended to February 12, 2026 (Amendment 01), so proposals have closed and it is in source selection. No award for this specific requirement found. DA01 Health Services DevSe",
+      "date": "2026-10-05",
+      "description": "Update Oct 5, 2026: the sources-sought notice 36C10B26Q0163 became solicitation 36C10B26R0033, retitled Health Services Portfolio Application Development and Operations (SAM.gov). An industry contact reported on Oct 5, 2026 that it has been",
       "tags": [
         "Department of Veterans Affairs / VA TAC",
         "active",
         "541512"
       ],
       "url": "/contracts/va-health-services-devsecops/",
-      "source_url": "https://www.highergov.com/contract-opportunity/da01-health-services-devsecops-new-contract-va-36c10b26q0163-r-4a060/",
-      "excerpt": "Update Aug 17, 2026: Solicitation 36C10B26Q0163 response deadline extended to February 12, 2026 (Amendment 01), so proposals have closed and it is in source selection. No award for this specific requirement found. DA01 Health Services DevSecOps — new-contract Sources Sought (36C10B26Q0163). Scope: Agile health services applications across the lifecycle, ATO support, configuration management, UX, and sustainment.\nAgency: Department of Veterans Affairs / VA TAC\nVendor: TBD — Sources Sought (36C10B26Q0163)\nValue: Estimated ceiling around $698M per solicitation listing\nStatus: active\nNAICS: 541512\nMMT verdict: WATCH — Upcoming — action window within 6 months",
+      "source_url": "https://sam.gov/opp/dcb3e831658f4380ac756a446bb87ab7/view",
+      "excerpt": "Update Oct 5, 2026: the sources-sought notice 36C10B26Q0163 became solicitation 36C10B26R0033, retitled Health Services Portfolio Application Development and Operations (SAM.gov). An industry contact reported on Oct 5, 2026 that it has been awarded. No award notice was found on SAM.gov, VA News or trade press that day, so the status stays active (source selection) and the award is pending official confirmation. Update Aug 17, 2026: Solicitation 36C10B26Q0163 response deadline extended to February 12, 2026 (Amendment 01), so proposals have closed and it is in source selection. No award for this specific requirement found. DA01 Health Services DevSecOps — new-contract Sources Sought (36C10B26Q0163). Scope: Agile health services applications across the lifecycle, ATO support, configuration management, UX, and sustainment.\nAgency: Department of Veterans Affairs / VA TAC\nVendor: TBD; solicitation 36C10B26R0033. Award reported by an industry contact Oct 5, 2026, not yet confirmed\nValue: Estimated ceiling around $698M per solicitation listing\nStatus: active\nNAICS: 541512\nMMT verdict: WATCH — Upcoming — action window within 6 months",
       "premium": false
     },
     {
@@ -2613,7 +2637,7 @@
       "title": "VA HELM / SCMDSO (Healthcare Environment and Logistics Management)",
       "slug": "va-helm-scmdso-healthcare-environment-and-logistics-management-",
       "date": "2026-08-17",
-      "description": "Update Aug 17, 2026: VA moved past RFI and issued solicitation 36C10B26Q0376 for HELM/SCMDSO supply chain DevSecOps and integration, reported around $485M covering 34 HELM products (Washington Technology and MeriTalk, April 2026). Single-co",
+      "description": "Update Oct 5, 2026: OrangeSlices reported on Oct 2, 2026 that TISTA Science and Technology won a VA SCM DSO (supply chain DevSecOps) award, task order 36C10B26F0452 at about $209.9M, over five other bidders. Whether that order is this requi",
       "tags": [
         "Department of Veterans Affairs / OIT Product Delivery Services",
         "active",
@@ -2621,7 +2645,24 @@
       ],
       "url": "/contracts/va-supply-chain-devsecops-helm/",
       "source_url": "https://sam.gov/opp/7f1dab9449984bc6aff2fe595831be62/view",
-      "excerpt": "Update Aug 17, 2026: VA moved past RFI and issued solicitation 36C10B26Q0376 for HELM/SCMDSO supply chain DevSecOps and integration, reported around $485M covering 34 HELM products (Washington Technology and MeriTalk, April 2026). Single-contractor sustainment and modernization for VA Healthcare Environment and Logistics Management (HELM) product line. Covers 5 sub-product lines (Environmental and Healthcare Management, Healthcare Technology and Asset Management, Expendable Inventory Management, Prosthetics, Technical Services) and ~34 products across 174 sites. RFI 36C10B26Q0376 + Draft PWS released 2026-04-24, amended 2026-05-05, RFI closed 2026-05-11 12:00 ET. Hybrid FFP base + T&M optional + cost-reimbursable travel. 12-month base + 4 × 12-month options (60 months). Aligns to Zero Trust Architecture, iFAMS, and EHRM integration.\nAgency: Department of Veterans Affairs / OIT Product Delivery Services\nVendor: TBD — RFI closed 2026-05-11; RFP pending\nValue: Reported value about $485M\nStatus: active\nNAICS: 541512\nMMT verdict: WATCH — Upcoming — action window within 6 months",
+      "excerpt": "Update Oct 5, 2026: OrangeSlices reported on Oct 2, 2026 that TISTA Science and Technology won a VA SCM DSO (supply chain DevSecOps) award, task order 36C10B26F0452 at about $209.9M, over five other bidders. Whether that order is this requirement (36C10B26Q0376) is pending official confirmation on SAM.gov or USASpending, so the status stays as listed. Update Aug 17, 2026: VA moved past RFI and issued solicitation 36C10B26Q0376 for HELM/SCMDSO supply chain DevSecOps and integration, reported around $485M covering 34 HELM products (Washington Technology and MeriTalk, April 2026). Single-contractor sustainment and modernization for VA Healthcare Environment and Logistics Management (HELM) product line. Covers 5 sub-product lines (Environmental and Healthcare Management, Healthcare Technology and Asset Management, Expendable Inventory Management, Prosthetics, Technical Services) and ~34 products across 174 sites. RFI 36C10B26Q0376 + Draft PWS released 2026-04-24, amended 2026-05-05, RFI closed 2026-05-11 12:00 ET. Hybrid FFP base + T&M optional + cost-reimbursable travel. 12-month base + 4 × 12-month options (60 months). Aligns to Zero Trust Architecture, iFAMS, and EHRM integration.\nAgency: Department of Veterans Affairs / OIT Product Delivery Services\nVendor: TBD — RFI closed 2026-05-11; RFP pending\nValue: Reported value about $485M\nStatus: active\nNAICS: 541512\nMMT verdict: WATCH — Upcoming — action window within 6 months",
+      "premium": false
+    },
+    {
+      "id": "contract-va-ie-o-tista-task-order-36c10b26f0468-",
+      "type": "contract_intel",
+      "title": "VA IE&O (TISTA, task order 36C10B26F0468)",
+      "slug": "va-ie-o-tista-task-order-36c10b26f0468-",
+      "date": "2026-10-05",
+      "description": "Update Oct 5, 2026: OrangeSlices reported on Oct 2, 2026 that TISTA Science and Technology won a 5-year VA IE&O award, task order 36C10B26F0468 at about $164.1M, over 14 other bidders, alongside a separate SCM DSO award (36C10B26F0452, abou",
+      "tags": [
+        "Department of Veterans Affairs / VA TAC",
+        "awarded",
+        "541512"
+      ],
+      "url": "/contracts/va-ieo-tista-36c10b26f0468/",
+      "source_url": "https://orangeslices.ai/tista-beats-out-5-to-win-210m-va-scmdso-contract/",
+      "excerpt": "Update Oct 5, 2026: OrangeSlices reported on Oct 2, 2026 that TISTA Science and Technology won a 5-year VA IE&O award, task order 36C10B26F0468 at about $164.1M, over 14 other bidders, alongside a separate SCM DSO award (36C10B26F0452, about $209.9M). The article's own figures were reported two ways in search indexes, so the pairing of award IDs to values is pending confirmation on USASpending. VA styles the requirement IE&O; the expansion and scope are not stated in the sources found and are pending official confirmation. Added after an industry contact flagged the award as missing from the tracker; no SAM.gov award notice was found on Oct 5.\nAgency: Department of Veterans Affairs / VA TAC\nVendor: TISTA Science and Technology Corporation (reported Oct 2, 2026)\nValue: About $164.1M over 5 years as reported by OrangeSlices; pending confirmation on USASpending\nStatus: awarded\nNAICS: 541512\nMMT verdict: WATCH — Awarded to TISTA per trade press; subcontracting watch only",
       "premium": false
     },
     {

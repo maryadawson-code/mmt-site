@@ -82,3 +82,5 @@ eval/reports/
 
 # Written by build.js on every build; bundled with the health function (netlify.toml)
 netlify/build-info.json
+data/award-signals.json
+data/award-signals.md

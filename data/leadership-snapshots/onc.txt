@@ -1,0 +1,364 @@
+An official website of the United States government
+Here’s how you know
+Official websites use .gov
+A
+.gov
+website belongs to an official government organization in the
+United States.
+Secure .gov websites use HTTPS
+A
+lock
+(
+) or
+https://
+means you’ve safely connected to the .gov website. Share sensitive
+information only on official, secure websites.
+Menu
+Skip Navigation
+Topics
+Featured
+Certification of Health IT
+Ensures health IT meets standards for functionality, security, and interoperability.
+Information Blocking
+Regulations ensuring health data is shared appropriately without improper barriers.
+Interoperability
+Enables secure and seamless exchange of electronic health information among authorized users.
+Health Information Technology Advisory Committee (HITAC)
+Advises on policies, standards, and implementation specifications for health data and technology.
+United States Core Data for Interoperability (USCDI)
+Offers a standardized set of health data classes and constituent data elements for nationwide, interoperable health information exchange.
+Trusted Exchange Framework & Common Agreement (TEFCA)
+Operates as a nationwide framework for the interoperability of electronic health information.
+Artificial Intelligence
+Artificial Intelligence (AI) at HHS
+HHS’ list of AI use cases is publicly available to search and reference. In addition to AI use case summaries, the inventory also includes information on data, IT infrastructure, internal governance, and much more.
+Care Continuum
+Explore the roles of health information and technology in broad healthcare settings, supporting seamless, coordinated patient care from prevention through recovery.
+Care Settings
+Behavioral Health
+Health information, policies, and technology supporting integrated care for mental health and substance use disorders.
+Emergency Medical Services
+Rapid response and communication during health emergencies through health information and technology.
+Long-Term & Post-Acute Care
+Health information and technology facilitating coordinated care beyond acute settings.
+Maternal & Pediatric Care
+Technology addressing unique health needs of mothers and children.
+Pharmacy & PDMP
+Electronic tools tracking controlled substance prescriptions to improve patient safety.
+Public Health
+Using health information and technology to prevent disease, diagnose health conditions, and promote population health.
+Clinical Topics
+Clinical Quality & Safety
+Optimal care through measuring results, prioritizing improvements, and implementing and monitoring results.
+Usability & Provider Burden
+Promotes health information and technology usability to reduce clinician burden and enhance patient care.
+Interoperability
+Promotes standardized exchange and use of electronic health data to improve patient care, coordination, and public health outcomes.
+Health IT Interoperability
+Enables secure and seamless exchange of electronic health information among authorized users.
+Trusted Exchange Framework & Common Agreement (TEFCA)
+Facilitates secure, nationwide electronic health information sharing to connect providers, patients, public health agencies, and payers.
+Certification of Health IT
+Provides certification criteria for developers of health IT modules that ensures health IT products meet the standards for functionality, security, and interoperability.
+Standards & Technology
+Advance healthcare quality and safety through standardized health IT and secure health data exchange.
+Information Blocking
+Prevents practices that interfere with the access, exchange, or use of electronic health information, as defined by the Cures Act.
+Interoperability Standards Platform
+Serves as a homepage for tools and resources for understanding and using health IT standards and technologies.
+Investments
+Support interoperability improvements nationwide.
+Health IT & Health Information Exchange Basics
+Enable secure electronic sharing and access of patient health information, supporting healthcare providers and patients across care settings.
+Patient Access to Health Records
+Ensure ﻿﻿patients have secure and convenient access to their health records, supported by healthcare providers and health IT developers under HIPAA.
+Policy
+Outlines federal regulations and strategic initiatives guiding effective use and secure exchange of electronic health information.
+Legislation
+Delivers improvements in the delivery and experience of health care while enhancing health outcomes by leveraging health information technology.
+Regulations
+Supports the adoption and promotion of standards-based health information.
+TEFCA
+Operates as a nationwide framework for the interoperability of electronic health information.
+HHS Health IT Alignment Program
+Coordinates health data and technology initiatives across HHS to enhance interoperability and effectiveness.
+Health Information Technology Advisory Committee (HITAC)
+Advises on policies, standards, and implementation specifications for health data and technology.
+Privacy & Security
+Protects electronic health information security through policy.
+Rulemaking
+HTI Rules
+Health data interoperability regulations ensuring secure, effective technology use.
+Information Blocking
+Policies to prevent practices interfering with the access, exchange, and use of electronic health information.
+Certification Program Rules
+Ensures health IT meets standards for functionality, security, and interoperability.
+Research & Analysis
+Interactive datasets related to health IT data analysis, providing insights into adoption and use.
+Dashboards
+Gives data-driven insight on how dashboards are driving health IT adoption and how they have helped users to meet federal healthcare incentives or programs.
+Data Briefs
+Provides health IT adoption and use statistics derived from surveys and administrative data and in-depth analysis of health IT policies and programs.
+Datasets
+Grants access to raw datasets from ONC related to health IT adoption, health IT capabilities and other topics.
+Quick Stats
+Streamlines data into visualizations of key data and summarizes the latest statistics, facts and figures about health IT.
+About Health IT Research & Analysis
+Provides information about how health IT data are collected, analyzed, and published.
+Resources & Tools
+Featured Resources & Tools
+Featured Resources
+Highlights key tools and guidance supporting effective health IT implementation, interoperability, patient engagement, and compliance with federal standards.
+Interoperability Standards
+ONC’s initiatives in health data standards enable secure electronic health data exchange.
+TEFCA Resources
+Data sheets, videos, and documents to guide users of the TEFCA framework and exchange.
+Implementation Resources
+Technical resources and tools supporting healthcare providers, clinicians, and developers of health IT products.
+Health IT Playbook
+Strategies, recommendations, and best practices for implementing and using health data and technology.
+Security Risk Assessment Tool
+Desktop application supporting providers conducting HIPAA security risk assessments.
+Patient Engagement Playbook
+Practical reference tool for clinicians, staff, and other innovators around the world to improve patient engagement.
+Certified Health IT Product List (CHPL)
+A comprehensive and authoritative listing of successfully tested and certified health IT modules.
+Conformance Test Tools & Edge Testing Tool
+Resources for developers implementing standards to enable health information interoperability.
+Health IT Feedback Form
+Users can submit feedback regarding health data and technology usability, interoperability, and compliance issues.
+Resources
+Collection of practical materials, videos, educational tools, and user guides designed to support successful implementation and adoption of health IT systems.
+Get It, Check It, Use It Guide
+A guide for patients and caregivers who want to access, review, and use their health records.
+Video Resources
+A repository of informational videos created by ONC.
+Health IT Curriculum Resources for Educators
+Instructional materials to help healthcare workers stay current in the changing healthcare environment and deliver care more effectively.
+Fact Sheets
+A repository of fact sheets created by ONC.
+Tools & Technology
+Implementation
+Certified Health IT Product List
+A comprehensive and authoritative listing of successfully tested and certified health IT modules.
+Electronic Clinical Quality Improvement Resource Center
+Provides common standards and shared technologies to monitor and analyze the quality of health care and patient outcomes.
+Security Risk Assessment Tool
+Desktop application supporting providers conducting HIPAA security risk assessments.
+Tools
+Edge Testing Tool
+A centralized collection of testing tools and resources supporting health IT developers and users fully evaluating specific technical standards.
+Conformance Test Tools
+ONC-approved conformance resources supporting developers implementing standards to enable health information interoperability.
+Get It, Check it, Use It
+A guide for patients and caregivers who want to access, review, and use their health records.
+Quick Links
+Cartos ONC’s Terminology Service
+Certification & Testing
+USCDI
+USCDI+
+Interoperability Standards Platform (ISP)
+FHIR
+ONC Standards Bulletins
+Patient ID & Matching Adopted Standards for HHS
+News & Events
+Media Center
+News
+Events
+Latest News & Events
+Quarterly Newsletter
+September 30, 2026
+Coordinator's Quarterly – September 2026
+Upcoming Event
+February 3, 2027
+ONC Annual Meeting
+Latest Blog
+September 30, 2026
+Less Pajama Time, More Patient Time: How Better Interoperability Can Reduce Physician Burden
+Recent News
+September 1, 2026
+Standards Bulletin: ONC HL7® FHIR® Terminology Service, Cartos
+About
+Overview
+About ONC
+Mission, role, and responsibilities of ONC.
+Leadership
+Profiles of ONC’s senior leadership team.
+History
+Timeline of ONC’s evolution and key milestones.
+Budget & Performance
+Financial reports and performance accountability.
+Investments
+Strategic investments in programs, policies, and technology.
+Reports to Congress
+Annual health data and technology progress updates to Congress.
+Careers
+Careers at ONC
+View opportunities with ONC.
+Working at ONC
+Overview of workplace culture and employee experience.
+Contact
+Contact Us
+Reach ONC with general inquiries.
+Health IT Feedback Form
+Users can submit feedback regarding health data and technology usability, interoperability, and compliance issues.
+Report Issue with Certified Health IT
+Complaint process to resolve any issues of potential noncompliance with certification requirements.
+Information Blocking Claim
+Form to report alleged information blocking practices.
+Speaker Request
+Form to request ONC experts for speaking engagements.
+Funding Opportunities
+Funding Announcements
+ONC’s contractors and grantees play a valuable role in helping promote better health care for Americans by fostering interoperable health data and technology.
+Grants Management & Process
+Learn about opportunities for funding through grants and cooperative agreements.
+Blog
+Search
+Popular searches:
+certification
+information blocking
+interoperability
+Skip to main content
+About
+Overview
+Leadership
+History
+Open Government @ ONC
+Careers
+Careers at ONC
+Working at ONC
+Budget & Performance
+Funding & Grants
+Funding Announcements
+Grants Management & Process
+Contact Us
+More
+About
+Overview
+Leadership
+History
+Open Government @ ONC
+Careers
+Careers at ONC
+Working at ONC
+Budget & Performance
+Funding & Grants
+Funding Announcements
+Grants Management & Process
+Contact Us
+LEADERSHIP
+Our leadership team is committed to guiding the evolution of health IT to achieve seamless interoperability and enhanced patient care. Through their stewardship, ONC is a pivotal force in leveraging data for improved healthcare delivery and outcomes, fostering a data-enabled healthcare ecosystem.
+Thomas Keane, MD, MBA
+National Coordinator for Health IT
+Steven Posnack, MS, MHS
+Principal Deputy National Coordinator for Health IT
+Adrienne Kimble, MS
+Deputy National Coordinator for Health IT, Chief Operating Officer
+Jason Funderburk, MD, MBA
+Deputy National Coordinator for Health IT
+Sam Kaardal
+Chief of Staff
+Matt Swain
+Chief of Strategy and Engagement
+Elise Sweeney Anthony, JD
+Deputy National Coordinator for Health IT; Executive Director, Office of Programs and Implementation
+Avinash Shanbhag
+Deputy National Coordinator for Health IT; Executive Director, Office of Standards, Certification, and Analysis
+Molly Prieto
+Principal Deputy Director, Office of Standards, Certification, and Analysis
+John Rancourt
+Deputy Director, Office of Standards, Certification, and Analysis
+Zhan Caplan, MBA
+Director of Public Affairs and Communications
+Kathryn Marchesini, JD
+Chief Privacy Officer
+Thomas Mason, MD
+Chief Medical Officer
+Melinda Kidder, DHA, MSN, RN
+Chief Nursing Officer
+Explore
+ONC History and Work
+Established in 2004 by executive order, ONC plays an essential role in catalyzing the adoption of health information technology across the national healthcare landscape.
+About ONC
+ONC is the lead federal entity responsible for coordinating nationwide efforts to advance health information technology and promote the secure electronic exchange of health information.
+Learn More
+What We've Accomplished
+ONC crafts effective policies and programs that help reduce fragmentation in the health care system, enabling a more transparent and open industry that better serves the American public. Now, 97% of hospitals and 80% of physician offices use an ONC-certified health IT product.
+View ONC History
+Current Work
+Focused on effective collaboration with federal, state and local agencies as well as industry leaders, ONC is helping to lead and shape technology and data policy on behalf of HHS.
+Learn More on Our Blog
+Last Updated: April 1, 2026
+Submit Feedback
+Step 1 of 3
+33%
+Facebook
+This field is for validation purposes and should be left unchanged.
+Name (Required)
+First
+Last
+Email (Required)
+Please provide your email address for follow-up.
+Next
+What kind of issue are you experiencing? (Required)
+Technical or Display
+Content & Information
+Select the type of issue you encountered. Select all that apply.
+What browser/device are you using?
+Example: Google Chrome on PC or Safari on iPhone.
+Previous Next
+Page Information
+Page Title (Required)
+What page did you find this issue? e.g. Interoperability, ONC Blog
+Page URL
+e.g. https://healthit.gov/interoperability
+Describe the issue you've encountered. (Required)
+Please provide a detailed description of the issue you experienced.
+Upload Screenshots or Files (optional)
+Drop files here or
+Select files
+Max. file size: 3 MB, Max. files: 3.
+If you have any screenshots or files related to the issue, please upload them here.
+Previous Submit
+Cancel
+Subscribe for Email Updates
+Comments
+This field is for validation purposes and should be left unchanged.
+Email (Required)
+Submit
+EXPLORE
+Certification of Health IT
+Information Blocking
+Interoperability
+Health Information Technology Advisory Committee (HITAC)
+Patient Access to Health Records
+TEFCA
+Policy
+Resources
+DATA
+HealthData.gov
+Health IT Research & Analysis
+NEWS & EVENTS
+Media Center
+ONC Blog
+News
+Events
+ABOUT
+About ONC
+Careers
+Contact
+Funding Opportunities
+Linkedin
+X
+YouTube
+Privacy Policy
+Website Disclaimers
+Viewers & Players
+GobiernoUSA.gov
+HHS Vulnerability Disclosure Policy
+Archived Content
+External Link Notice
+Continue
+Cancel
+&times;

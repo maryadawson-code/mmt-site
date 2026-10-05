@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-09-30T16:01:34.042Z",
-  "node_count": 476,
-  "edge_count": 695,
+  "generated_at": "2026-10-05T14:54:38.951Z",
+  "node_count": 482,
+  "edge_count": 696,
   "nodes": [
     {
       "id": "peo-dhms-deployment",
@@ -622,15 +622,21 @@
       }
     },
     {
-      "id": "ccn-dental-36c10g26r0004",
-      "type": "Solicitation",
-      "canonical_name": "CCN Dental (36C10G26R0004)",
+      "id": "ccn-next-gen-dental-36c10g26r0004",
+      "type": "Program",
+      "canonical_name": "CCN Next Gen Dental (36C10G26R0004)",
       "properties": {
-        "classification": "Solicitation",
-        "status": "active",
+        "classification": "Award",
+        "status": "awarded",
         "naics": "621210",
-        "last_verified": "2026-08-17"
+        "last_verified": "2026-10-05"
       }
+    },
+    {
+      "id": "optum-serve",
+      "type": "Contractor",
+      "canonical_name": "Optum Serve",
+      "properties": {}
     },
     {
       "id": "va-ambient-scribe-idiq-36c10b26r0006",
@@ -717,7 +723,7 @@
         "classification": "Solicitation",
         "status": "active",
         "naics": "541512",
-        "last_verified": "2026-08-17"
+        "last_verified": "2026-10-05"
       }
     },
     {
@@ -741,6 +747,29 @@
         "naics": "541512",
         "last_verified": "2026-08-17"
       }
+    },
+    {
+      "id": "va-ie-o-tista-task-order-36c10b26f0468",
+      "type": "Program",
+      "canonical_name": "VA IE&O (TISTA, task order 36C10B26F0468)",
+      "properties": {
+        "classification": "Vendor-Announced",
+        "status": "awarded",
+        "naics": "541512",
+        "last_verified": "2026-10-05"
+      }
+    },
+    {
+      "id": "tista-science",
+      "type": "Contractor",
+      "canonical_name": "TISTA Science",
+      "properties": {}
+    },
+    {
+      "id": "technology-corporation",
+      "type": "Contractor",
+      "canonical_name": "Technology Corporation",
+      "properties": {}
     },
     {
       "id": "cio-cs-follow-on-the-store",
@@ -2036,11 +2065,11 @@
       }
     },
     {
-      "id": "brig-gen-bill-a-soliz",
+      "id": "mr-william-walker",
       "type": "Person",
-      "canonical_name": "Brig. Gen. Bill A. Soliz",
+      "canonical_name": "Mr. William Walker",
       "properties": {
-        "title": "Acting Assistant Director, Healthcare Administration & Operations"
+        "title": "Assistant Director, Healthcare Administration & Operations"
       }
     },
     {
@@ -2276,11 +2305,19 @@
       }
     },
     {
+      "id": "gene-civillico",
+      "type": "Person",
+      "canonical_name": "Gene Civillico",
+      "properties": {
+        "title": "Director, Health Science Futures"
+      }
+    },
+    {
       "id": "tyler-best",
       "type": "Person",
       "canonical_name": "Tyler Best",
       "properties": {
-        "title": "Acting Director, Health Science Futures"
+        "title": "Deputy Director, Health Science Futures"
       }
     },
     {
@@ -2289,14 +2326,6 @@
       "canonical_name": "Glen Coppersmith",
       "properties": {
         "title": "Director, Proactive Health"
-      }
-    },
-    {
-      "id": "natalie-kates",
-      "type": "Person",
-      "canonical_name": "Natalie Kates",
-      "properties": {
-        "title": "Acting Director, Scalable Solutions"
       }
     },
     {
@@ -2336,7 +2365,7 @@
       "type": "Person",
       "canonical_name": "Andrew Carney",
       "properties": {
-        "title": "Program Manager, Resilient Systems"
+        "title": "Program Manager, Proactive Health"
       }
     },
     {
@@ -2344,7 +2373,7 @@
       "type": "Person",
       "canonical_name": "James Coburn",
       "properties": {
-        "title": "Portfolio Lead, Scalable Solutions"
+        "title": "Program Manager, Scalable Solutions"
       }
     },
     {
@@ -2372,6 +2401,14 @@
       }
     },
     {
+      "id": "sara-reistad-long",
+      "type": "Person",
+      "canonical_name": "Sara Reistad-Long",
+      "properties": {
+        "title": "Chief Strategy Officer, Strategic Affairs Office"
+      }
+    },
+    {
       "id": "keith-martin",
       "type": "Person",
       "canonical_name": "Keith Martin",
@@ -2388,11 +2425,19 @@
       }
     },
     {
+      "id": "catherine-stevens",
+      "type": "Person",
+      "canonical_name": "Catherine Stevens",
+      "properties": {
+        "title": "Director, Business Innovation Division"
+      }
+    },
+    {
       "id": "benjamin-bryant",
       "type": "Person",
       "canonical_name": "Benjamin Bryant",
       "properties": {
-        "title": "Deputy Director, Business Innovation Division; Acting Head of Contracting Activity"
+        "title": "Deputy Director, Business Innovation Division; Acting Head of Contracting Activity per the HHS HCA roster"
       }
     },
     {
@@ -3944,6 +3989,17 @@
       }
     },
     {
+      "id": "article-the-recapture-year",
+      "type": "Article",
+      "canonical_name": "The Recapture Year",
+      "properties": {
+        "slug": "the-recapture-year",
+        "type": "article",
+        "url": "/newsletter/the-recapture-year/",
+        "published": "2026-10-02"
+      }
+    },
+    {
       "id": "article-capture-corner-2026-04-29",
       "type": "Article",
       "canonical_name": "DHA Reorganization: Sixteen Changes, Five That Move Your Pipeline",
@@ -4351,6 +4407,17 @@
       }
     },
     {
+      "id": "article-capture-corner-2026-10-02",
+      "type": "Article",
+      "canonical_name": "Where the Recapture Money Moves",
+      "properties": {
+        "slug": "capture-corner-2026-10-02",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-10-02.html",
+        "published": "2026-10-02"
+      }
+    },
+    {
       "id": "article-premium-briefs-2026-03-21",
       "type": "Article",
       "canonical_name": "Week of March 21, 2026",
@@ -4472,14 +4539,14 @@
       }
     },
     {
-      "id": "article-ccn-dental-36c10g26r0004",
+      "id": "article-ccn-next-gen-dental-36c10g26r0004",
       "type": "Article",
-      "canonical_name": "CCN Dental (36C10G26R0004)",
+      "canonical_name": "CCN Next Gen Dental (36C10G26R0004)",
       "properties": {
-        "slug": "ccn-dental-36c10g26r0004-",
+        "slug": "ccn-next-gen-dental-36c10g26r0004-",
         "type": "contract_intel",
         "url": "/contracts/ccn-dental-36c10g26r0004/",
-        "published": "2026-08-17"
+        "published": "2026-10-05"
       }
     },
     {
@@ -4567,7 +4634,7 @@
         "slug": "va-health-services-devsecops",
         "type": "contract_intel",
         "url": "/contracts/va-health-services-devsecops/",
-        "published": "2026-08-17"
+        "published": "2026-10-05"
       }
     },
     {
@@ -4593,36 +4660,14 @@
       }
     },
     {
-      "id": "article-cio-cs-follow-on-the-store",
+      "id": "article-va-ie-o-tista-task-order-36c10b26f0468",
       "type": "Article",
-      "canonical_name": "CIO-CS Follow-On / The Store",
+      "canonical_name": "VA IE&O (TISTA, task order 36C10B26F0468)",
       "properties": {
-        "slug": "cio-cs-follow-on-the-store",
+        "slug": "va-ie-o-tista-task-order-36c10b26f0468-",
         "type": "contract_intel",
-        "url": "/contracts/cio-cs-follow-on-the-store/",
-        "published": "2026-09-10"
-      }
-    },
-    {
-      "id": "article-va-ehrm-electronic-health-record-modernization",
-      "type": "Article",
-      "canonical_name": "VA EHRM (Electronic Health Record Modernization)",
-      "properties": {
-        "slug": "va-ehrm-electronic-health-record-modernization-",
-        "type": "contract_intel",
-        "url": "/contracts/va-ehrm-electronic-health-record-modernization/",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-mhs-genesis-dhmsm-bridge",
-      "type": "Article",
-      "canonical_name": "MHS GENESIS (DHMSM Bridge)",
-      "properties": {
-        "slug": "mhs-genesis-dhmsm-bridge-",
-        "type": "contract_intel",
-        "url": "/contracts/mhs-genesis-dhmsm-bridge/",
-        "published": "2026-08-17"
+        "url": "/contracts/va-ieo-tista-36c10b26f0468/",
+        "published": "2026-10-05"
       }
     }
   ],
@@ -5203,8 +5248,22 @@
     },
     {
       "from_id": "va",
-      "to_id": "ccn-dental-36c10g26r0004",
+      "to_id": "ccn-next-gen-dental-36c10g26r0004",
       "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "optum-serve",
+      "to_id": "ccn-next-gen-dental-36c10g26r0004",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "ccn-next-gen-dental-36c10g26r0004",
+      "to_id": "optum-serve",
+      "relation": "awarded_to",
       "properties": {},
       "weight": 1
     },
@@ -5275,6 +5334,41 @@
       "from_id": "va",
       "to_id": "va-helm-scmdso-healthcare-environment-and-logistics-manageme",
       "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va",
+      "to_id": "va-ie-o-tista-task-order-36c10b26f0468",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "tista-science",
+      "to_id": "va-ie-o-tista-task-order-36c10b26f0468",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va-ie-o-tista-task-order-36c10b26f0468",
+      "to_id": "tista-science",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "technology-corporation",
+      "to_id": "va-ie-o-tista-task-order-36c10b26f0468",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va-ie-o-tista-task-order-36c10b26f0468",
+      "to_id": "technology-corporation",
+      "relation": "awarded_to",
       "properties": {},
       "weight": 1
     },
@@ -6433,11 +6527,11 @@
       "weight": 1
     },
     {
-      "from_id": "brig-gen-bill-a-soliz",
+      "from_id": "mr-william-walker",
       "to_id": "dha",
       "relation": "leads",
       "properties": {
-        "title": "Acting Assistant Director, Healthcare Administration & Operations"
+        "title": "Assistant Director, Healthcare Administration & Operations"
       },
       "weight": 1
     },
@@ -6685,11 +6779,20 @@
       "weight": 1
     },
     {
+      "from_id": "gene-civillico",
+      "to_id": "arpa-h",
+      "relation": "leads",
+      "properties": {
+        "title": "Director, Health Science Futures"
+      },
+      "weight": 1
+    },
+    {
       "from_id": "tyler-best",
       "to_id": "arpa-h",
       "relation": "leads",
       "properties": {
-        "title": "Acting Director, Health Science Futures"
+        "title": "Deputy Director, Health Science Futures"
       },
       "weight": 1
     },
@@ -6699,15 +6802,6 @@
       "relation": "leads",
       "properties": {
         "title": "Director, Proactive Health"
-      },
-      "weight": 1
-    },
-    {
-      "from_id": "natalie-kates",
-      "to_id": "arpa-h",
-      "relation": "leads",
-      "properties": {
-        "title": "Acting Director, Scalable Solutions"
       },
       "weight": 1
     },
@@ -6752,7 +6846,7 @@
       "to_id": "arpa-h",
       "relation": "leads",
       "properties": {
-        "title": "Program Manager, Resilient Systems"
+        "title": "Program Manager, Proactive Health"
       },
       "weight": 1
     },
@@ -6761,7 +6855,7 @@
       "to_id": "arpa-h",
       "relation": "leads",
       "properties": {
-        "title": "Portfolio Lead, Scalable Solutions"
+        "title": "Program Manager, Scalable Solutions"
       },
       "weight": 1
     },
@@ -6793,6 +6887,15 @@
       "weight": 1
     },
     {
+      "from_id": "sara-reistad-long",
+      "to_id": "arpa-h",
+      "relation": "leads",
+      "properties": {
+        "title": "Chief Strategy Officer, Strategic Affairs Office"
+      },
+      "weight": 1
+    },
+    {
       "from_id": "keith-martin",
       "to_id": "arpa-h",
       "relation": "leads",
@@ -6811,11 +6914,20 @@
       "weight": 1
     },
     {
+      "from_id": "catherine-stevens",
+      "to_id": "arpa-h",
+      "relation": "leads",
+      "properties": {
+        "title": "Director, Business Innovation Division"
+      },
+      "weight": 1
+    },
+    {
       "from_id": "benjamin-bryant",
       "to_id": "arpa-h",
       "relation": "leads",
       "properties": {
-        "title": "Deputy Director, Business Innovation Division; Acting Head of Contracting Activity"
+        "title": "Deputy Director, Business Innovation Division; Acting Head of Contracting Activity per the HHS HCA roster"
       },
       "weight": 1
     },
@@ -7841,6 +7953,27 @@
       "weight": 1
     },
     {
+      "from_id": "article-the-recapture-year",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-recapture-year",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-recapture-year",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-capture-corner-2026-04-29",
       "to_id": "dhmsm",
       "relation": "mentions",
@@ -8695,6 +8828,13 @@
       "weight": 1
     },
     {
+      "from_id": "article-capture-corner-2026-10-02",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-premium-briefs-2026-03-21",
       "to_id": "federal-ehr",
       "relation": "mentions",
@@ -9010,13 +9150,6 @@
       "weight": 1
     },
     {
-      "from_id": "article-ccn-dental-36c10g26r0004",
-      "to_id": "ccn-dental-36c10g26r0004",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
       "from_id": "article-va-ambient-scribe-idiq-36c10b26r0006",
       "to_id": "va-ambient-scribe-idiq-36c10b26r0006",
       "relation": "mentions",
@@ -9201,104 +9334,6 @@
     {
       "from_id": "article-va-data-center-and-telecommunications-modernization",
       "to_id": "va-data-center-and-telecommunications-modernization",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cio-cs-follow-on-the-store",
-      "to_id": "alliant-3",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cio-cs-follow-on-the-store",
-      "to_id": "cio-cs-follow-on-the-store",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cio-cs-follow-on-the-store",
-      "to_id": "cio-sp4",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cio-cs-follow-on-the-store",
-      "to_id": "polaris",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-va-ehrm-electronic-health-record-modernization",
-      "to_id": "va-ehrm",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-va-ehrm-electronic-health-record-modernization",
-      "to_id": "va-ehrm-electronic-health-record-modernization",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-va-ehrm-electronic-health-record-modernization",
-      "to_id": "vista",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-dhmsm-bridge",
-      "to_id": "dhmsm",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-dhmsm-bridge",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-dhmsm-bridge",
-      "to_id": "hcds",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-dhmsm-bridge",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-dhmsm-bridge",
-      "to_id": "mhs-genesis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-dhmsm-bridge",
-      "to_id": "mhs-genesis-dhmsm-bridge",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-mhs-genesis-dhmsm-bridge",
-      "to_id": "mosa",
       "relation": "mentions",
       "properties": {},
       "weight": 1
@@ -9509,6 +9544,36 @@
       "relation": "incumbent_of",
       "properties": {
         "via_contract": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "va",
+      "to_id": "optum-serve",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "ccn-next-gen-dental-36c10g26r0004",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "va",
+      "to_id": "tista-science",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "va-ie-o-tista-task-order-36c10b26f0468",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "va",
+      "to_id": "technology-corporation",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "va-ie-o-tista-task-order-36c10b26f0468",
         "derived": true
       },
       "weight": 0.8

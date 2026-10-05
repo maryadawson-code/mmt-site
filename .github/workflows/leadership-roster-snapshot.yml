@@ -1,0 +1,97 @@
+name: Leadership roster snapshot
+
+# Commits the visible text of every official agency leadership page behind
+# /premium/org-charts to data/leadership-snapshots/ and lists the lines that
+# changed. The weekly org-chart-monitor Netlify function emails Mary that
+# "N pages changed"; this is what lets the chart update actually happen,
+# because the Claude session that edits the charts cannot reach .gov hosts
+# and a GitHub runner can.
+#
+# Schedule: Mondays 10:30 UTC, half an hour before org-chart-monitor, so the
+# email and the committed diff describe the same week.
+#
+# On main: changes land as a PR on branch roster-snapshot (body is the diff),
+# which a Claude session reads to update the charts. On any other branch
+# (workflow_dispatch from a working branch): the snapshot is committed to that
+# branch directly so the session that dispatched it can pull it.
+
+on:
+  schedule:
+    - cron: '30 10 * * 1'
+  workflow_dispatch:
+  # A working session that needs today's rosters pushes a leadership-watch-*
+  # branch and gets a snapshot committed back to it. workflow_dispatch only
+  # works once the file is on main; a push trigger works from any branch.
+  # The bot's own push uses GITHUB_TOKEN, which never starts another run.
+  push:
+    branches:
+      - 'leadership-watch-**'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: leadership-roster-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      # hhs.gov and nih.gov refuse every non-browser client (403). The
+      # snapshot script falls back to headless Chromium for those hosts.
+      - name: Install Chromium for the bot-blocked hosts
+        run: npx playwright install --with-deps chromium
+
+      - name: Snapshot leadership pages
+        id: snap
+        run: node scripts/snapshot-leadership-pages.js
+
+      # index.json carries retrieved_at, so the tree is dirty after every run.
+      # Only a visible-line change or a first snapshot is worth a commit or a
+      # PR; an unchanged week leaves main alone (the run log is the record).
+      - name: Detect changes
+        id: changes
+        run: |
+          if [ -n "$(git status --porcelain data/leadership-snapshots)" ] && { [ "${{ steps.snap.outputs.changed }}" != "0" ] || [ "${{ steps.snap.outputs.first }}" != "0" ]; }; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit to the dispatching branch
+        if: steps.changes.outputs.has_changes == 'true' && github.ref != 'refs/heads/main'
+        run: |
+          git config user.name "mmt-leadership-watch[bot]"
+          git config user.email "noreply@missionmeetstech.com"
+          git add data/leadership-snapshots
+          git commit -m "data: leadership roster snapshot $(date -u +%Y-%m-%d) (${{ steps.snap.outputs.changed }} changed, ${{ steps.snap.outputs.failed }} not reached)"
+          # The session that dispatched this run may have pushed meanwhile
+          # (run 4 on 2026-10-05 lost that race); rebase, then push.
+          git pull --rebase origin "${GITHUB_REF#refs/heads/}"
+          git push origin HEAD:${GITHUB_REF#refs/heads/}
+
+      - name: Open snapshot PR
+        if: steps.changes.outputs.has_changes == 'true' && github.ref == 'refs/heads/main'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: 'data: leadership roster snapshot (${{ steps.snap.outputs.changed }} changed, ${{ steps.snap.outputs.failed }} not reached)'
+          title: '[MMT Watch] leadership roster snapshot: ${{ steps.snap.outputs.changed }} page(s) changed'
+          body-path: data/leadership-snapshots/CHANGES.md
+          branch: roster-snapshot
+          delete-branch: true
+          labels: leadership-watch

@@ -41,6 +41,7 @@ const EXPECTED_SLUGS = [
   "fda-sentinel-3-0", "va-health-services-devsecops",
   "va-data-center-and-telecommunications-modernization",
   "va-supply-chain-devsecops-helm", "cio-cs-follow-on-the-store",
+  "va-ieo-tista-36c10b26f0468",
   "va-ehrm-electronic-health-record-modernization",
   "mhs-genesis-dhmsm-bridge",
   "federal-electronic-health-record-modernization-fehrm",
