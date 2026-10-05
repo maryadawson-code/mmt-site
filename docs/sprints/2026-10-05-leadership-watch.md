@@ -99,6 +99,39 @@ is "VA awards ... dental network", which is that last case). It changes no
 status. The Monday Routine reads the issue and applies what a named source
 supports.
 
+## The Capture Intelligence sheet, same day
+
+Mary: "Especially the contract intel sheets." The sheet had not been
+published since July 26 (the build warned 71 days). The October 2026 issue,
+"The Stopgap Quarter and the October Deadlines," is 30 signals across 13
+agencies with 10 deep dives, every row carrying its sources. New since July:
+the CR to December 11 (P.L. 119-103), the NITAAC last-order date, the FY2027
+MHS budget's recapture lines, the Dental award, the 12-prime Deployment
+Solutions IDIQ, the ADVOCATE awards (Sep 9), HOPSS slipping behind a SOAR
+extension to June 2027, the CMS September workbook's Q1 FY2027 dates, VA's
+forecast on the GSA tool, the TISTA awards, PATH EHR's Lawton soft go-live,
+the CDC eCR award, FDA's permanent center directors, ARPA-H's BID Director
+and the DHA AD-HCAO. Carried forward with refreshed windows: HCDS (RFI closed
+Aug 30, no solicitation), EHRM, NTP PACS, SPARC and RMADA (no recompetes
+posted), TEFCA, T-5, Q-coded staffing, the 8(a) projection.
+
+**The page now renders from the JSON.** `intel-capture-intelligence.html`
+kept its chrome and lost its 24 hand-coded rows, 10 accordions, context
+section and sources grid; `build.js renderCaptureSheetPage()` fills
+`BUILD:CAPTURE_SHEET_*` markers from `capture-intelligence.json` (schema adds
+`subtitle`, `description`, `next_review`, `context`, and per signal `sources`,
+`badge`, `deep_dive`). The next issue is a JSON edit; the homepage teasers
+already read the same file.
+
+**Placeholder tracker entries.** Nine of the eleven got a dated,
+sourced update (HOPSS J&A and SAM notice; PEO DHMS CSO window closed July 1;
+IHT 2.0 protest bridges; PATH EHR soft go-live; eCR award to J Michael
+Consulting; NGITS, FIRE and Ryan White RSR dated holds). Four lost their
+`content_gap` flag because the core facts now have a source; SSA DCPS2 keeps
+it with a note that says why, and CDM DEFEND and the CDC DMI watch were
+already honest. `signal_terms` added so the award scan matches these by
+program name.
+
 ## Rules (one line is in CLAUDE.md)
 
 - A page that was not reached is "not reached", never "unchanged". The old
