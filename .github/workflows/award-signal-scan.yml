@@ -1,0 +1,57 @@
+name: Award signal scan
+
+# Reads public newsroom and trade-press feeds for award news that names a
+# tracked contract (scripts/award-signal-scan.js) and keeps one open issue,
+# "[MMT Watch] award signals", current with what it found. It changes no
+# tracker status. The Monday org-chart Routine reads the issue and updates
+# contracts.json from the cited sources.
+#
+# Why (2026-10-05): CCN Dental was awarded Sep 30 on VA News, IE&O and SCM
+# DSO were reported Oct 2, and the tracker learned all three from a
+# subscriber's email. The weekly re-verify reads SAM.gov opportunity notices,
+# which do not change at award.
+
+on:
+  schedule:
+    - cron: '45 10 * * 1'
+  workflow_dispatch:
+  push:
+    branches:
+      - 'leadership-watch-**'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Scan feeds for award signals
+        id: scan
+        run: node scripts/award-signal-scan.js --days 14
+
+      - name: Open or update the award-signals issue
+        if: github.ref == 'refs/heads/main'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const md = fs.readFileSync('data/award-signals.md', 'utf8');
+            const title = '[MMT Watch] award signals';
+            const body = `${md}\n\n_Run ${context.runId}. A signal is a reason to open the entry and cite the source; it is not a status change. Updated weekly by .github/workflows/award-signal-scan.yml._`;
+            const issues = await github.rest.issues.listForRepo({ owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'award-signal' });
+            const existing = issues.data.find((i) => i.title === title);
+            if (existing) {
+              await github.rest.issues.update({ owner: context.repo.owner, repo: context.repo.repo, issue_number: existing.number, body });
+              console.log(`Updated #${existing.number}`);
+            } else {
+              const created = await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title, body, labels: ['award-signal'] });
+              console.log(`Created #${created.data.number}`);
+            }

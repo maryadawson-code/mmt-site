@@ -80,6 +80,9 @@ jobs:
           git config user.email "noreply@missionmeetstech.com"
           git add data/leadership-snapshots
           git commit -m "data: leadership roster snapshot $(date -u +%Y-%m-%d) (${{ steps.snap.outputs.changed }} changed, ${{ steps.snap.outputs.failed }} not reached)"
+          # The session that dispatched this run may have pushed meanwhile
+          # (run 4 on 2026-10-05 lost that race); rebase, then push.
+          git pull --rebase origin "${GITHUB_REF#refs/heads/}"
           git push origin HEAD:${GITHUB_REF#refs/heads/}
 
       - name: Open snapshot PR

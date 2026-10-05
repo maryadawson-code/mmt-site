@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-10-05T14:36:57.658Z",
-  "total": 601,
+  "generated_at": "2026-10-05T14:49:51.261Z",
+  "total": 602,
   "counts": {
     "articles": 139,
     "friday_briefs": 44,
     "monthly_briefs": 4,
-    "contracts": 65,
+    "contracts": 66,
     "capture_intel": 24,
     "glossary": 42,
     "idiq_vehicles": 35,
@@ -3178,7 +3178,7 @@
       "title": "Community Care Network Next Gen (CCN NG)",
       "slug": "community-care-network-next-gen-ccn-ng-",
       "date": "2026-08-17",
-      "description": "Update Aug 17, 2026: VA released solicitation 36C10G26R0003 on March 6, 2026 for the CCN Next Gen Medical multiple-award IDIQ with a potential 10-year, $700B ceiling; proposals were due March 16, 2026 and no award had been announced as of A",
+      "description": "Update Oct 5, 2026: an industry contact reports that award notification letters went out in late September 2026. Nothing on SAM.gov, VA News or trade press confirmed an award as of Oct 5, so the status stays active (source selection) and th",
       "tags": [
         "Department of Veterans Affairs",
         "active",
@@ -3186,24 +3186,24 @@
       ],
       "url": "/contracts/community-care-network-next-gen-ccn-ng/",
       "source_url": "https://sam.gov/opp/7b2734002e4048bfa2ac4cc5b0479930/view",
-      "excerpt": "Update Aug 17, 2026: VA released solicitation 36C10G26R0003 on March 6, 2026 for the CCN Next Gen Medical multiple-award IDIQ with a potential 10-year, $700B ceiling; proposals were due March 16, 2026 and no award had been announced as of August 2026, so it is in source selection. Next-generation VA community care MA-IDIQ (Solicitation 36C10G26R0003) for CCN Next Gen Medical, replacing current CCN regional contracts. Two new mechanisms enter that do not exist in current CCN: (1) value-based payments starting with lower-extremity joint replacement episodes, with at least three more VBP models added over the performance period; (2) utilization management requiring clinical decision support at the point of authorization. Corporate Experience gate is binary across three references: implementation, program management, and IT integration across multiple states — missing any one factor = Unacceptable. Forces teaming between healthcare payers and systems integrators. MOSA structure with No-Bid provision allows specialized firms to win bench positions and respond only to matching task orders.\nAgency: Department of Veterans Affairs\nVendor: TBD — proposals received Apr 17, 2026; award TBD\nValue: Est. $700B IDIQ ceiling; $56.2B FY2027 community care account (+17%)\nStatus: active\nNAICS: 524292\nMMT verdict: WATCH — High ceiling but complex teaming required\nFactors: vehicle_fit: pass — IDIQ with MOSA structure allows bench positioning | agency_alignment: pass — VA community care — active relationship signals required | timeline: watch — Proposals due April 17 — very tight runway | competition: watch — 4-5 major payer-integrator teams expected | scope_fit: pass — Multi-region structure allows right-sized participation",
+      "excerpt": "Update Oct 5, 2026: an industry contact reports that award notification letters went out in late September 2026. Nothing on SAM.gov, VA News or trade press confirmed an award as of Oct 5, so the status stays active (source selection) and the award is pending official confirmation; the companion Dental IDIQ was awarded to Optum Serve on September 30, 2026. Update Aug 17, 2026: VA released solicitation 36C10G26R0003 on March 6, 2026 for the CCN Next Gen Medical multiple-award IDIQ with a potential 10-year, $700B ceiling; proposals were due March 16, 2026 and no award had been announced as of August 2026, so it is in source selection. Next-generation VA community care MA-IDIQ (Solicitation 36C10G26R0003) for CCN Next Gen Medical, replacing current CCN regional contracts. Two new mechanisms enter that do not exist in current CCN: (1) value-based payments starting with lower-extremity joint replacement episodes, with at least three more VBP models added over the performance period; (2) utilization management requiring clinical decision support at the point of authorization. Corporate Experience gate is binary across three references: implementation, program management, and IT integration across multiple states — missing any one factor = Unacceptable. Forces teaming between healthcare payers and systems integrators. MOSA structure with No-Bid provision allows specialized firms to win bench positions and respond only to matching task orders.\nAgency: Department of Veterans Affairs\nVendor: TBD — proposals received Apr 17, 2026; award TBD\nValue: Est. $700B IDIQ ceiling; $56.2B FY2027 community care account (+17%)\nStatus: active\nNAICS: 524292\nMMT verdict: WATCH — High ceiling but complex teaming required\nFactors: vehicle_fit: pass — IDIQ with MOSA structure allows bench positioning | agency_alignment: pass — VA community care — active relationship signals required | timeline: watch — Proposals due April 17 — very tight runway | competition: watch — 4-5 major payer-integrator teams expected | scope_fit: pass — Multi-region structure allows right-sized participation",
       "premium": false
     },
     {
-      "id": "contract-ccn-dental-36c10g26r0004-",
+      "id": "contract-ccn-next-gen-dental-36c10g26r0004-",
       "type": "contract_intel",
-      "title": "CCN Dental (36C10G26R0004)",
-      "slug": "ccn-dental-36c10g26r0004-",
-      "date": "2026-08-17",
-      "description": "Update Aug 17, 2026: CCN Next Gen Dental solicitation 36C10G26R0004, a WOSB set-aside multiple-award IDIQ valued near $47M, posted December 2025 with proposals due March 16, 2026; past its proposal deadline and in source selection with no a",
+      "title": "CCN Next Gen Dental (36C10G26R0004)",
+      "slug": "ccn-next-gen-dental-36c10g26r0004-",
+      "date": "2026-10-05",
+      "description": "Update Oct 5, 2026: VA announced on September 30, 2026 that Optum Serve won the CCN Next Generation Dental contract, a 10-year single-award IDIQ worth up to $30 billion. Optum Serve becomes the dental care administrator that builds and runs",
       "tags": [
         "Department of Veterans Affairs",
-        "active",
+        "awarded",
         "621210"
       ],
       "url": "/contracts/ccn-dental-36c10g26r0004/",
-      "source_url": "https://www.federalcompass.com/rfp-opportunity-detail/36C10G26R0004",
-      "excerpt": "Update Aug 17, 2026: CCN Next Gen Dental solicitation 36C10G26R0004, a WOSB set-aside multiple-award IDIQ valued near $47M, posted December 2025 with proposals due March 16, 2026; past its proposal deadline and in source selection with no award announced. Companion dental network management vehicle to the CCN Next Gen medical IDIQ. Separate procurement, same structural logic: multiple-award IDIQ for nationwide dental network coordination for veterans using community care. New vehicle — no standalone dental companion existed in prior CCN generations. Has received less scrutiny than the medical vehicle, increasing the chance of evaluation inconsistencies that could support a protest. GAO protests must be filed within 10 calendar days of debriefing request or debriefing.\nAgency: Department of Veterans Affairs\nVendor: TBD — closed March 16, 2026; awards pending\nValue: ~$47M\nStatus: active\nNAICS: 621210\nMMT verdict: WATCH — Upcoming — action window within 6 months",
+      "source_url": "https://news.va.gov/149989/va-optum-serve-30-billion-community-care-dental/",
+      "excerpt": "Update Oct 5, 2026: VA announced on September 30, 2026 that Optum Serve won the CCN Next Generation Dental contract, a 10-year single-award IDIQ worth up to $30 billion. Optum Serve becomes the dental care administrator that builds and runs a single national network of community dental providers for 9.1 million enrolled Veterans across every state and territory: general and specialty dental care, preventive services and pharmacy support, with the network scheduled to be fully implemented within a year of award (VA News). Correction: the tracker carried this from December 2025 to August 2026 as a WOSB set-aside multiple-award IDIQ near $47M, taken from a third-party listing; the solicitation (36C10G26R0004, posted December 15, 2025, proposals due March 16, 2026) was a single-award national dental network IDIQ. Companion to the CCN Next Gen Medical IDIQ, which remains in source selection. Watch for protests: a losing offeror has 10 calendar days from its debriefing to file at GAO, and this is the first standalone dental companion in any CCN generation.\nAgency: Department of Veterans Affairs\nVendor: Optum Serve (awarded Sep 30, 2026, per VA News)\nValue: Up to $30B over 10 years, single-award IDIQ (VA News, Sep 30, 2026)\nStatus: awarded\nNAICS: 621210\nMMT verdict: WATCH — Awarded to Optum Serve Sep 30, 2026; subcontracting and protest watch only",
       "premium": false
     },
     {
@@ -3330,16 +3330,16 @@
       "type": "contract_intel",
       "title": "VA Health Services DevSecOps",
       "slug": "va-health-services-devsecops",
-      "date": "2026-08-17",
-      "description": "Update Aug 17, 2026: Solicitation 36C10B26Q0163 response deadline extended to February 12, 2026 (Amendment 01), so proposals have closed and it is in source selection. No award for this specific requirement found. DA01 Health Services DevSe",
+      "date": "2026-10-05",
+      "description": "Update Oct 5, 2026: the sources-sought notice 36C10B26Q0163 became solicitation 36C10B26R0033, retitled Health Services Portfolio Application Development and Operations (SAM.gov). An industry contact reported on Oct 5, 2026 that it has been",
       "tags": [
         "Department of Veterans Affairs / VA TAC",
         "active",
         "541512"
       ],
       "url": "/contracts/va-health-services-devsecops/",
-      "source_url": "https://www.highergov.com/contract-opportunity/da01-health-services-devsecops-new-contract-va-36c10b26q0163-r-4a060/",
-      "excerpt": "Update Aug 17, 2026: Solicitation 36C10B26Q0163 response deadline extended to February 12, 2026 (Amendment 01), so proposals have closed and it is in source selection. No award for this specific requirement found. DA01 Health Services DevSecOps — new-contract Sources Sought (36C10B26Q0163). Scope: Agile health services applications across the lifecycle, ATO support, configuration management, UX, and sustainment.\nAgency: Department of Veterans Affairs / VA TAC\nVendor: TBD — Sources Sought (36C10B26Q0163)\nValue: Estimated ceiling around $698M per solicitation listing\nStatus: active\nNAICS: 541512\nMMT verdict: WATCH — Upcoming — action window within 6 months",
+      "source_url": "https://sam.gov/opp/dcb3e831658f4380ac756a446bb87ab7/view",
+      "excerpt": "Update Oct 5, 2026: the sources-sought notice 36C10B26Q0163 became solicitation 36C10B26R0033, retitled Health Services Portfolio Application Development and Operations (SAM.gov). An industry contact reported on Oct 5, 2026 that it has been awarded. No award notice was found on SAM.gov, VA News or trade press that day, so the status stays active (source selection) and the award is pending official confirmation. Update Aug 17, 2026: Solicitation 36C10B26Q0163 response deadline extended to February 12, 2026 (Amendment 01), so proposals have closed and it is in source selection. No award for this specific requirement found. DA01 Health Services DevSecOps — new-contract Sources Sought (36C10B26Q0163). Scope: Agile health services applications across the lifecycle, ATO support, configuration management, UX, and sustainment.\nAgency: Department of Veterans Affairs / VA TAC\nVendor: TBD; solicitation 36C10B26R0033. Award reported by an industry contact Oct 5, 2026, not yet confirmed\nValue: Estimated ceiling around $698M per solicitation listing\nStatus: active\nNAICS: 541512\nMMT verdict: WATCH — Upcoming — action window within 6 months",
       "premium": false
     },
     {
@@ -3365,7 +3365,7 @@
       "title": "VA HELM / SCMDSO (Healthcare Environment and Logistics Management)",
       "slug": "va-helm-scmdso-healthcare-environment-and-logistics-management-",
       "date": "2026-08-17",
-      "description": "Update Aug 17, 2026: VA moved past RFI and issued solicitation 36C10B26Q0376 for HELM/SCMDSO supply chain DevSecOps and integration, reported around $485M covering 34 HELM products (Washington Technology and MeriTalk, April 2026). Single-co",
+      "description": "Update Oct 5, 2026: OrangeSlices reported on Oct 2, 2026 that TISTA Science and Technology won a VA SCM DSO (supply chain DevSecOps) award, task order 36C10B26F0452 at about $209.9M, over five other bidders. Whether that order is this requi",
       "tags": [
         "Department of Veterans Affairs / OIT Product Delivery Services",
         "active",
@@ -3373,7 +3373,24 @@
       ],
       "url": "/contracts/va-supply-chain-devsecops-helm/",
       "source_url": "https://sam.gov/opp/7f1dab9449984bc6aff2fe595831be62/view",
-      "excerpt": "Update Aug 17, 2026: VA moved past RFI and issued solicitation 36C10B26Q0376 for HELM/SCMDSO supply chain DevSecOps and integration, reported around $485M covering 34 HELM products (Washington Technology and MeriTalk, April 2026). Single-contractor sustainment and modernization for VA Healthcare Environment and Logistics Management (HELM) product line. Covers 5 sub-product lines (Environmental and Healthcare Management, Healthcare Technology and Asset Management, Expendable Inventory Management, Prosthetics, Technical Services) and ~34 products across 174 sites. RFI 36C10B26Q0376 + Draft PWS released 2026-04-24, amended 2026-05-05, RFI closed 2026-05-11 12:00 ET. Hybrid FFP base + T&M optional + cost-reimbursable travel. 12-month base + 4 × 12-month options (60 months). Aligns to Zero Trust Architecture, iFAMS, and EHRM integration.\nAgency: Department of Veterans Affairs / OIT Product Delivery Services\nVendor: TBD — RFI closed 2026-05-11; RFP pending\nValue: Reported value about $485M\nStatus: active\nNAICS: 541512\nMMT verdict: WATCH — Upcoming — action window within 6 months",
+      "excerpt": "Update Oct 5, 2026: OrangeSlices reported on Oct 2, 2026 that TISTA Science and Technology won a VA SCM DSO (supply chain DevSecOps) award, task order 36C10B26F0452 at about $209.9M, over five other bidders. Whether that order is this requirement (36C10B26Q0376) is pending official confirmation on SAM.gov or USASpending, so the status stays as listed. Update Aug 17, 2026: VA moved past RFI and issued solicitation 36C10B26Q0376 for HELM/SCMDSO supply chain DevSecOps and integration, reported around $485M covering 34 HELM products (Washington Technology and MeriTalk, April 2026). Single-contractor sustainment and modernization for VA Healthcare Environment and Logistics Management (HELM) product line. Covers 5 sub-product lines (Environmental and Healthcare Management, Healthcare Technology and Asset Management, Expendable Inventory Management, Prosthetics, Technical Services) and ~34 products across 174 sites. RFI 36C10B26Q0376 + Draft PWS released 2026-04-24, amended 2026-05-05, RFI closed 2026-05-11 12:00 ET. Hybrid FFP base + T&M optional + cost-reimbursable travel. 12-month base + 4 × 12-month options (60 months). Aligns to Zero Trust Architecture, iFAMS, and EHRM integration.\nAgency: Department of Veterans Affairs / OIT Product Delivery Services\nVendor: TBD — RFI closed 2026-05-11; RFP pending\nValue: Reported value about $485M\nStatus: active\nNAICS: 541512\nMMT verdict: WATCH — Upcoming — action window within 6 months",
+      "premium": false
+    },
+    {
+      "id": "contract-va-ie-o-tista-task-order-36c10b26f0468-",
+      "type": "contract_intel",
+      "title": "VA IE&O (TISTA, task order 36C10B26F0468)",
+      "slug": "va-ie-o-tista-task-order-36c10b26f0468-",
+      "date": "2026-10-05",
+      "description": "Update Oct 5, 2026: OrangeSlices reported on Oct 2, 2026 that TISTA Science and Technology won a 5-year VA IE&O award, task order 36C10B26F0468 at about $164.1M, over 14 other bidders, alongside a separate SCM DSO award (36C10B26F0452, abou",
+      "tags": [
+        "Department of Veterans Affairs / VA TAC",
+        "awarded",
+        "541512"
+      ],
+      "url": "/contracts/va-ieo-tista-36c10b26f0468/",
+      "source_url": "https://orangeslices.ai/tista-beats-out-5-to-win-210m-va-scmdso-contract/",
+      "excerpt": "Update Oct 5, 2026: OrangeSlices reported on Oct 2, 2026 that TISTA Science and Technology won a 5-year VA IE&O award, task order 36C10B26F0468 at about $164.1M, over 14 other bidders, alongside a separate SCM DSO award (36C10B26F0452, about $209.9M). The article's own figures were reported two ways in search indexes, so the pairing of award IDs to values is pending confirmation on USASpending. VA styles the requirement IE&O; the expansion and scope are not stated in the sources found and are pending official confirmation. Added after an industry contact flagged the award as missing from the tracker; no SAM.gov award notice was found on Oct 5.\nAgency: Department of Veterans Affairs / VA TAC\nVendor: TISTA Science and Technology Corporation (reported Oct 2, 2026)\nValue: About $164.1M over 5 years as reported by OrangeSlices; pending confirmation on USASpending\nStatus: awarded\nNAICS: 541512\nMMT verdict: WATCH — Awarded to TISTA per trade press; subcontracting watch only",
       "premium": false
     },
     {

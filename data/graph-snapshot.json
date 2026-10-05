@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-10-05T14:35:55.542Z",
-  "node_count": 478,
-  "edge_count": 691,
+  "generated_at": "2026-10-05T14:49:51.432Z",
+  "node_count": 482,
+  "edge_count": 696,
   "nodes": [
     {
       "id": "peo-dhms-deployment",
@@ -622,15 +622,21 @@
       }
     },
     {
-      "id": "ccn-dental-36c10g26r0004",
-      "type": "Solicitation",
-      "canonical_name": "CCN Dental (36C10G26R0004)",
+      "id": "ccn-next-gen-dental-36c10g26r0004",
+      "type": "Program",
+      "canonical_name": "CCN Next Gen Dental (36C10G26R0004)",
       "properties": {
-        "classification": "Solicitation",
-        "status": "active",
+        "classification": "Award",
+        "status": "awarded",
         "naics": "621210",
-        "last_verified": "2026-08-17"
+        "last_verified": "2026-10-05"
       }
+    },
+    {
+      "id": "optum-serve",
+      "type": "Contractor",
+      "canonical_name": "Optum Serve",
+      "properties": {}
     },
     {
       "id": "va-ambient-scribe-idiq-36c10b26r0006",
@@ -717,7 +723,7 @@
         "classification": "Solicitation",
         "status": "active",
         "naics": "541512",
-        "last_verified": "2026-08-17"
+        "last_verified": "2026-10-05"
       }
     },
     {
@@ -741,6 +747,29 @@
         "naics": "541512",
         "last_verified": "2026-08-17"
       }
+    },
+    {
+      "id": "va-ie-o-tista-task-order-36c10b26f0468",
+      "type": "Program",
+      "canonical_name": "VA IE&O (TISTA, task order 36C10B26F0468)",
+      "properties": {
+        "classification": "Vendor-Announced",
+        "status": "awarded",
+        "naics": "541512",
+        "last_verified": "2026-10-05"
+      }
+    },
+    {
+      "id": "tista-science",
+      "type": "Contractor",
+      "canonical_name": "TISTA Science",
+      "properties": {}
+    },
+    {
+      "id": "technology-corporation",
+      "type": "Contractor",
+      "canonical_name": "Technology Corporation",
+      "properties": {}
     },
     {
       "id": "cio-cs-follow-on-the-store",
@@ -4510,14 +4539,14 @@
       }
     },
     {
-      "id": "article-ccn-dental-36c10g26r0004",
+      "id": "article-ccn-next-gen-dental-36c10g26r0004",
       "type": "Article",
-      "canonical_name": "CCN Dental (36C10G26R0004)",
+      "canonical_name": "CCN Next Gen Dental (36C10G26R0004)",
       "properties": {
-        "slug": "ccn-dental-36c10g26r0004-",
+        "slug": "ccn-next-gen-dental-36c10g26r0004-",
         "type": "contract_intel",
         "url": "/contracts/ccn-dental-36c10g26r0004/",
-        "published": "2026-08-17"
+        "published": "2026-10-05"
       }
     },
     {
@@ -4605,7 +4634,7 @@
         "slug": "va-health-services-devsecops",
         "type": "contract_intel",
         "url": "/contracts/va-health-services-devsecops/",
-        "published": "2026-08-17"
+        "published": "2026-10-05"
       }
     },
     {
@@ -4631,14 +4660,14 @@
       }
     },
     {
-      "id": "article-cio-cs-follow-on-the-store",
+      "id": "article-va-ie-o-tista-task-order-36c10b26f0468",
       "type": "Article",
-      "canonical_name": "CIO-CS Follow-On / The Store",
+      "canonical_name": "VA IE&O (TISTA, task order 36C10B26F0468)",
       "properties": {
-        "slug": "cio-cs-follow-on-the-store",
+        "slug": "va-ie-o-tista-task-order-36c10b26f0468-",
         "type": "contract_intel",
-        "url": "/contracts/cio-cs-follow-on-the-store/",
-        "published": "2026-09-10"
+        "url": "/contracts/va-ieo-tista-36c10b26f0468/",
+        "published": "2026-10-05"
       }
     }
   ],
@@ -5219,8 +5248,22 @@
     },
     {
       "from_id": "va",
-      "to_id": "ccn-dental-36c10g26r0004",
+      "to_id": "ccn-next-gen-dental-36c10g26r0004",
       "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "optum-serve",
+      "to_id": "ccn-next-gen-dental-36c10g26r0004",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "ccn-next-gen-dental-36c10g26r0004",
+      "to_id": "optum-serve",
+      "relation": "awarded_to",
       "properties": {},
       "weight": 1
     },
@@ -5291,6 +5334,41 @@
       "from_id": "va",
       "to_id": "va-helm-scmdso-healthcare-environment-and-logistics-manageme",
       "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va",
+      "to_id": "va-ie-o-tista-task-order-36c10b26f0468",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "tista-science",
+      "to_id": "va-ie-o-tista-task-order-36c10b26f0468",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va-ie-o-tista-task-order-36c10b26f0468",
+      "to_id": "tista-science",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "technology-corporation",
+      "to_id": "va-ie-o-tista-task-order-36c10b26f0468",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va-ie-o-tista-task-order-36c10b26f0468",
+      "to_id": "technology-corporation",
+      "relation": "awarded_to",
       "properties": {},
       "weight": 1
     },
@@ -9072,13 +9150,6 @@
       "weight": 1
     },
     {
-      "from_id": "article-ccn-dental-36c10g26r0004",
-      "to_id": "ccn-dental-36c10g26r0004",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
       "from_id": "article-va-ambient-scribe-idiq-36c10b26r0006",
       "to_id": "va-ambient-scribe-idiq-36c10b26r0006",
       "relation": "mentions",
@@ -9263,34 +9334,6 @@
     {
       "from_id": "article-va-data-center-and-telecommunications-modernization",
       "to_id": "va-data-center-and-telecommunications-modernization",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cio-cs-follow-on-the-store",
-      "to_id": "alliant-3",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cio-cs-follow-on-the-store",
-      "to_id": "cio-cs-follow-on-the-store",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cio-cs-follow-on-the-store",
-      "to_id": "cio-sp4",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-cio-cs-follow-on-the-store",
-      "to_id": "polaris",
       "relation": "mentions",
       "properties": {},
       "weight": 1
@@ -9501,6 +9544,36 @@
       "relation": "incumbent_of",
       "properties": {
         "via_contract": "dha-peo-dhms-workforce-3-0-wf3-idiq",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "va",
+      "to_id": "optum-serve",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "ccn-next-gen-dental-36c10g26r0004",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "va",
+      "to_id": "tista-science",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "va-ie-o-tista-task-order-36c10b26f0468",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "va",
+      "to_id": "technology-corporation",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "va-ie-o-tista-task-order-36c10b26f0468",
         "derived": true
       },
       "weight": 0.8
