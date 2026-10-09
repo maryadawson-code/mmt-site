@@ -172,3 +172,24 @@ describe("validate-cso-aois has teeth", () => {
     expect(out).toMatch(/Freshness warnings/);
   });
 });
+
+// 2026-10-09: an awarded or cancelled AoI is terminal. Nothing about it can
+// change on SAM.gov, so its last_verified does not age; the three terminal
+// AoIs under the PEO DHMS CSO were a third of the Friday report's stale list.
+describe("terminal AoIs do not age", () => {
+  it("an awarded AoI verified in 2020 raises no freshness warning; a closed one does", () => {
+    const { out } = runValidatorWith((r) => {
+      const cso = r.csos.find((c) => c.aois.length);
+      cso.aois.forEach((a) => { a.last_verified = "2026-10-01"; });
+      cso.last_verified = "2026-10-01";
+      r.csos.forEach((c) => { c.last_verified = "2026-10-01"; });
+      cso.aois.find((a) => a.status === "awarded").last_verified = "2020-01-01";
+    });
+    expect(out).not.toMatch(/aoi:2\] last_verified/);
+    const closed = runValidatorWith((r) => {
+      r.csos.forEach((c) => { c.last_verified = "2026-10-01"; c.aois.forEach((a) => { a.last_verified = "2026-10-01"; }); });
+      r.csos.find((c) => c.aois.length).aois.find((a) => a.status === "closed").last_verified = "2020-01-01";
+    });
+    expect(closed.out).toMatch(/aoi:1b\] last_verified is \d+d old/);
+  });
+});

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-05T15:37:11.732Z",
+  "generated_at": "2026-10-09T15:13:32.250Z",
   "node_count": 486,
   "edge_count": 708,
   "nodes": [
@@ -1438,7 +1438,7 @@
         "classification": "Solicitation",
         "status": "active",
         "naics": "541714",
-        "last_verified": "2026-08-17"
+        "last_verified": "2026-10-09"
       }
     },
     {
