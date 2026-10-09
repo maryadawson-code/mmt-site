@@ -332,6 +332,32 @@ describe("callClaude: date in the user turn, model-specific request shape", () =
     expect(system).not.toContain('End with a "Sources" list');
   });
 
+  it("the prompt asks for date citations, not URLs; answerQuestion keeps the prompt's own MarketPulse link and de-links a URL the server did not retrieve", async () => {
+    process.env.ANTHROPIC_API_KEY = "sk-ant-test";
+    const invented = "https://missionmeetstech.com/newsletter/a-page-this-answer-did-not-retrieve/";
+    let system = "";
+    let user = "";
+    globalThis.fetch = async (url, opts = {}) => {
+      if (String(url).startsWith("https://api.anthropic.com/")) {
+        const body = JSON.parse(opts.body);
+        system = body.system;
+        user = body.messages[0].content;
+        return jsonRes({ content: [{ type: "text", text: `Bottom line (Mission Meets Tech, ${invented}). Pitch (${assistant.MARKETPULSE_URL}). Made up (${invented}).` }], usage: {} });
+      }
+      throw new Error("egress blocked");
+    };
+    const r = await assistant.answerQuestion({ question: QUESTION });
+    delete process.env.ANTHROPIC_API_KEY;
+    expect(r.error).toBeUndefined();
+    expect(system).toContain("do not write URLs");
+    expect(system).not.toContain("Link to the URL");
+    expect(user).toContain("cite them by date, not by URL");
+    expect(user).toContain("do not write the URL");
+    expect(r.answer).toBe(`Bottom line (Mission Meets Tech). Pitch (${assistant.MARKETPULSE_URL}). Made up (missionmeetstech.com).`);
+    expect(r.unlisted_links).toEqual([invented, invented]);
+    expect(r.unlisted_link_count).toBe(2);
+  });
+
   it("dateET renders the site's clock as YYYY-MM-DD", () => {
     expect(assistant.dateET(new Date("2026-09-14T03:30:00Z"))).toBe("2026-09-13"); // still the 13th in New York
     expect(assistant.dateET(new Date("2026-09-14T12:00:00Z"))).toBe("2026-09-14");
