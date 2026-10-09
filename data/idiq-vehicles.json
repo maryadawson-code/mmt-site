@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-20T15:09:39.560Z",
+  "generated_at": "2026-10-09T15:09:08.263Z",
   "source_csv": "data/research-agent/idiq-vehicles.csv",
   "total": 35,
   "vehicles": [
@@ -748,7 +748,7 @@
       "set_aside": "Multiple Award",
       "vehicle_type": "GWAC",
       "award_type": "Multiple",
-      "primes_count": "42 Phase 1 contractors",
+      "primes_count": "43 Phase 1 awardees of a planned 76",
       "status": "Active",
       "obligated_estimate_usd": null,
       "burn_status": "New",
@@ -757,7 +757,7 @@
       "forecast_window": "2026-03-10 to 2026-12-31",
       "forecast_confidence_pct": 80,
       "primary_source_url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/alliant-3",
-      "mmt_note": "Active; no ceiling; Notice to Proceed Mar 10 2026; ordering through Mar 9 2031 + 5-year option to Mar 9 2036; 42 Phase 1 contractors"
+      "mmt_note": "Active; no ceiling; Notice to Proceed Mar 10 2026; ordering through Mar 9 2031 + 5-year option to Mar 9 2036; 43 Phase 1 awardees of a planned 76"
     },
     {
       "vehicle_id": "gsa-oasis-plus",

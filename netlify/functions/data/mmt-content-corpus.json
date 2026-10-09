@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-05T15:37:11.541Z",
-  "total": 608,
+  "generated_at": "2026-10-09T15:13:55.127Z",
+  "total": 609,
   "counts": {
     "articles": 139,
     "friday_briefs": 44,
@@ -14,7 +14,7 @@
     "cso_aois": 7,
     "key_people": 7,
     "forecast_delta": 2,
-    "gao_sustain": 1
+    "gao_sustain": 2
   },
   "items": [
     {
@@ -4009,8 +4009,8 @@
       "type": "contract_intel",
       "title": "NIH Scientific & Technical Support Services IDIQ ($3B)",
       "slug": "nih-scientific-technical-support-services-idiq-3b-",
-      "date": "2026-08-17",
-      "description": "Update Aug 17, 2026: NIH (NIAID) opened bidding on the ~$3B multiple-award PSTSS recompete in March 2026 with proposals due April 27, 2026; solicitation closed and in source selection, no award yet. NIH's largest multi-award IDIQ in the cur",
+      "date": "2026-10-09",
+      "description": "Update Oct 9, 2026: GAO sustained a small business protest of this solicitation's terms on August 14, 2026 (LJR Solutions, LLC, B-424487). GAO found NIH's assessment of whether it could expect fair-priced, quality and timely offers from two",
       "tags": [
         "National Institutes of Health (NIH)",
         "active",
@@ -4018,7 +4018,7 @@
       ],
       "url": "/contracts/nih-scientific-technical-support-services-idiq-3b/",
       "source_url": "https://www.govconwire.com/articles/nih-rfp-scientific-technical-support",
-      "excerpt": "Update Aug 17, 2026: NIH (NIAID) opened bidding on the ~$3B multiple-award PSTSS recompete in March 2026 with proposals due April 27, 2026; solicitation closed and in source selection, no award yet. NIH's largest multi-award IDIQ in the current pipeline (solicitation 75N98026R00042), Full and Open. Covers bioinformatics, computational biology, BSL 2-4 lab research support, and clinical research across all NIH institutes. Proposals were due April 27, 2026 — that deadline has passed, placing the procurement in evaluation/award-pending status (not open for new bids). Multiple awards expected; period of performance 9/15/2026–9/14/2031. NAICS 541714 primary (541511 secondary). Small-business eligible at the task-order level. Track for award announcement and prepare task-order teaming with awardees.\nAgency: National Institutes of Health (NIH)\nVendor: TBD — award-pending; proposals closed April 27, 2026\nValue: $3B ceiling (5-year); perf. 9/15/2026–9/14/2031\nStatus: active\nNAICS: 541714\nMMT verdict: WATCH — Award-pending $3B NIH IDIQ; proposals closed Apr 2026\nFactors: vehicle_fit: pass — Multi-award IDIQ — task-order bench access | agency_alignment: pass — NIH biomedical R&D support — core lane | timeline: watch — Proposals closed Apr 27 2026; awaiting award decision | competition: watch — Full-and-open; large biomedical-support field | scope_fit: pass — 541714/541511 scope; SB eligible at TO level",
+      "excerpt": "Update Oct 9, 2026: GAO sustained a small business protest of this solicitation's terms on August 14, 2026 (LJR Solutions, LLC, B-424487). GAO found NIH's assessment of whether it could expect fair-priced, quality and timely offers from two or more responsible small businesses was unreasonable or inadequately documented, the second protest of NIH's decision to run the procurement full and open. Per the decision digest and trade reporting, NIH is to revisit whether the requirement should be set aside in whole or in part, so expect the award to slip while that market research is redone. Update Aug 17, 2026: NIH (NIAID) opened bidding on the ~$3B multiple-award PSTSS recompete in March 2026 with proposals due April 27, 2026; solicitation closed and in source selection, no award yet. NIH's largest multi-award IDIQ in the current pipeline (solicitation 75N98026R00042), Full and Open. Covers bioinformatics, computational biology, BSL 2-4 lab research support, and clinical research across all NIH institutes. Proposals were due April 27, 2026; that deadline has passed, placing the procurement in evaluation/award-pending status (not open for new bids). Multiple awards expected; period of performance 9/15/2026 to 9/14/2031. NAICS 541714 primary (541511 secondary). Small-business eligible at the task-order level. Track for award announcement and prepare task-order teaming with awardees.\nAgency: National Institutes of Health (NIH)\nVendor: TBD — award-pending; proposals closed April 27, 2026\nValue: $3B ceiling (5-year); perf. 9/15/2026–9/14/2031\nStatus: active\nNAICS: 541714\nMMT verdict: WATCH — GAO sustained a set-aside protest Aug 14 2026; $3B NIH IDIQ award slips\nFactors: vehicle_fit: pass — Multi-award IDIQ — task-order bench access | agency_alignment: pass — NIH biomedical R&D support — core lane | timeline: watch — Proposals closed Apr 27 2026; set-aside decision reopened by the Aug 14 2026 GAO sustain | competition: watch — Full-and-open; large biomedical-support field | scope_fit: pass — 541714/541511 scope; SB eligible at TO level",
       "premium": false
     },
     {
@@ -5971,7 +5971,7 @@
       ],
       "url": "/idiq-tracker.html",
       "source_url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/alliant-3",
-      "excerpt": "Vehicle: GSA Alliant 3\nAgency: GSA / GSA\nPeriod of performance: 2026-03-10 to 2031-03-09\nSet-aside: Multiple Award\nType: GWAC\nStatus: Active\nPrimes: 42 Phase 1 contractors\nNAICS primary: 541512\nMMT burn status: New\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: Initial task orders (2026-03-10 to 2026-12-31) — 80% confidence\nMMT note: Active; no ceiling; Notice to Proceed Mar 10 2026; ordering through Mar 9 2031 + 5-year option to Mar 9 2036; 42 Phase 1 contractors\nPrimary source: https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/alliant-3",
+      "excerpt": "Vehicle: GSA Alliant 3\nAgency: GSA / GSA\nPeriod of performance: 2026-03-10 to 2031-03-09\nSet-aside: Multiple Award\nType: GWAC\nStatus: Active\nPrimes: 43 Phase 1 awardees of a planned 76\nNAICS primary: 541512\nMMT burn status: New\nMMT Incumbent Vulnerability Score: 3/5\nMMT forecast: Initial task orders (2026-03-10 to 2026-12-31) — 80% confidence\nMMT note: Active; no ceiling; Notice to Proceed Mar 10 2026; ordering through Mar 9 2031 + 5-year option to Mar 9 2036; 43 Phase 1 awardees of a planned 76\nPrimary source: https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/alliant-3",
       "premium": false
     },
     {
@@ -10543,6 +10543,23 @@
       ],
       "url": "/premium/gao-sustain",
       "excerpt": "The GovCIO loss on the GSA TIS recompete is the kind of outcome that should change how mid-market IT services primes structure their next federal pursuit. The teaching moment isn't the protest itself — it's that an incumbent with active performance still got displaced when the source-selection record didn't defend the agency's evaluation against a credible challenge. If your capture playbook assumes incumbency is a moat, this decision is the counter-evidence. Two specific traps to watch for in your next IT services recompete: past-performance relevance gaps (citing prior work the agency can't link to the SOW's actual scope is a known sustain pathway), and thin source-selection rationale (when the SSEB consensus narrative doesn't show why the offeror's proposal beat the others on the stated factors, GAO will sustain even on a generally well-run procurement). Both are fixable in your proposal — but only if you've read enough sustained decisions to know what evaluators trip on. Why this matters for your capture timing: sustained protests at GAO are rare (historically 10–15% of decisions). When an agency reopens an acquisition after a sustain, the do-over evaluation typically runs 60–120 days behind the original schedule, sometimes longer if the corrective action requires a re-solicit. That's your window. If you were originally a sub or a no-bid, a sustain is one of the few honest second chances the federal market gives you. Read the decision, map the agency's identified errors to your own past-performance citations, and have a revised proposal ready before the corrective-action announcement hits SAM.",
+      "premium": true
+    },
+    {
+      "id": "gao-sustain-2026-10",
+      "type": "gao_sustain",
+      "title": "GAO sent NIH's $3B science support recompete back to the Rule of Two: what LJR Solutions means for your set-aside strategy",
+      "slug": "2026-10",
+      "date": "2026-10-09",
+      "description": "The sustain I want you to read this month is not about an evaluation error. It is about the question that comes before any evaluation: should this requirement have been set aside at all. On August 14, 2026, GAO sustained LJR Solutions, LLC'",
+      "tags": [
+        "premium",
+        "gao-sustain",
+        "NIH",
+        "HHS"
+      ],
+      "url": "/premium/gao-sustain",
+      "excerpt": "The sustain I want you to read this month is not about an evaluation error. It is about the question that comes before any evaluation: should this requirement have been set aside at all. On August 14, 2026, GAO sustained LJR Solutions, LLC's protest of the terms of NIH's request for proposals 75N98026R00042 (B-424487), the professional, scientific and technical services recompete I track on the Contract Tracker as NIH's $3B multiple-award IDIQ. LJR is a small business out of Myrtle Beach, South Carolina. It argued the procurement should have been set aside for small businesses. GAO agreed that NIH had not done the work to say otherwise. What GAO actually found. The digest is short and worth quoting in substance: NIH's assessment of whether it could reasonably expect fair-priced, quality and timely offers from two or more responsible small businesses was unreasonable or otherwise inadequately documented. That is the Rule of Two, and the sustain turns on documentation. GAO did not say NIH must set the work aside. Bloomberg Government's read of the decision is that the agency may still be able to support full and open competition, but the record it built did not support the conclusion that it would not get reasonable small business offers. This is also the second protest of NIH's effort to run this procurement full and open, which tells you the agency had already been warned once. Why it matters to you now. Proposals on this RFP closed April 27, 2026, and the tracker entry had the award pending since August. A sustained terms-of-solicitation protest at this stage means the market research gets redone, and the award slips while NIH decides whether to set the requirement aside in whole or in part. If you are a small business with NIAID scientific, bioinformatics or clinical research support past performance, this is the window to make yourself visible to the contracting office: a capability statement that answers the Rule of Two directly, with two or more comparable small firms named if you can name them. If you are a large prime that bid the full and open version, your teaming plan is now your hedge. A partial set-aside is a live outcome, and the firms that already have small business partners on paper lose the least. The capture lesson. Sources sought responses are not paperwork. They are the record GAO reads when a small business asks whether the agency looked hard enough. When an agency publishes a sources sought and you are a small business that can do the work, answer it, in detail, with your NAICS, your size status and your relevant performance. When you are a large business and the agency's set-aside determination looks thin, price the risk that a protest reopens it. The LJR decision is the second time in this procurement that NIH's documentation did not hold. Read the decision, map the gaps GAO named to your own sources sought responses, and decide which side of the Rule of Two you want to be on before the amended solicitation lands.",
       "premium": true
     }
   ]

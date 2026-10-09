@@ -28,7 +28,11 @@
 //
 // SOFT failures (reported, exit 0 by default) - staleness, matching the
 // non-fatal posture of the contract-tracker freshness audit:
-//   - Any CSO or AoI whose last_verified is older than the warn age.
+//   - Any CSO, or any AoI not in a terminal state (awarded / cancelled),
+//     whose last_verified is older than the warn age. The daily
+//     contract-tracker-reverify worker bumps these from the CSO notice on
+//     SAM.gov (lib/cso-reverify.js); a stale row here means that worker
+//     did not reach the notice.
 //
 // Opt-in enforcement once the cadence is established:
 //   CSO_AOI_MAX_AGE_DAYS=60   makes aging entries fatal
@@ -47,6 +51,7 @@ const MAX_AGE_DAYS = process.env.CSO_AOI_MAX_AGE_DAYS
   : null;
 
 const VALID_STATUS = new Set(["open", "upcoming", "closed", "awarded", "cancelled"]);
+const TERMINAL_STATUS = new Set(["awarded", "cancelled"]);
 const REQUIRED_CSO_FIELDS = ["parent_slug", "cso_number", "title", "last_verified", "aois"];
 const REQUIRED_AOI_FIELDS = ["aoi_id", "title", "status", "last_verified"];
 const DATE_FIELDS = ["active_from", "active_through", "response_due", "award_expected", "last_verified"];
@@ -180,7 +185,10 @@ function main() {
         else if (isMalformedSamPermalink(u)) fail(ascope, `malformed SAM permalink (id must be 32-hex): ${u}`);
       }
 
-      if (a.last_verified && !badDate(a.last_verified)) {
+      // An awarded or cancelled AoI is in a terminal state: nothing about it
+      // can change on SAM.gov, so its last_verified does not age (2026-10-09).
+      // Open, upcoming and closed-pending-award AoIs keep the clock.
+      if (a.last_verified && !badDate(a.last_verified) && !TERMINAL_STATUS.has(String(a.status).toLowerCase())) {
         const age = ageDays(a.last_verified);
         if (MAX_AGE_DAYS !== null && age > MAX_AGE_DAYS) fail(ascope, `last_verified is ${age}d old (max ${MAX_AGE_DAYS})`);
         else if (age > WARN_AGE_DAYS) warn(ascope, `last_verified is ${age}d old`);

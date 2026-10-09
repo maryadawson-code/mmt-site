@@ -24,8 +24,46 @@ const { evaluate: evaluateDataFreshness } = require("./lib/data-freshness");
 const { hasStaleNotes, strippedNotes } = require("./lib/intel-notes-sanitizer");
 const { getRefreshRoster } = require("./lib/refresh-roster");
 const { isFabricated, isClosed, dedupKey } = require("./lib/radar-hygiene");
+const { fetchLiveRadarRows } = require("./lib/radar-rows");
+const { isTerminalAoi } = require("./lib/cso-reverify");
 
 const ADMIN_EMAIL = "mary@missionmeetstech.com";
+
+// 2026-10-09: the report used to end each section with an instruction to
+// Mary ("re-verify and bump last_verified"). Each dataset now has an owner
+// that runs without her, and the report says which one, when it last ran
+// and what it left behind. These are the ops_events those owners write.
+const AUTOMATION = [
+  { id: "tracker_reverify", label: "contract-tracker-reverify (daily 02:15 UTC)", event_type: "TRACKER_REVERIFY_RUN", source_function: "contract-tracker-reverify-background" },
+  { id: "intel_refresh", label: "contract-intel-refresh (daily 11:00 UTC, orphan reconcile first)", event_type: "contract_data_refresh", source_function: "contract-intel-refresh" },
+  { id: "radar_hygiene", label: "opportunity-radar-url-recheck hygiene sweep (daily 14:00 UTC)", event_type: "opportunity_radar_hygiene_sweep", source_function: "opportunity-radar-url-recheck" },
+];
+
+async function _automationRuns(supabase) {
+  const out = {};
+  for (const a of AUTOMATION) {
+    try {
+      const { data } = await supabase
+        .from("ops_events")
+        .select("created_at, details")
+        .eq("event_type", a.event_type)
+        .eq("source_function", a.source_function)
+        .order("created_at", { ascending: false })
+        .limit(1);
+      const row = (data || [])[0] || null;
+      out[a.id] = { label: a.label, last_run: row ? row.created_at : null, details: row ? row.details || {} : null, age_hours: row ? Math.round((Date.now() - new Date(row.created_at).getTime()) / 3600000) : Infinity };
+    } catch (e) {
+      out[a.id] = { label: a.label, last_run: null, details: null, age_hours: Infinity, error: e.message };
+    }
+  }
+  return out;
+}
+
+function describeRun(run) {
+  if (!run || !run.last_run) return "<strong style=\"color:#E63946;\">never ran</strong>";
+  const when = esc(String(run.last_run).slice(0, 16).replace("T", " ")) + " UTC";
+  return run.age_hours > 48 ? `last ran ${when} (<strong style="color:#E63946;">${run.age_hours}h ago</strong>)` : `last ran ${when}`;
+}
 
 function esc(s) {
   return String(s || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -152,12 +190,10 @@ async function _radarHealth(supabase, vehicleFilter) {
 // live past-deadline rows and duplicate notices. Read-only — remediation is
 // scripts/cleanup-opportunity-radar.js.
 async function _radarFabrication(supabase) {
-  const { data } = await supabase
-    .from("opportunity_radar")
-    .select("id, title, solicitation_number, source_url, response_deadline, scan_date, relevance_score, review_status")
-    .neq("status", "archived")
-    .limit(2000);
-  const rows = data || [];
+  // Paginated (2026-10-09): PostgREST caps one request at 1000 rows, so the
+  // old .limit(2000) scanned the first 1000 of ~7,000 live rows and the
+  // counts here described a seventh of the table.
+  const rows = await fetchLiveRadarRows(supabase, { fields: "id, title, solicitation_number, source_url, response_deadline, scan_date, relevance_score, review_status, status" });
   const now = new Date();
   const fabricated = rows.filter((r) => isFabricated(r));
   const publishedFabricated = fabricated.filter((r) => r.review_status === "published");
@@ -321,7 +357,9 @@ function _csoAoiHealth() {
     for (const a of cso.aois || []) {
       out.total_aois += 1;
       const label = (cso.cso_number || cso.parent_slug || "?") + " AoI " + (a.aoi_id || "?");
-      consider(label, a.last_verified);
+      // An awarded or cancelled AoI is terminal: nothing about it can change
+      // on SAM.gov, so it does not age (2026-10-09, same rule as the validator).
+      if (!isTerminalAoi(a)) consider(label, a.last_verified);
       if (String(a.status || "").toLowerCase() === "open" && a.response_due) {
         const d = age(a.response_due);
         if (d > 0) out.past_due_open.push({ label, response_due: a.response_due, daysPast: d });
@@ -408,6 +446,10 @@ function _forecastDeltaHealth() {
 
 exports._trackerSourceUrls = _trackerSourceUrls;
 exports._forecastDeltaHealth = _forecastDeltaHealth;
+exports._csoAoiHealth = _csoAoiHealth;
+exports._trackerListingStale = _trackerListingStale;
+exports.describeRun = describeRun;
+exports.AUTOMATION = AUTOMATION;
 
 exports.handler = async () => {
   const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -439,6 +481,12 @@ exports.handler = async () => {
   const forecastStale = forecast.entry_age_days > TRACKER_STALE_DAYS || forecast.pipeline_age_days > TRACKER_STALE_DAYS;
   let freshness = { datasets: [], content: [], stale_datasets: [], stale_content: [], stale_count: 0, today: "" };
   try { freshness = evaluateDataFreshness(); } catch (e) { console.warn("data freshness scan failed:", e.message); }
+  let runs = {};
+  try { runs = await _automationRuns(supabase); } catch (e) { console.warn("automation run lookup failed:", e.message); }
+  const reverify = runs.tracker_reverify || {};
+  const reverifyDetails = reverify.details || {};
+  const hygieneDetails = (runs.radar_hygiene && runs.radar_hygiene.details) || {};
+  const refreshOrphans = ((runs.intel_refresh && runs.intel_refresh.details) || {}).orphans || null;
 
   const allGreen = stale.length === 0 && badUrls.length === 0 && trackerUrls.offenders.length === 0 && staleNotes.length === 0
     && orphaned.length === 0 && trackerStale.stale_count === 0
@@ -454,46 +502,54 @@ exports.handler = async () => {
 
   const html = `<!DOCTYPE html><html><body style="font-family:-apple-system,sans-serif;padding:24px;color:#0A192F;">
     <h2 style="margin:0 0 8px;">Intel quality report &middot; ${new Date().toISOString().slice(0,10)}</h2>
-    <p style="color:#5C6B7A;font-size:13px;margin:0 0 16px;">Weekly Friday 06:00 ET. Covers contract_intel staleness, source URL validity, radar freshness, and ops_ledger failures.</p>
+    <p style="color:#5C6B7A;font-size:13px;margin:0 0 16px;">Weekly Friday 06:00 ET. Nothing in this email is a task for Mary. Each section names the automation that owns it and when it last ran; what code cannot do (an editorial read, a profile re-verification) goes to the Friday Claude session, which opens and merges its own PR.</p>
+    <h3 style="font-size:14px;margin:16px 0 6px;">What ran this week</h3>
+    <ul>${AUTOMATION.map((a) => `<li>${esc(a.label)}: ${describeRun(runs[a.id])}</li>`).join("")}</ul>
     <h3 style="font-size:14px;margin:16px 0 6px;">Stale contract_intel rows (>14d)</h3>
     ${stale.length === 0 ? "<p>None.</p>" : `<ul>${stale.map((r) => {
       const ageDays = Math.floor((Date.now() - new Date(r.last_updated).getTime()) / (24*3600*1000));
       return `<li>${esc(r.contract_name)} &mdash; ${ageDays}d</li>`;
     }).join("")}</ul>`}
     <h3 style="font-size:14px;margin:16px 0 6px;">Contract Tracker listings not re-verified (&gt;${TRACKER_STALE_DAYS}d)</h3>
-    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">The /contract-tracker LISTING renders from the hand-maintained contracts.json. Nothing auto-refreshes its status/value/last_verified (contract-intel-refresh writes the Supabase contract_intel table behind the DETAIL pages, not this file), so the listing rots silently unless re-verified. Re-verify against SAM.gov / USASpending and bump last_verified. Build-time validate-contract-tracker.js prints the same signal; CONTRACT_TRACKER_MAX_AGE_DAYS makes it a hard build failure once the backlog is clear.</p>
-    ${trackerStale.stale_count === 0 ? `<p>None — all ${trackerStale.total} listings verified within ${TRACKER_STALE_DAYS}d.</p>` : `<p>${trackerStale.stale_count} of ${trackerStale.total} stale (oldest ${trackerStale.worst}d).</p><ul>${trackerStale.samples.map((r) => `<li>${esc(r.slug)} &mdash; ${r.ageDays === Infinity ? "no/invalid date" : r.ageDays + "d"} [${esc(r.status || "?")}]</li>`).join("")}</ul>`}
+    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">Owner: contract-tracker-reverify (daily). It reads each listing's solicitation number on SAM.gov, an awarded entry's vendor on USASpending, or its first signal term as a SAM.gov title, and commits status and last_verified to main when a live source answered. A listing it cannot look up by machine (no solicitation number, award vendor or signal term) is listed here and goes to the Friday session with the award-signals issue. Build-time validate-contract-tracker.js prints the same signal.</p>
+    <p>${describeRun(reverify)}${reverify.last_run ? `: ${reverifyDetails.checked || 0} of ${reverifyDetails.listings || 0} checked, ${reverifyDetails.bumped || 0} re-verified, ${(reverifyDetails.status_changes || []).length} status change(s), SAM.gov calls ${reverifyDetails.sam_calls || 0}${reverifyDetails.sam_blocked ? " (<strong style=\"color:#E63946;\">quota blocked the rest</strong>)" : ""}` : ""}</p>
+    ${(reverifyDetails.status_changes || []).length ? `<ul>${reverifyDetails.status_changes.map((ch) => `<li>${esc(ch.slug)}: ${esc(ch.from)} &rarr; ${esc(ch.to)} (${esc(ch.detail || ch.method || "")})</li>`).join("")}</ul>` : ""}
+    ${trackerStale.stale_count === 0 ? `<p>Freshness: all ${trackerStale.total} listings verified within ${TRACKER_STALE_DAYS}d.</p>` : `<p>${trackerStale.stale_count} of ${trackerStale.total} past ${TRACKER_STALE_DAYS}d (oldest ${trackerStale.worst}d).</p><ul>${trackerStale.samples.map((r) => `<li>${esc(r.slug)} &mdash; ${r.ageDays === Infinity ? "no/invalid date" : r.ageDays + "d"} [${esc(r.status || "?")}]</li>`).join("")}</ul>`}
+    ${(reverifyDetails.unchecked && Object.keys(reverifyDetails.unchecked).length) ? `<p style="color:#5C6B7A;font-size:12px;">Not reached on the last run: ${esc(Object.entries(reverifyDetails.unchecked).map(([k, v]) => `${v} ${k === "session" ? "need the Friday session" : k === "sam" ? "waiting on SAM.gov budget" : k === "usaspending" ? "USASpending did not answer" : k}`).join(", "))}.</p>` : ""}
     <h3 style="font-size:14px;margin:16px 0 6px;">CSO Areas of Interest (data/cso-aois.json)</h3>
-    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">A CSO is a standing framework; its AoIs carry the scope, criteria and RESPONSE DEADLINES. This registry is hand-maintained and no cron refreshes it, so it rots the same way the tracker listing did. "Past-due open" is a correctness bug, not staleness: an AoI marked open whose deadline has passed tells a paying subscriber a closed window is still live. Fix those first. Build-time scripts/validate-cso-aois.js fails hard on the same condition.</p>
-    ${aoiHealth.past_due_open.length === 0 ? "<p>Past-due open: none.</p>" : `<p style="color:#E63946;font-weight:700;">Past-due open: ${aoiHealth.past_due_open.length} — FIX THESE.</p><ul>${aoiHealth.past_due_open.map((r) => `<li>${esc(r.label)} &mdash; due ${esc(r.response_due)}, ${r.daysPast}d past</li>`).join("")}</ul>`}
+    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">Owner: contract-tracker-reverify (daily), which looks up each CSO's notice on SAM.gov and bumps the CSO and its non-terminal AoIs when the notice still stands; an awarded or cancelled AoI does not age. "Past-due open" is a correctness bug the build fails on (scripts/validate-cso-aois.js): an AoI marked open whose deadline has passed tells a paying subscriber a closed window is still live. The Friday session moves it to closed from the notice.</p>
+    <p>${reverify.last_run ? `Last run: ${reverifyDetails.cso_checked || 0} CSO notice(s) read, ${reverifyDetails.cso_bumped || 0} entr${(reverifyDetails.cso_bumped || 0) === 1 ? "y" : "ies"} re-verified${(reverifyDetails.cso_not_reached || []).length ? `; not confirmed: ${esc(reverifyDetails.cso_not_reached.map((r) => `${r.parent_slug} (${r.reason})`).join("; "))}` : ""}.` : "The re-verify worker has not run yet."}</p>
+    ${aoiHealth.past_due_open.length === 0 ? "<p>Past-due open: none.</p>" : `<p style="color:#E63946;font-weight:700;">Past-due open: ${aoiHealth.past_due_open.length} (the build is failing on these).</p><ul>${aoiHealth.past_due_open.map((r) => `<li>${esc(r.label)} &mdash; due ${esc(r.response_due)}, ${r.daysPast}d past</li>`).join("")}</ul>`}
     ${aoiHealth.closing_soon.length === 0 ? "" : `<p style="font-weight:700;">Closing within 14 days: ${aoiHealth.closing_soon.length}</p><ul>${aoiHealth.closing_soon.map((r) => `<li>${esc(r.label)} &mdash; due ${esc(r.response_due)} (${r.daysLeft}d left)</li>`).join("")}</ul>`}
     ${aoiHealth.stale_count === 0 ? `<p>Freshness: all ${aoiHealth.total_csos} CSO(s) / ${aoiHealth.total_aois} AoI(s) re-verified within ${TRACKER_STALE_DAYS}d.</p>` : `<p>${aoiHealth.stale_count} entr${aoiHealth.stale_count === 1 ? "y" : "ies"} not re-verified in ${TRACKER_STALE_DAYS}d (oldest ${aoiHealth.worst}d).</p><ul>${aoiHealth.samples.map((r) => `<li>${esc(r.label)} &mdash; ${r.ageDays === Infinity ? "no/invalid date" : r.ageDays + "d"}</li>`).join("")}</ul>`}
     <h3 style="font-size:14px;margin:16px 0 6px;">Hand-maintained data freshness (registry: lib/data-freshness.js)</h3>
-    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">Every dataset and content directory the site renders from a file nobody's cron touches, with the date that proves it was last verified. A row here means a subscriber-facing page is older than its stated cadence. Build-time scripts/validate-data-freshness.js prints the same list; DATA_FRESHNESS_MAX_AGE_DAYS makes it a hard build failure.</p>
+    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">Owner: the Friday Claude session (Routine "MMT intel quality"), which re-verifies each stale row from dated in-repo sources and the GitHub-runner snapshots, writes the monthly reads, and merges when the build is green. The line under each row is that session's instruction, not Mary's. Build-time scripts/validate-data-freshness.js prints the same list.</p>
     ${freshness.stale_count === 0 ? `<p>All ${freshness.datasets.length} dataset rows and ${freshness.content.length} content dir(s) within cadence.</p>` : `<ul>${freshness.stale_datasets.map((r) => `<li><strong>${esc(r.label ? r.id + " (" + r.label + ")" : r.id)}</strong> &mdash; ${r.error ? esc(r.error) : `${esc(r.date)}, ${r.age_days}d old (warn ${r.warn_days}d, ${esc(r.cadence)})`}<br><span style="color:#5C6B7A;">${esc(r.fix)}</span></li>`).join("")}${freshness.stale_content.map((c) => `<li><strong>${esc(c.id)}</strong> &mdash; ${c.latest_file ? `newest entry ${esc(c.latest_file)}, ${c.age_days}d old (warn ${c.warn_days}d)` : "no published entry"}<br><span style="color:#5C6B7A;">${esc(c.fix)}</span></li>`).join("")}</ul>`}
     <h3 style="font-size:14px;margin:16px 0 6px;">Forecast Delta Tracker (/premium/forecast-delta)</h3>
-    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">The monthly read renders from content/forecast-delta/YYYY-MM.md and the pipeline table from data/forecast-pipeline.json. Both are hand-maintained; no cron writes them. A read older than ${TRACKER_STALE_DAYS}d means a month was skipped &mdash; write the next YYYY-MM.md. A pipeline older than ${TRACKER_STALE_DAYS}d means the agency forecasts have not been re-pulled; rows whose published solicitation date has passed are labeled on the page but want re-verification. Build-time scripts/validate-forecast-delta.js prints the same signal; FORECAST_DELTA_MAX_AGE_DAYS makes it a hard build failure.</p>
+    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">Owner: the Friday Claude session. The monthly read renders from content/forecast-delta/YYYY-MM.md and the pipeline table from data/forecast-pipeline.json. A read older than ${TRACKER_STALE_DAYS}d means the session owes the next YYYY-MM.md; a pipeline older than ${TRACKER_STALE_DAYS}d means the agency forecasts want a re-pull (the session cannot reach .gov portals itself and says so when it cannot). Rows whose published solicitation date has passed are labeled on the page. Build-time scripts/validate-forecast-delta.js prints the same signal.</p>
     <p>Latest read: ${forecast.latest_file ? `${esc(forecast.latest_file)} (${forecast.entry_age_days}d old)` : "<strong style=\"color:#E63946;\">none published</strong>"}${forecast.entry_age_days > TRACKER_STALE_DAYS ? ` &mdash; <strong style="color:#E63946;">OVERDUE</strong>` : ""}</p>
     <p>Pipeline: ${forecast.pipeline_rows} rows, verified ${esc(forecast.pipeline_last_verified || "never")} (${forecast.pipeline_age_days === Infinity ? "n/a" : forecast.pipeline_age_days + "d"})${forecast.pipeline_age_days > TRACKER_STALE_DAYS ? ` &mdash; <strong style="color:#E63946;">OVERDUE</strong>` : ""} &middot; ${forecast.pipeline_past_rows} rows past their published solicitation date</p>
     <p>Agencies with rows: ${esc(forecast.covered.join(", ") || "none")}</p>
     ${forecast.checked_empty.length ? `<p>Checked, no forward health-IT rows in the agency's own forecast &mdash; this is an answer, not a gap, and the table must not be padded to close it: ${forecast.checked_empty.map((c) => `${esc(c.agency)} (${esc(c.checked || "undated")})`).join(", ")}</p>` : ""}
-    <p>${forecast.missing.length ? `<strong style="color:#E63946;">Not pulled this cycle: ${esc(forecast.missing.join(", "))}</strong> &mdash; re-pull the agency's own forecast, then either add rows or declare it in _schema.checked_no_rows with the date and source you read.` : "Every target agency is accounted for: it has rows, or a dated checked-no-rows declaration."}</p>
+    <p>${forecast.missing.length ? `<strong style="color:#E63946;">Not pulled this cycle: ${esc(forecast.missing.join(", "))}</strong> &mdash; the Friday session re-pulls the agency's own forecast, then either adds rows or declares it in _schema.checked_no_rows with the date and source it read.` : "Every target agency is accounted for: it has rows, or a dated checked-no-rows declaration."}</p>
     <h3 style="font-size:14px;margin:16px 0 6px;">Orphaned contract_intel rows (name not in refresh roster)</h3>
-    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">These rows can never be refreshed — their contract_name has no match in contracts.json, so contract-intel-refresh skips them. Usually a naming drift (em-dash vs hyphen, parenthetical variant) leaving a stale duplicate. Reconcile: rename the row to its roster name, or archive it if a fresh canonical row already exists.</p>
+    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">Owner: contract-intel-refresh (daily), which reconciles a drifted contract_name before its roster loop: renames the only copy to its roster name, deletes a stale duplicate, by alias, normalized name, shared solicitation number or the name without its parenthetical. A row still listed here matched nothing; the Friday session adds an alias in lib/orphan-intel.js or deletes a retired row.</p>
+    <p>${refreshOrphans ? `Last refresh reconciled: renamed ${refreshOrphans.renamed || 0}, deleted ${refreshOrphans.deleted || 0}, failed ${refreshOrphans.failed || 0}, unresolved ${refreshOrphans.review || 0}.` : "The daily refresh has not reported an orphan reconcile yet."}</p>
     ${orphaned.length === 0 ? "<p>None.</p>" : `<ul>${orphaned.map((r) => `<li>${esc(r.contract_name)} &mdash; ${r.age_days === null ? "never refreshed" : r.age_days + "d"}</li>`).join("")}</ul>`}
     <h3 style="font-size:14px;margin:16px 0 6px;">Tracker listing source URLs (contracts.json)</h3>
     <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">A root-domain link (https://sam.gov) is not a source &mdash; it drops a paying subscriber on the SAM.gov homepage &mdash; and a sam.gov/opp/&lt;solicitation-number&gt; link is the 2026-08-05 fabrication signal, since a real permalink carries a 32-hex notice id. build.js renders &ldquo;View on Source&rdquo; from link || source and contract-fields.js serves both to the premium detail page, so these are live in the paid product. Build-time scripts/validate-contract-tracker.js hard-fails on the same condition.</p>
     ${trackerUrls.offenders.length === 0 ? `<p>None across ${trackerUrls.total} entries.</p>` : `<ul>${trackerUrls.offenders.map((r) => `<li><strong style="color:#E63946;">${esc(r.slug)}</strong> &mdash; ${r.bad.map((b) => `${esc(b.field)}: ${esc(b.reason)}`).join("; ")}</li>`).join("")}</ul>`}
-    ${trackerUrls.pending.length === 0 ? "" : `<p style="margin-top:8px;">Entries with no verified primary source (source_pending), re-verify and add one:</p><ul>${trackerUrls.pending.map((r) => `<li>${esc(r.slug)} &mdash; ${esc(r.reason)}</li>`).join("")}</ul>`}
+    ${trackerUrls.pending.length === 0 ? "" : `<p style="margin-top:8px;">Entries with no verified primary source (source_pending); the Friday session sources them or leaves the gap visible:</p><ul>${trackerUrls.pending.map((r) => `<li>${esc(r.slug)} &mdash; ${esc(r.reason)}</li>`).join("")}</ul>`}
 
     <h3 style="font-size:14px;margin:16px 0 6px;">contract_intel rows with root-domain source URLs</h3>
     ${badUrls.length === 0 ? "<p>None.</p>" : `<ul>${badUrls.map((r) => `<li>${esc(r.contract_name)} &mdash; ${r.bad_count} bad</li>`).join("")}</ul>`}
     <h3 style="font-size:14px;margin:16px 0 6px;">Chain-of-thought leakage in verification_notes</h3>
-    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">Regression detector for the 2026-05-26 CGI complaint. Persistence + prompts should keep this at zero. If non-zero, run scripts/cleanup-may26-subscriber-trust.js and inspect the LLM prompt drift.</p>
+    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">Regression detector for the 2026-05-26 CGI complaint. Persistence + prompts should keep this at zero. If non-zero, the Friday session runs scripts/cleanup-may26-subscriber-trust.js and inspects the LLM prompt drift.</p>
     ${staleNotes.length === 0 ? "<p>None.</p>" : `<ul>${staleNotes.map((r) => `<li>${esc(r.contract_name)} &mdash; ${r.stripped_count}/${r.total_count} stale &mdash; sample: <em>${esc(r.sample)}</em></li>`).join("")}</ul>`}
     <h3 style="font-size:14px;margin:16px 0 6px;">Fabricated / stale / duplicate radar rows (live table)</h3>
-    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">Fabrication tripwire (2026-08-05). Fabricated = source_url is a built-from-solicitation SAM link (sam.gov/opp/&lt;sol#&gt;, not a 32-hex permalink) &mdash; the signature of a hallucinated opportunity. The write path refuses these and the feed drops them; a non-zero count here means legacy rows or a new leak. Remediate with scripts/cleanup-opportunity-radar.js.</p>
-    <p>fabricated: ${radarFab.fabricated}${radarFab.published_fabricated ? ` (<strong style="color:#E63946;">${radarFab.published_fabricated} reaching premium subscribers</strong>)` : ""} &middot; past-deadline still live: ${radarFab.closed} &middot; duplicate notices: ${radarFab.duplicates}</p>
+    <p style="color:#5C6B7A;font-size:12px;margin:0 0 6px;">Owner: the daily opportunity-radar-url-recheck hygiene sweep, which archives fabricated rows (a sam.gov/opp/&lt;sol#&gt; link that is not a 32-hex permalink, the 2026-08-05 signature of a hallucinated opportunity), past-deadline rows and duplicate notices across the whole table. The write path refuses fabricated rows and the feed drops all three at read time; a non-zero count here on a Friday means the sweep did not run or a new leak is faster than one day.</p>
+    <p>${describeRun(runs.radar_hygiene)}${runs.radar_hygiene && runs.radar_hygiene.last_run ? `: archived ${hygieneDetails.archived || 0} (fabricated ${hygieneDetails.fabricated || 0}, closed ${hygieneDetails.closed || 0}, duplicate ${hygieneDetails.duplicate || 0})` : ""}</p>
+    <p>Live now: fabricated ${radarFab.fabricated}${radarFab.published_fabricated ? ` (<strong style="color:#E63946;">${radarFab.published_fabricated} reaching premium subscribers</strong>)` : ""} &middot; past-deadline still live: ${radarFab.closed} &middot; duplicate notices: ${radarFab.duplicates}</p>
     ${radarFab.samples.length === 0 ? "" : `<ul>${radarFab.samples.map((s) => `<li>#${s.id} ${esc(String(s.title || "").slice(0, 70))} &mdash; <em>${esc(String(s.source_url || "").slice(0, 60))}</em>${s.published ? " &middot; <strong style='color:#E63946;'>published</strong>" : ""}</li>`).join("")}</ul>`}
     <h3 style="font-size:14px;margin:16px 0 6px;">opportunity_radar URL re-check (last 7d)</h3>
     <p>archived broken: ${urlSweep.archived_7d || 0} &middot; last sweep: ${esc(urlSweep.last_sweep_at || "never")}</p>

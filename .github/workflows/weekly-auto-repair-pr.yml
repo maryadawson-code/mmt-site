@@ -69,8 +69,8 @@ jobs:
 
             > `contracts.json` `last_verified` is NOT touched here. Blindly
             > bumping it faked freshness and hid stale status/value from paying
-            > subscribers. Real re-verification runs in
-            > `.github/workflows/contract-tracker-reverify.yml`.
+            > subscribers. Real re-verification runs daily in the Netlify
+            > function `contract-tracker-reverify` and commits to main.
 
             **Validation:**
             - Build passed

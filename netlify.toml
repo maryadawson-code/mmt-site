@@ -151,6 +151,20 @@
 [functions."contract-intel-refresh"]
   schedule = "0 11 * * *"
 
+# Contract Tracker + CSO AoI re-verification. Daily 02:15 UTC (22:15 ET),
+# after the pursuit-calendar cron's SAM.gov spend at 00:00 UTC and before
+# the business day. Reads contracts.json and data/cso-aois.json from main,
+# checks each listing against SAM.gov (solicitation number, or signal term
+# as a title) and USASpending (an awarded entry's vendor), and commits
+# status + last_verified to main through the GitHub Contents API, the way
+# pursuit-calendar-seed-refresh commits the seed. Every SAM.gov call is
+# priority "scheduled" through lib/sam-quota.js, so the subscriber reserve
+# is never spent. Replaces the retired .github/workflows/
+# contract-tracker-reverify.yml, whose SAM key answered 401 on every run
+# (2026-10-09). Kill switch: TRACKER_REVERIFY_DISABLED=true.
+[functions."contract-tracker-reverify"]
+  schedule = "15 2 * * *"
+
 # Single-Bidder Contracts refresh — 1st of month at 6 AM ET (11:00 UTC).
 # Sprint 4 MMT-402. Pulls SAM.gov awards with numberOfOffersReceived=1
 # across DHA/VA/HHS/ARPA-H/CMS/ONC for the past 12 months, writes
