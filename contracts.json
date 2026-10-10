@@ -381,14 +381,16 @@
     "source_urls": [
       "https://orangeslices.ai/tista-beats-out-5-to-win-210m-va-scmdso-contract/"
     ],
-    "last_verified": "2026-10-05",
+    "last_verified": "2026-10-09",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Awarded to TISTA per trade press; subcontracting watch only",
       "factors": {}
     },
     "slug": "va-ieo-tista-36c10b26f0468",
-    "content_gap": false
+    "content_gap": false,
+    "verified_by": "usaspending:recipient",
+    "verification_detail": "USASpending award 36C10B26F0468 to TISTA SCIENCE AND TECHNOLOGY CORPORATION (start 2026-09-30)"
   },
   {
     "name": "CIO-CS Follow-On / The Store",
@@ -668,7 +670,7 @@
       "https://orangeslices.ai/protest-forces-vha-to-award-health-information-hi-professional-and-technical-services-bridge/",
       "https://orangeslices.ai/ongoing-14b-iht-2-0-protest-forces-va-to-award-digital-health-office-health-informatics-bridge-contract/"
     ],
-    "last_verified": "2026-10-05",
+    "last_verified": "2026-10-09",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Active IDIQ — task orders competing across 9 holders",
@@ -680,7 +682,9 @@
       "iht 2.0",
       "integrated healthcare transformation",
       "36C10X24R0026"
-    ]
+    ],
+    "verified_by": "usaspending:recipient",
+    "verification_detail": "USASpending award 36C10X26N0169 to AGILE4VETS LLC (start 2026-09-01)"
   },
   {
     "name": "Enterprise Intelligence & Data Solutions (EIDS)",
@@ -1217,14 +1221,16 @@
     "source_urls": [
       "https://orangeslices.ai/swingtide-awarded-defense-health-agency-peo-dhms-market-intelligence-support-services-contract/"
     ],
-    "last_verified": "2026-08-17",
+    "last_verified": "2026-10-09",
     "pursuit_score": {
       "verdict": "AWARDED",
       "headline": "Market intelligence — awarded Jan 2026",
       "factors": {}
     },
     "slug": "swingtide-market-intelligence-support",
-    "content_gap": false
+    "content_gap": false,
+    "verified_by": "usaspending:recipient",
+    "verification_detail": "USASpending award HT003826CE001 to SWINGTIDE INC (start 2025-11-03)"
   },
   {
     "name": "STR Zero Day — Leidos",
@@ -1508,7 +1514,7 @@
       "https://orangeslices.ai/cherokee-nation-subsidiary-wins-hhs-ihs-four-directions-warehouse-4dw-health-it-modernization-and-development/",
       "https://www.highergov.com/contract-opportunity/d-indian-health-ser-140d0424r0069-award-140d0424c0039-cherokee-nation-integrated-health-l-l-c-fb4ef/"
     ],
-    "last_verified": "2026-08-17",
+    "last_verified": "2026-10-09",
     "pursuit_score": {
       "verdict": "AWARDED",
       "headline": "ISBEE CDR contract awarded to Cherokee Nation Integrated Health",
@@ -1536,7 +1542,9 @@
       }
     },
     "content_gap": false,
-    "slug": "ihs-four-directions-warehouse-4dw-clinical-data-repository"
+    "slug": "ihs-four-directions-warehouse-4dw-clinical-data-repository",
+    "verified_by": "usaspending:recipient",
+    "verification_detail": "USASpending award 140D0424C0039 to CHEROKEE NATION INTEGRATED HEALTH, L.L.C. (start 2024-09-24)"
   },
   {
     "name": "NIH Scientific & Technical Support Services IDIQ ($3B)",
