@@ -6,8 +6,8 @@ A .mil website belongs to an official U.S. Department of Defense organization.
 Secure .mil websites use HTTPS
 A lock (
 ) or https:// means you've safely connected to the .mil website. Share sensitive information only on official, secure websites.
-MHS GENESIS Patient Portal login has changed.
-The MHS GENESIS Patient Portal now uses myAuth for secure sign-in. To update permissions, sign in or create an account at myAuth and select Manage Relationships.
+IMPORTANT: DEERS System Outage, Oct. 9-11
+During this time, beneficiaries may be unable to update contact information, verify eligibility, or complete enrollment actions. Access to TRICARE and other DOD benefit systems that rely on DEERS may also be temporarily affected.
 Search
 About DHA
 About Us
@@ -143,18 +143,14 @@ Vendor Innovation Form
 Become a TRICARE Provider
 Being a TRICARE provider means that you're treating America's heroes &ndash; the people making sacrifices to keep America strong and safe.
 Provider Information
-TRICARE
-TRICARE.mil
-We honor the promise made to every beneficiary&mdash;past, present, and future&mdash;to provide timely access to high-quality care.
-Go to TRICARE.mil
 Organization Structure
 We serve those who serve our nation all over the world. Our 130,000+ staff members operate more than 700 facilities worldwide and support the infrastructure to allow them to be successful. DHA is led by both military and civilian experts.
 Our Senior Leaders
-Vice Adm. Darin K. Via
-DIRECTOR
-View Bio
 Force Master Chief PatrickPaul C. Mangaran
 COMMAND SENIOR ENLISTED LEADER
+View Bio
+Vice Adm. Darin K. Via
+DIRECTOR
 View Bio
 Dr. David J. Smith
 DEPUTY DIRECTOR
@@ -195,3 +191,4 @@ Cancel
 Continue
 Go
 Feedback
+Go to
