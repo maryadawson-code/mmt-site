@@ -215,6 +215,13 @@ function detectAgency(text) {
   return detectAgencies(text)[0] || null;
 }
 
+// The one link the prompt itself hands the model (the empty-block shape).
+// No context or source carries it, so the link guard is told about it
+// explicitly; the prompt below reads the same constant, so the two cannot
+// drift.
+const MARKETPULSE_URL = "https://missionmeetstech.com/marketpulse";
+const PROMPT_LINKS = Object.freeze([MARKETPULSE_URL]);
+
 const SYSTEM_PROMPT = `You are the Mission Meets Tech premium research assistant. You answer federal health IT procurement, policy, and market questions for paid subscribers.
 
 WHAT COUNTS AS A VERIFIED FACT (read carefully — the verified-facts block can contain several kinds of evidence, any of which is sufficient to answer from):
@@ -224,12 +231,12 @@ WHAT COUNTS AS A VERIFIED FACT (read carefully — the verified-facts block can 
 
 HARD RULES:
 - If ANY of the three evidence classes above is present in the block, answer from it. Do NOT say "I don't have verified facts" when MMT articles or vehicle baselines are in the block — they ARE verified facts.
-- If the block contains MMT articles relevant to the question, lead with what Mary wrote. Quote a specific excerpt when it sharpens the answer. Link to the URL.
+- If the block contains MMT articles relevant to the question, lead with what Mary wrote. Quote a specific excerpt when it sharpens the answer. Cite it by date, as in the examples below; do not write URLs. The reader gets every link from the server-built sources list under your answer, and a URL you write that the server did not retrieve is removed before the answer is shown.
 - Do not invent contract numbers, dollar amounts, deadlines, hiring counts, or citations that aren't in the block.
 - CONFLICTS: when two records in the block disagree on status, date, awardee or dollar value, say so in the bottom line, cite both with their dates, and prefer the later-dated live record; never pick one silently.
 - AWARD FIELDS: USASpending award amount is the potential value as reported to FPDS; obligated is money actually committed. Name the field you are quoting. Never call either the contract value. Never add, average or annualize amounts yourself; if the block carries a computed totals line, quote it.
 - If the block contains an AWARD DATA DELAY line, repeat it in the answer.
-- If the block is genuinely empty on the question, say so plainly and recommend what to check next. Never fabricate to fill a gap. (Empty means zero MMT articles AND zero API results, not just "the API returned nothing for this specific keyword.") Use this exact shape for the bottom line in that case: "I don't have a source for that in the systems I read. Where I'd look: <the one or two primary sources most likely to hold it>. If you want it researched properly, MarketPulse delivers a source-cited brief in 24 hours (https://missionmeetstech.com/marketpulse)." Do not pad an empty answer with general knowledge dressed up as fact.
+- If the block is genuinely empty on the question, say so plainly and recommend what to check next. Never fabricate to fill a gap. (Empty means zero MMT articles AND zero API results, not just "the API returned nothing for this specific keyword.") Use this exact shape for the bottom line in that case: "I don't have a source for that in the systems I read. Where I'd look: <the one or two primary sources most likely to hold it>. If you want it researched properly, MarketPulse delivers a source-cited brief in 24 hours (${MARKETPULSE_URL})." Do not pad an empty answer with general knowledge dressed up as fact.
 - If a system listed under SYSTEMS NOT REACHED would normally hold the answer (SAM.gov for solicitations, USASpending for awards), say that it could not be checked this turn and name it. Never imply "no such record exists" because a system was silent.
 - ACRONYMS: expand an acronym only with the expansion given in the ACRONYM REFERENCE block or spelled out in a source excerpt. If neither gives it, write the acronym exactly as it appears in the source. Never guess what letters stand for.
 - LIVE RECORDS: every live federal record in the block that matches the question's agency and topic (an award, a notice, a docket, a report) must appear in the answer with its citation, or be set aside in one clause that says why it is not the thing asked about (for example, a related award under a different vehicle). Never tell the subscriber to go check a system whose matching record is already in the block.
@@ -546,7 +553,7 @@ async function callClaude({ question, context, history = [], model = defaultMode
 
 Subscriber question: "${question}"
 ${formatHistory(history)}
-VERIFIED FACTS AVAILABLE (cite any of these — the block may contain MMT articles, MMT federal-vehicle baselines, MMT contract intel, MMT capture-intel signals, MMT IDIQ-vehicle analyst notes, and live federal API results. All are first-class evidence. Treat "MMT ORIGINAL CONTENT" entries and IDIQ vehicle excerpts as things Mary has already published — answer from them and cite the URL):
+VERIFIED FACTS AVAILABLE (cite any of these — the block may contain MMT articles, MMT federal-vehicle baselines, MMT contract intel, MMT capture-intel signals, MMT IDIQ-vehicle analyst notes, and live federal API results. All are first-class evidence. Treat "MMT ORIGINAL CONTENT" entries and IDIQ vehicle excerpts as things Mary has already published — answer from them and cite them by date, not by URL):
 ${context || "(Nothing matched on either the MMT corpus or the live federal APIs. Answer honestly — say what you can from general knowledge and recommend what the subscriber should check next. Do NOT invent facts.)"}
 
 Answer the subscriber now, following the voice and format rules in the system prompt. If the block contains MMT coverage of the topic, lead with what I wrote and quote the most relevant line.`;
@@ -656,7 +663,7 @@ async function answerQuestion({ question, history = [], maxTokens = 1500 }) {
     // the server did not retrieve, then count unsupported dollar figures
     // without touching the text.
     const voiced = enforceVoice(stripEmDashes(stripSourcesSection(raw)));
-    const linked = enforceLinks(voiced.answer, context, sources);
+    const linked = enforceLinks(voiced.answer, context, sources, { allow: PROMPT_LINKS });
     const dollars = dollarGuard(linked.answer, context);
     return {
       answer: linked.answer,
@@ -704,6 +711,8 @@ module.exports = {
   resolveFollowUp,
   stripEmDashes,
   defaultModel,
+  MARKETPULSE_URL,
+  PROMPT_LINKS,
   dateET,
   ARCHIVE_STALE_DAYS,
   AWARD_DELAY_DAYS,
