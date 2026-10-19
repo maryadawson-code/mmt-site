@@ -176,8 +176,8 @@ Latest Blog
 September 30, 2026
 Less Pajama Time, More Patient Time: How Better Interoperability Can Reduce Physician Burden
 Recent News
-September 1, 2026
-Standards Bulletin: ONC HL7® FHIR® Terminology Service, Cartos
+October 6, 2026
+HHS Announces 2026 LEAP in Health IT Awardees to Accelerate the Use of Agentic AI in Clinical Care and Close Gaps in Laboratory Interoperability
 About
 Overview
 About ONC
@@ -293,7 +293,7 @@ Last Updated: April 1, 2026
 Submit Feedback
 Step 1 of 3
 33%
-Facebook
+Phone
 This field is for validation purposes and should be left unchanged.
 Name (Required)
 First
@@ -323,7 +323,7 @@ If you have any screenshots or files related to the issue, please upload them he
 Previous Submit
 Cancel
 Subscribe for Email Updates
-Comments
+Name
 This field is for validation purposes and should be left unchanged.
 Email (Required)
 Submit

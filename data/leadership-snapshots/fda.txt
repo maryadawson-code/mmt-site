@@ -86,8 +86,6 @@ Chief Counsel
 Sean R. Keveney J.D.
 Chief Financial Officer
 Benjamin D. Moncarz
-Acting Chief Information Officer
-Sanjay Kumar Sahoo
 Chief Scientist
 Steven Kozlowski, M.D.
 Acting Chief of Staff
@@ -127,7 +125,7 @@ Resources For You
 FDA Organization
 Contact FDA
 Content current as of:
-09/09/2026
+10/07/2026
 Feedback
 FDA Archive
 About FDA
