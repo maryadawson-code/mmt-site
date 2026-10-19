@@ -29,6 +29,19 @@ page moved; fix the target in lib/org-chart-targets.js.
 - This session's container resolves no .gov host and no archive.org host,
   so nothing below was verified against a live page from here; the Action
   run on this branch is the verification.
+- The 2026-10-12 scheduled run on main failed at "Open snapshot PR":
+  "GitHub Actions is not permitted to create or approve pull requests."
+  The snapshot was committed to `roster-snapshot`, and no `[MMT Watch]` PR
+  ever opened, which is why nobody picked it up. Repository setting,
+  Mary's to flip: Settings, Actions, General, Workflow permissions, allow
+  GitHub Actions to create and approve pull requests. Until then the
+  workflow files the diff as an issue instead (below).
+
+## Action runs on this branch
+
+| Run | Result |
+| --- | --- |
+| 11:47 UTC, first push | 7 changed, 1 not reached. NIH 200 through Chromium. HHS: live 403, Chromium 403, archive availability answered, raw capture fetch answered HTTP 429 from web.archive.org on the first request. |
 
 ## What shipped
 
@@ -48,5 +61,21 @@ page moved; fix the target in lib/org-chart-targets.js.
   and its text matches `expect`. The record says `via: "archive"`, `as_of`
   (the capture time), `archive_url` and `live_error`; CHANGES.md says to
   cite the capture date, never today. The live page stays "not reached".
+- The archive reader retries a 408/429/5xx up to three times, honoring
+  Retry-After (capped at 60s), else 15s, 30s, 60s; the failure text
+  carries the attempt count.
 - Tests: `tests/unit/leadership-snapshot-archive.test.js` and three new
   cases in `tests/unit/org-chart-monitor.test.js`.
+
+## Roster lines in the 2026-10-19 snapshot that need a chart decision
+
+From `data/leadership-snapshots/CHANGES.md` on this branch (not applied
+here; this PR is the watch fix):
+
+- CDC: "Chief of Staff – Acting: Mina Zadeh, PhD, MPH" added; the
+  NCSTLTPHIW director line lost its "Acting". Page updated Oct 16, 2026.
+- FDA: "Acting Chief Information Officer, Sanjay Kumar Sahoo" removed; no
+  replacement line.
+- GSA: the site nav dropped "Leadership Directory" (the target page still
+  answered 200; watch for it moving).
+- DHA, VA, ONC, CMS: banner, nav and label lines only.

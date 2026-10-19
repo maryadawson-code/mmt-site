@@ -76,7 +76,8 @@ async function fetchPage(url, fetchImpl = fetch) {
       },
     });
     const body = await res.text();
-    return { status: res.status, ok: res.ok, body, final_url: res.url, via: "fetch" };
+    const retry_after = res.headers && typeof res.headers.get === "function" ? res.headers.get("retry-after") : null;
+    return { status: res.status, ok: res.ok, body, final_url: res.url, via: "fetch", retry_after };
   } catch (err) {
     return { status: 0, ok: false, error: err && err.name === "AbortError" ? `timeout after ${TIMEOUT_MS}ms` : String(err && err.message) };
   } finally {
@@ -126,6 +127,36 @@ async function closeBrowser() {
 
 const ARCHIVE_AVAILABLE = "https://archive.org/wayback/available?url=";
 const ARCHIVE_RAW = "https://web.archive.org/web/";
+// web.archive.org answered 429 to the first raw-capture fetch from a GitHub
+// runner (2026-10-19). A 429 or 5xx is transient: wait what Retry-After
+// says (capped), else a growing pause, and try again a bounded number of
+// times. Anything else is the answer.
+const ARCHIVE_RETRIES = 3;
+const ARCHIVE_RETRY_BASE_MS = 15000;
+const ARCHIVE_RETRY_CAP_MS = 60000;
+
+function isTransient(status) {
+  const st = Number(status);
+  return st === 408 || st === 429 || (st >= 500 && st <= 599);
+}
+
+function retryDelayMs(retryAfter, attempt, { base = ARCHIVE_RETRY_BASE_MS, cap = ARCHIVE_RETRY_CAP_MS } = {}) {
+  const secs = Number(retryAfter);
+  if (Number.isFinite(secs) && secs > 0) return Math.min(secs * 1000, cap);
+  return Math.min(base * 2 ** attempt, cap);
+}
+
+/** fetchPage with a bounded retry on transient statuses; `sleep` is injectable for tests. */
+async function fetchPageWithRetry(url, fetchImpl, { retries = ARCHIVE_RETRIES, sleep = (ms) => new Promise((r) => setTimeout(r, ms)), delays = {} } = {}) {
+  let r = await fetchPage(url, fetchImpl);
+  for (let attempt = 0; attempt < retries && !r.ok && isTransient(r.status); attempt++) {
+    const wait = retryDelayMs(r.retry_after, attempt, delays);
+    console.warn(`archive: HTTP ${r.status} from ${url}; retry ${attempt + 1}/${retries} in ${Math.round(wait / 1000)}s`);
+    await sleep(wait);
+    r = await fetchPage(url, fetchImpl);
+  }
+  return r;
+}
 
 /** Wayback "YYYYMMDDhhmmss" to ISO, or null when it is not that shape. */
 function archiveTimestampToIso(ts) {
@@ -142,8 +173,8 @@ function archiveTimestampToIso(ts) {
  * older copy), and its visible text matches `expect` (a capture of an
  * "Access Denied" page is not the roster). Every refusal names its reason.
  */
-async function fetchArchive(url, { expect, newerThan, fetchImpl = fetch } = {}) {
-  const avail = await fetchPage(ARCHIVE_AVAILABLE + encodeURIComponent(url), fetchImpl);
+async function fetchArchive(url, { expect, newerThan, fetchImpl = fetch, retry = {} } = {}) {
+  const avail = await fetchPageWithRetry(ARCHIVE_AVAILABLE + encodeURIComponent(url), fetchImpl, retry);
   if (!avail.ok) return { status: 0, ok: false, error: `archive lookup ${avail.error || `HTTP ${avail.status}`}` };
   let closest;
   try {
@@ -157,8 +188,8 @@ async function fetchArchive(url, { expect, newerThan, fetchImpl = fetch } = {}) 
   if (!as_of) return { status: 0, ok: false, error: `archive capture has an unreadable timestamp (${closest.timestamp})` };
   if (newerThan && as_of <= newerThan) return { status: 0, ok: false, stale: true, as_of, error: `archive has no capture newer than ${newerThan.slice(0, 10)}` };
   const archive_url = `${ARCHIVE_RAW}${closest.timestamp}id_/${url}`;
-  const r = await fetchPage(archive_url, fetchImpl);
-  if (!r.ok) return { status: r.status, ok: false, error: `archive capture ${r.error || `HTTP ${r.status}`}` };
+  const r = await fetchPageWithRetry(archive_url, fetchImpl, retry);
+  if (!r.ok) return { status: r.status, ok: false, error: `archive capture ${r.error || `HTTP ${r.status}`}${isTransient(r.status) ? ` after ${1 + (retry.retries ?? ARCHIVE_RETRIES)} attempts` : ""}` };
   if (expect && !expect.test(pageText(r.body))) return { status: r.status, ok: false, error: `archive capture of ${as_of.slice(0, 10)} does not carry the roster` };
   return { status: r.status, ok: true, body: r.body, final_url: archive_url, via: "archive", as_of, archive_url };
 }
@@ -174,7 +205,7 @@ function describeAttempts(attempts) {
  * Returns the first 2xx plus the trail of attempts so index.json can say
  * which URL answered.
  */
-async function fetchTarget(t, { fetchImpl = fetch, browser = fetchWithBrowser, prevAsOf = null } = {}) {
+async function fetchTarget(t, { fetchImpl = fetch, browser = fetchWithBrowser, prevAsOf = null, retry = {} } = {}) {
   const attempts = [];
   for (const url of urlsFor(t)) {
     let r = await fetchPage(url, fetchImpl);
@@ -188,7 +219,7 @@ async function fetchTarget(t, { fetchImpl = fetch, browser = fetchWithBrowser, p
   const kind = classifyAttempts(attempts);
   const live_error = describeAttempts(attempts);
   if (kind === "blocked" && t.archive_fallback) {
-    const a = await fetchArchive(t.url, { expect: t.expect, newerThan: prevAsOf, fetchImpl });
+    const a = await fetchArchive(t.url, { expect: t.expect, newerThan: prevAsOf, fetchImpl, retry });
     attempts.push({ url: t.url, status: a.status, error: a.error, via: "archive" });
     if (a.ok) return { ...a, url: t.url, attempts, kind: "archive", live_error };
     if (a.stale) return { ok: false, kind: "archive_stale", attempts, live_error, as_of: a.as_of, error: describeAttempts(attempts) };
@@ -337,4 +368,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { fetchTarget, fetchArchive, archiveTimestampToIso, describeAttempts };
+module.exports = { fetchTarget, fetchArchive, fetchPageWithRetry, retryDelayMs, archiveTimestampToIso, describeAttempts };

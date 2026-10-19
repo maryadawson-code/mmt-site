@@ -5,7 +5,7 @@
 
 import { describe, it, expect } from "vitest";
 import { TARGETS, classifyAttempts } from "../../netlify/functions/lib/org-chart-targets.js";
-import { fetchTarget, fetchArchive, archiveTimestampToIso } from "../../scripts/snapshot-leadership-pages.js";
+import { fetchTarget, fetchArchive, fetchPageWithRetry, retryDelayMs, archiveTimestampToIso } from "../../scripts/snapshot-leadership-pages.js";
 
 const HHS = TARGETS.find((t) => t.agency === "HHS");
 const CAPTURE_TS = "20261001120000";
@@ -86,6 +86,39 @@ describe("archive fallback", () => {
     const blocked = await fetchArchive(HHS.url, { fetchImpl: fakeFetch({ captureStatus: "403" }).fetch });
     expect(blocked.ok).toBe(false);
     expect(blocked.error).toContain("HTTP 403");
+  });
+
+  it("retries a 429 from the archive with Retry-After, then gives up with the count", async () => {
+    expect(retryDelayMs("7", 0)).toBe(7000);
+    expect(retryDelayMs("900", 0)).toBe(60000);
+    expect(retryDelayMs(null, 0)).toBe(15000);
+    expect(retryDelayMs(null, 1)).toBe(30000);
+    expect(retryDelayMs(null, 5)).toBe(60000);
+
+    const waits = [];
+    const sleep = async (ms) => { waits.push(ms); };
+    let n = 0;
+    const flaky = async (url) => {
+      n += 1;
+      if (url.startsWith("https://web.archive.org/web/") && n <= 3) return { ok: false, status: 429, url: "", headers: { get: (h) => (h === "retry-after" ? "2" : null) }, text: async () => "slow down" };
+      if (url.startsWith("https://archive.org/wayback/available?url=")) return { ok: true, status: 200, url: "", headers: { get: () => null }, text: async () => JSON.stringify({ archived_snapshots: { closest: { available: true, timestamp: CAPTURE_TS, status: "200" } } }) };
+      return { ok: true, status: 200, url: "", headers: { get: () => null }, text: async () => ROSTER_HTML };
+    };
+    const ok = await fetchArchive(HHS.url, { expect: HHS.expect, fetchImpl: flaky, retry: { sleep } });
+    expect(ok.ok).toBe(true);
+    expect(waits).toEqual([2000, 2000]);
+
+    const always429 = async (url) => (url.startsWith("https://archive.org/wayback/available?url=")
+      ? { ok: true, status: 200, url: "", headers: { get: () => null }, text: async () => JSON.stringify({ archived_snapshots: { closest: { available: true, timestamp: CAPTURE_TS, status: "200" } } }) }
+      : { ok: false, status: 429, url: "", headers: { get: () => null }, text: async () => "" });
+    const waits2 = [];
+    const bad = await fetchArchive(HHS.url, { expect: HHS.expect, fetchImpl: always429, retry: { sleep: async (ms) => { waits2.push(ms); } } });
+    expect(bad.ok).toBe(false);
+    expect(bad.error).toBe("archive capture HTTP 429 after 4 attempts");
+    expect(waits2).toEqual([15000, 30000, 60000]);
+
+    const notTransient = await fetchPageWithRetry("https://x.test/404", async () => ({ ok: false, status: 404, url: "", headers: { get: () => null }, text: async () => "" }), { sleep });
+    expect(notTransient.status).toBe(404);
   });
 
   it("never reads the archive for a moved page or for a target without the flag", async () => {
