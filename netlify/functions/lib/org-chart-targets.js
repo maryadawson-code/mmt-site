@@ -13,7 +13,11 @@
 // name under premium/org-charts/ (IHS has two source pages, one chart).
 // `fallback_urls` are tried in order when the primary is not 200; which one
 // answered is recorded, so a moved page shows up as "fallback used", not as
-// weeks of silent fetch failures.
+// weeks of silent fetch failures. `archive_fallback: true` lets the snapshot
+// Action (never the Lambda monitor) read the Internet Archive's latest
+// capture of the primary URL when every live attempt is a bot block;
+// `expect` is a RegExp an archive capture's text must match to count as
+// that page (a captured "Access Denied" page is not a roster).
 // ============================================================
 
 const TARGETS = [
@@ -41,12 +45,20 @@ const TARGETS = [
   },
   // Added 2026-08-25 with the 8 new org charts. Each URL is the official
   // roster page the chart cites, so a change here means the chart may be
-  // stale. hhs.gov and cdc.gov bot-block plain fetches (403); a non-200 is
-  // a fetch failure, never a change, so those rows degrade gracefully.
+  // stale. A 403 is a bot block, not a moved page (classifyAttempts tells
+  // the two apart); a non-200 is "not reached", never a change.
   {
     agency: "HHS",
     slug: "hhs",
+    // hhs.gov answered 403 to plain fetch and to headless Chromium on
+    // 2026-10-05 and 2026-10-12; the page itself has not moved. The
+    // snapshot Action falls back to the Internet Archive's most recent
+    // capture of this exact URL, recorded as `via: "archive"` with the
+    // capture date as `as_of`, and only when the capture carries the
+    // roster (`expect`). The live page stays "not reached" in that record.
     url: "https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html",
+    archive_fallback: true,
+    expect: /Head of Contracting Activity|Heads? of Contracting Activit/i,
     chart_url: "https://missionmeetstech.com/premium/org-charts/hhs",
   },
   {
@@ -103,6 +115,10 @@ const TARGETS = [
   {
     agency: "NIH",
     slug: "nih-nitaac",
+    // nih.gov answers 403 to every non-browser client; the snapshot Action
+    // reads it through headless Chromium (200 on 2026-10-05 and 2026-10-12).
+    // org-chart-monitor runs in a Lambda with no browser, so it reports
+    // this page as blocked, not as moved, and points at the Action's read.
     url: "https://www.nih.gov/about-nih/organization/nih-leadership",
     fallback_urls: ["https://www.nih.gov/about-nih/who-we-are/nih-director"],
     chart_url: "https://missionmeetstech.com/premium/org-charts/nih-nitaac",
@@ -155,6 +171,30 @@ function isBotBlock(status) {
   return [401, 403, 406, 429, 503].includes(Number(status));
 }
 
+/** A status that means "this page is gone from this URL". */
+function isGone(status) {
+  return [404, 410].includes(Number(status));
+}
+
+/**
+ * What a failed fetch trail means, so the monitor email and the snapshot
+ * report say the same thing about the same page:
+ *   blocked     every URL answered a bot-block status (403, 429, ...): the
+ *               page is where it was, this client is refused. Not a
+ *               target problem; a browser or an archive capture reads it.
+ *   moved       every URL answered 404/410 (bot blocks on the others do
+ *               not change that): fix the target.
+ *   unreachable timeouts, DNS, 5xx: retry next run.
+ * `attempts` is [{ url, status, error }] with status 0 for a thrown fetch.
+ */
+function classifyAttempts(attempts) {
+  const statuses = (Array.isArray(attempts) ? attempts : []).map((a) => Number(a && a.status) || 0);
+  if (!statuses.length) return "unreachable";
+  if (statuses.every(isBotBlock)) return "blocked";
+  if (statuses.some(isGone) && statuses.every((st) => isGone(st) || isBotBlock(st))) return "moved";
+  return "unreachable";
+}
+
 /**
  * A line worth reporting has at least two words. A roster change always
  * moves a name or a title line ("Acting Director", "Jane Doe, MD"); the
@@ -176,4 +216,4 @@ function lineDiff(prev, next) {
   return { added, removed };
 }
 
-module.exports = { TARGETS, USER_AGENT, pageText, lineDiff, significant, urlsFor, isBotBlock };
+module.exports = { TARGETS, USER_AGENT, pageText, lineDiff, significant, urlsFor, isBotBlock, isGone, classifyAttempts };

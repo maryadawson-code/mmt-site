@@ -21,6 +21,14 @@
 // A non-200 or a timeout leaves the previous snapshot in place and records
 // the failure in index.json: "not reached" is never written as "unchanged".
 //
+// A target with `archive_fallback: true` (HHS, which answers 403 to curl and
+// to headless Chromium alike) gets one more reader when every live attempt
+// was a bot block: the Internet Archive's most recent capture of the same
+// URL, fetched raw (the `id_` flag), accepted only when its text carries the
+// roster (`expect`) and is newer than the capture already on file. The record
+// says `via: "archive"` with the capture time as `as_of`, and keeps the live
+// trail as `live_error`: the page was read, the site was not reached.
+//
 // Usage: node scripts/snapshot-leadership-pages.js [--only slug,slug] [--dry-run]
 // Exit 0 in every case the run itself completed; changes are reported in
 // the files, not the exit code (the workflow decides what to open).
@@ -29,7 +37,7 @@
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
-const { TARGETS, USER_AGENT, pageText, lineDiff, urlsFor, isBotBlock } = require("../netlify/functions/lib/org-chart-targets");
+const { TARGETS, USER_AGENT, pageText, lineDiff, urlsFor, isBotBlock, classifyAttempts } = require("../netlify/functions/lib/org-chart-targets");
 
 const ROOT = path.resolve(__dirname, "..");
 const OUT_DIR = path.join(ROOT, "data", "leadership-snapshots");
@@ -54,11 +62,11 @@ function readIndex() {
   }
 }
 
-async function fetchPage(url) {
+async function fetchPage(url, fetchImpl = fetch) {
   const ac = new AbortController();
   const timer = setTimeout(() => ac.abort(), TIMEOUT_MS);
   try {
-    const res = await fetch(url, {
+    const res = await fetchImpl(url, {
       signal: ac.signal,
       redirect: "follow",
       headers: {
@@ -116,23 +124,76 @@ async function closeBrowser() {
   }
 }
 
+const ARCHIVE_AVAILABLE = "https://archive.org/wayback/available?url=";
+const ARCHIVE_RAW = "https://web.archive.org/web/";
+
+/** Wayback "YYYYMMDDhhmmss" to ISO, or null when it is not that shape. */
+function archiveTimestampToIso(ts) {
+  const m = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/.exec(String(ts || ""));
+  if (!m) return null;
+  const iso = `${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6]}Z`;
+  return Number.isNaN(Date.parse(iso)) ? null : iso;
+}
+
+/**
+ * The Internet Archive's most recent capture of `url`, raw. Succeeds only
+ * when the archive says the capture answered 200, the capture is newer than
+ * `newerThan` (the capture already on file, so a week never regresses to an
+ * older copy), and its visible text matches `expect` (a capture of an
+ * "Access Denied" page is not the roster). Every refusal names its reason.
+ */
+async function fetchArchive(url, { expect, newerThan, fetchImpl = fetch } = {}) {
+  const avail = await fetchPage(ARCHIVE_AVAILABLE + encodeURIComponent(url), fetchImpl);
+  if (!avail.ok) return { status: 0, ok: false, error: `archive lookup ${avail.error || `HTTP ${avail.status}`}` };
+  let closest;
+  try {
+    closest = JSON.parse(avail.body).archived_snapshots.closest;
+  } catch {
+    return { status: 0, ok: false, error: "archive lookup returned no JSON" };
+  }
+  if (!closest || !closest.available) return { status: 0, ok: false, error: "archive has no capture" };
+  if (String(closest.status) !== "200") return { status: 0, ok: false, error: `archive's latest capture answered HTTP ${closest.status}` };
+  const as_of = archiveTimestampToIso(closest.timestamp);
+  if (!as_of) return { status: 0, ok: false, error: `archive capture has an unreadable timestamp (${closest.timestamp})` };
+  if (newerThan && as_of <= newerThan) return { status: 0, ok: false, stale: true, as_of, error: `archive has no capture newer than ${newerThan.slice(0, 10)}` };
+  const archive_url = `${ARCHIVE_RAW}${closest.timestamp}id_/${url}`;
+  const r = await fetchPage(archive_url, fetchImpl);
+  if (!r.ok) return { status: r.status, ok: false, error: `archive capture ${r.error || `HTTP ${r.status}`}` };
+  if (expect && !expect.test(pageText(r.body))) return { status: r.status, ok: false, error: `archive capture of ${as_of.slice(0, 10)} does not carry the roster` };
+  return { status: r.status, ok: true, body: r.body, final_url: archive_url, via: "archive", as_of, archive_url };
+}
+
+function describeAttempts(attempts) {
+  return attempts.map((a) => `${a.url} -> ${a.error || `HTTP ${a.status}`}${a.via === "browser" ? " (browser)" : a.via === "archive" ? " (archive)" : ""}`).join("; ");
+}
+
 /**
  * Primary URL first, then each fallback. A bot-block status on a URL gets
- * one browser attempt before moving on. Returns the first 2xx plus the
- * trail of attempts so index.json can say which URL answered.
+ * one browser attempt before moving on. When every live attempt was a bot
+ * block and the target allows it, the Internet Archive is the last reader.
+ * Returns the first 2xx plus the trail of attempts so index.json can say
+ * which URL answered.
  */
-async function fetchTarget(t) {
+async function fetchTarget(t, { fetchImpl = fetch, browser = fetchWithBrowser, prevAsOf = null } = {}) {
   const attempts = [];
   for (const url of urlsFor(t)) {
-    let r = await fetchPage(url);
+    let r = await fetchPage(url, fetchImpl);
     attempts.push({ url, status: r.status, error: r.error, via: r.via });
     if (!r.ok && isBotBlock(r.status)) {
-      r = await fetchWithBrowser(url);
+      r = await browser(url);
       attempts.push({ url, status: r.status, error: r.error, via: "browser" });
     }
-    if (r.ok) return { ...r, url, attempts };
+    if (r.ok) return { ...r, url, attempts, kind: "live" };
   }
-  return { ok: false, attempts, error: attempts.map((a) => `${a.url} -> ${a.error || `HTTP ${a.status}`}${a.via === "browser" ? " (browser)" : ""}`).join("; ") };
+  const kind = classifyAttempts(attempts);
+  const live_error = describeAttempts(attempts);
+  if (kind === "blocked" && t.archive_fallback) {
+    const a = await fetchArchive(t.url, { expect: t.expect, newerThan: prevAsOf, fetchImpl });
+    attempts.push({ url: t.url, status: a.status, error: a.error, via: "archive" });
+    if (a.ok) return { ...a, url: t.url, attempts, kind: "archive", live_error };
+    if (a.stale) return { ok: false, kind: "archive_stale", attempts, live_error, as_of: a.as_of, error: describeAttempts(attempts) };
+  }
+  return { ok: false, kind, attempts, live_error, error: describeAttempts(attempts) };
 }
 
 function clip(lines, max = 60) {
@@ -155,7 +216,9 @@ async function main() {
     const prevText = fs.existsSync(txtPath) ? fs.readFileSync(txtPath, "utf8") : "";
     const prevMeta = index.pages[t.agency] || {};
 
-    const r = await fetchTarget(t);
+    // A capture older than what is on file (an earlier capture, or a live
+    // read) is not news; the archive reader skips it and says so.
+    const r = await fetchTarget(t, { prevAsOf: (prevMeta.via === "archive" ? prevMeta.as_of : prevMeta.retrieved_at) || null });
     if (!r.ok) {
       failed++;
       index.pages[t.agency] = {
@@ -164,11 +227,25 @@ async function main() {
         url: t.url,
         last_attempt_at: now,
         last_error: r.error,
+        last_failure_kind: r.kind,
       };
-      report.push(`### ${t.agency}\n\nNot reached. ${r.error}. Previous snapshot kept${prevMeta.retrieved_at ? ` (retrieved ${prevMeta.retrieved_at})` : ""}.`);
-      console.warn(`${t.agency}: not reached: ${r.error}`);
+      const kept = prevMeta.retrieved_at
+        ? ` Previous snapshot kept (${prevMeta.via === "archive" ? `Internet Archive capture of ${String(prevMeta.as_of || "").slice(0, 10)}, ` : ""}retrieved ${prevMeta.retrieved_at}).`
+        : " No snapshot on file.";
+      const meaning =
+        r.kind === "moved"
+          ? " Every URL answered 404: the page moved. Fix the target in netlify/functions/lib/org-chart-targets.js."
+          : r.kind === "blocked"
+            ? " Every URL refused this client (bot block); the page has not moved."
+            : r.kind === "archive_stale"
+              ? " The live page refused this client; the Internet Archive has nothing newer than the capture on file."
+              : "";
+      report.push(`### ${t.agency}\n\nNot reached. ${r.error}.${meaning}${kept}`);
+      console.warn(`${t.agency}: not reached (${r.kind}): ${r.error}`);
       continue;
     }
+    const fromArchive = r.via === "archive";
+    const sourceLabel = fromArchive ? `Internet Archive capture of ${r.as_of.slice(0, 10)} (live page not reached: ${r.live_error})` : null;
 
     const text = pageText(r.body);
     const hash = sha256(text);
@@ -183,7 +260,10 @@ async function main() {
       url: t.url,
       fetched_url: r.url !== t.url ? r.url : undefined,
       final_url: r.final_url && r.final_url !== r.url ? r.final_url : undefined,
-      via: r.via === "browser" ? "browser" : undefined,
+      via: r.via === "browser" || r.via === "archive" ? r.via : undefined,
+      as_of: fromArchive ? r.as_of : undefined,
+      archive_url: fromArchive ? r.archive_url : undefined,
+      live_error: fromArchive ? r.live_error : undefined,
       retrieved_at: now,
       http_status: r.status,
       sha256: hash,
@@ -191,6 +271,7 @@ async function main() {
       last_changed_at: isFirst ? now : isChanged ? now : prevMeta.last_changed_at || null,
       last_diff: isChanged ? { added, removed } : prevMeta.last_diff || null,
       last_error: null,
+      last_failure_kind: undefined,
     };
 
     if (!dryRun) {
@@ -198,21 +279,22 @@ async function main() {
       fs.writeFileSync(txtPath, text + "\n");
     }
 
+    const archiveNote = fromArchive ? `\n\nText is the ${sourceLabel}. Cite the capture date, not today, when a chart edit rests on it.` : "";
     if (isFirst) {
       first += 1;
-      report.push(`### ${t.agency}\n\nFirst snapshot (${index.pages[t.agency].lines} lines). Nothing to compare yet.`);
-      console.log(`${t.agency}: first snapshot, ${index.pages[t.agency].lines} lines`);
+      report.push(`### ${t.agency}\n\nFirst snapshot (${index.pages[t.agency].lines} lines). Nothing to compare yet.${archiveNote}`);
+      console.log(`${t.agency}: first snapshot, ${index.pages[t.agency].lines} lines${fromArchive ? ` (archive capture ${r.as_of})` : ""}`);
     } else if (isChanged) {
       changed++;
       report.push(
-        `### ${t.agency} (changed)\n\nSource: ${t.url}\nChart: ${t.chart_url}\n\n` +
+        `### ${t.agency} (changed)\n\nSource: ${t.url}${fromArchive ? ` via ${r.archive_url}` : ""}\nChart: ${t.chart_url}\n\n` +
           `**Added (${added.length})**\n\n${clip(added).map((l) => `+ ${l}`).join("\n") || "(none)"}\n\n` +
-          `**Removed (${removed.length})**\n\n${clip(removed).map((l) => `- ${l}`).join("\n") || "(none)"}`
+          `**Removed (${removed.length})**\n\n${clip(removed).map((l) => `- ${l}`).join("\n") || "(none)"}${archiveNote}`
       );
-      console.log(`${t.agency}: CHANGED (+${added.length} / -${removed.length} lines)`);
+      console.log(`${t.agency}: CHANGED (+${added.length} / -${removed.length} lines)${fromArchive ? ` (archive capture ${r.as_of})` : ""}`);
     } else {
-      report.push(`### ${t.agency}\n\nUnchanged since ${prevMeta.last_changed_at || prevMeta.retrieved_at || "the previous snapshot"}.`);
-      console.log(`${t.agency}: unchanged`);
+      report.push(`### ${t.agency}\n\n${fromArchive ? `Live page not reached; the ${sourceLabel} is unchanged` : "Unchanged"} since ${prevMeta.last_changed_at || prevMeta.retrieved_at || "the previous snapshot"}.`);
+      console.log(`${t.agency}: unchanged${fromArchive ? " (archive)" : ""}`);
     }
   }
 
@@ -248,7 +330,11 @@ async function main() {
   console.log(`done: ${changed} changed, ${failed} not reached`);
 }
 
-main().catch((err) => {
-  console.error("snapshot-leadership-pages failed:", err);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((err) => {
+    console.error("snapshot-leadership-pages failed:", err);
+    process.exit(1);
+  });
+}
+
+module.exports = { fetchTarget, fetchArchive, archiveTimestampToIso, describeAttempts };

@@ -10,7 +10,10 @@
 //   - an email to Mary listing those lines per agency and the pages that
 //     could not be reached (a moved page was invisible before 2026-10-05:
 //     the health.mil DHA page had 404ed for weeks and counted as "fetch
-//     failed", never as news).
+//     failed", never as news). Since 2026-10-19 the email tells a bot
+//     block (403: hhs.gov, nih.gov; the target is right, this Lambda has
+//     no browser) from a moved page (404 everywhere: fix the target), and
+//     for a blocked page says when the snapshot Action last read it.
 // The committed text snapshot and the chart update run from GitHub
 // (.github/workflows/leadership-roster-snapshot.yml); this function is the
 // Netlify-side alarm, and the two agree because they share the reducer.
@@ -20,11 +23,13 @@
 // ============================================================
 
 const crypto = require("crypto");
+const fs = require("fs");
+const path = require("path");
 const { createClient } = require("@supabase/supabase-js");
 const { sendEmail } = require("./lib/send-email");
 const { claimOnce, finalizeClaim } = require("./lib/cron-claim");
 const { cacheGet, cacheSet, connectEvent } = require("./lib/fetch-cache");
-const { TARGETS, USER_AGENT, pageText, lineDiff, urlsFor } = require("./lib/org-chart-targets");
+const { TARGETS, USER_AGENT, pageText, lineDiff, urlsFor, classifyAttempts } = require("./lib/org-chart-targets");
 
 const NOTIFY_TO = "mary@missionmeetstech.com";
 const SOURCE = "org-chart-monitor";
@@ -32,6 +37,12 @@ const RUN_EVENT = "org_chart_monitor_run";
 const TEXT_TTL_MS = 400 * 24 * 60 * 60 * 1000;
 const MAX_DIFF_LINES = 80;
 const FETCH_TIMEOUT_MS = 20000;
+const TARGETS_FILE = "netlify/functions/lib/org-chart-targets.js";
+// What the Monday snapshot Action last recorded per page (committed to the
+// repo, bundled through netlify.toml included_files). This Lambda has no
+// browser and no archive path, so for a page that refuses scripted clients
+// the Action's record is the only true "last read" there is.
+const SNAPSHOT_INDEX_REL = path.join("data", "leadership-snapshots", "index.json");
 
 function sha256(s) {
   return crypto.createHash("sha256").update(s).digest("hex");
@@ -67,8 +78,58 @@ async function fetchTarget(target, fetchImpl) {
     attempts.push({ url, status: r.status, error: r.error });
     if (r.ok) return { ok: true, url, body: r.body, attempts };
   }
-  return { ok: false, attempts, error: attempts.map((a) => `${a.url} -> ${a.error}`).join("; ") };
+  return { ok: false, attempts, kind: classifyAttempts(attempts), error: attempts.map((a) => `${a.url} -> ${a.error}`).join("; ") };
 }
+
+/** The committed snapshot index, or null when the bundle does not carry it. */
+function readSnapshotIndex() {
+  const roots = [process.env.LAMBDA_TASK_ROOT || "", path.join(__dirname, "..", ".."), process.cwd(), "/var/task"];
+  for (const root of roots) {
+    if (!root) continue;
+    const file = path.join(root, SNAPSHOT_INDEX_REL);
+    try {
+      if (!fs.existsSync(file)) continue;
+      const parsed = JSON.parse(fs.readFileSync(file, "utf8"));
+      return parsed && parsed.pages ? parsed : null;
+    } catch (err) {
+      console.warn(`org-chart-monitor: snapshot index unreadable at ${file}: ${err.message}`);
+    }
+  }
+  return null;
+}
+
+/**
+ * One sentence on what the snapshot Action last did with a page this
+ * function could not read. Dates come from the committed index; "never"
+ * is said as never.
+ */
+function snapshotNote(index, agency) {
+  const rec = index && index.pages ? index.pages[agency] : null;
+  if (!rec) return "The leadership-roster-snapshot Action has no record of this page.";
+  if (rec.retrieved_at && rec.via === "archive") {
+    return `The snapshot Action last read it from the Internet Archive capture of ${String(rec.as_of || "").slice(0, 10) || "an undated capture"} (retrieved ${rec.retrieved_at.slice(0, 10)}); the live page was not reached then either.`;
+  }
+  if (rec.retrieved_at) {
+    return `The snapshot Action last read it on ${rec.retrieved_at.slice(0, 10)}${rec.via === "browser" ? " through headless Chromium" : ""}.`;
+  }
+  const browserToo = /\(browser\)/.test(String(rec.last_error || "")) ? ", headless Chromium refused too" : "";
+  return `The snapshot Action has not reached it either (last attempt ${String(rec.last_attempt_at || "").slice(0, 10) || "undated"}${browserToo}).`;
+}
+
+const FAILURE_KINDS = {
+  blocked: {
+    label: "Refuses scripted clients",
+    note: `A 403 means the host refuses this client, not that the page moved; the target is correct. This function runs with no browser. The Monday leadership-roster-snapshot Action is the reader for these pages.`,
+  },
+  moved: {
+    label: "Moved",
+    note: `A 404 on every URL means the page moved. Fix the target in ${TARGETS_FILE}.`,
+  },
+  unreachable: {
+    label: "Not reached this run",
+    note: "A timeout or a server error. The page is checked again next Monday; a page that is not reached is not \"unchanged\".",
+  },
+};
 
 /**
  * Pure change decision. `prevText` is last week's reduced text when the
@@ -130,8 +191,19 @@ function buildEmailHtml({ changes, failures, checkedAt }) {
   const failureRows = failures.length
     ? `<div style="margin-top:24px;">
       <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#5C6B7A;margin-bottom:6px;">Not reached</div>
-      ${failures.map((f) => `<div style="font-size:12px;color:#5C6B7A;padding:4px 0;"><strong style="color:#0A192F;">${esc(f.agency)}</strong>: ${esc(f.error)}</div>`).join("")}
-      <div style="font-size:12px;color:#5C6B7A;margin-top:6px;">A page that is not reached is not "unchanged". A 404 on every URL means the page moved; fix the target in <code>lib/org-chart-targets.js</code>.</div>
+      <div style="font-size:12px;color:#5C6B7A;margin-bottom:6px;">A page that is not reached is not "unchanged".</div>
+      ${["moved", "blocked", "unreachable"]
+        .map((kind) => {
+          const rows = failures.filter((f) => (f.kind || "unreachable") === kind);
+          if (!rows.length) return "";
+          const meta = FAILURE_KINDS[kind];
+          return `<div style="margin-top:10px;">
+        <div style="font-size:12px;font-weight:700;color:${kind === "moved" ? "#E63946" : "#0A192F"};">${esc(meta.label)}</div>
+        ${rows.map((f) => `<div style="font-size:12px;color:#5C6B7A;padding:4px 0;"><strong style="color:#0A192F;">${esc(f.agency)}</strong>: ${esc(f.error)}${f.note ? ` <span style="color:#0A192F;">${esc(f.note)}</span>` : ""}</div>`).join("")}
+        <div style="font-size:12px;color:#5C6B7A;margin-top:4px;">${esc(meta.note)}</div>
+      </div>`;
+        })
+        .join("")}
     </div>`
     : "";
   return `<!DOCTYPE html>
@@ -152,7 +224,7 @@ function buildEmailHtml({ changes, failures, checkedAt }) {
 </body></html>`;
 }
 
-async function runMonitor({ supabase, fetchImpl = fetch, now = new Date(), mail = sendEmail, blobs = { get: cacheGet, set: cacheSet } }) {
+async function runMonitor({ supabase, fetchImpl = fetch, now = new Date(), mail = sendEmail, blobs = { get: cacheGet, set: cacheSet }, snapshotIndex = readSnapshotIndex() }) {
   const checkedAt = now.toISOString();
   const results = [];
   const changes = [];
@@ -161,9 +233,10 @@ async function runMonitor({ supabase, fetchImpl = fetch, now = new Date(), mail 
   for (const t of TARGETS) {
     const r = await fetchTarget(t, fetchImpl);
     if (!r.ok) {
-      failures.push({ agency: t.agency, error: r.error });
-      results.push({ agency: t.agency, ok: false, error: r.error });
-      console.warn(`org-chart-monitor: ${t.agency} not reached: ${r.error}`);
+      const note = r.kind === "blocked" ? snapshotNote(snapshotIndex, t.agency) : null;
+      failures.push({ agency: t.agency, error: r.error, kind: r.kind, note });
+      results.push({ agency: t.agency, ok: false, kind: r.kind, error: r.error });
+      console.warn(`org-chart-monitor: ${t.agency} ${r.kind}: ${r.error}${note ? ` (${note})` : ""}`);
       continue;
     }
     const text = pageText(r.body);
@@ -202,19 +275,27 @@ async function runMonitor({ supabase, fetchImpl = fetch, now = new Date(), mail 
     }
   }
 
+  // A moved page is a to-do until the target is fixed, so it mails on its
+  // own; a blocked or timed-out page rides along with the week's changes
+  // (the Action's committed record is the alarm for those).
+  const moved = failures.filter((f) => f.kind === "moved");
   let emailed = false;
-  if (changes.length > 0) {
+  if (changes.length > 0 || moved.length > 0) {
+    const subject =
+      changes.length > 0
+        ? `[MMT Watch] ${changes.length} agency leadership page${changes.length === 1 ? "" : "s"} changed this week`
+        : `[MMT Watch] ${moved.length} agency leadership page${moved.length === 1 ? "" : "s"} moved; fix the target`;
     const sent = await mail({
       to: NOTIFY_TO,
       from: "Mission Meets Tech <noreply@missionmeetstech.com>",
-      subject: `[MMT Watch] ${changes.length} agency leadership page${changes.length === 1 ? "" : "s"} changed this week`,
+      subject,
       html: buildEmailHtml({ changes, failures, checkedAt }),
     });
     emailed = Boolean(sent && sent.success);
     if (!emailed) console.warn("org-chart-monitor: notification email failed:", sent && sent.error);
   }
 
-  return { checkedAt, results, changes_detected: changes.length, not_reached: failures.length, emailed };
+  return { checkedAt, results, changes_detected: changes.length, not_reached: failures.length, moved: moved.length, emailed };
 }
 
 exports.handler = async (event) => {
@@ -246,4 +327,4 @@ exports.handler = async (event) => {
   }
 };
 
-exports._internal = { decide, buildEmailHtml, runMonitor, fetchTarget };
+exports._internal = { decide, buildEmailHtml, runMonitor, fetchTarget, snapshotNote, readSnapshotIndex };

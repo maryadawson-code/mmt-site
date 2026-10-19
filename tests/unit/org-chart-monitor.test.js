@@ -141,6 +141,70 @@ describe("org-chart-monitor runMonitor()", () => {
     expect(sent[0].html).toContain("HTTP 403");
   });
 
+  it("tells a bot block from a moved page and says when the snapshot Action last read the blocked one", async () => {
+    const supabase = fakeSupabase();
+    const blobs = fakeBlobs();
+    for (const t of TARGETS) blobs.data[`org-chart-text/${t.agency}`] = "Director\nOld Person";
+    const sent = [];
+    const fetchImpl = async (url) => {
+      if (url.includes("hhs.gov") || url.includes("nih.gov")) return { ok: false, status: 403, text: async () => "" };
+      if (url.includes("dha.mil") || url.includes("health.mil")) return { ok: false, status: 404, text: async () => "" };
+      if (url.includes("cdc.gov")) return { ok: true, status: 200, text: async () => page(["Director", "Changed Person"]) };
+      return { ok: true, status: 200, text: async () => page(["Director", "Old Person"]) };
+    };
+    const snapshotIndex = {
+      pages: {
+        NIH: { retrieved_at: "2026-10-12T19:54:23.903Z", via: "browser", http_status: 200 },
+        HHS: { last_attempt_at: "2026-10-12T19:54:23.903Z", last_error: "https://www.hhs.gov/x -> HTTP 403 (browser)" },
+      },
+    };
+    const out = await _internal.runMonitor({ supabase, fetchImpl, blobs, snapshotIndex, mail: async (m) => { sent.push(m); return { success: true }; } });
+    expect(out.not_reached).toBe(3);
+    expect(out.moved).toBe(1);
+    expect(out.results.find((r) => r.agency === "HHS").kind).toBe("blocked");
+    expect(out.results.find((r) => r.agency === "DHA").kind).toBe("moved");
+    const html = sent[0].html;
+    expect(html).toContain("Refuses scripted clients");
+    expect(html).toContain("The snapshot Action last read it on 2026-10-12 through headless Chromium.");
+    expect(html).toContain("The snapshot Action has not reached it either (last attempt 2026-10-12, headless Chromium refused too).");
+    expect(html).toContain("Moved");
+    expect(html).toContain("Fix the target in netlify/functions/lib/org-chart-targets.js");
+    // the 403 rows never carry the "fix the target" instruction
+    const blockedSection = html.slice(html.indexOf("Refuses scripted clients"), html.indexOf("Not reached this run") > 0 ? html.indexOf("Not reached this run") : undefined);
+    expect(blockedSection).not.toContain("Fix the target");
+  });
+
+  it("mails on a moved page even when nothing changed, and stays quiet for a bot block alone", async () => {
+    const quiet = [];
+    const supabase = fakeSupabase();
+    const blobs = fakeBlobs();
+    for (const t of TARGETS) blobs.data[`org-chart-text/${t.agency}`] = "Director\nOld Person";
+    const blockedOnly = async (url) => (url.includes("hhs.gov") ? { ok: false, status: 403, text: async () => "" } : { ok: true, status: 200, text: async () => page(["Director", "Old Person"]) });
+    const a = await _internal.runMonitor({ supabase, fetchImpl: blockedOnly, blobs, snapshotIndex: null, mail: async (m) => { quiet.push(m); return { success: true }; } });
+    expect(a.changes_detected).toBe(0);
+    expect(a.emailed).toBe(false);
+    expect(quiet.length).toBe(0);
+
+    const loud = [];
+    const movedOnly = async (url) => (url.includes("va.gov") ? { ok: false, status: 404, text: async () => "" } : { ok: true, status: 200, text: async () => page(["Director", "Old Person"]) });
+    const b = await _internal.runMonitor({ supabase: fakeSupabase(), fetchImpl: movedOnly, blobs: fakeBlobs(Object.fromEntries(TARGETS.map((t) => [`org-chart-text/${t.agency}`, "Director\nOld Person"]))), snapshotIndex: null, mail: async (m) => { loud.push(m); return { success: true }; } });
+    expect(b.changes_detected).toBe(0);
+    expect(b.moved).toBe(1);
+    expect(b.emailed).toBe(true);
+    expect(loud[0].subject).toBe("[MMT Watch] 1 agency leadership page moved; fix the target");
+    expect(loud[0].html).toContain("VA");
+  });
+
+  it("reads the committed snapshot index from the repo", () => {
+    const idx = _internal.readSnapshotIndex();
+    expect(idx && idx.pages && idx.pages.NIH).toBeTruthy();
+    expect(_internal.snapshotNote(idx, "NIH")).toMatch(/^The snapshot Action last read it on \d{4}-\d{2}-\d{2} through headless Chromium\.$/);
+    expect(_internal.snapshotNote({ pages: { X: { via: "archive", as_of: "2026-10-01T12:00:00Z", retrieved_at: "2026-10-19T10:30:00Z" } } }, "X")).toBe(
+      "The snapshot Action last read it from the Internet Archive capture of 2026-10-01 (retrieved 2026-10-19); the live page was not reached then either."
+    );
+    expect(_internal.snapshotNote(null, "HHS")).toBe("The leadership-roster-snapshot Action has no record of this page.");
+  });
+
   it("reports a failed send as not emailed", async () => {
     const supabase = fakeSupabase();
     const blobs = fakeBlobs();
