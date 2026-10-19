@@ -27,6 +27,7 @@
     "data/idiq-vehicles.json",
     "data/reference/**",
     "data/orgcharts/**",
+    "data/leadership-snapshots/index.json",
     "data/cso-aois.json",
     "data/forecast-pipeline.json",
     "content/forecast-delta/**",

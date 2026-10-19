@@ -42,7 +42,7 @@ OneGov
 Requisition programs
 Shared services
 Toggle submenu
-Payroll services
+HR and payroll services
 Support services for CABs
 Featured Topics
 Auctions
@@ -175,7 +175,7 @@ MAS information technology
 USAccess
 Government initiatives
 Toggle submenu
-Artificial Intelligence
+Super Intelligence
 Cybersecurity
 Emerging citizen technology
 FedRAMP
@@ -255,7 +255,7 @@ OneGov
 Requisition programs
 Shared services
 expand menu
-Payroll services
+HR and payroll services
 Support services for CABs
 Sell to government
 expand menu
@@ -356,7 +356,7 @@ MAS information technology
 USAccess
 Government initiatives
 expand menu
-Artificial Intelligence
+Super Intelligence
 Cybersecurity
 Emerging citizen technology
 FedRAMP
@@ -465,42 +465,42 @@ Top
 Glossary
 Home
 Resources for …
-Americans with Disabilities
-Citizens and Consumers
-Federal Employees
-GSA Employees
+Americans with disabilities
+Citizens and consumers
+Federal employees
+GSA employees
 Native American affairs
-Presidential & Congressional Commissions, Boards or Small Agencies
-Small Business
-Governmentwide Initiatives
+Presidential or congressional commissions and boards
+Small business
+Governmentwide initiatives
 Centers of Excellence
 Digital experience
 Emergency response
-Federal Cybersecurity
-ID, Credentials, and Access Management
-Information Quality
-Open Data
+Federal cybersecurity
+ID, credential, and access management
+Information quality
+Open GSA
 Technology Modernization Fund
 Contact us
 Report a website issue
 Organization
-Leadership Directory
-Staff Directory
+Leadership directory
+Staff directory
 References
 Annual reports
-Budget and Performance
-Orders & Directives
+Budget and performance
+Directives
 Forms
-Website Information
-A-Z Index
+Website information
+A-Z index
 Sitemap
-Also of Interest
+Also of interest
 Data.gov
 Whitehouse.gov
 Tools
+Contracting forecast tool
 eBuy
 eLibrary
-Contracting forecast tool
 GSA Advantage
 GSA Auctions
 Facebook
