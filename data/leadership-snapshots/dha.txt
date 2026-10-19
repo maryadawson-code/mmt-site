@@ -6,16 +6,14 @@ A .mil website belongs to an official U.S. Department of Defense organization.
 Secure .mil websites use HTTPS
 A lock (
 ) or https:// means you've safely connected to the .mil website. Share sensitive information only on official, secure websites.
-MHS GENESIS Patient Portal login has changed.
-The MHS GENESIS Patient Portal now uses myAuth for secure sign-in. To update permissions, sign in or create an account at myAuth and select Manage Relationships.
+DHA.mil Planned Outage: Oct. 19, 2026
+From about 6-7 p.m. ET, DHA.mil will be unavailable while we undergo routine maintenance.
 Search
 About DHA
 About Us
-DHA Operational Framework
 Meet Our Leaders
-Our History
-Our Organization
 Defense Health Networks
+Our History
 Employee Hub
 Careers
 DHA Publications
@@ -25,6 +23,9 @@ Events
 We Are a Combat Support Agency
 We deliver joint warfighting capabilities—medical logistics, IT infrastructure, trauma systems, research, pharmacy, and blood support—that directly affect survivability and lethality. Our integrated system ensures every warrior wearing the cloth of our Nation is medically ready to answer the call at a moment’s notice.
 How We Support Warfighters
+DHA Operational Framework
+We operate the world&rsquo;s premier military health enterprise&mdash;unique in mission, purpose, and obligation to the nation.
+Our Operational Framework
 FindDHA
 FindDHA - Interactive Map
 We're privileged to manage a global health system to generate and sustain warfighter readiness. From the Continental U.S., to Belgium, Japan, and points in between, our support system truly covers the world.
@@ -143,18 +144,14 @@ Vendor Innovation Form
 Become a TRICARE Provider
 Being a TRICARE provider means that you're treating America's heroes &ndash; the people making sacrifices to keep America strong and safe.
 Provider Information
-TRICARE
-TRICARE.mil
-We honor the promise made to every beneficiary&mdash;past, present, and future&mdash;to provide timely access to high-quality care.
-Go to TRICARE.mil
 Organization Structure
 We serve those who serve our nation all over the world. Our 130,000+ staff members operate more than 700 facilities worldwide and support the infrastructure to allow them to be successful. DHA is led by both military and civilian experts.
 Our Senior Leaders
-Vice Adm. Darin K. Via
-DIRECTOR
-View Bio
 Force Master Chief PatrickPaul C. Mangaran
 COMMAND SENIOR ENLISTED LEADER
+View Bio
+Vice Adm. Darin K. Via
+DIRECTOR
 View Bio
 Dr. David J. Smith
 DEPUTY DIRECTOR
@@ -195,3 +192,4 @@ Cancel
 Continue
 Go
 Feedback
+Go to
