@@ -584,7 +584,9 @@
       "posts": "askmmt-001..askmmt-012",
       "source": "Ask MMT Campaign Package 2026-09-10, section 8",
       "added": "2026-09-10",
-      "note": "Posts carrying [BRACKET] placeholders ship approved=false; the autopilot emails Mary on their day instead of posting. first_comment is emailed with every publish alert; the autopilot never posts comments (publish-only rule)."
+      "note": "Posts carrying [BRACKET] placeholders ship approved=false; the autopilot emails Mary on their day instead of posting. first_comment is emailed with every publish alert; the autopilot never posts comments (publish-only rule).",
+      "paused": "2026-10-20",
+      "paused_note": "Paused on Mary's instruction 2026-10-20: the autopilot neither posts nor alerts on this campaign's remaining dates. Remove `paused` to resume."
     }
   }
 }
