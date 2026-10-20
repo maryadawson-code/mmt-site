@@ -8,8 +8,8 @@ A lock
 ( )
 or https:// means you’ve safely connected to the .gov website. Share sensitive information only on official, secure websites.
 NIH Websites Are Changing
-NIH is moving the launch of its new website to the fall to ensure the best possible experience for everyone who relies on our websites for health information, research, funding opportunities, and other resources.
 Get the Latest Updates and FAQs
+Per Executive Order 14434 , federal agencies are now using "Super Intelligence" (SI) in place of "Artificial Intelligence" (AI). You may see both terms across NIH content during this transition.
 Menu
 Health Information
 MedlinePlus Health Info

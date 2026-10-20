@@ -43,6 +43,7 @@ page moved; fix the target in lib/org-chart-targets.js.
 | --- | --- |
 | 11:47 UTC, first push | 7 changed, 1 not reached. NIH 200 through Chromium. HHS: live 403, Chromium 403, archive availability answered, raw capture fetch answered HTTP 429 from web.archive.org on the first request. |
 | 11:51 UTC, second push (retry on 429) | 0 changed, 0 not reached, HHS first snapshot: 260 lines from the Internet Archive capture of 2026-10-13 10:52 UTC, `via: "archive"`, live page still 403 to both clients. The HCA roster in that capture matches the chart's Aug 25 table line for line (Bryant still Acting at ARPA-H, Godfrey and Bergevin Acting, the rest permanent). No HHS chart edit needed; the ARPA-H HCA node stays as it is, now with an Oct 13 source behind it. |
+| 2026-10-20 13:52 UTC, push from the FDA-profile branch | 3 changed (DHA outage banner, an ONC event date, an NIH website banner; no roster line), 1 not reached: HHS live 403, Chromium 403, archive raw fetch 429 on all 4 attempts (15s, 30s, 60s backoff). The Oct 13 capture stays on file and the report says so. web.archive.org rate-limits GitHub-hosted runners; one weekly success is enough, a miss keeps the dated capture. |
 
 ## What shipped
 
