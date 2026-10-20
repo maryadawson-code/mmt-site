@@ -201,11 +201,11 @@ const FALLBACK_SUGGESTIONS = {
   DHA: [
     { label: "MHS GENESIS",          query: "MHS GENESIS",          reason: "DoD's electronic health record platform — active signal across all 5 layers" },
     { label: "DHMSM",                query: "DHMSM",                reason: "Defense Healthcare Management Systems Modernization" },
-    { label: "DHA Data Governance",  query: "DHA data governance",  reason: "Active solicitation HT001126RE011" },
+    { label: "DHA Data Governance",  query: "DHA data governance",  reason: "Awarded Feb 2026 (HT001126CE015); task-order and follow-on watch" },
     { label: "TRICARE",              query: "TRICARE modernization", reason: "Persistent active signal — purchased care + benefits" },
   ],
   VA: [
-    { label: "VA EHRM",              query: "VA EHRM",              reason: "Oracle Health rollout, 13 sites in 2026" },
+    { label: "VA EHRM",              query: "VA EHRM",              reason: "Oracle Health rollout, 17 sites live as of Sep 2026" },
     { label: "CCN Next Gen",         query: "CCN Next Gen",         reason: "Community care network recompete, $700B medical IDIQ" },
     { label: "VA OIT Franchise Fund",query: "VA OIT Franchise Fund",reason: "Recurring infrastructure recompete window" },
     { label: "VA Enterprise Imaging",query: "VA Enterprise Imaging",reason: "EIS RFI — largest federal imaging procurement in history" },

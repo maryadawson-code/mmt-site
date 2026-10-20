@@ -48,6 +48,7 @@ const EXPECTED_SLUGS = [
   "t4ng2-va-it-services", "peo-dhms-cso-competitive-solutions-opening",
   "va-health-connect-iht-2-0", "enterprise-intelligence-data-solutions-eids",
   "dha-enterprise-wide-cso-ht003826sc005",
+  "dha-paratus-cso-ht003826sc004",
   "dha-enterprise-generative-ai", "cms-rural-health-transformation",
   "ihs-health-it-modernization-rpms-replacement",
   "mhs-genesis-theater-jomis-operational-medicine-systems",

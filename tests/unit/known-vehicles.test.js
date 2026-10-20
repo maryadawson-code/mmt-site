@@ -24,7 +24,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "..", "..");
 const DATASET = JSON.parse(readFileSync(join(REPO, "data", "idiq-vehicles.json"), "utf8"));
 const ROWS = DATASET.vehicles;
-const TODAY = "2026-10-09";
+const TODAY = "2026-10-19";
 const BANNED = ["pivotal", "comprehensive", "robust", "transformative", "delve", "leverage", "synergy", "paradigm", "holistic", "streamline", "actionable", "ecosystem"];
 
 describe("baseline integrity", () => {
@@ -90,7 +90,8 @@ describe("context and search helpers", () => {
   it("formatVehiclesContext prints 'MMT baseline, verified <date>' per vehicle", () => {
     const ctx = formatVehiclesContext(detectVehicles("who holds CIO-SP4 and T4NG2 seats?"));
     expect(ctx).toContain("### CIO-SP4");
-    expect(ctx).toContain("- MMT baseline, verified 2026-09-10: CIO-SP4 was cancelled");
+    // CIO-SP4 re-verified 2026-10-19 against the NITAAC notice; T4NG2 still carries its 2026-09-10 date
+    expect(ctx).toContain("- MMT baseline, verified 2026-10-19: CIO-SP4 was cancelled");
     expect(ctx).toContain("### T4NG2");
     expect(ctx).toMatch(/- MMT baseline, verified 2026-09-10: T4NG2/);
     expect(ctx).not.toMatch(/—/);
@@ -128,7 +129,7 @@ describe("registered in lib/data-freshness.js on a 90-day cadence", () => {
     for (const r of rows) expect(r.error, r.label).toBe(null);
     const t4 = rows.find((r) => r.label === "T4NG2");
     expect(t4.date).toBe("2026-09-10");
-    expect(t4.age_days).toBe(29);
+    expect(t4.age_days).toBe(39);
     expect(t4.stale).toBe(false);
     // Staleness follows the verified date against the 90-day cadence, whichever
     // entries happen to be old. Naming entries here broke on every re-verification.

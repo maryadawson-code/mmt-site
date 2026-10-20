@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-09-20T16:44:24.765Z",
+  "generated_at": "2026-10-20T04:08:48.436Z",
   "source_dir": "content/newsletter",
-  "source_count": 136,
+  "source_count": 142,
   "newest_in_source": {
-    "file": "2026-09-15-vas-manual-tells-raters-to-enter-service-that-never-happened.md",
-    "title": "VA's Manual Tells Raters to Enter Service That Never Happened",
-    "date": "2026-09-15T00:00:00.000Z",
-    "slug": "vas-manual-tells-raters-to-enter-service-that-never-happened",
+    "file": "2026-10-20-the-blood-clock.md",
+    "title": "The Blood Clock",
+    "date": "2026-10-20T00:00:00.000Z",
+    "slug": "the-blood-clock",
     "future_dated": false
   },
   "newest_in_dist_latest": {
-    "slug": "vas-manual-tells-raters-to-enter-service-that-never-happened",
-    "title": "VA's Manual Tells Raters to Enter Service That Never Happened"
+    "slug": "the-blood-clock",
+    "title": "The Blood Clock"
   },
   "in_sync": true,
   "imported_in_this_run": [],

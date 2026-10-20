@@ -14,6 +14,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { isFutureDated, todayET } = require(path.join(__dirname, "lib", "publish-gate"));
 
 const ROOT = path.resolve(__dirname, "..");
 const DIST = path.join(ROOT, "dist");
@@ -145,16 +146,18 @@ if (fs.existsSync(newsletterDir)) {
   if (matter) {
     const files = fs.readdirSync(newsletterDir).filter((f) => f.endsWith(".md") && !f.startsWith("_"));
     let newest = null;
-    const now = Date.now();
     for (const f of files) {
       const raw = fs.readFileSync(path.join(newsletterDir, f), "utf8");
       const fm = matter(raw).data;
       if (!fm.date || !fm.title) continue;
       const date = new Date(fm.date);
-      // Future-date gate: future-dated articles are intentionally
-      // held by build.js until publish_date arrives. Don't fail the
-      // /latest check for an article that hasn't published yet.
-      if (date.getTime() > now) continue;
+      // Future-date gate: future-dated articles are intentionally held by
+      // build.js until the publish date arrives in America/New_York. Use the
+      // same gate (scripts/lib/publish-gate.js): comparing UTC midnight to
+      // Date.now() counted a next-day issue as published from 8 PM ET, which
+      // failed this check against a dist that correctly held it (2026-10-19).
+      const iso = typeof fm.date === "string" ? fm.date.slice(0, 10) : date.toISOString().slice(0, 10);
+      if (isFutureDated(iso, todayET())) continue;
       if (!newest || date > newest.date) newest = { date, slug: fm.slug || f.replace(/^\d{4}-\d{2}-\d{2}-/, "").replace(/\.md$/, ""), title: fm.title };
     }
     if (newest) {

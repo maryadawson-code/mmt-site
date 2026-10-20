@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-20T01:05:52.848Z",
+  "generated_at": "2026-10-20T03:45:59.948Z",
   "source_csv": "data/research-agent/idiq-vehicles.csv",
   "total": 35,
   "vehicles": [
@@ -541,7 +541,7 @@
       "forecast_window": "2026-10-01 to 2027-03-31",
       "forecast_confidence_pct": 65,
       "primary_source_url": "https://www.gdit.com/about-gdit/press-releases/gdit-awarded-usd2-5-billion-idiq-contract-for-electronic-health-record/",
-      "mmt_note": "Oracle Health FedRAMP High. PATH EHR registration and scheduling soft go-live at the Lawton Service Unit Aug 1 2026 (IHS Updates for Tribes, Aug 17 2026; contracts.json ihs-health-it-modernization-rpms-replacement). TO #9 sustainment $325.7M awarded May 2026. Sources sought posted Sep 18 2026: https://sam.gov/opp/4f692e202b7c4dd4a5c0fb36aafc9f70/view"
+      "mmt_note": "Oracle Health FedRAMP High. PATH EHR full go-live at the Lawton Service Unit Sep 26 2026 (IHS CIO blog, Oct 13 2026) after an Aug 1 2026 registration and scheduling soft go-live (IHS Updates for Tribes, Aug 17 2026; contracts.json ihs-health-it-modernization-rpms-replacement). TO #9 sustainment $325.7M awarded May 2026. Sources sought posted Sep 18 2026: https://sam.gov/opp/4f692e202b7c4dd4a5c0fb36aafc9f70/view"
     },
     {
       "vehicle_id": "fda-ead-bpa",
@@ -748,7 +748,7 @@
       "set_aside": "Multiple Award",
       "vehicle_type": "GWAC",
       "award_type": "Multiple",
-      "primes_count": "42 to 43 Phase 1 (MMT sources differ; GSA page lists no count)",
+      "primes_count": "43 Phase 1 awardees of a planned 76",
       "status": "Active",
       "obligated_estimate_usd": null,
       "burn_status": "New",
@@ -757,7 +757,7 @@
       "forecast_window": "2026-03-10 to 2026-12-31",
       "forecast_confidence_pct": 80,
       "primary_source_url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/alliant-3",
-      "mmt_note": "Active; no ceiling; Notice to Proceed Mar 10 2026; ordering through Mar 9 2031 + 5-year option to Mar 9 2036 (GSA page updated Sep 18 2026, read Oct 19 2026). MMT sources differ on the Phase 1 count (42 in this dataset, 43 of a planned 76 in capture-intelligence s26); GSA publishes a holder list, not a count."
+      "mmt_note": "Active; no ceiling; Notice to Proceed Mar 10 2026; ordering through Mar 9 2031 + 5-year option to Mar 9 2036 (GSA page updated Sep 18 2026, read Oct 19 2026). MMT sources differ on the Phase 1 count; GSA publishes a holder list, not a count."
     },
     {
       "vehicle_id": "gsa-oasis-plus",

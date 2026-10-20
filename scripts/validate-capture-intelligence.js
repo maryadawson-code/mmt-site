@@ -53,7 +53,11 @@ const PAGE = path.join(REPO, "intel-capture-intelligence.html");
 const STRICT = process.env.CAPTURE_INTEL_STRICT === "1";
 const TODAY = process.env.CAPTURE_INTEL_TODAY || new Date().toISOString().slice(0, 10);
 
-const REQUIRED = ["id", "agency", "program", "signal", "confidence", "verified_at", "action_window", "what_to_do"];
+// 2026-10-19: the October 2026 sheet (rendered from this JSON since PR #248)
+// carries provenance as a per-signal `sources` array with https URLs rather
+// than a `verified_at` date. Either form satisfies the provenance check; a
+// signal with neither fails.
+const REQUIRED = ["id", "agency", "program", "signal", "confidence", "action_window", "what_to_do"];
 const CLOSED_STATUS = new Set(["awarded", "closed"]);
 
 // Phrases that assert the competition is still ahead of the reader. Kept as
@@ -102,9 +106,13 @@ function main() {
   if (Number(sheet.signal_count) !== signals.length) {
     fail("sheet", `signal_count ${sheet.signal_count} but ${signals.length} signals present`);
   }
+  // agency_count is what the homepage prints ("N agencies"). build.js counts
+  // distinct primary agencies (the part before a "/"), so "DHA / PEO DHMS"
+  // and "DHA" are one agency; the agencies array may list every label.
   const agencies = Array.isArray(sheet.agencies) ? sheet.agencies : [];
-  if (Number(sheet.agency_count) !== agencies.length) {
-    fail("sheet", `agency_count ${sheet.agency_count} but ${agencies.length} agencies listed`);
+  const primary = new Set(signals.map((x) => String(x.agency || "").split(/\s*\/\s*/)[0]));
+  if (Number(sheet.agency_count) !== agencies.length && Number(sheet.agency_count) !== primary.size) {
+    fail("sheet", `agency_count ${sheet.agency_count} but ${agencies.length} agency labels listed and ${primary.size} distinct primary agencies in the signals`);
   }
 
   const seen = new Set();
@@ -119,11 +127,21 @@ function main() {
     if (seen.has(id)) fail(id, "duplicate signal id");
     seen.add(id);
 
-    // 3. Honest per-signal provenance.
+    // 3. Honest per-signal provenance: a past verified_at, or at least one
+    //    source with an https URL.
     if (sig.verified_at && !isDate(sig.verified_at)) {
       fail(id, `verified_at "${sig.verified_at}" is not YYYY-MM-DD`);
     } else if (sig.verified_at && sig.verified_at > TODAY) {
       fail(id, `verified_at "${sig.verified_at}" is in the future`);
+    }
+    const sources = Array.isArray(sig.sources) ? sig.sources : [];
+    const sourced = sources.some((s) => s && /^https:\/\//.test(String(s.url || "")));
+    if (!sig.verified_at && !sourced) {
+      fail(id, "no provenance: neither a verified_at date nor a source with an https URL");
+    }
+    for (const s of sources) {
+      if (s && s.url && !/^https?:\/\/[^\s"']+$/.test(String(s.url))) fail(id, `source url "${s.url}" is not a URL`);
+      if (s && /^https?:\/\/sam\.gov\/?$/.test(String(s.url || ""))) fail(id, "https://sam.gov alone is not a source");
     }
 
     if (!sig.contract_ref) continue;

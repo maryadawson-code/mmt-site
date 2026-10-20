@@ -8,7 +8,7 @@
     {
       "agency_code": "DHA",
       "agency_name": "Defense Health Agency",
-      "source_url": "https://www.dha.mil/About-DHA/Organizational-Structure-NEW",
+      "source_url": "https://dha.mil/About-DHA/Organizational-Structure",
       "verified_date": "2026-10-19",
       "note": "The dha.mil Organizational Structure page (read 2026-10-19, undated) lists six principals: Director, Deputy Director, Command Senior Enlisted Leader and the three Assistant Directors. Everyone else in this block comes from DHA briefings and the Director's 21 SEP 2026 leadership message and carries a per-person date.",
       "people": [
@@ -290,6 +290,13 @@
           "why_watch": "Often the execution-side gatekeeper for program-level decisions."
         },
         {
+          "name": "Sara Reistad-Long",
+          "title": "Chief Strategy Officer, Strategic Affairs Office",
+          "scope": "Agency strategy and the Strategic Affairs Office.",
+          "why_watch": "Listed on the ARPA-H People page as of Oct 5, 2026 and again Oct 19, 2026. Strategy seats shape which mission-office themes get the next solicitation cycle.",
+          "verified_date": "2026-10-19"
+        },
+        {
           "name": "Gene Civillico",
           "title": "Director, Health Science Futures",
           "scope": "Mission office — high-risk basic-to-translational health science. Neurobiologist; joined ARPA-H in September 2026 from FDA's Center for Devices and Radiological Health, where he led neurotechnology regulatory science tools and review teams for breakthrough neuromodulation devices.",
@@ -337,19 +344,17 @@
         },
         {
           "name": "Andrew Carney",
-          "title": "Program Manager, Resilient Systems",
-          "scope": "Programs in the Resilient Systems mission office.",
+          "title": "Program Manager, Proactive Health",
+          "scope": "Programs in the Proactive Health mission office.",
           "why_watch": "PMs at ARPA-H run their programs with significant autonomy. Direct relationships matter.",
-          "verified_date": "2026-05-07",
-          "verification_note": "Program-level role; not listed on the Aug 25, 2026 leadership page. Last confirmed May 7, 2026."
+          "verified_date": "2026-10-19"
         },
         {
           "name": "James Coburn",
-          "title": "Portfolio Lead, Scalable Solutions",
-          "scope": "Portfolio-level coordination across multiple Scalable Solutions programs.",
+          "title": "Program Manager, Scalable Solutions",
+          "scope": "Programs in the Scalable Solutions mission office, which lists no office leadership as of Oct 19, 2026.",
           "why_watch": "Sets cross-program priorities within Scalable Solutions.",
-          "verified_date": "2026-05-07",
-          "verification_note": "Program-level role; not listed on the Aug 25, 2026 leadership page. Last confirmed May 7, 2026."
+          "verified_date": "2026-10-19"
         },
         {
           "name": "Karen Schmaling",

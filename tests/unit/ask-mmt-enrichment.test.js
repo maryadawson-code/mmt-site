@@ -59,8 +59,8 @@ describe("runEnrichment: the DHA data governance question (procurement shape)", 
     expect(r.shapes).toEqual(["procurement"]);
 
     const articles = r.sources.filter((s) => s.kind === "article");
-    expect(articles.map((s) => s.title)).toContain("DHA Data Governance (WOSB Set-Aside)");
-    expect(articles.find((s) => s.title === "DHA Data Governance (WOSB Set-Aside)").url)
+    expect(articles.map((s) => s.title)).toContain("DHA Data Governance / Data Methods and Strategy (HT001126CE015)");
+    expect(articles.find((s) => s.title === "DHA Data Governance / Data Methods and Strategy (HT001126CE015)").url)
       .toBe("https://missionmeetstech.com/contracts/dha-data-governance-wosb-set-aside/");
     expect(r.sources.filter((s) => s.kind === "system")).toEqual([]);
 
