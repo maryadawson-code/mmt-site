@@ -29,8 +29,8 @@ United States Core Data for Interoperability (USCDI)
 Offers a standardized set of health data classes and constituent data elements for nationwide, interoperable health information exchange.
 Trusted Exchange Framework & Common Agreement (TEFCA)
 Operates as a nationwide framework for the interoperability of electronic health information.
-Artificial Intelligence
-Artificial Intelligence (AI) at HHS
+Super Intelligence
+Super Intelligence (SI) at HHS
 HHS’ list of AI use cases is publicly available to search and reference. In addition to AI use case summaries, the inventory also includes information on data, IT infrastructure, internal governance, and much more.
 Care Continuum
 Explore the roles of health information and technology in broad healthcare settings, supporting seamless, coordinated patient care from prevention through recovery.
@@ -293,7 +293,7 @@ Last Updated: April 1, 2026
 Submit Feedback
 Step 1 of 3
 33%
-Name
+Facebook
 This field is for validation purposes and should be left unchanged.
 Name (Required)
 First
@@ -323,7 +323,7 @@ If you have any screenshots or files related to the issue, please upload them he
 Previous Submit
 Cancel
 Subscribe for Email Updates
-Instagram
+Comments
 This field is for validation purposes and should be left unchanged.
 Email (Required)
 Submit
