@@ -1,7 +1,7 @@
 {
   "_schema": {
     "version": "1.0",
-    "last_updated": "2026-10-19",
+    "last_updated": "2026-10-20",
     "source_note": "Profiles sourced from official agency leadership pages. Each profile cites its source URL. Quarterly refresh cadence per PAYWALL-ENRICHMENT.md item 4. Per-person verified_date/verification_note override the block date when a name was last confirmed on an older page pull."
   },
   "agencies": [
@@ -405,6 +405,23 @@
           "why_watch": "The working POC for OT, CSO, and SBIR acquisition questions until HHS updates the roster. If HCA authority has moved to the new BID Director, signature paths change; confirm before you rely on either name.",
           "verified_date": "2026-10-19",
           "verification_note": "Listed as Deputy Director, Business Innovation Division on the ARPA-H People page, read 2026-10-19. Acting HCA per https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html (content last reviewed 2026-04-27, re-read 2026-10-19)."
+        }
+      ]
+    },
+    {
+      "agency_code": "VHA",
+      "agency_name": "Department of Veterans Affairs, Veterans Health Administration (Office of Veterans Community Care)",
+      "source_url": "https://department.va.gov/biographies/",
+      "verified_date": "2026-10-20",
+      "note": "Community care is VA's largest purchased-care line and CCN Next Gen is its recompete. The Office of Veterans Community Care (VCC) sits inside VHA. This block holds the one VCC name MMT tracks; the person is not yet on the VA Staff Biographies index, so the entry rests on her own announcement and stays pending official confirmation.",
+      "people": [
+        {
+          "name": "Janet Cabeen",
+          "title": "Executive Director, Networks and Contracts Management, Office of Veterans Community Care (SES)",
+          "scope": "Leads CCN Next Gen, the community care network recompete. Her stated plan: one purchasing structure for community care, Veterans Care Agreements and local healthcare contracts folded into the network, stronger Third Party Administrator (TPA) performance oversight, and Veteran and Family Member Programs (VFMP) run alongside community care.",
+          "why_watch": "The program owner for the largest procurement in VA's history. Her stated priorities (TPA accountability, consolidated local contracting, VFMP alignment) are the evaluation themes a CCN Next Gen bid has to answer.",
+          "verified_date": "2026-10-20",
+          "verification_note": "Sworn into the SES as Executive Director, Networks and Contracts Management, per her own public announcement dated Oct 20, 2026. Not yet listed on the VA Staff Biographies index as of Oct 20, 2026; pending official confirmation on a VA page."
         }
       ]
     },

@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-10-20T02:00:20.354Z",
-  "node_count": 510,
-  "edge_count": 778,
+  "generated_at": "2026-10-20T13:51:16.783Z",
+  "node_count": 511,
+  "edge_count": 775,
   "nodes": [
     {
       "id": "peo-dhms-deployment",
@@ -774,7 +774,7 @@
         "classification": "Vendor-Announced",
         "status": "awarded",
         "naics": "541512",
-        "last_verified": "2026-10-18"
+        "last_verified": "2026-10-19"
       }
     },
     {
@@ -961,7 +961,7 @@
         "classification": "IDIQ",
         "status": "awarded",
         "naics": "621999",
-        "last_verified": "2026-10-18"
+        "last_verified": "2026-10-19"
       }
     },
     {
@@ -1378,7 +1378,7 @@
         "classification": "Award",
         "status": "awarded",
         "naics": "541618",
-        "last_verified": "2026-10-18"
+        "last_verified": "2026-10-19"
       }
     },
     {
@@ -1473,7 +1473,7 @@
         "classification": "Award",
         "status": "awarded",
         "naics": "541519",
-        "last_verified": "2026-10-18"
+        "last_verified": "2026-10-19"
       }
     },
     {
@@ -2117,11 +2117,12 @@
       }
     },
     {
-      "id": "stephen-ferrara",
+      "id": "dr-vincent-lee-ball",
       "type": "Person",
-      "canonical_name": "Stephen Ferrara",
+      "canonical_name": "Dr. Vincent Lee Ball",
       "properties": {
-        "role": "Principal Deputy ASW(HA)"
+        "role": "Principal Deputy ASW(HA)",
+        "title": "Principal Deputy Assistant Secretary of War for Health Affairs"
       }
     },
     {
@@ -2347,14 +2348,6 @@
       "type": "Agency",
       "canonical_name": "Office of the Assistant Secretary of War for Health Affairs (ASW(HA))",
       "properties": {}
-    },
-    {
-      "id": "dr-vincent-lee-ball",
-      "type": "Person",
-      "canonical_name": "Dr. Vincent Lee Ball",
-      "properties": {
-        "title": "Principal Deputy Assistant Secretary of War for Health Affairs"
-      }
     },
     {
       "id": "ms-susan-orsega",
@@ -2604,6 +2597,20 @@
       "canonical_name": "Benjamin Bryant",
       "properties": {
         "title": "Deputy Director, Business Innovation Division; Acting Head of Contracting Activity (per the HHS HCA roster)"
+      }
+    },
+    {
+      "id": "vha",
+      "type": "Agency",
+      "canonical_name": "Department of Veterans Affairs, Veterans Health Administration (Office of Veterans Community Care)",
+      "properties": {}
+    },
+    {
+      "id": "janet-cabeen",
+      "type": "Person",
+      "canonical_name": "Janet Cabeen",
+      "properties": {
+        "title": "Executive Director, Networks and Contracts Management, Office of Veterans Community Care (SES)"
       }
     },
     {
@@ -4196,6 +4203,17 @@
       }
     },
     {
+      "id": "article-the-blood-clock",
+      "type": "Article",
+      "canonical_name": "The Blood Clock",
+      "properties": {
+        "slug": "the-blood-clock",
+        "type": "article",
+        "url": "/newsletter/the-blood-clock/",
+        "published": "2026-10-20"
+      }
+    },
+    {
       "id": "article-capture-corner-2026-04-29",
       "type": "Article",
       "canonical_name": "DHA Reorganization: Sixteen Changes, Five That Move Your Pipeline",
@@ -4636,6 +4654,17 @@
       }
     },
     {
+      "id": "article-capture-corner-2026-10-20",
+      "type": "Article",
+      "canonical_name": "Who Fills the Quota",
+      "properties": {
+        "slug": "capture-corner-2026-10-20",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-10-20.html",
+        "published": "2026-10-20"
+      }
+    },
+    {
       "id": "article-premium-briefs-2026-03-21",
       "type": "Article",
       "canonical_name": "Week of March 21, 2026",
@@ -4779,14 +4808,14 @@
       }
     },
     {
-      "id": "article-dha-data-governance-wosb-set-aside",
+      "id": "article-dha-data-governance-data-methods-and-strategy-ht001126ce015",
       "type": "Article",
-      "canonical_name": "DHA Data Governance (WOSB Set-Aside)",
+      "canonical_name": "DHA Data Governance / Data Methods and Strategy (HT001126CE015)",
       "properties": {
-        "slug": "dha-data-governance-wosb-set-aside-",
+        "slug": "dha-data-governance-data-methods-and-strategy-ht001126ce015-",
         "type": "contract_intel",
         "url": "/contracts/dha-data-governance-wosb-set-aside/",
-        "published": "2026-03-31"
+        "published": "2026-10-19"
       }
     },
     {
@@ -4820,28 +4849,6 @@
         "type": "contract_intel",
         "url": "/contracts/hhs-hopss-hhs-one-professional-services-solutions/",
         "published": "2026-10-05"
-      }
-    },
-    {
-      "id": "article-hcds-health-care-delivery-solutions-mhs-genesis-follow-on",
-      "type": "Article",
-      "canonical_name": "HCDS - Health Care Delivery Solutions (MHS GENESIS Follow-On)",
-      "properties": {
-        "slug": "hcds-health-care-delivery-solutions-mhs-genesis-follow-on-",
-        "type": "contract_intel",
-        "url": "/contracts/hcds-health-care-delivery-solutions-mhs-genesis-follow-on/",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-fda-sentinel-3-0",
-      "type": "Article",
-      "canonical_name": "FDA Sentinel 3.0",
-      "properties": {
-        "slug": "fda-sentinel-3-0",
-        "type": "contract_intel",
-        "url": "/contracts/fda-sentinel-3-0/",
-        "published": "2026-08-17"
       }
     }
   ],
@@ -7463,6 +7470,15 @@
       "weight": 1
     },
     {
+      "from_id": "janet-cabeen",
+      "to_id": "vha",
+      "relation": "leads",
+      "properties": {
+        "title": "Executive Director, Networks and Contracts Management, Office of Veterans Community Care (SES)"
+      },
+      "weight": 1
+    },
+    {
       "from_id": "paul-lawrence",
       "to_id": "va-oit",
       "relation": "leads",
@@ -8535,6 +8551,27 @@
       "weight": 1
     },
     {
+      "from_id": "article-the-blood-clock",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-blood-clock",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-blood-clock",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-capture-corner-2026-04-29",
       "to_id": "dhmsm",
       "relation": "mentions",
@@ -9424,6 +9461,20 @@
       "weight": 1
     },
     {
+      "from_id": "article-capture-corner-2026-10-20",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-10-20",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-premium-briefs-2026-03-21",
       "to_id": "federal-ehr",
       "relation": "mentions",
@@ -9746,15 +9797,15 @@
       "weight": 1
     },
     {
-      "from_id": "article-dha-data-governance-wosb-set-aside",
-      "to_id": "dha-data-governance-wosb-set-aside",
+      "from_id": "article-dha-data-governance-data-methods-and-strategy-ht001126ce015",
+      "to_id": "defense-health-agency",
       "relation": "mentions",
       "properties": {},
       "weight": 1
     },
     {
-      "from_id": "article-dha-data-governance-wosb-set-aside",
-      "to_id": "defense-health-agency",
+      "from_id": "article-dha-data-governance-data-methods-and-strategy-ht001126ce015",
+      "to_id": "ota",
       "relation": "mentions",
       "properties": {},
       "weight": 1
@@ -9846,69 +9897,6 @@
     {
       "from_id": "article-hhs-hopss-hhs-one-professional-services-solutions",
       "to_id": "hopss",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-hcds-health-care-delivery-solutions-mhs-genesis-follow-on",
-      "to_id": "dhmsm",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-hcds-health-care-delivery-solutions-mhs-genesis-follow-on",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-hcds-health-care-delivery-solutions-mhs-genesis-follow-on",
-      "to_id": "hcds",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-hcds-health-care-delivery-solutions-mhs-genesis-follow-on",
-      "to_id": "hcds-health-care-delivery-solutions-mhs-genesis-follow-on",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-hcds-health-care-delivery-solutions-mhs-genesis-follow-on",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-hcds-health-care-delivery-solutions-mhs-genesis-follow-on",
-      "to_id": "mhs-genesis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-hcds-health-care-delivery-solutions-mhs-genesis-follow-on",
-      "to_id": "peo-dhms",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-fda-sentinel-3-0",
-      "to_id": "department-of-health-and-human-services",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-fda-sentinel-3-0",
-      "to_id": "fda-sentinel-3-0",
       "relation": "mentions",
       "properties": {},
       "weight": 1
