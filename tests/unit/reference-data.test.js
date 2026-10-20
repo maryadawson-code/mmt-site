@@ -16,7 +16,7 @@ import { AGENCIES } from "../../netlify/functions/lib/federal-agencies.js";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "..", "..");
 const load = (f) => JSON.parse(readFileSync(join(REPO, "data", "reference", f), "utf8"));
-const TODAY = "2026-09-22";
+const TODAY = "2026-10-19";
 
 const buyers = load("buyers.json");
 const paths = load("authorization-paths.json");

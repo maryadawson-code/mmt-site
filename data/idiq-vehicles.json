@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-09T15:09:08.263Z",
+  "generated_at": "2026-10-20T03:45:59.948Z",
   "source_csv": "data/research-agent/idiq-vehicles.csv",
   "total": 35,
   "vehicles": [
@@ -10,8 +10,8 @@
       "sub_agency": "DHA / PEO DHMS",
       "contract_number": "HT003826RE001",
       "ceiling_usd": 300000000,
-      "pop_start": "2026-06-01",
-      "pop_end": "2031-05-31",
+      "pop_start": "2026-08-01",
+      "pop_end": "2031-08-31",
       "pop_years": 5,
       "naics_primary": "541512",
       "naics_secondary": "",
@@ -19,16 +19,16 @@
       "set_aside": "Unrestricted",
       "vehicle_type": "Multiple Award IDIQ",
       "award_type": "FFP/T&M",
-      "primes_count": "6-9 expected",
-      "status": "Solicitation-stage / upcoming",
+      "primes_count": "12 (from 29 offers)",
+      "status": "Active / Awarded",
       "obligated_estimate_usd": 0,
       "burn_status": "New",
       "incumbent_vulnerability_score": 3,
-      "forecast_event": "Proposals due Apr 21 2026",
-      "forecast_window": "2026-04-21 to 2026-09-30",
-      "forecast_confidence_pct": 70,
+      "forecast_event": "Task orders under the awarded IDIQ; the first orders set the pattern",
+      "forecast_window": "2026-08-01 to 2027-08-31",
+      "forecast_confidence_pct": 80,
       "primary_source_url": "https://sam.gov/workspace/contract/opp/111847a96d214505b4d398a931dfdf1d/view",
-      "mmt_note": "Solicitation HT003826RE001; proposals due 2026-04-21"
+      "mmt_note": "Awarded July 31 2026: 12 primes from 29 offers, $300M combined ceiling, one base year plus four option years, ordering August 2026 to August 2031 at the month precision MMT published (Washington Technology Aug 3 2026; MMT brief 2026-08-18; contracts.json peo-dhms-deployment-solutions-new-idiq, verified 2026-08-17). Solicitation HT003826RE001 closed Apr 21 2026."
     },
     {
       "vehicle_id": "dha-wf3",
@@ -105,7 +105,7 @@
       "obligated_estimate_usd": 400000000,
       "burn_status": "Underburning",
       "incumbent_vulnerability_score": 3,
-      "forecast_event": "8(a) on-ramp solicitation",
+      "forecast_event": "8(a) on-ramp; MMT May 15 to Jun 15 2026 window passed, outcome not verified",
       "forecast_window": "2026-05-15 to 2026-06-15",
       "forecast_confidence_pct": 85,
       "primary_source_url": "https://www.sysplus.com/contract/dha-omnibus-iv-idiq/",
@@ -155,13 +155,13 @@
       "vehicle_type": "Single Award IDC",
       "award_type": "",
       "primes_count": "JHU APL",
-      "status": "Active",
+      "status": "Period ended May 30 2026 per cited award record; extension or successor not verified",
       "obligated_estimate_usd": null,
       "burn_status": "",
       "incumbent_vulnerability_score": 2,
-      "forecast_event": "Successor RFP or BAA",
-      "forecast_window": "2026-07-01 to 2026-09-30",
-      "forecast_confidence_pct": 75,
+      "forecast_event": "Successor RFP or BAA; MMT Jul to Sep 2026 window passed with nothing verified",
+      "forecast_window": "2026-10-01 to 2027-03-31",
+      "forecast_confidence_pct": 50,
       "primary_source_url": "https://www.federalcompass.com/award-contract-detail/HT001121D0002",
       "mmt_note": "Johns Hopkins APL prime"
     },
@@ -213,9 +213,9 @@
       "obligated_estimate_usd": 0,
       "burn_status": "New",
       "incumbent_vulnerability_score": 2,
-      "forecast_event": "ECMS Wave 3 call orders",
-      "forecast_window": "2026-05-15 to 2026-06-30",
-      "forecast_confidence_pct": 70,
+      "forecast_event": "Task order flow; ECMS Wave 3 window (May 15 to Jun 30 2026) passed with no later wave recorded",
+      "forecast_window": "2026-10-01 to 2027-03-31",
+      "forecast_confidence_pct": 60,
       "primary_source_url": "https://sam.gov/opp/62249040a30c4cf8a905a03bf590f55d/view",
       "mmt_note": "Awarded; protest resolved 2026"
     },
@@ -240,9 +240,9 @@
       "obligated_estimate_usd": null,
       "burn_status": "",
       "incumbent_vulnerability_score": 1,
-      "forecast_event": "Sustainment task order $220-290M",
-      "forecast_window": "2026-07-01 to 2026-09-30",
-      "forecast_confidence_pct": 65,
+      "forecast_event": "Sustainment task order $220-290M (MMT estimate); Jul to Sep 2026 window passed, award not verified",
+      "forecast_window": "2026-10-01 to 2027-03-31",
+      "forecast_confidence_pct": 50,
       "primary_source_url": "https://www.gdit.com/about-gdit/press-releases/gdit-awarded-usd2-5-billion-idiq-contract-for-electronic-health-record/",
       "mmt_note": "VA EHR Modernization program vehicle"
     },
@@ -325,7 +325,7 @@
       "forecast_window": "2027-02-20 to 2027-02-20",
       "forecast_confidence_pct": 90,
       "primary_source_url": "https://www.cms.gov/data-research/cms-information-technology/sparc",
-      "mmt_note": "CMS: period of performance Feb 21 2017 to Feb 20 2027; no new task orders after the ordering period; existing task orders run to their own end dates (up to five years past); CMS states there is no plan to replace the SPARC IDIQ (cms.gov SPARC FAQ read 2026-09-20). Available to CMS and HHS OPDIVs with no administrative fee."
+      "mmt_note": "CMS: period of performance Feb 21 2017 to Feb 20 2027; no new task orders after the ordering period; existing task orders run to their own end dates (up to five years past); CMS states there is no plan to replace the SPARC IDIQ (cms.gov SPARC FAQ read 2026-09-20). Available to CMS and HHS OPDIVs with no administrative fee. Re-read Oct 19 2026: the FAQ comparison chart lists the ordering period as 10 years (estimated 2016 to 2026) and the five-year task order limit under HHSAR; the Feb 20 2027 date and no-replacement statement are from the Sep 20 2026 read."
     },
     {
       "vehicle_id": "nitaac-cio-sp4",
@@ -352,7 +352,7 @@
       "forecast_window": "2026-06-09 to 2026-10-29",
       "forecast_confidence_pct": 95,
       "primary_source_url": "https://nitaac.nih.gov/resources/news/important-notice-nitaac-gwacs-cio-sp3-cio-sp3-sb-and-cio-cs",
-      "mmt_note": "Canceled (SAM Amendment 0017 on RFP 75N98121R00001; Jan 30 2026 court filing). The bridge story is over: NITAAC notice of Jun 9 2026 sunsets CIO-SP3 / CIO-SP3 SB / CIO-CS on Oct 29 2026 with no successor. Future work moves to GSA (Alliant 3, Polaris, MAS)."
+      "mmt_note": "Canceled (SAM Amendment 0017 on RFP 75N98121R00001; Jan 30 2026 court filing). The bridge story is over: NITAAC notice of Jun 9 2026 sunsets CIO-SP3 / CIO-SP3 SB / CIO-CS on Oct 29 2026 with no successor. Future work moves to GSA (Alliant 3, Polaris, MAS). NITAAC notice re-read Oct 19 2026: dates unchanged, no successor named."
     },
     {
       "vehicle_id": "nitaac-cio-sp3",
@@ -379,7 +379,7 @@
       "forecast_window": "2026-06-09 to 2026-10-29",
       "forecast_confidence_pct": 95,
       "primary_source_url": "https://nitaac.nih.gov/resources/news/important-notice-nitaac-gwacs-cio-sp3-cio-sp3-sb-and-cio-cs",
-      "mmt_note": "NITAAC notice Jun 9 2026 (HHS SPE under EO 14240 / OMB M-25-31): last day to award new orders is Oct 29 2026; orders awarded on or after Jun 8 2026 cannot run past Dec 31 2028, when all NITAAC functions cease. No successor. Seat holders recompete on Alliant 3, Polaris, or GSA MAS."
+      "mmt_note": "NITAAC notice Jun 9 2026 (HHS SPE under EO 14240 / OMB M-25-31): last day to award new orders is Oct 29 2026; orders awarded on or after Jun 8 2026 cannot run past Dec 31 2028, when all NITAAC functions cease. No successor. Seat holders recompete on Alliant 3, Polaris, or GSA MAS. NITAAC notice re-read Oct 19 2026: dates unchanged, no successor named."
     },
     {
       "vehicle_id": "nitaac-cio-cs",
@@ -406,7 +406,7 @@
       "forecast_window": "2026-06-09 to 2026-10-29",
       "forecast_confidence_pct": 95,
       "primary_source_url": "https://nitaac.nih.gov/resources/news/important-notice-nitaac-gwacs-cio-sp3-cio-sp3-sb-and-cio-cs",
-      "mmt_note": "Same Jun 9 2026 sunset notice as CIO-SP3. The reported CIO-CS follow-on (The Store, $20B to $25B pre-RFP) does not exist as a NITAAC vehicle; commodity IT buys move to GSA MAS and Polaris."
+      "mmt_note": "Same Jun 9 2026 sunset notice as CIO-SP3. The reported CIO-CS follow-on (The Store, $20B to $25B pre-RFP) does not exist as a NITAAC vehicle; commodity IT buys move to GSA MAS and Polaris. NITAAC notice re-read Oct 19 2026: dates unchanged, no successor named."
     },
     {
       "vehicle_id": "nitaac-ecs-iii",
@@ -429,11 +429,11 @@
       "obligated_estimate_usd": null,
       "burn_status": "Saturating",
       "incumbent_vulnerability_score": 4,
-      "forecast_event": "ECS IV solicitation",
-      "forecast_window": "2026-07-01 to 2026-09-30",
-      "forecast_confidence_pct": 65,
+      "forecast_event": "No ECS IV notice found; all NITAAC program functions cease Dec 31 2028 per the Jun 9 2026 notice (re-read Oct 19 2026)",
+      "forecast_window": "2026-10-19 to 2028-12-31",
+      "forecast_confidence_pct": 80,
       "primary_source_url": "https://redriver.com/contracts/ecs-iii",
-      "mmt_note": "COTS hardware/software/telecom"
+      "mmt_note": "COTS hardware/software/telecom. MMT Jul to Sep 2026 ECS IV window passed with no notice found."
     },
     {
       "vehicle_id": "nih-arpah-stats",
@@ -510,11 +510,11 @@
       "obligated_estimate_usd": null,
       "burn_status": "",
       "incumbent_vulnerability_score": 4,
-      "forecast_event": "Draft RFP",
-      "forecast_window": "2026-07-01 to 2026-09-30",
-      "forecast_confidence_pct": 65,
+      "forecast_event": "Draft RFP; MMT Jul to Sep 2026 window passed with no CDC TASS notice found on SAM.gov as of Oct 19 2026",
+      "forecast_window": "2026-10-01 to 2027-03-31",
+      "forecast_confidence_pct": 40,
       "primary_source_url": "https://orangeslices.ai/research-request-75m-cdc-ocio-technical-applications-support-services-rfp/",
-      "mmt_note": "80+ IT/informatics projects"
+      "mmt_note": "80+ IT/informatics projects. Checked Oct 19 2026: no CDC OCIO TASS solicitation or presolicitation found on SAM.gov; the OrangeSlices research request remains the only source."
     },
     {
       "vehicle_id": "ihs-path-ehr",
@@ -533,15 +533,15 @@
       "vehicle_type": "Single Award IDIQ",
       "award_type": "CPFF/FFP",
       "primes_count": "GDIT",
-      "status": "Active Pilot Year",
+      "status": "Active / deployment phase",
       "obligated_estimate_usd": null,
       "burn_status": "Underburning",
       "incumbent_vulnerability_score": 1,
-      "forecast_event": "First post-pilot operational TO ($80-140M)",
-      "forecast_window": "2026-07-01 to 2026-09-30",
-      "forecast_confidence_pct": 70,
+      "forecast_event": "End-user device, software and deployment support sources sought IHS-26-SSN-EUD-PATH-EHR (responses due Sep 28 2026); solicitation watch",
+      "forecast_window": "2026-10-01 to 2027-03-31",
+      "forecast_confidence_pct": 65,
       "primary_source_url": "https://www.gdit.com/about-gdit/press-releases/gdit-awarded-usd2-5-billion-idiq-contract-for-electronic-health-record/",
-      "mmt_note": "Oracle Health FedRAMP High"
+      "mmt_note": "Oracle Health FedRAMP High. PATH EHR full go-live at the Lawton Service Unit Sep 26 2026 (IHS CIO blog, Oct 13 2026) after an Aug 1 2026 registration and scheduling soft go-live (IHS Updates for Tribes, Aug 17 2026; contracts.json ihs-health-it-modernization-rpms-replacement). TO #9 sustainment $325.7M awarded May 2026. Sources sought posted Sep 18 2026: https://sam.gov/opp/4f692e202b7c4dd4a5c0fb36aafc9f70/view"
     },
     {
       "vehicle_id": "fda-ead-bpa",
@@ -580,40 +580,40 @@
       "pop_start": "",
       "pop_end": "",
       "pop_years": null,
-      "naics_primary": "339113",
-      "naics_secondary": "424210",
+      "naics_primary": "423450",
+      "naics_secondary": "",
       "psc": "",
       "set_aside": "Unrestricted + regional",
       "vehicle_type": "Multiple Award IDIQ",
       "award_type": "Commercial distribution",
       "primes_count": "TBD",
-      "status": "In Evaluation",
+      "status": "In Evaluation (no award found on SAM.gov or USASpending as of Oct 19 2026)",
       "obligated_estimate_usd": null,
       "burn_status": "New",
       "incumbent_vulnerability_score": 2,
-      "forecast_event": "Award decisions",
-      "forecast_window": "2026-06-01 to 2026-09-30",
-      "forecast_confidence_pct": 70,
+      "forecast_event": "Award decisions; MMT Jun to Sep 2026 window passed without a found award",
+      "forecast_window": "2026-10-01 to 2027-03-31",
+      "forecast_confidence_pct": 50,
       "primary_source_url": "https://www.highergov.com/contract-opportunity/dla-medsurg-prime-vendor-gen-vi-spe2dv25r0001-o-daa0a/",
-      "mmt_note": "3 Global Regions primary + backup PVs"
+      "mmt_note": "Solicitation SPE2DV25R0001 (DLA Troop Support Medical; proposals due Jan 8 2026; unrestricted; NAICS 423450 per SAM.gov notice https://sam.gov/opp/2dbcb9e7756847b3b4d0cbfacfee8ada/view; notice archived Jul 16 2026). Three global regions with primary and backup PVs. Checked Oct 19 2026: no award notice on SAM.gov and no Gen VI IDV on USASpending."
     },
     {
       "vehicle_id": "va-mspv-gen-z",
       "name": "VA MSPV Gen-Z V1",
       "agency": "VA",
       "sub_agency": "VA SAC",
-      "contract_number": "",
+      "contract_number": "36C10X23D0028 to 36C10X23D0033",
       "ceiling_usd": null,
-      "pop_start": "",
-      "pop_end": "",
-      "pop_years": null,
+      "pop_start": "2023-06-01",
+      "pop_end": "2033-05-31",
+      "pop_years": 10,
       "naics_primary": "339113",
       "naics_secondary": "",
       "psc": "",
       "set_aside": "Multiple Award",
       "vehicle_type": "Multiple Award IDIQ",
       "award_type": "",
-      "primes_count": "",
+      "primes_count": "6",
       "status": "Active",
       "obligated_estimate_usd": null,
       "burn_status": "Healthy",
@@ -622,7 +622,7 @@
       "forecast_window": "2027-04-01 to 2027-06-30",
       "forecast_confidence_pct": 60,
       "primary_source_url": "https://department.va.gov/procurement-acquisition-and-logistics/strategic-acquisition-center/sac-medical-surgical-prime-vendor-program-mspv-updated",
-      "mmt_note": "Medical/surgical prime vendor for VAMCs"
+      "mmt_note": "Medical/surgical prime vendor for VAMCs. USASpending (read Oct 19 2026) lists six MSPV Gen-Z V1 IDIQs awarded Jun 1 2023 with last date to order May 31 2033: Owens & Minor, Medline, McKesson Medical-Surgical Government Solutions, Concordance Healthcare Solutions, Cardinal Health P.R. 220, Cardinal Health 200."
     },
     {
       "vehicle_id": "usace-medcom-dbmatoc",
@@ -685,7 +685,7 @@
       "sub_agency": "USACE Mobile / DHA",
       "contract_number": "W9127826RA017",
       "ceiling_usd": null,
-      "pop_start": "2026-07-01",
+      "pop_start": "",
       "pop_end": "",
       "pop_years": null,
       "naics_primary": "236220",
@@ -695,14 +695,14 @@
       "vehicle_type": "Multiple Award Task Order Contract",
       "award_type": "Design-Build",
       "primes_count": "TBD",
-      "status": "Active Solicitation",
+      "status": "Presolicitation (Mar 11 2026) is the latest notice found on SAM.gov as of Oct 19 2026",
       "obligated_estimate_usd": null,
       "burn_status": "New",
       "incumbent_vulnerability_score": 3,
-      "forecast_event": "Pool awards",
-      "forecast_window": "2026-07-01 to 2026-09-30",
-      "forecast_confidence_pct": 70,
-      "primary_source_url": "https://www.highergov.com/contract-opportunity/design-build-idiq-matoc-in-support-of-the-dha-prog-w9127826ra017-o-7ec48/",
+      "forecast_event": "Solicitation and pool awards; MMT Jul to Sep 2026 window passed",
+      "forecast_window": "2026-10-01 to 2027-06-30",
+      "forecast_confidence_pct": 50,
+      "primary_source_url": "https://sam.gov/opp/f2d5274b620545799f877c8343d25504/view",
       "mmt_note": "MTF renovations + new build in occupied facilities"
     },
     {
@@ -757,7 +757,7 @@
       "forecast_window": "2026-03-10 to 2026-12-31",
       "forecast_confidence_pct": 80,
       "primary_source_url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/alliant-3",
-      "mmt_note": "Active; no ceiling; Notice to Proceed Mar 10 2026; ordering through Mar 9 2031 + 5-year option to Mar 9 2036; 43 Phase 1 awardees of a planned 76"
+      "mmt_note": "Active; no ceiling; Notice to Proceed Mar 10 2026; ordering through Mar 9 2031 + 5-year option to Mar 9 2036 (GSA page updated Sep 18 2026, read Oct 19 2026). MMT sources differ on the Phase 1 count; GSA publishes a holder list, not a count."
     },
     {
       "vehicle_id": "gsa-oasis-plus",
@@ -784,7 +784,7 @@
       "forecast_window": "2026-07-01 to 2027-12-31",
       "forecast_confidence_pct": 80,
       "primary_source_url": "https://www.gsa.gov/buy-through-us/products-and-services/professional-services/buy-services/oasis-plus",
-      "mmt_note": "Active / on-ramping; no ceiling; six IDIQ contracts by business type; non-IT professional services relevant to health program support"
+      "mmt_note": "Active / on-ramping; no ceiling; six IDIQ contracts by business type; non-IT professional services relevant to health program support. GSA page (updated Oct 15 2026, read Oct 19 2026): first OASIS+ Phase II rolling apparent awardee announcements posted May 12 2026; contractor list updated weekly."
     },
     {
       "vehicle_id": "gsa-stars-iii",
@@ -794,8 +794,8 @@
       "contract_number": "",
       "ceiling_usd": 50000000000,
       "pop_start": "2021-07-02",
-      "pop_end": "2026-07-01",
-      "pop_years": 5,
+      "pop_end": "2029-07-01",
+      "pop_years": 8,
       "naics_primary": "541512",
       "naics_secondary": "541511 / 541513 / 541519 / 518210",
       "psc": "",
@@ -807,11 +807,11 @@
       "obligated_estimate_usd": null,
       "burn_status": "Healthy",
       "incumbent_vulnerability_score": 3,
-      "forecast_event": "GSA option through Jul 1 2029",
-      "forecast_window": "2026-07-01 to 2029-07-01",
-      "forecast_confidence_pct": 75,
+      "forecast_event": "Ordering through Jul 1 2029 per GSA; TOs awarded Jul 2 2026 to Jul 1 2029 may perform through Jul 1 2034",
+      "forecast_window": "2026-07-02 to 2029-07-01",
+      "forecast_confidence_pct": 90,
       "primary_source_url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/8a-stars-iii",
-      "mmt_note": "Ordering Jul 2 2021 to Jul 1 2026; GSA intends option through Jul 1 2029; heavy HHS use for sub-$10M TOs"
+      "mmt_note": "GSA program page (updated Sep 18 2026, read Oct 19 2026) states the ordering period as Jul 2 2021 to Jul 1 2029; TOs awarded before Jul 2 2026 may perform through Jul 1 2031 and TOs awarded Jul 2 2026 to Jul 1 2029 through Jul 1 2034. $50B ceiling. Heavy HHS use for sub-$10M TOs."
     },
     {
       "vehicle_id": "gsa-vets-2",
@@ -857,15 +857,15 @@
       "vehicle_type": "Multiple Award IDIQ",
       "award_type": "Multiple",
       "primes_count": "16 vendors (2023 extension)",
-      "status": "Legacy / Expired or Expiring",
+      "status": "Expired Feb 19 2026",
       "obligated_estimate_usd": null,
       "burn_status": "",
       "incumbent_vulnerability_score": 4,
-      "forecast_event": "Transition to ITES-4H",
+      "forecast_event": "Transition to ITES-4H (vehicle expired)",
       "forecast_window": "2025-09-01 to 2026-02-19",
       "forecast_confidence_pct": 90,
       "primary_source_url": "",
-      "mmt_note": "Legacy / Expired or Expiring; original ceiling $5B; 2023 extension added $2.5B through Feb 19 2026 for 16 vendors"
+      "mmt_note": "Expired Feb 19 2026; original ceiling $5B; 2023 extension added $2.5B through Feb 19 2026 for 16 vendors; follow-on is ITES-4H"
     },
     {
       "vehicle_id": "army-ites-4h",
@@ -888,8 +888,8 @@
       "obligated_estimate_usd": null,
       "burn_status": "New",
       "incumbent_vulnerability_score": 3,
-      "forecast_event": "Initial task orders",
-      "forecast_window": "2025-10-01 to 2026-09-30",
+      "forecast_event": "Task orders under the active vehicle; initial-order window (Oct 2025 to Sep 2026) passed",
+      "forecast_window": "2026-10-01 to 2027-09-30",
       "forecast_confidence_pct": 85,
       "primary_source_url": "",
       "mmt_note": "Active; $10B ceiling; awarded Sep 2025; 49 vendors; 5-year base + 5-year option through 2035; follow-on to ITES-3H"
@@ -915,11 +915,11 @@
       "obligated_estimate_usd": null,
       "burn_status": "",
       "incumbent_vulnerability_score": 3,
-      "forecast_event": "Pool awards / on-ramps",
+      "forecast_event": "Small Business pool: GSA page lists no base period for it as of its Sep 11 2026 update",
       "forecast_window": "2026-04-01 to 2027-12-31",
       "forecast_confidence_pct": 70,
       "primary_source_url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/polarisr",
-      "mmt_note": "Active; Small Business GWAC; no ceiling; pools SB / WOSB / SDVOSB / HUBZone; primary NAICS 541512; in-scope 541511 / 541513 / 541519 / 518210; 5-year base + 5-year option"
+      "mmt_note": "Active; Small Business GWAC; no ceiling; pools SB / WOSB / SDVOSB / HUBZone; primary NAICS 541512; in-scope 541511 / 541513 / 541519 / 518210; 5-year base + 5-year option. GSA page (updated Sep 11 2026, read Oct 19 2026): HUBZone and SDVOSB base periods Dec 2 2025 to Dec 1 2030; WOSB Mar 9 2026 to Mar 8 2031; no base period listed for the Small Business pool."
     },
     {
       "vehicle_id": "dha-dhmsm-mhs-genesis",

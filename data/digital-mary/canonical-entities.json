@@ -47,10 +47,10 @@
     ],
     "people": [
       { "name": "Hon. Keith Bass", "role": "ASW(HA)" },
-      { "name": "Stephen Ferrara", "role": "Principal Deputy ASW(HA)" },
+      { "name": "Dr. Vincent Lee Ball", "role": "Principal Deputy ASW(HA)", "note": "Listed on health.mil Biographies (page dated 2026-08-13; read 2026-10-19). Succeeded Dr. Stephen Ferrara; no departure notice found." },
       { "name": "VADM Darin K. Via", "role": "DHA Director" },
       { "name": "DoD CIO", "note": "Pull live — current officeholder may change" },
-      { "name": "VA CIO", "note": "Pull live — current officeholder may change (Paul Lawrence acting as of 2026-05-07)" }
+      { "name": "VA CIO", "note": "Pull live — current officeholder may change (Paul Lawrence performing the delegable duties as of 2026-10-19; Shatswell nomination not confirmed)" }
     ],
     "acronyms_frameworks": [
       { "name": "MOSA", "ref": "10 USC 4401" },

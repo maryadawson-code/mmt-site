@@ -104,8 +104,8 @@ function buildClassificationPrompt(awards) {
 Below are ${awards.length} recent federal health IT contract awards/opportunities. Classify EVERY SINGLE ONE under ONE of these contract vehicles — never skip an award:
 
 - "OASIS+" — GSA OASIS+ task orders (professional/IT services via GSA GWAC)
-- "CIO-SP3" — NITAAC CIO-SP3 (health IT through NIH/NITAAC, extended through April 2027; CIO-SP4 was cancelled)
-- "Alliant 3" — GSA Alliant 3 GWAC (43 awardees, awarded Feb 2026)
+- "CIO-SP3" — NITAAC CIO-SP3 (health IT through NIH/NITAAC; last new order October 29 2026, orders end by December 31 2028, no successor; CIO-SP4 cancelled January 30 2026)
+- "Alliant 3" — GSA Alliant 3 GWAC (43 Phase 1 awardees of a planned 76, notice February 20 2026; Notice to Proceed March 10 2026)
 - "T4NG2" — VA T4NG2 IT services ($60.7B ceiling, task orders began March 2026)
 - "OMNIBUS IV" — DHA OMNIBUS IV (Defense Health Agency medical/health IT)
 - "DIU" — Defense Innovation Unit (commercial prototypes for DoD)
@@ -151,7 +151,7 @@ For each award, return:
 }
 
 CRITICAL GUARDRAILS:
-- CIO-SP4 was cancelled February 2026. Use CIO-SP3 instead.
+- CIO-SP4 was cancelled January 30 2026 and never awarded. CIO-SP3 takes no new orders after October 29 2026, so point recompetes at Alliant 3, Polaris or GSA MAS.
 - NEVER assign cancelled vehicles.
 - Only use vehicles from the list above.
 

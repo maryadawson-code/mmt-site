@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-10-09T15:13:32.250Z",
-  "node_count": 486,
-  "edge_count": 708,
+  "generated_at": "2026-10-20T02:00:20.354Z",
+  "node_count": 510,
+  "edge_count": 778,
   "nodes": [
     {
       "id": "peo-dhms-deployment",
@@ -10,11 +10,11 @@
       "properties": {
         "contract_number": "HT003826RE001",
         "ceiling_usd": 300000000,
-        "pop_start": "2026-06-01",
-        "pop_end": "2031-05-31",
+        "pop_start": "2026-08-01",
+        "pop_end": "2031-08-31",
         "set_aside": "Unrestricted",
         "vehicle_type": "Multiple Award IDIQ",
-        "status": "Solicitation-stage / upcoming"
+        "status": "Active / Awarded"
       }
     },
     {
@@ -120,7 +120,7 @@
         "pop_end": "2026-05-30",
         "set_aside": "Single Award",
         "vehicle_type": "Single Award IDC",
-        "status": "Active"
+        "status": "Period ended May 30 2026 per cited award record; extension or successor not verified"
       }
     },
     {
@@ -350,7 +350,7 @@
         "pop_end": "2033-10-01",
         "set_aside": "Single Award",
         "vehicle_type": "Single Award IDIQ",
-        "status": "Active Pilot Year"
+        "status": "Active / deployment phase"
       }
     },
     {
@@ -378,13 +378,13 @@
         "pop_end": "",
         "set_aside": "Unrestricted + regional",
         "vehicle_type": "Multiple Award IDIQ",
-        "status": "In Evaluation"
+        "status": "In Evaluation (no award found on SAM.gov or USASpending as of Oct 19 2026)"
       }
     },
     {
-      "id": "naics-339113",
+      "id": "naics-423450",
       "type": "Topic",
-      "canonical_name": "NAICS 339113",
+      "canonical_name": "NAICS 423450",
       "properties": {}
     },
     {
@@ -392,14 +392,20 @@
       "type": "Vehicle",
       "canonical_name": "VA MSPV Gen-Z V1",
       "properties": {
-        "contract_number": "",
+        "contract_number": "36C10X23D0028 to 36C10X23D0033",
         "ceiling_usd": null,
-        "pop_start": "",
-        "pop_end": "",
+        "pop_start": "2023-06-01",
+        "pop_end": "2033-05-31",
         "set_aside": "Multiple Award",
         "vehicle_type": "Multiple Award IDIQ",
         "status": "Active"
       }
+    },
+    {
+      "id": "naics-339113",
+      "type": "Topic",
+      "canonical_name": "NAICS 339113",
+      "properties": {}
     },
     {
       "id": "usace-medcom-dbmatoc",
@@ -448,11 +454,11 @@
       "properties": {
         "contract_number": "W9127826RA017",
         "ceiling_usd": null,
-        "pop_start": "2026-07-01",
+        "pop_start": "",
         "pop_end": "",
         "set_aside": "Multi-pool (8(a)/SDVOSB carveouts)",
         "vehicle_type": "Multiple Award Task Order Contract",
-        "status": "Active Solicitation"
+        "status": "Presolicitation (Mar 11 2026) is the latest notice found on SAM.gov as of Oct 19 2026"
       }
     },
     {
@@ -520,7 +526,7 @@
         "contract_number": "",
         "ceiling_usd": 50000000000,
         "pop_start": "2021-07-02",
-        "pop_end": "2026-07-01",
+        "pop_end": "2029-07-01",
         "set_aside": "8(a) Total Set-Aside",
         "vehicle_type": "GWAC",
         "status": "Active"
@@ -559,7 +565,7 @@
         "pop_end": "2026-02-19",
         "set_aside": "Multiple Award",
         "vehicle_type": "Multiple Award IDIQ",
-        "status": "Legacy / Expired or Expiring"
+        "status": "Expired Feb 19 2026"
       }
     },
     {
@@ -650,15 +656,27 @@
       }
     },
     {
-      "id": "dha-data-governance-wosb-set-aside",
+      "id": "dha-data-governance-data-methods-and-strategy-ht001126ce015",
       "type": "Solicitation",
-      "canonical_name": "DHA Data Governance (WOSB Set-Aside)",
+      "canonical_name": "DHA Data Governance / Data Methods and Strategy (HT001126CE015)",
       "properties": {
         "classification": "Solicitation",
-        "status": "active",
+        "status": "awarded",
         "naics": "541512",
-        "last_verified": "2026-03-31"
+        "last_verified": "2026-10-19"
       }
+    },
+    {
+      "id": "taurian-consulting-2-llc",
+      "type": "Contractor",
+      "canonical_name": "Taurian Consulting 2 LLC",
+      "properties": {}
+    },
+    {
+      "id": "contract-ht001126ce015",
+      "type": "Contractor",
+      "canonical_name": "contract HT001126CE015",
+      "properties": {}
     },
     {
       "id": "peo-dhms-deployment-solutions-new-idiq",
@@ -756,7 +774,7 @@
         "classification": "Vendor-Announced",
         "status": "awarded",
         "naics": "541512",
-        "last_verified": "2026-10-05"
+        "last_verified": "2026-10-18"
       }
     },
     {
@@ -881,7 +899,7 @@
       "properties": {
         "classification": "Solicitation",
         "status": "active",
-        "last_verified": "2026-08-20"
+        "last_verified": "2026-10-19"
       }
     },
     {
@@ -891,15 +909,49 @@
       "properties": {}
     },
     {
+      "id": "dha-paratus-cso-ht003826sc004",
+      "type": "Solicitation",
+      "canonical_name": "DHA PARATUS CSO (HT003826SC004)",
+      "properties": {
+        "classification": "Solicitation",
+        "status": "active",
+        "last_verified": "2026-10-19"
+      }
+    },
+    {
+      "id": "aoi-1-award-not-verified",
+      "type": "Contractor",
+      "canonical_name": "AoI 1 award not verified",
+      "properties": {}
+    },
+    {
       "id": "peo-dhms-cso-competitive-solutions-opening",
       "type": "Solicitation",
       "canonical_name": "PEO DHMS CSO (Competitive Solutions Opening)",
       "properties": {
         "classification": "Solicitation",
-        "status": "active",
+        "status": "closed",
         "naics": "541512",
-        "last_verified": "2026-10-05"
+        "last_verified": "2026-10-19"
       }
+    },
+    {
+      "id": "window-closed",
+      "type": "Contractor",
+      "canonical_name": "Window closed",
+      "properties": {}
+    },
+    {
+      "id": "aoi-awards-are-tracked-in-data",
+      "type": "Contractor",
+      "canonical_name": "AoI awards are tracked in data",
+      "properties": {}
+    },
+    {
+      "id": "cso-aois-json",
+      "type": "Contractor",
+      "canonical_name": "cso-aois.json",
+      "properties": {}
     },
     {
       "id": "va-health-connect-iht-2-0",
@@ -909,7 +961,7 @@
         "classification": "IDIQ",
         "status": "awarded",
         "naics": "621999",
-        "last_verified": "2026-10-05"
+        "last_verified": "2026-10-18"
       }
     },
     {
@@ -1326,7 +1378,7 @@
         "classification": "Award",
         "status": "awarded",
         "naics": "541618",
-        "last_verified": "2026-08-17"
+        "last_verified": "2026-10-18"
       }
     },
     {
@@ -1421,7 +1473,7 @@
         "classification": "Award",
         "status": "awarded",
         "naics": "541519",
-        "last_verified": "2026-08-17"
+        "last_verified": "2026-10-18"
       }
     },
     {
@@ -1436,9 +1488,9 @@
       "canonical_name": "NIH Scientific & Technical Support Services IDIQ ($3B)",
       "properties": {
         "classification": "Solicitation",
-        "status": "active",
+        "status": "closed",
         "naics": "541714",
-        "last_verified": "2026-10-09"
+        "last_verified": "2026-10-19"
       }
     },
     {
@@ -1449,8 +1501,98 @@
         "classification": "Solicitation",
         "status": "awarded",
         "naics": "541720",
-        "last_verified": "2026-08-17"
+        "last_verified": "2026-10-19"
       }
+    },
+    {
+      "id": "17-idiq-holders-abt-global",
+      "type": "Contractor",
+      "canonical_name": "17 IDIQ holders : Abt Global",
+      "properties": {}
+    },
+    {
+      "id": "acumen",
+      "type": "Contractor",
+      "canonical_name": "Acumen",
+      "properties": {}
+    },
+    {
+      "id": "arbor-research",
+      "type": "Contractor",
+      "canonical_name": "Arbor Research",
+      "properties": {}
+    },
+    {
+      "id": "actuarial-research-corp",
+      "type": "Contractor",
+      "canonical_name": "Actuarial Research Corp",
+      "properties": {}
+    },
+    {
+      "id": "booz-allen",
+      "type": "Contractor",
+      "canonical_name": "Booz Allen",
+      "properties": {}
+    },
+    {
+      "id": "deloitte",
+      "type": "Contractor",
+      "canonical_name": "Deloitte",
+      "properties": {}
+    },
+    {
+      "id": "gdit",
+      "type": "Contractor",
+      "canonical_name": "GDIT",
+      "properties": {}
+    },
+    {
+      "id": "guidehouse",
+      "type": "Contractor",
+      "canonical_name": "Guidehouse",
+      "properties": {}
+    },
+    {
+      "id": "l-m-policy-research",
+      "type": "Contractor",
+      "canonical_name": "L&M Policy Research",
+      "properties": {}
+    },
+    {
+      "id": "lewin-group",
+      "type": "Contractor",
+      "canonical_name": "Lewin Group",
+      "properties": {}
+    },
+    {
+      "id": "livanta",
+      "type": "Contractor",
+      "canonical_name": "Livanta",
+      "properties": {}
+    },
+    {
+      "id": "mathematica",
+      "type": "Contractor",
+      "canonical_name": "Mathematica",
+      "properties": {}
+    },
+    {
+      "id": "norc",
+      "type": "Contractor",
+      "canonical_name": "NORC",
+      "properties": {}
+    },
+    {
+      "id": "tria-federal",
+      "type": "Contractor",
+      "canonical_name": "Tria Federal",
+      "properties": {}
+    },
+    {
+      "id": "westat",
+      "type": "Contractor",
+      "canonical_name": "Westat",
+      "properties": {}
     },
     {
       "id": "acf-ccwis-support-task-recompete-child-welfare-information-s",
@@ -1482,7 +1624,7 @@
         "classification": "Program Watch",
         "status": "active",
         "naics": "541511",
-        "last_verified": "2026-08-17"
+        "last_verified": "2026-10-19"
       }
     },
     {
@@ -2093,7 +2235,7 @@
       "type": "Person",
       "canonical_name": "Mr. William Walker",
       "properties": {
-        "title": "Assistant Director, Healthcare Administration & Operations"
+        "title": "Assistant Director, Healthcare Administration and Operations"
       }
     },
     {
@@ -2207,9 +2349,9 @@
       "properties": {}
     },
     {
-      "id": "dr-stephen-ferrara",
+      "id": "dr-vincent-lee-ball",
       "type": "Person",
-      "canonical_name": "Dr. Stephen Ferrara",
+      "canonical_name": "Dr. Vincent Lee Ball",
       "properties": {
         "title": "Principal Deputy Assistant Secretary of War for Health Affairs"
       }
@@ -2329,6 +2471,14 @@
       }
     },
     {
+      "id": "sara-reistad-long",
+      "type": "Person",
+      "canonical_name": "Sara Reistad-Long",
+      "properties": {
+        "title": "Chief Strategy Officer, Strategic Affairs Office"
+      }
+    },
+    {
       "id": "gene-civillico",
       "type": "Person",
       "canonical_name": "Gene Civillico",
@@ -2425,14 +2575,6 @@
       }
     },
     {
-      "id": "sara-reistad-long",
-      "type": "Person",
-      "canonical_name": "Sara Reistad-Long",
-      "properties": {
-        "title": "Chief Strategy Officer, Strategic Affairs Office"
-      }
-    },
-    {
       "id": "keith-martin",
       "type": "Person",
       "canonical_name": "Keith Martin",
@@ -2461,7 +2603,7 @@
       "type": "Person",
       "canonical_name": "Benjamin Bryant",
       "properties": {
-        "title": "Deputy Director, Business Innovation Division; Acting Head of Contracting Activity per the HHS HCA roster"
+        "title": "Deputy Director, Business Innovation Division; Acting Head of Contracting Activity (per the HHS HCA roster)"
       }
     },
     {
@@ -2492,6 +2634,14 @@
       "canonical_name": "Margarita Devlin",
       "properties": {
         "title": "Principal Deputy Under Secretary for Benefits, performing the duties of the Under Secretary"
+      }
+    },
+    {
+      "id": "sandra-d-flint",
+      "type": "Person",
+      "canonical_name": "Sandra D. Flint",
+      "properties": {
+        "title": "Deputy Under Secretary for Field Operations"
       }
     },
     {
@@ -4024,6 +4174,28 @@
       }
     },
     {
+      "id": "article-the-waiting-days",
+      "type": "Article",
+      "canonical_name": "The Waiting Days",
+      "properties": {
+        "slug": "the-waiting-days",
+        "type": "article",
+        "url": "/newsletter/the-waiting-days/",
+        "published": "2026-10-13"
+      }
+    },
+    {
+      "id": "article-who-holds-the-hospital",
+      "type": "Article",
+      "canonical_name": "Who Holds the Hospital",
+      "properties": {
+        "slug": "who-holds-the-hospital",
+        "type": "article",
+        "url": "/newsletter/who-holds-the-hospital/",
+        "published": "2026-10-16"
+      }
+    },
+    {
       "id": "article-capture-corner-2026-04-29",
       "type": "Article",
       "canonical_name": "DHA Reorganization: Sixteen Changes, Five That Move Your Pipeline",
@@ -4442,6 +4614,28 @@
       }
     },
     {
+      "id": "article-capture-corner-2026-10-13",
+      "type": "Article",
+      "canonical_name": "Who Builds the Clock",
+      "properties": {
+        "slug": "capture-corner-2026-10-13",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-10-13.html",
+        "published": "2026-10-13"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-10-16",
+      "type": "Article",
+      "canonical_name": "The Bench Is the Buy",
+      "properties": {
+        "slug": "capture-corner-2026-10-16",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-10-16.html",
+        "published": "2026-10-16"
+      }
+    },
+    {
       "id": "article-premium-briefs-2026-03-21",
       "type": "Article",
       "canonical_name": "Week of March 21, 2026",
@@ -4648,50 +4842,6 @@
         "type": "contract_intel",
         "url": "/contracts/fda-sentinel-3-0/",
         "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-va-health-services-devsecops",
-      "type": "Article",
-      "canonical_name": "VA Health Services DevSecOps",
-      "properties": {
-        "slug": "va-health-services-devsecops",
-        "type": "contract_intel",
-        "url": "/contracts/va-health-services-devsecops/",
-        "published": "2026-10-05"
-      }
-    },
-    {
-      "id": "article-va-data-center-and-telecommunications-modernization",
-      "type": "Article",
-      "canonical_name": "VA Data Center and Telecommunications Modernization",
-      "properties": {
-        "slug": "va-data-center-and-telecommunications-modernization",
-        "type": "contract_intel",
-        "url": "/contracts/va-data-center-and-telecommunications-modernization/",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-va-helm-scmdso-healthcare-environment-and-logistics-manageme",
-      "type": "Article",
-      "canonical_name": "VA HELM / SCMDSO (Healthcare Environment and Logistics Management)",
-      "properties": {
-        "slug": "va-helm-scmdso-healthcare-environment-and-logistics-management-",
-        "type": "contract_intel",
-        "url": "/contracts/va-supply-chain-devsecops-helm/",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-va-ie-o-tista-task-order-36c10b26f0468",
-      "type": "Article",
-      "canonical_name": "VA IE&O (TISTA, task order 36C10B26F0468)",
-      "properties": {
-        "slug": "va-ie-o-tista-task-order-36c10b26f0468-",
-        "type": "contract_intel",
-        "url": "/contracts/va-ieo-tista-36c10b26f0468/",
-        "published": "2026-10-05"
       }
     }
   ],
@@ -5029,7 +5179,7 @@
     },
     {
       "from_id": "dla-mspv-gen-vi",
-      "to_id": "naics-339113",
+      "to_id": "naics-423450",
       "relation": "covers_naics",
       "properties": {},
       "weight": 1
@@ -5300,8 +5450,36 @@
     },
     {
       "from_id": "dha",
-      "to_id": "dha-data-governance-wosb-set-aside",
+      "to_id": "dha-data-governance-data-methods-and-strategy-ht001126ce015",
       "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "taurian-consulting-2-llc",
+      "to_id": "dha-data-governance-data-methods-and-strategy-ht001126ce015",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "dha-data-governance-data-methods-and-strategy-ht001126ce015",
+      "to_id": "taurian-consulting-2-llc",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "contract-ht001126ce015",
+      "to_id": "dha-data-governance-data-methods-and-strategy-ht001126ce015",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "dha-data-governance-data-methods-and-strategy-ht001126ce015",
+      "to_id": "contract-ht001126ce015",
+      "relation": "awarded_to",
       "properties": {},
       "weight": 1
     },
@@ -5566,8 +5744,71 @@
     },
     {
       "from_id": "dha",
+      "to_id": "dha-paratus-cso-ht003826sc004",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "aoi-1-award-not-verified",
+      "to_id": "dha-paratus-cso-ht003826sc004",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "dha-paratus-cso-ht003826sc004",
+      "to_id": "aoi-1-award-not-verified",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "dha",
       "to_id": "peo-dhms-cso-competitive-solutions-opening",
       "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "window-closed",
+      "to_id": "peo-dhms-cso-competitive-solutions-opening",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "peo-dhms-cso-competitive-solutions-opening",
+      "to_id": "window-closed",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "aoi-awards-are-tracked-in-data",
+      "to_id": "peo-dhms-cso-competitive-solutions-opening",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "peo-dhms-cso-competitive-solutions-opening",
+      "to_id": "aoi-awards-are-tracked-in-data",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cso-aois-json",
+      "to_id": "peo-dhms-cso-competitive-solutions-opening",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "peo-dhms-cso-competitive-solutions-opening",
+      "to_id": "cso-aois-json",
+      "relation": "awarded_to",
       "properties": {},
       "weight": 1
     },
@@ -6251,6 +6492,216 @@
       "weight": 1
     },
     {
+      "from_id": "17-idiq-holders-abt-global",
+      "to_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "to_id": "17-idiq-holders-abt-global",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "acumen",
+      "to_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "to_id": "acumen",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "arbor-research",
+      "to_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "to_id": "arbor-research",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "actuarial-research-corp",
+      "to_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "to_id": "actuarial-research-corp",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "booz-allen",
+      "to_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "to_id": "booz-allen",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "deloitte",
+      "to_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "to_id": "deloitte",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "gdit",
+      "to_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "to_id": "gdit",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "guidehouse",
+      "to_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "to_id": "guidehouse",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "l-m-policy-research",
+      "to_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "to_id": "l-m-policy-research",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "lewin-group",
+      "to_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "to_id": "lewin-group",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "livanta",
+      "to_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "to_id": "livanta",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "mathematica",
+      "to_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "to_id": "mathematica",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "norc",
+      "to_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "to_id": "norc",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "tria-federal",
+      "to_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "to_id": "tria-federal",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "westat",
+      "to_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms-rmada-3-research-measurement-assessment-design-analysis",
+      "to_id": "westat",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "hhs",
       "to_id": "acf-ccwis-support-task-recompete-child-welfare-information-s",
       "relation": "manages",
@@ -6611,7 +7062,7 @@
       "to_id": "dha",
       "relation": "leads",
       "properties": {
-        "title": "Assistant Director, Healthcare Administration & Operations"
+        "title": "Assistant Director, Healthcare Administration and Operations"
       },
       "weight": 1
     },
@@ -6742,7 +7193,7 @@
       "weight": 1
     },
     {
-      "from_id": "dr-stephen-ferrara",
+      "from_id": "dr-vincent-lee-ball",
       "to_id": "oasd-ha",
       "relation": "leads",
       "properties": {
@@ -6859,6 +7310,15 @@
       "weight": 1
     },
     {
+      "from_id": "sara-reistad-long",
+      "to_id": "arpa-h",
+      "relation": "leads",
+      "properties": {
+        "title": "Chief Strategy Officer, Strategic Affairs Office"
+      },
+      "weight": 1
+    },
+    {
       "from_id": "gene-civillico",
       "to_id": "arpa-h",
       "relation": "leads",
@@ -6967,15 +7427,6 @@
       "weight": 1
     },
     {
-      "from_id": "sara-reistad-long",
-      "to_id": "arpa-h",
-      "relation": "leads",
-      "properties": {
-        "title": "Chief Strategy Officer, Strategic Affairs Office"
-      },
-      "weight": 1
-    },
-    {
       "from_id": "keith-martin",
       "to_id": "arpa-h",
       "relation": "leads",
@@ -7007,7 +7458,7 @@
       "to_id": "arpa-h",
       "relation": "leads",
       "properties": {
-        "title": "Deputy Director, Business Innovation Division; Acting Head of Contracting Activity per the HHS HCA roster"
+        "title": "Deputy Director, Business Innovation Division; Acting Head of Contracting Activity (per the HHS HCA roster)"
       },
       "weight": 1
     },
@@ -7035,6 +7486,15 @@
       "relation": "leads",
       "properties": {
         "title": "Principal Deputy Under Secretary for Benefits, performing the duties of the Under Secretary"
+      },
+      "weight": 1
+    },
+    {
+      "from_id": "sandra-d-flint",
+      "to_id": "vba",
+      "relation": "leads",
+      "properties": {
+        "title": "Deputy Under Secretary for Field Operations"
       },
       "weight": 1
     },
@@ -8054,6 +8514,27 @@
       "weight": 1
     },
     {
+      "from_id": "article-the-waiting-days",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-waiting-days",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-who-holds-the-hospital",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-capture-corner-2026-04-29",
       "to_id": "dhmsm",
       "relation": "mentions",
@@ -8915,6 +9396,34 @@
       "weight": 1
     },
     {
+      "from_id": "article-capture-corner-2026-10-13",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-10-13",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-10-13",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-10-16",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-premium-briefs-2026-03-21",
       "to_id": "federal-ehr",
       "relation": "mentions",
@@ -9405,18 +9914,24 @@
       "weight": 1
     },
     {
-      "from_id": "article-va-health-services-devsecops",
-      "to_id": "va-health-services-devsecops",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
+      "from_id": "dha",
+      "to_id": "taurian-consulting-2-llc",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "dha-data-governance-data-methods-and-strategy-ht001126ce015",
+        "derived": true
+      },
+      "weight": 0.8
     },
     {
-      "from_id": "article-va-data-center-and-telecommunications-modernization",
-      "to_id": "va-data-center-and-telecommunications-modernization",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
+      "from_id": "dha",
+      "to_id": "contract-ht001126ce015",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "dha-data-governance-data-methods-and-strategy-ht001126ce015",
+        "derived": true
+      },
+      "weight": 0.8
     },
     {
       "from_id": "dha",
@@ -9464,6 +9979,46 @@
       "relation": "incumbent_of",
       "properties": {
         "via_contract": "dha-enterprise-wide-cso-ht003826sc005",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "dha",
+      "to_id": "aoi-1-award-not-verified",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "dha-paratus-cso-ht003826sc004",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "dha",
+      "to_id": "window-closed",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "peo-dhms-cso-competitive-solutions-opening",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "dha",
+      "to_id": "aoi-awards-are-tracked-in-data",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "peo-dhms-cso-competitive-solutions-opening",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "dha",
+      "to_id": "cso-aois-json",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "peo-dhms-cso-competitive-solutions-opening",
         "derived": true
       },
       "weight": 0.8
@@ -9914,6 +10469,156 @@
       "relation": "incumbent_of",
       "properties": {
         "via_contract": "cms-cloud-infrastructure-oci",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cms",
+      "to_id": "17-idiq-holders-abt-global",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cms-rmada-3-research-measurement-assessment-design-analysis",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cms",
+      "to_id": "acumen",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cms-rmada-3-research-measurement-assessment-design-analysis",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cms",
+      "to_id": "arbor-research",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cms-rmada-3-research-measurement-assessment-design-analysis",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cms",
+      "to_id": "actuarial-research-corp",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cms-rmada-3-research-measurement-assessment-design-analysis",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cms",
+      "to_id": "booz-allen",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cms-rmada-3-research-measurement-assessment-design-analysis",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cms",
+      "to_id": "deloitte",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cms-rmada-3-research-measurement-assessment-design-analysis",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cms",
+      "to_id": "gdit",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cms-rmada-3-research-measurement-assessment-design-analysis",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cms",
+      "to_id": "guidehouse",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cms-rmada-3-research-measurement-assessment-design-analysis",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cms",
+      "to_id": "l-m-policy-research",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cms-rmada-3-research-measurement-assessment-design-analysis",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cms",
+      "to_id": "lewin-group",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cms-rmada-3-research-measurement-assessment-design-analysis",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cms",
+      "to_id": "livanta",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cms-rmada-3-research-measurement-assessment-design-analysis",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cms",
+      "to_id": "mathematica",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cms-rmada-3-research-measurement-assessment-design-analysis",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cms",
+      "to_id": "norc",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cms-rmada-3-research-measurement-assessment-design-analysis",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cms",
+      "to_id": "tria-federal",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cms-rmada-3-research-measurement-assessment-design-analysis",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cms",
+      "to_id": "westat",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cms-rmada-3-research-measurement-assessment-design-analysis",
         "derived": true
       },
       "weight": 0.8

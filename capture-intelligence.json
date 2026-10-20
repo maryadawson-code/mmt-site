@@ -465,12 +465,12 @@
     {
       "id": "s17",
       "agency": "CMS",
-      "program": "SPARC and RMADA: the big vehicles have no posted recompetes",
-      "signal": "SPARC ($25B program ceiling) ordering periods run out between mid-2026 and February 2027 depending on the award, and no SPARC II solicitation was found on October 5. RMADA 3 (about $5B) is likewise unposted. Both are foundational CMS vehicles; neither appears with a date on the September workbook.",
-      "confidence": "directional",
-      "action_window": "No solicitation posted for either as of Oct 5, 2026. Watch the October and November CMS workbooks.",
+      "program": "SPARC has no posted recompete; RMADA 3 is awarded",
+      "signal": "SPARC ($25B program ceiling) ordering periods run out between mid-2026 and February 2027 depending on the award, and no SPARC II solicitation was found on October 5. RMADA 3 is not a pursuit any more: CMS awarded 17 IDIQs (75FCMC26D0001 to 75FCMC26D0017) on July 8, 2026 with a combined ceiling of about $3.5B and ordering through July 8, 2031. The $5B figure that circulated belonged to RMADA 2. Neither vehicle appears with a date on the CMS workbooks.",
+      "confidence": "verified",
+      "action_window": "No SPARC II solicitation posted as of Oct 19, 2026. RMADA 3 awarded July 8, 2026; task orders are the remaining route in. Watch the November CMS workbook.",
       "urgent": false,
-      "what_to_do": "Do not plan FY2027 CMS revenue on a SPARC II award. Plan it on the Q1 lines in signal 16 and on task orders under the vehicles that still have ordering time. If you are a SPARC holder, the ordering-period end date on your award is your real deadline.",
+      "what_to_do": "Do not plan FY2027 CMS revenue on a SPARC II award. Plan it on the Q1 lines in signal 16 and on task orders under the vehicles that still have ordering time. If you are a SPARC holder, the ordering-period end date on your award is your real deadline. If you did not win an RMADA 3 seat, the route is teaming with one of the 17 awardees on measurement and model-evaluation task orders.",
       "free_preview": false,
       "sources": [
         {
@@ -482,6 +482,11 @@
           "label": "HigherGov SPARC vehicle listing (ordering periods by award)",
           "url": "https://www.highergov.com/vehicle/strategic-partners-acquisition-readiness-contract-sparc-1043/",
           "grade": "Corroborated"
+        },
+        {
+          "label": "SAM.gov RMADA 3 award notice (17 awards, $3.5B combined ceiling, July 2026)",
+          "url": "https://sam.gov/opp/4e346a0e00f447c2be699a776d4c9dd3/view",
+          "grade": "Verified"
         }
       ]
     },

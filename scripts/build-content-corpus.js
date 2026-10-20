@@ -421,7 +421,10 @@ function buildIdiqVehicles() {
         v.psc ? `PSC: ${v.psc}` : "",
         v.burn_status ? `MMT burn status: ${v.burn_status}` : "",
         v.incumbent_vulnerability_score ? `MMT Incumbent Vulnerability Score: ${v.incumbent_vulnerability_score}/5` : "",
-        v.forecast_event ? `MMT forecast: ${v.forecast_event} (${v.forecast_window || ""}) — ${v.forecast_confidence_pct || "?"}% confidence` : "",
+        // Window and confidence print only when the dataset carries them. An
+        // awarded vehicle has no forecast confidence to state, and "?% confidence"
+        // read as an unknown forecast rather than a settled fact.
+        v.forecast_event ? `MMT forecast: ${v.forecast_event}${v.forecast_window ? ` (${v.forecast_window})` : ""}${v.forecast_confidence_pct ? ` — ${v.forecast_confidence_pct}% confidence` : ""}` : "",
         v.mmt_note ? `MMT note: ${v.mmt_note}` : "",
         v.primary_source_url ? `Primary source: ${v.primary_source_url}` : "",
       ].filter(Boolean).join("\n");
@@ -514,8 +517,18 @@ function buildForecastRows() {
   try {
     const data = readJson(FORECAST_PIPELINE_FILE);
     if (!data) return [];
-    const date = isoDate((data._schema || {}).last_verified);
+    const schema = data._schema || {};
+    const baseDate = isoDate(schema.last_verified);
+    // 2026-10-19: a partial re-pull records itself in _schema.reverified
+    // ({ date, not_re_pulled: [agencies] }). A row from a re-pulled agency
+    // is dated by that pull; everything else keeps the full-pull date, so
+    // the corpus says when each row was last read, not when the file was.
+    const rev = schema.reverified && typeof schema.reverified === "object" ? schema.reverified : null;
+    const revDate = rev ? isoDate(rev.date) : null;
+    const notRePulled = new Set(rev && Array.isArray(rev.not_re_pulled) ? rev.not_re_pulled : []);
+    const rowDate = (agency) => (revDate && !notRePulled.has(agency) ? revDate : baseDate);
     return (data.items || []).map((r, i) => {
+      const date = rowDate(r.agency);
       const fy = fiscalYearOf(r.anticipated_solicitation);
       const body = [
         `Agency: ${r.agency || ""}`,

@@ -236,7 +236,7 @@ The "sources" array should list all URLs you consulted during research.
 CRITICAL GUARDRAILS:
 - NEVER use "T-5 BPA" — correct name is T4NG / T4NG2.
 - TRICARE West vendor is TriWest Healthcare Alliance, NOT Health Net Federal.
-- CIO-SP4 was cancelled February 2026 — do not list as active.
+- CIO-SP4 was cancelled January 30 2026 and never awarded; do not list it as active. CIO-SP3, CIO-SP3 SB and CIO-CS take no new orders after October 29 2026.
 - VA EHRM is resuming April 2026, NOT paused.
 - Always include source URL for every data point.
 - If confidence < 70%, set needs_verification: true.

@@ -6,7 +6,7 @@
     "last_verified": "2026-09-20",
     "generated": "2026-09-20",
     "scope": "State Medicaid enterprise systems and the routes into them. Not general state IT procurement.",
-    "research_method": "Web search result snippets only (page fetches were blocked in the build environment). Every fact carries the page it came from and the retrieval date. Fields no snippet supported are null and listed in pending; nothing was inferred. Official state, CMS, eCFR and NASPO ValuePoint pages read as high confidence; vendor announcements, trade press and third-party listings as medium.",
+    "research_method": "Web search result snippets only (page fetches were blocked in the build environment). Every fact carries the page it came from and the retrieval date. Fields no snippet supported are null and listed in pending; nothing was inferred. Official state, CMS, eCFR and NASPO ValuePoint pages read as high confidence; vendor announcements, trade press and third-party listings as medium. A 2026-10-19 pass re-read the five NASPO ValuePoint portfolio pages live and refreshed the vehicle and addendum rows they support; state agency, module and funding rows outside that set still carry their September retrieval dates.",
     "freshness_windows_days": {
       "state_agency": 90,
       "state_solicitation": 7,
@@ -895,15 +895,15 @@
           "state_solicitation": "not_covered",
           "mes_module": "partial",
           "coop_vehicle": "live",
-          "participating_addendum": "not_covered",
+          "participating_addendum": "partial",
           "funding_condition": "live"
         },
-        "last_refresh": "2026-09-20",
+        "last_refresh": "2026-10-19",
         "reasons": {
           "state_solicitation": "no portal ingestion for this state yet",
           "mes_module": "incumbents from official or dated sources; contract ends and certification status largely unread",
           "coop_vehicle": "national NASPO ValuePoint portfolios apply to every state",
-          "participating_addendum": "no participating addendum found for this state in the portfolios read",
+          "participating_addendum": "addenda listed on portfolio or state pages; dates largely unread",
           "funding_condition": "federal rules apply to every state"
         }
       },
@@ -3887,12 +3887,12 @@
       "contract_end": "2026-06-30",
       "certification_status": null,
       "status": "in_operation",
-      "note": "A 2021 vendor announcement said the contract was extended through June 2026; HCA is staffing a ProviderOne Modular Replacement project. Status after June 2026 not yet read.",
+      "note": "A 2021 vendor announcement said the contract was extended through June 2026; HCA is staffing a ProviderOne Modular Replacement project. Status after June 2026 not yet read. Re-checked 2026-10-19: the CNSI release URL carried in September now redirects to the Acentra home page, so the ExecutiveGov account of the same March 2021 announcement (extension through June 2026) stands in; no public notice of an extension or replacement past June 2026 was found.",
       "sources": [
         {
-          "label": "CNSI: Washington extension announcement",
-          "url": "https://www.cns-inc.com/insights/press-releases/washington-state-cms-approve-five-year-extension-of-cnsi-contract/",
-          "retrieved": "2026-09-20"
+          "label": "ExecutiveGov (secondary): CNSI receives five-year ProviderOne MMIS contract extension from Washington HCA, 2021-03-18",
+          "url": "https://www.executivegov.com/articles/cnsi-receives-five-year-providerone-mmis-contract-extension-from-washington-state-health-care-authority-ceo-todd-stottlemyer-quoted",
+          "retrieved": "2026-10-19"
         },
         {
           "label": "Washington job posting: ProviderOne Modular Replacement Project Manager",
@@ -3900,7 +3900,7 @@
           "retrieved": "2026-09-20"
         }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "medium",
       "pending": [
         "status after 2026-06-30",
@@ -3965,7 +3965,7 @@
       "contract_end": "2026-09-30",
       "certification_status": null,
       "status": "in_operation",
-      "note": "DTMB change notice shows a revised expiration of September 30 2026; an earlier change notice extended the contract by eight years and added $480,000,000. A re-procurement notice is not yet read.",
+      "note": "DTMB change notice shows a revised expiration of September 30 2026; an earlier change notice extended the contract by eight years and added $480,000,000. A re-procurement notice is not yet read. Re-check attempted 2026-10-19: the DTMB change notice returned 403 to a page fetch and downloaded by script as a 5 MB PDF this pass could not read, so status after September 30 2026 is still not read.",
       "sources": [
         {
           "label": "Michigan DTMB contract 071B6200168C change notice 26",
@@ -3994,7 +3994,7 @@
       "status": "closed",
       "award": null,
       "portal_url": null,
-      "note": "Precedes the FI-M&O RFP DHCS says it is developing; dates not read.",
+      "note": "Precedes the FI-M&O RFP DHCS says it is developing; dates not read. DHCS pages sit behind an Incapsula challenge and did not open to a script on 2026-10-19; not dead, just not re-read.",
       "sources": [
         {
           "label": "DHCS RFI 23-072",
@@ -4021,7 +4021,7 @@
       "status": "planned",
       "award": null,
       "portal_url": null,
-      "note": "DHCS states it is developing the RFP.",
+      "note": "DHCS states it is developing the RFP. DHCS pages sit behind an Incapsula challenge and did not open to a script on 2026-10-19; not dead, just not re-read.",
       "sources": [
         {
           "label": "DHCS FI-M&O RFI page",
@@ -4043,25 +4043,22 @@
       "title": "Request for Information for Innovative Medicaid Enterprise Systems (MES) Solutions",
       "module": "MMIS, eligibility and enrollment, supporting services",
       "type": "RFI",
-      "posted": null,
-      "due": null,
+      "posted": "2021-04-29",
+      "due": "2021-06-14",
       "status": "closed",
       "award": null,
       "portal_url": null,
-      "note": "Vendor meetings were scheduled for December 2021 or January 2022.",
+      "note": "RFI released April 29 2021; questions due May 13 2021; responses due June 14 2021 by 5:00 p.m. ET. Vendor meetings were scheduled for December 2021 or January 2022.",
       "sources": [
         {
           "label": "NYS DOH MES Solutions RFI",
           "url": "https://www.health.ny.gov/funding/rfi/mes_solutions/index.htm",
-          "retrieved": "2026-09-20"
+          "retrieved": "2026-10-19"
         }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "high",
-      "pending": [
-        "posted",
-        "due"
-      ]
+      "pending": []
     },
     {
       "id": "tx-claims-solicitations-planned",
@@ -4226,14 +4223,15 @@
         "IA",
         "MO",
         "MT",
+        "PA",
         "SD"
       ],
-      "note": "Six suppliers were awarded in 2018 (including Digital Harbor, absent from the current listing). As of May 5 2025 Montana was working on renewals of the master agreements.",
+      "note": "Six suppliers were awarded in 2018 (including Digital Harbor, absent from the current listing). As of May 5 2025 Montana was working on renewals of the master agreements. Re-read 2026-10-19: the portfolio page shows expiration and renewal limit of May 31 2028 and seven state participating addenda (AZ, GA, IA, MO, MT, PA, SD). Pennsylvania's addendum with Gainwell is new since the September pass. Missouri's is listed under DXC Technology Services, LLC, a name that is not among the five current suppliers.",
       "sources": [
         {
           "label": "NASPO ValuePoint portfolio page",
           "url": "https://www.naspovaluepoint.org/portfolios/medicaid-enterprise-systems-provider-services-module/",
-          "retrieved": "2026-09-20"
+          "retrieved": "2026-10-19"
         },
         {
           "label": "NASPO ValuePoint press release: MMIS Provider Services Module contract",
@@ -4251,7 +4249,7 @@
           "retrieved": "2026-09-20"
         }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "medium",
       "pending": [
         "awarded_suppliers[].master_agreement (Acentra, Gainwell)",
@@ -4267,7 +4265,7 @@
       "solicitation": "DPHHS-RFP-2020-025454T",
       "award_date": "2021-01-04",
       "term_start": "2021-01-04",
-      "term_end": "2028-01-03",
+      "term_end": "2030-12-31",
       "module_scope": [
         "claims receipt",
         "adjudication and editing",
@@ -4296,12 +4294,12 @@
         "AK",
         "MT"
       ],
-      "note": "Optum describes itself as an approved vendor for this module; Georgia published a notice of intent to utilize. Master agreement executed by Montana January 4 2021 with renewals through January 3 2028.",
+      "note": "Optum describes itself as an approved vendor for this module; Georgia published a notice of intent to utilize. Master agreement executed by Montana January 4 2021. Re-read 2026-10-19: the portfolio page shows Portfolio Expiration and Renewal Limit of December 31 2030 (the September pass carried a renewal through January 3 2028), four suppliers (Acentra, Conduent, Gainwell, Infocrossing), and state participating addenda for Alaska and Montana, both with Gainwell under identifier 21091790030.",
       "sources": [
         {
           "label": "NASPO ValuePoint portfolio page",
           "url": "https://www.naspovaluepoint.org/portfolios/medicaid-enterprise-systems-claims-processing-and-management-services-module/",
-          "retrieved": "2026-09-20"
+          "retrieved": "2026-10-19"
         },
         {
           "label": "NASPO ValuePoint press release: claims module added",
@@ -4314,7 +4312,7 @@
           "retrieved": "2026-09-20"
         }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "medium",
       "pending": [
         "awarded_suppliers[].master_agreement",
@@ -4358,6 +4356,10 @@
         {
           "name": "Stellarware Corporation",
           "master_agreement": "99999-NVP-DCH0000120-0002"
+        },
+        {
+          "name": "BRSi, LP dba Benefit Recovery",
+          "master_agreement": null
         }
       ],
       "participating_states": [
@@ -4367,12 +4369,12 @@
         "MO",
         "RI"
       ],
-      "note": "Sourcing partners at solicitation: Louisiana, Missouri, Montana, Rhode Island; Alaska submitted an intent to participate. The term shown is Stellarware's master agreement term.",
+      "note": "Sourcing partners at solicitation: Louisiana, Missouri, Montana, Rhode Island; Alaska submitted an intent to participate. The term shown is Stellarware's master agreement term. Re-read 2026-10-19: the portfolio page shows awarded February 1 2022, Portfolio Expiration December 31 2027 and Renewal Limit December 31 2031, six suppliers, and state participating addenda for LA, MN, MS, MO and RI.",
       "sources": [
         {
           "label": "NASPO ValuePoint portfolio page",
           "url": "https://www.naspovaluepoint.org/portfolios/medicaid-enterprise-systems-third-party-liability/",
-          "retrieved": "2026-09-20"
+          "retrieved": "2026-10-19"
         },
         {
           "label": "Georgia DCH TPL procurement page",
@@ -4390,10 +4392,9 @@
           "retrieved": "2026-09-20"
         }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "medium",
       "pending": [
-        "full supplier count",
         "awarded_suppliers[].master_agreement (all but Stellarware)"
       ]
     },
@@ -4443,12 +4444,12 @@
         }
       ],
       "participating_states": [],
-      "note": "Notice of intent to award October 20 2025; master agreements effective October 29 2025; the portfolio page shows an expiry of October 28 2026 while the portfolio slug reads 2025-2035, so the renewal path is not yet confirmed. No participating addenda were available as of the research date; Georgia will down-select through a state participating addendum.",
+      "note": "Notice of intent to award October 20 2025; master agreements effective October 29 2025; the portfolio page shows an expiry of October 28 2026 while the portfolio slug reads 2025-2035, so the renewal path is not yet confirmed. No participating addenda were available as of the research date; Georgia will down-select through a state participating addendum. Re-read 2026-10-19: the page still shows an expiration of October 28 2026, nine days out, and still says participating addenda are not currently available; no renewal notice is posted.",
       "sources": [
         {
           "label": "NASPO ValuePoint portfolio page",
           "url": "https://www.naspovaluepoint.org/portfolios/medicaid-enterprise-systems-pharmacy-benefits-services/",
-          "retrieved": "2026-09-20"
+          "retrieved": "2026-10-19"
         },
         {
           "label": "NASPO ValuePoint award announcement",
@@ -4466,7 +4467,7 @@
           "retrieved": "2026-09-20"
         }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "medium",
       "pending": [
         "term_end renewal structure (2026-10-28 shown; slug says 2035)",
@@ -4495,13 +4496,39 @@
           "master_agreement": null
         }
       ],
-      "participating_states": [],
-      "note": "Successor to Cloud Solutions 2016 to 2026, which expires September 15 2026. No evidence in this pass that an MES module has been bought through it; an MES vendor holding a cloud master agreement is not the same fact.",
+      "participating_states": [
+        "AK",
+        "CO",
+        "CT",
+        "DE",
+        "FL",
+        "HI",
+        "IL",
+        "IA",
+        "KY",
+        "LA",
+        "MD",
+        "MN",
+        "MS",
+        "MO",
+        "NE",
+        "NV",
+        "NM",
+        "ND",
+        "PA",
+        "UT",
+        "VT",
+        "VA",
+        "WA",
+        "WI",
+        "WY"
+      ],
+      "note": "Successor to Cloud Solutions 2016 to 2026, which expires September 15 2026. No evidence in this pass that an MES module has been bought through it; an MES vendor holding a cloud master agreement is not the same fact. Re-read 2026-10-19: the portfolio page shows the master agreements effective September 16 2026 through September 15 2036, lists 56 suppliers while its own text says 58 were awarded with 54 master agreements fully executed, and lists 25 state participating addenda plus a non-state addendum for the DC Health Benefit Exchange Authority. The legacy Cloud Solutions portfolio ran through September 15 2026.",
       "sources": [
         {
           "label": "NASPO ValuePoint portfolio page",
           "url": "https://www.naspovaluepoint.org/portfolios/cloud-and-software-solutions/",
-          "retrieved": "2026-09-20"
+          "retrieved": "2026-10-19"
         },
         {
           "label": "NASPO ValuePoint award announcement",
@@ -4514,12 +4541,11 @@
           "retrieved": "2026-09-20"
         }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "medium",
       "pending": [
         "solicitation",
         "full supplier list",
-        "participating_states",
         "MES purchases through this vehicle"
       ]
     }
@@ -4542,7 +4568,7 @@
           "retrieved": "2026-09-20"
         }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "high",
       "pending": [
         "effective",
@@ -4571,7 +4597,7 @@
           "retrieved": "2026-09-20"
         }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "medium",
       "pending": [
         "expires"
@@ -4594,7 +4620,7 @@
           "retrieved": "2026-09-20"
         }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "medium",
       "pending": [
         "effective",
@@ -4605,23 +4631,22 @@
       "id": "az-psm",
       "state": "AZ",
       "coop_vehicle_id": "naspo-vp-mes-provider-services",
-      "supplier": null,
+      "supplier": "Acentra Health, LLC",
       "status": "executed",
       "effective": null,
       "expires": null,
       "reference": null,
-      "note": "Listed as a participating state on the portfolio page; supplier not read.",
+      "note": "Listed as a participating state on the portfolio page; supplier not read. Supplier read from the portfolio page on 2026-10-19.",
       "sources": [
         {
           "label": "NASPO ValuePoint portfolio page",
           "url": "https://www.naspovaluepoint.org/portfolios/medicaid-enterprise-systems-provider-services-module/",
-          "retrieved": "2026-09-20"
+          "retrieved": "2026-10-19"
         }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "medium",
       "pending": [
-        "supplier",
         "effective",
         "expires"
       ]
@@ -4630,23 +4655,22 @@
       "id": "ia-psm",
       "state": "IA",
       "coop_vehicle_id": "naspo-vp-mes-provider-services",
-      "supplier": null,
+      "supplier": "HHS Technology Group, LLC",
       "status": "executed",
       "effective": null,
       "expires": null,
       "reference": null,
-      "note": "Listed as a participating state on the portfolio page; supplier not read.",
+      "note": "Listed as a participating state on the portfolio page; supplier not read. Supplier read from the portfolio page on 2026-10-19.",
       "sources": [
         {
           "label": "NASPO ValuePoint portfolio page",
           "url": "https://www.naspovaluepoint.org/portfolios/medicaid-enterprise-systems-provider-services-module/",
-          "retrieved": "2026-09-20"
+          "retrieved": "2026-10-19"
         }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "medium",
       "pending": [
-        "supplier",
         "effective",
         "expires"
       ]
@@ -4655,23 +4679,46 @@
       "id": "mo-psm",
       "state": "MO",
       "coop_vehicle_id": "naspo-vp-mes-provider-services",
-      "supplier": null,
+      "supplier": "DXC Technology Services, LLC (as listed; Gainwell Technologies is the successor name)",
       "status": "executed",
       "effective": null,
       "expires": null,
       "reference": null,
-      "note": "Listed as a participating state on the portfolio page; supplier not read.",
+      "note": "Listed as a participating state on the portfolio page; supplier not read. Supplier read from the portfolio page on 2026-10-19.",
       "sources": [
         {
           "label": "NASPO ValuePoint portfolio page",
           "url": "https://www.naspovaluepoint.org/portfolios/medicaid-enterprise-systems-provider-services-module/",
-          "retrieved": "2026-09-20"
+          "retrieved": "2026-10-19"
         }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "medium",
       "pending": [
-        "supplier",
+        "effective",
+        "expires"
+      ]
+    },
+    {
+      "id": "pa-psm-gainwell",
+      "state": "PA",
+      "coop_vehicle_id": "naspo-vp-mes-provider-services",
+      "supplier": "Gainwell Technologies, LLC",
+      "status": "executed",
+      "effective": null,
+      "expires": null,
+      "reference": null,
+      "note": "Listed as a state participating addendum on the portfolio page on 2026-10-19; not present in the September pass.",
+      "sources": [
+        {
+          "label": "NASPO ValuePoint portfolio page",
+          "url": "https://www.naspovaluepoint.org/portfolios/medicaid-enterprise-systems-provider-services-module/",
+          "retrieved": "2026-10-19"
+        }
+      ],
+      "verified": "2026-10-19",
+      "confidence": "medium",
+      "pending": [
         "effective",
         "expires"
       ]
@@ -4680,23 +4727,22 @@
       "id": "ak-claims",
       "state": "AK",
       "coop_vehicle_id": "naspo-vp-mes-claims-processing",
-      "supplier": null,
+      "supplier": "Gainwell Technologies, LLC",
       "status": "executed",
       "effective": null,
       "expires": null,
       "reference": null,
-      "note": "Alaska is listed as a participating state; supplier not read.",
+      "note": "Alaska is listed as a participating state; supplier not read. Supplier read from the portfolio page on 2026-10-19.",
       "sources": [
         {
           "label": "NASPO ValuePoint claims portfolio page",
           "url": "https://www.naspovaluepoint.org/portfolios/medicaid-enterprise-systems-claims-processing-and-management-services-module/",
-          "retrieved": "2026-09-20"
+          "retrieved": "2026-10-19"
         }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "medium",
       "pending": [
-        "supplier",
         "effective",
         "expires"
       ]
@@ -4705,23 +4751,22 @@
       "id": "mt-claims",
       "state": "MT",
       "coop_vehicle_id": "naspo-vp-mes-claims-processing",
-      "supplier": null,
+      "supplier": "Gainwell Technologies, LLC",
       "status": "executed",
       "effective": null,
       "expires": null,
       "reference": null,
-      "note": "Montana is listed as a participating state; supplier not read.",
+      "note": "Montana is listed as a participating state; supplier not read. Supplier read from the portfolio page on 2026-10-19.",
       "sources": [
         {
           "label": "NASPO ValuePoint claims portfolio page",
           "url": "https://www.naspovaluepoint.org/portfolios/medicaid-enterprise-systems-claims-processing-and-management-services-module/",
-          "retrieved": "2026-09-20"
+          "retrieved": "2026-10-19"
         }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "medium",
       "pending": [
-        "supplier",
         "effective",
         "expires"
       ]
@@ -4766,10 +4811,10 @@
         {
           "label": "NASPO ValuePoint TPL portfolio page",
           "url": "https://www.naspovaluepoint.org/portfolios/medicaid-enterprise-systems-third-party-liability/",
-          "retrieved": "2026-09-20"
+          "retrieved": "2026-10-19"
         }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "medium",
       "pending": [
         "effective",
@@ -4862,7 +4907,7 @@
         {
           "label": "NASPO ValuePoint TPL portfolio page",
           "url": "https://www.naspovaluepoint.org/portfolios/medicaid-enterprise-systems-third-party-liability/",
-          "retrieved": "2026-09-20"
+          "retrieved": "2026-10-19"
         },
         {
           "label": "Stellarware NASPO page",
@@ -4870,7 +4915,7 @@
           "retrieved": "2026-09-20"
         }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "medium",
       "pending": [
         "effective",

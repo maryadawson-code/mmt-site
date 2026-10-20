@@ -190,7 +190,7 @@ const STALE_PATTERNS = [
   { pattern: /\$4\.3B.*initial/i, correction: "~$5.5B + $1.4B extension" },
   { pattern: /\$16B.*combined/i, correction: "$37B-$50B lifecycle" },
   { pattern: /paused at some/i, correction: "Resuming April 2026" },
-  { pattern: /CIO-SP4(?!.*cancel)/i, correction: "CIO-SP4 cancelled Feb 2026" },
+  { pattern: /CIO-SP4(?!.*cancel)/i, correction: "CIO-SP4 cancelled January 30 2026, never awarded" },
 ];
 
 module.exports = { KNOWN_FACTS, CANCELLED_VEHICLES, ACTIVE_VEHICLES, STALE_PATTERNS };

@@ -106,25 +106,26 @@
     "content_gap": false
   },
   {
-    "name": "DHA Data Governance (WOSB Set-Aside)",
+    "name": "DHA Data Governance / Data Methods and Strategy (HT001126CE015)",
     "agency": "Defense Health Agency (DHA)",
-    "vendor": "TBD — proposals due Jan 9, 2026",
-    "value": "~$34M",
-    "status": "active",
+    "vendor": "Taurian Consulting 2 LLC (a Guidehouse and ReefPoint joint venture, per MMT's Sep 11, 2026 brief); contract HT001126CE015",
+    "value": "$8,466,696; period of performance Feb 25, 2026 to Jun 28, 2027",
+    "status": "awarded",
     "classification": "Solicitation",
     "naics": "541512",
-    "description": "Update Sep 11, 2026: corrected from \"upcoming\" — this solicitation has been past its proposal deadline since January and MMT published the timeline in its own Friday Briefs. Proposals closed January 9, 2026 (Mar 21 brief); still in evaluation with no award announced through Mar 28; GAO protest B-424295.1 (BDR Solutions, LLC) dismissed March 30, 2026, clearing the award path (Apr 4 and Apr 11 briefs); the RFP was still live and unawarded as of the Apr 14 issue. Treat as in source selection. No award has been verified against SAM.gov or USASpending from an MMT session, so last_verified is deliberately NOT bumped. Solicitation HT001126RE011 — WOSB set-aside for enterprise data governance using a VAULTIS-Guided Framework. Scope: comprehensive baseline data inventory, centralized metadata repository, Analysis of Alternatives for enterprise data catalog, and automated metadata harvesting tools. Performance period Jan 30, 2026 to Jan 29, 2027 with 12-month options. Connects to the EIDS/MIP data fabric infrastructure. CO: contact via SAM.gov listing.",
-    "link": "https://console.sweetspotgov.com/federal-contracts/5118e94c-ff29-559a-8d57-37ba5c40da36",
+    "description": "Update Oct 19, 2026: awarded. USASpending carries contract HT001126CE015 to Taurian Consulting 2 LLC (the Guidehouse and ReefPoint joint venture I reported in the Sep 11, 2026 brief) at $8,466,696, period Feb 25, 2026 to Jun 28, 2027, NAICS 541512, from 55 offers, award description \"Defense Health Agency Data Methods and Strategy\". SAM.gov lists the set-aside as SBA, a total small business set-aside, not WOSB, so I have corrected the name and the small business note; the slug keeps its old spelling so existing links still work. One caution before you cite this: USASpending carries no solicitation id on the award, so the tie to solicitation HT001126RE011 is my inference from the buying office, the fiscal year, the NAICS code and the scope, and I am saying so rather than presenting it as a matched record. History: solicitation HT001126RE011 asked for enterprise data governance using a VAULTIS-guided framework, with a baseline data inventory, a centralized metadata repository, an analysis of alternatives for an enterprise data catalog, and automated metadata harvesting tools, connected to the EIDS/MIP data fabric. Proposals closed Jan 9, 2026 (Mar 21 brief); GAO protest B-424295.1 (BDR Solutions, LLC) was dismissed Mar 30, 2026, clearing the award path (Apr 4 and Apr 11 briefs); I had it in source selection with no award verified through Sep 11, 2026.",
+    "link": "https://www.usaspending.gov/award/CONT_AWD_HT001126CE015_9700_-NONE-_-NONE-",
     "small_business_eligible": true,
-    "sb_note": "WOSB (Women-Owned Small Business) set-aside",
-    "source": "https://console.sweetspotgov.com/federal-contracts/5118e94c-ff29-559a-8d57-37ba5c40da36",
+    "sb_note": "Total small business set-aside (SAM.gov lists the set-aside as SBA). My earlier WOSB label was wrong.",
+    "source": "https://www.usaspending.gov/award/CONT_AWD_HT001126CE015_9700_-NONE-_-NONE-",
     "source_urls": [
-      "https://console.sweetspotgov.com/federal-contracts/5118e94c-ff29-559a-8d57-37ba5c40da36"
+      "https://www.usaspending.gov/award/CONT_AWD_HT001126CE015_9700_-NONE-_-NONE-",
+      "https://sam.gov/opp/6a8b861b0848469bb559821d678f760e/view"
     ],
-    "last_verified": "2026-03-31",
+    "last_verified": "2026-10-19",
     "pursuit_score": {
       "verdict": "WATCH",
-      "headline": "Upcoming — action window within 6 months",
+      "headline": "Awarded to Taurian Consulting 2 LLC, $8.47M, Feb 25, 2026 to Jun 28, 2027; the sub and teaming play is with the JV",
       "factors": {}
     },
     "slug": "dha-data-governance-wosb-set-aside",
@@ -546,17 +547,20 @@
     "status": "active",
     "classification": "Solicitation",
     "psc": "Varies by AoI",
-    "description": "Update Aug 20, 2026: DHA issued an enterprise-wide Commercial Solutions Opening, HT003826SC005, active 07 August 2026 through 06 August 2027. This replaces the single-office pattern: where prior CSOs (HT003825SC001, HT003826SC001) were scoped to PEO DHMS, this one may be used by any current or future PAE or PMO across the DHA enterprise. It covers all three Portfolio Acquisition Executives: Medical Digital Solutions (EHR, operational medicine, enterprise data and analytics, logistics and business systems), Medical Services (Q-category service acquisitions under DoDI 5000.74), and Medical Products. Read it as a framework, not a requirement. The announcement carries no NAICS, no PSC, no dollar ceiling and no response date; every one of those is set by the individual Areas of Interest (AoIs) issued under it, and the Government may post, extend or revise AoIs at any time. Authorities are 10 U.S.C. 3458 as amended by Section 1823 of the FY2026 NDAA, plus 10 U.S.C. 3201, research OTs under 4021, prototype OTs under 4022, experimental purchases under 4023, Executive Order 14271, FAR Part 12 and DFARS Subpart 212.70. Three phases: Phase I is a pitch deck or concept paper scored Go/No-Go on strategic alignment and basic feasibility; Phase II is an optional demo or oral presentation; Phase III is a full technical and cost proposal by invitation only. Each AoI may publish its own criteria for each phase. Two structural details matter for capture. First, the instrument is chosen from solution maturity: a solution that is immediately deployable points to a FAR Part 12 firm-fixed-price contract (FFP or FFP with performance incentives is mandatory for FAR-based awards here), while anything needing testing, integration or pilot-scale modification to prove feasibility in a DHA clinical or operational environment points to a prototype OT under 4022. Second, 10 U.S.C. 4022(f) carries through: a participant who successfully completes a competitively awarded prototype can receive a sole-source follow-on production award, and Section 1823 extends that follow-on authority to commercial products, commercial services and non-developmental items used in the prototype. That is the same prototype-to-production path AoI 3 proved on the PEO DHMS CSO, now available enterprise-wide. Submission grants the Government authority to use non-Government advisors in review across all phases, after OCI screening; firms with proprietary-data concerns are directed to raise them with the Contracting or Agreement Officer before submitting. Unless an AoI says otherwise there are no restrictions on who may respond, and the Government pays no proposal costs. Administered by the DHACA Defense Healthcare Management Systems Contracting Division (DHMS-CD); pre-AoI coordination runs through J.R. Oliver (DHMS-CD).",
+    "description": "Update Oct 19, 2026: the CSO's own SAM.gov notice is now on file (last modified Sep 30, 2026) and the first Area of Interest has posted. HT003826SC005-AOI0001, AWACS (Application, Workflow, Adoption, and Change Support), is the end user services requirement for PAE Medical Digital Solutions: presolicitation Aug 14, 2026, solicitation Sep 10, 2026, white papers due Sep 14, 2026, NAICS 541512, PSC DA01, no set-aside, a FAR Part 12 contract or a prototype OTA under 10 U.S.C. 4022 at the Government's choice, with a 12-month base plus four options anticipated. No award had posted as of Oct 19, 2026. The AoI is tracked in data/cso-aois.json. Update Aug 20, 2026: DHA issued an enterprise-wide Commercial Solutions Opening, HT003826SC005, active 07 August 2026 through 06 August 2027. This replaces the single-office pattern: where prior CSOs (HT003825SC001, HT003826SC001) were scoped to PEO DHMS, this one may be used by any current or future PAE or PMO across the DHA enterprise. It covers all three Portfolio Acquisition Executives: Medical Digital Solutions (EHR, operational medicine, enterprise data and analytics, logistics and business systems), Medical Services (Q-category service acquisitions under DoDI 5000.74), and Medical Products. Read it as a framework, not a requirement. The announcement carries no NAICS, no PSC, no dollar ceiling and no response date; every one of those is set by the individual Areas of Interest (AoIs) issued under it. The first AoI has posted (see the Oct 19, 2026 update), and the Government may extend or revise AoIs at any time. Authorities are 10 U.S.C. 3458 as amended by Section 1823 of the FY2026 NDAA, plus 10 U.S.C. 3201, research OTs under 4021, prototype OTs under 4022, experimental purchases under 4023, Executive Order 14271, FAR Part 12 and DFARS Subpart 212.70. Three phases: Phase I is a pitch deck or concept paper scored Go/No-Go on strategic alignment and basic feasibility; Phase II is an optional demo or oral presentation; Phase III is a full technical and cost proposal by invitation only. Each AoI may publish its own criteria for each phase. Two structural details matter for capture. First, the instrument is chosen from solution maturity: a solution that is immediately deployable points to a FAR Part 12 firm-fixed-price contract (FFP or FFP with performance incentives is mandatory for FAR-based awards here), while anything needing testing, integration or pilot-scale modification to prove feasibility in a DHA clinical or operational environment points to a prototype OT under 4022. Second, 10 U.S.C. 4022(f) carries through: a participant who successfully completes a competitively awarded prototype can receive a sole-source follow-on production award, and Section 1823 extends that follow-on authority to commercial products, commercial services and non-developmental items used in the prototype. That is the same prototype-to-production path AoI 3 proved on the PEO DHMS CSO, now available enterprise-wide. Submission grants the Government authority to use non-Government advisors in review across all phases, after OCI screening; firms with proprietary-data concerns are directed to raise them with the Contracting or Agreement Officer before submitting. Unless an AoI says otherwise there are no restrictions on who may respond, and the Government pays no proposal costs. Administered by the DHACA Defense Healthcare Management Systems Contracting Division (DHMS-CD); pre-AoI coordination runs through J.R. Oliver (DHMS-CD).",
     "link": "/documents/dha-enterprise-wide-cso-ht003826sc005.pdf",
     "small_business_eligible": true,
     "sb_note": "No restrictions on who may respond unless an individual AoI sets them. Non-traditional defense contractors are reachable through the 4021/4022 OT paths.",
     "source": "/documents/dha-enterprise-wide-cso-ht003826sc005.pdf",
     "source_urls": [
+      "https://sam.gov/opp/cd16b90540b7407fb4de1e028cea74d4/view",
+      "https://sam.gov/opp/5ad10c73d29b487fa70e750479bb0517/view",
+      "https://sam.gov/opp/c0b8a82ad8084732ba09980285ceadda/view",
       "https://missionmeetstech.com/documents/dha-enterprise-wide-cso-ht003826sc005.pdf",
       "https://orangeslices.ai/dha-opens-enterprise-wide-commercial-solutions-opportunity/"
     ],
-    "source_note": "Primary source is the signed FINAL CSO announcement (PDF, mirrored above). A SAM.gov permalink is not cited because the notice id could not be resolved to a 32-hex opportunity id from this session (see the 2026-08-05 malformed-permalink rule).",
-    "last_verified": "2026-08-20",
+    "source_note": "Primary source is the signed FINAL CSO announcement (PDF, mirrored above). The SAM.gov permalink for the CSO was resolved on Oct 19, 2026 (notice id cd16b90540b7407fb4de1e028cea74d4, last modified Sep 30, 2026); the two AoI 0001 notices are the presolicitation and the solicitation.",
+    "last_verified": "2026-10-19",
     "cso": {
       "cso_number": "HT003826SC005",
       "active_from": "2026-08-07",
@@ -604,7 +608,7 @@
         },
         "timeline": {
           "score": "watch",
-          "note": "No due date on the CSO itself; each AoI sets its own and can be posted with little notice"
+          "note": "No due date on the CSO itself; AoI 0001 gave four days between solicitation and white papers (Sep 10 to Sep 14, 2026), so the next AoI can close with little notice"
         },
         "competition": {
           "score": "watch",
@@ -620,35 +624,101 @@
     "content_gap": false
   },
   {
-    "name": "PEO DHMS CSO (Competitive Solutions Opening)",
-    "agency": "Defense Health Agency (DHA) / PEO DHMS",
-    "vendor": "Open competition (rolling submissions)",
-    "value": "Multiple awards, various",
+    "name": "DHA PARATUS CSO (HT003826SC004)",
+    "agency": "Defense Health Agency (DHA) / DHACA",
+    "vendor": "Open competition under a CSO; AoI 1 award not verified",
+    "value": "No ceiling stated in the CSO; dollar values are set by each Area of Interest. AoI 1 value: pending",
     "status": "active",
     "classification": "Solicitation",
+    "psc": "Set per AoI; AoI 1 PSC pending",
+    "description": "Update Oct 19, 2026: a third DHA Commercial Solutions Opening was missing from this tracker. HT003826SC004, PARATUS (Profiling Action and Readiness Tracking Unified System), was posted on SAM.gov by DHA (DHACA) with Area of Interest 1, Periodic Health Assessment Modernization: solicitation posted Jul 23, 2026, responses due Jul 27, 2026, NAICS 541512, prototype OTA path. That four-day window has closed and I have not verified an award. Read this row as a framework, the same way I read the enterprise CSO: a CSO carries no NAICS, ceiling or due date of its own, so the AoI carries them, and the AoI is tracked in data/cso-aois.json. The notice I read does not state the CSO's active dates, phases, instruments beyond the prototype OTA path, point of contact or set-aside, so those fields are pending rather than guessed. If you build readiness or periodic health assessment tooling, the next AoI under this CSO is the one to watch, and the AoI 1 timeline says it can post and close inside a week.",
+    "link": "https://sam.gov/opp/53b337e7deec4fa683c84e6e74a3735e/view",
+    "small_business_eligible": false,
+    "sb_note": "Pending: the AoI 1 notice I read does not state a set-aside, so no small business claim is made here.",
+    "source": "https://sam.gov/opp/53b337e7deec4fa683c84e6e74a3735e/view",
+    "source_urls": [
+      "https://sam.gov/opp/53b337e7deec4fa683c84e6e74a3735e/view"
+    ],
+    "source_note": "Primary source is the SAM.gov notice for AoI 1 (notice id 53b337e7deec4fa683c84e6e74a3735e). The CSO announcement's own active dates, phases, instruments and POC were not in that notice, so they stay null or pending.",
+    "last_verified": "2026-10-19",
+    "cso": {
+      "cso_number": "HT003826SC004",
+      "active_from": null,
+      "active_through": null,
+      "contracting_office": "DHA Contracting Activity (DHACA)",
+      "poc": null,
+      "authorities": [
+        "10 U.S.C. 4022 (prototype Other Transaction Authority), per the AoI 1 notice"
+      ],
+      "phases": null,
+      "instruments": [
+        "Prototype OT (10 U.S.C. 4022), per the AoI 1 notice"
+      ],
+      "pae_scope": null,
+      "aoi_registry": "data/cso-aois.json"
+    },
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "Framework CSO. AoI 1 (Periodic Health Assessment Modernization) closed Jul 27, 2026 after four days; award not verified. Watch the next AoI.",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "Prototype OTA path reaches non-traditionals; the CSO's own terms beyond AoI 1 are not on file"
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "DHA readiness tracking and periodic health assessment, in the clinical and operational medicine lane"
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "AoI 1 gave four days (Jul 23 to Jul 27, 2026); the next AoI can close just as fast"
+        },
+        "competition": {
+          "score": "watch",
+          "note": "Pending: no offer count or award published for AoI 1"
+        },
+        "scope_fit": {
+          "score": "watch",
+          "note": "Only the AoI 1 scope is known; the CSO alone cannot be bid"
+        }
+      }
+    },
+    "slug": "dha-paratus-cso-ht003826sc004",
+    "content_gap": false
+  },
+  {
+    "name": "PEO DHMS CSO (Competitive Solutions Opening)",
+    "agency": "Defense Health Agency (DHA) / PEO DHMS",
+    "vendor": "Window closed; AoI awards are tracked in data/cso-aois.json (AoI 2 T6 Health Systems; AoI 3 ambient listening)",
+    "value": "Multiple awards, various",
+    "status": "closed",
+    "classification": "Solicitation",
     "naics": "541512",
-    "description": "Update Oct 5, 2026: the PEO DHMS CSO (HT0038-25-S-0001, posted July 10, 2025) was listed on SAM.gov as open until July 1, 2026 with staggered Area of Interest deadlines; that window has passed. Whether PEO DHMS has reissued the CSO or is running new areas of interest under DHA's enterprise solicitation is pending official confirmation; the CSO-to-IDIQ transition path it established still stands. Related: DHA named 12 primes to the $300M Deployment Solutions IDIQ (HT003826RE001) in August 2026. Update Aug 17, 2026: The PEO DHMS Commercial Solutions Opening (HT0038-25-S-0001) is an open solicitation seeking prototype OTAs, response window into mid-2026. DHA's non-traditional acquisition pathway under OTA authority (10 U.S.C. § 4022) — CSO/OTA pathway. SAM.gov shows the active CSO open until July 1, 2026. Active AOIs: 1b (AI/ML/NLP), 4 (Data Applications — canceled due to McKinsey task order dispute, but requirement remains valid). AOI 3 (Ambient Listening/DAX Copilot) established a critical precedent: successful CSO prototypes can transition directly to production task orders under the DHMSM/HCDS IDIQ without a new competitive recompete. This 'CSO-to-IDIQ' pathway is being closely watched as a model for closing the valley of death between prototype and production. Innovation threshold (DFARS 212.7001) is a binary gate — must demonstrate a 'new application' of technology, not merely commercial technology at its intended use. Superseded in breadth (not cancelled) by the DHA Enterprise-Wide CSO HT003826SC005, issued Aug 7, 2026, which extends the same CSO framework beyond PEO DHMS to any PAE or PMO across the DHA enterprise; AoIs under this CSO are tracked in data/cso-aois.json.",
+    "description": "Update Oct 19, 2026: the base CSO notice (HT0038-25-S-0001) archived on SAM.gov Jul 16, 2026, and AoI 6, Autonomous Coding and Denials Management Services (notice HT003826X0006, white papers had been due Mar 9, 2026), was cancelled in its entirety on Aug 3, 2026 because the Government requirement changed. PEO DHMS is not reissuing this CSO; new requirements run under the DHA enterprise CSO HT003826SC005, where the first AoI (AWACS, end user services) posted Aug 14, 2026. I am closing this row and keeping it for the AoI history and the prototype-to-production precedent. Update Oct 5, 2026: the PEO DHMS CSO (HT0038-25-S-0001, posted July 10, 2025) was listed on SAM.gov as open until July 1, 2026 with staggered Area of Interest deadlines; that window has passed. The CSO-to-IDIQ transition path it established still stands. Related: DHA named 12 primes to the $300M Deployment Solutions IDIQ (HT003826RE001) in August 2026. Update Aug 17, 2026: The PEO DHMS Commercial Solutions Opening (HT0038-25-S-0001) is an open solicitation seeking prototype OTAs, response window into mid-2026. DHA's non-traditional acquisition pathway under OTA authority (10 U.S.C. § 4022) — CSO/OTA pathway. SAM.gov shows the active CSO open until July 1, 2026. Active AOIs: 1b (AI/ML/NLP), 4 (Data Applications — canceled due to McKinsey task order dispute, but requirement remains valid). AOI 3 (Ambient Listening/DAX Copilot) established a critical precedent: successful CSO prototypes can transition directly to production task orders under the DHMSM/HCDS IDIQ without a new competitive recompete. This 'CSO-to-IDIQ' pathway is being closely watched as a model for closing the valley of death between prototype and production. Innovation threshold (DFARS 212.7001) is a binary gate — must demonstrate a 'new application' of technology, not merely commercial technology at its intended use. Superseded in breadth (not cancelled) by the DHA Enterprise-Wide CSO HT003826SC005, issued Aug 7, 2026, which extends the same CSO framework beyond PEO DHMS to any PAE or PMO across the DHA enterprise; AoIs under this CSO are tracked in data/cso-aois.json.",
     "link": "https://www.executivegov.com/articles/dha-ess-next-cso-peo-dhms",
     "small_business_eligible": true,
     "sb_note": "Open to small businesses and non-traditional contractors under OTA",
     "source": "https://www.executivegov.com/articles/dha-ess-next-cso-peo-dhms",
     "source_urls": [
+      "https://sam.gov/opp/bc2b02f206b2455a8bcd2664402451f6/view",
+      "https://sam.gov/opp/e78ad90bd043404d86fea5e7460f3134/view",
       "https://www.highergov.com/contract-opportunity/program-executive-office-defense-healthcare-manag-ht0038-25-s-0001-s-5e544/",
       "https://www.executivegov.com/articles/dha-ess-next-cso-peo-dhms"
     ],
-    "last_verified": "2026-10-05",
+    "last_verified": "2026-10-19",
     "pursuit_score": {
       "verdict": "WATCH",
-      "headline": "Open CSO/OTA — rolling submissions through July 1, 2026",
+      "headline": "CSO window closed Jul 1, 2026; base notice archived Jul 16, 2026; AoI 6 cancelled Aug 3, 2026; new DHA requirements run under HT003826SC005",
       "factors": {}
     },
     "slug": "peo-dhms-cso-competitive-solutions-opening",
     "content_gap": false,
-    "phase": "CSO window closed July 1, 2026 per SAM.gov listing; reissue pending official confirmation",
+    "phase": "Closed: CSO window ended July 1, 2026 and the base notice archived July 16, 2026; AoI 6 cancelled August 3, 2026; new requirements run under the enterprise CSO HT003826SC005",
     "signal_terms": [
       "peo dhms",
       "commercial solutions opening",
-      "HT0038-25-S-0001"
+      "HT0038-25-S-0001",
+      "HT003826X0006"
     ]
   },
   {
@@ -1166,7 +1236,7 @@
     "status": "awarded",
     "classification": "Award",
     "naics": "541512",
-    "description": "Update Aug 17, 2026: T6 Health Systems awarded a multi-year DHA PEO DHMS agreement (under CSO HT0038-25-S-C001) to deploy the Operational Medicine Care Delivery Platform. The $219.7M figure was not independently verified. Awarded Nov 19, 2025 under the PEO DHMS Commercial Solutions Opening (CSO HT0038-25-S-C001), Area of Interest 2. Period of performance through 2030. One of the AOIs under the DHMS innovation CSO; AOI 1b proposals due Jul 1, 2026 and AOI 4 (Data Apps) was canceled.",
+    "description": "Update Aug 17, 2026: T6 Health Systems awarded a multi-year DHA PEO DHMS agreement (under CSO HT0038-25-S-0001) to deploy the Operational Medicine Care Delivery Platform. The $219.7M figure was not independently verified. Awarded Nov 19, 2025 under the PEO DHMS Commercial Solutions Opening (CSO HT0038-25-S-0001), Area of Interest 2. Period of performance through 2030. One of the AOIs under the DHMS innovation CSO; AOI 1b proposals due Jul 1, 2026 and AOI 4 (Data Apps) was canceled.",
     "link": "https://www.eagletribune.com/region/t6-health-systems-awarded-defense-health-agency-agreement-to-modernize-operational-medicine-platform/article_7184a024-3821-5d42-bd0e-2d65921731f8.html",
     "small_business_eligible": false,
     "source": "https://www.eagletribune.com/region/t6-health-systems-awarded-defense-health-agency-agreement-to-modernize-operational-medicine-platform/article_7184a024-3821-5d42-bd0e-2d65921731f8.html",
@@ -1549,25 +1619,26 @@
   {
     "name": "NIH Scientific & Technical Support Services IDIQ ($3B)",
     "agency": "National Institutes of Health (NIH)",
-    "vendor": "TBD — award-pending; proposals closed April 27, 2026",
-    "value": "$3B ceiling (5-year); perf. 9/15/2026–9/14/2031",
-    "status": "active",
+    "vendor": "None. NIH cancelled solicitation 75N98026R00042 on Aug 26, 2026",
+    "value": "$3B ceiling (5-year) as solicited; no award",
+    "status": "closed",
     "classification": "Solicitation",
     "naics": "541714",
-    "description": "Update Oct 9, 2026: GAO sustained a small business protest of this solicitation's terms on August 14, 2026 (LJR Solutions, LLC, B-424487). GAO found NIH's assessment of whether it could expect fair-priced, quality and timely offers from two or more responsible small businesses was unreasonable or inadequately documented, the second protest of NIH's decision to run the procurement full and open. Per the decision digest and trade reporting, NIH is to revisit whether the requirement should be set aside in whole or in part, so expect the award to slip while that market research is redone. Update Aug 17, 2026: NIH (NIAID) opened bidding on the ~$3B multiple-award PSTSS recompete in March 2026 with proposals due April 27, 2026; solicitation closed and in source selection, no award yet. NIH's largest multi-award IDIQ in the current pipeline (solicitation 75N98026R00042), Full and Open. Covers bioinformatics, computational biology, BSL 2-4 lab research support, and clinical research across all NIH institutes. Proposals were due April 27, 2026; that deadline has passed, placing the procurement in evaluation/award-pending status (not open for new bids). Multiple awards expected; period of performance 9/15/2026 to 9/14/2031. NAICS 541714 primary (541511 secondary). Small-business eligible at the task-order level. Track for award announcement and prepare task-order teaming with awardees.",
-    "link": "https://www.govconwire.com/articles/nih-rfp-scientific-technical-support",
+    "description": "Update Oct 19, 2026: cancelled. SAM.gov carries a \"Notice of Solicitation Cancellation for NIH Professional, Scientific and Technical Support Services\" for 75N98026R00042, posted Aug 26, 2026 and archived Sep 10, 2026, twelve days after GAO sustained LJR Solutions' protest (B-424487, Aug 14, 2026). The Sep 15, 2026 start I had listed never happened; drop it. No replacement notice had posted as of Oct 19, 2026, so I am listing this as closed and will reopen the row when NIH posts the redo. History: GAO found NIH's assessment of whether it could expect fair-priced, quality and timely offers from two or more responsible small businesses was unreasonable or inadequately documented, the second protest of NIH's decision to run the procurement full and open. NIH (NIAID) had opened bidding on the ~$3B multiple-award PSTSS recompete in March 2026 with proposals due Apr 27, 2026, NIH's largest multi-award IDIQ in the pipeline at the time, covering bioinformatics, computational biology, BSL 2-4 lab research support, and clinical research across all NIH institutes. NAICS 541714 primary (541511 secondary). Small-business eligible at the task-order level under the cancelled terms.",
+    "link": "https://sam.gov/opp/1620f45624f243768c242f6d95ea8f8d/view",
     "small_business_eligible": true,
-    "source": "https://www.govconwire.com/articles/nih-rfp-scientific-technical-support",
+    "source": "https://sam.gov/opp/1620f45624f243768c242f6d95ea8f8d/view",
     "source_urls": [
+      "https://sam.gov/opp/1620f45624f243768c242f6d95ea8f8d/view",
       "https://www.gao.gov/products/b-424487",
       "https://news.bgov.com/states-of-play/small-business-wins-challenge-to-nihs-3-billion-procurement",
       "https://www.washingtontechnology.com/contracts/2026/03/nih-opens-bidding-3b-professional-services-recompete/412493/",
       "https://www.govconwire.com/articles/nih-rfp-scientific-technical-support"
     ],
-    "last_verified": "2026-10-09",
+    "last_verified": "2026-10-19",
     "pursuit_score": {
       "verdict": "WATCH",
-      "headline": "GAO sustained a set-aside protest Aug 14 2026; $3B NIH IDIQ award slips",
+      "headline": "Solicitation cancelled Aug 26, 2026 after the GAO sustain; no replacement notice as of Oct 19, 2026",
       "factors": {
         "vehicle_fit": {
           "score": "pass",
@@ -1579,11 +1650,11 @@
         },
         "timeline": {
           "score": "watch",
-          "note": "Proposals closed Apr 27 2026; set-aside decision reopened by the Aug 14 2026 GAO sustain"
+          "note": "Cancelled Aug 26, 2026 (notice archived Sep 10, 2026); nothing new posted as of Oct 19, 2026"
         },
         "competition": {
           "score": "watch",
-          "note": "Full-and-open; large biomedical-support field"
+          "note": "Set-aside question reopened by GAO B-424487; the redo may not be full and open"
         },
         "scope_fit": {
           "score": "pass",
@@ -1597,25 +1668,26 @@
   {
     "name": "CMS RMADA 3 (Research, Measurement, Assessment, Design & Analysis)",
     "agency": "Centers for Medicare & Medicaid Services (CMS)",
-    "vendor": "TBD — award-pending; RMADA 2 (2019) awarded to 17 firms (Acumen, RAND, Mathematica, Abt, etc.)",
-    "value": "$3.5B shared ceiling, five-year vehicle, 17 awardees (awarded July 2026)",
+    "vendor": "17 IDIQ holders (75FCMC26D0001 to 75FCMC26D0017, awarded Jul 8, 2026): Abt Global, Acumen, AIR, Arbor Research, Actuarial Research Corp, Booz Allen, Deloitte, GDIT, Guidehouse, L&M Policy Research, Lewin Group, Livanta, Mathematica, NORC, RTI, Tria Federal, Westat",
+    "value": "$3.5B combined ceiling; 5-year ordering period through Jul 8, 2031",
     "status": "awarded",
     "classification": "Solicitation",
     "naics": "541720",
-    "description": "Update Aug 17, 2026: CMS awarded RMADA 3 to 17 companies in July 2026, a five-year BPA/IDIQ with a shared ceiling of about $3.5B, from 34 offers (awardees include Abt Global and Arbor Research). Solicitation 75FCMC25RJ018. Multiple-award successor to RMADA 2, providing CMS/CMMI with research, measurement, demonstration evaluation, actuarial analysis, and data-analytics services tied to value-based care and payment innovation. RMADA 2 was awarded to 17 companies in 2019 at a $5B ceiling. CMS extended RMADA 3 proposal dates multiple times after the Feb 2025 final solicitation: Phase 1 bids due July 8, 2025; Phase 2 due Aug 26, 2025; oral presentations Aug 26–Sept 23, 2025 — placing it in award-pending status as of May 2026. NAICS 541720 primary (541511 secondary), directly in MMT's lane. A major standing CMS data-services pathway that supplements SPARC for analytics-heavy task orders; CMS emphasizes small-business participation.",
-    "link": "https://www.washingtontechnology.com/contracts/2025/06/cms-extends-its-primary-data-related-research-contract/406335/",
+    "description": "Update Oct 19, 2026: the awardee list is now on file. CMS awarded 17 RMADA 3 IDIQs, 75FCMC26D0001 through 75FCMC26D0017, on Jul 8, 2026, with ordering through Jul 8, 2031 and a $3.5B combined ceiling: Abt Global, Acumen, AIR, Arbor Research, Actuarial Research Corp, Booz Allen, Deloitte, GDIT, Guidehouse, L&M Policy Research, Lewin Group, Livanta, Mathematica, NORC, RTI, Tria Federal and Westat (SAM.gov award notice; USASpending IDV search for RMADA). The vendor field had still said award-pending while the status said awarded; that contradiction is fixed. Update Aug 17, 2026: CMS awarded RMADA 3 to 17 companies in July 2026, a five-year IDIQ with a shared ceiling of about $3.5B, from 34 offers. Solicitation 75FCMC25RJ018. Multiple-award successor to RMADA 2, providing CMS/CMMI with research, measurement, demonstration evaluation, actuarial analysis, and data-analytics services tied to value-based care and payment innovation. RMADA 2 was awarded to 17 companies in 2019 at a $5B ceiling. CMS extended RMADA 3 proposal dates multiple times after the Feb 2025 final solicitation: Phase 1 bids due July 8, 2025; Phase 2 due Aug 26, 2025; oral presentations Aug 26 to Sept 23, 2025. NAICS 541720 primary (541511 secondary), directly in MMT's lane. A major standing CMS data-services pathway that supplements SPARC for analytics-heavy task orders; CMS emphasizes small-business participation.",
+    "link": "https://sam.gov/opp/4e346a0e00f447c2be699a776d4c9dd3/view",
     "small_business_eligible": true,
-    "source": "https://www.washingtontechnology.com/contracts/2025/06/cms-extends-its-primary-data-related-research-contract/406335/",
+    "source": "https://sam.gov/opp/4e346a0e00f447c2be699a776d4c9dd3/view",
     "source_urls": [
+      "https://sam.gov/opp/4e346a0e00f447c2be699a776d4c9dd3/view",
       "https://www.washingtontechnology.com/contracts/2026/07/cms-makes-awards-35b-data-research-support-recompete/414677/",
       "https://www.washingtontechnology.com/contracts/2025/06/cms-extends-its-primary-data-related-research-contract/406335/",
       "https://www.washingtontechnology.com/contracts/2025/02/cms-launches-35b-data-services-recompete/403149/",
       "https://sam.gov/opp/6dae4168fe274a959e6370adfa88746f/view"
     ],
-    "last_verified": "2026-08-17",
+    "last_verified": "2026-10-19",
     "pursuit_score": {
       "verdict": "WATCH",
-      "headline": "Award-pending ~$5B CMS data/research MA-IDIQ",
+      "headline": "Awarded Jul 8, 2026 to 17 firms; $3.5B ceiling, ordering through Jul 8, 2031",
       "factors": {
         "vehicle_fit": {
           "score": "pass",
@@ -1627,11 +1699,11 @@
         },
         "timeline": {
           "score": "watch",
-          "note": "Proposals closed 2025; awards pending as of May 2026"
+          "note": "Awarded Jul 8, 2026; task orders compete among the 17 holders through Jul 8, 2031"
         },
         "competition": {
           "score": "watch",
-          "note": "17 RMADA 2 incumbents; competitive research-firm field"
+          "note": "17 IDIQ holders, most of them RMADA 2 incumbents; the entry point is teaming with a holder"
         },
         "scope_fit": {
           "score": "pass",
@@ -1748,16 +1820,18 @@
     "status": "active",
     "classification": "Program Watch",
     "naics": "541511",
-    "description": "Update Aug 17, 2026: GDIT holds the $2.542B PATH EHR IDIQ (140D0424D0001, awarded November 8, 2023, 10-year) and won a ~$326M sustainment task. Deployment begins end of 2026 with the Lawton Service Unit. Task-order pipeline watch on the IHS EHR Modernization IDIQ (GDIT prime, 140D0424D0001, $2.54B ceiling). With TO #9 ($325.7M, sustainment & operations, awarded May 2026, contract 140D0426F0370) now placed and PATH go-live targeted Aug 2026, the IDIQ will continue generating significant task orders for deployment, training, change management, tribal customization, and interoperability across 12 IHS Areas, 574+ federally recognized tribes, and urban Indian health programs. GDIT holds the prime; second-tier opportunities for analytics, custom workflows, and interoperability subcontracting exist. Distinct from the IDIQ-award entry — this tracks the ongoing TO flow. ISBEE set-aside is the most distinctive entry point for Indian-owned firms.",
+    "description": "Update Oct 19, 2026: PATH EHR went live at the Lawton Service Unit on Sep 26, 2026 (Lawton, Anadarko and Carnegie) after an Aug 1 soft go-live for registration and scheduling, per the IHS CIO blog of Oct 13, 2026. IHS posted sources sought IHS-26-SSN-EUD-PATH-EHR, End User Devices, Software and Deployment Support Services for PATH EHR, on Sep 18, 2026 with responses due Sep 28, 2026. That is a market research notice, not a solicitation, and it is the first signal that end user device and deployment support for PATH EHR may be bought outside the GDIT IDIQ or as a separate scope; watch for the follow-on notice. Update Aug 17, 2026: GDIT holds the $2.542B PATH EHR IDIQ (140D0424D0001, awarded November 8, 2023, 10-year) and won a ~$326M sustainment task. Lawton Service Unit was the first deployment site. Task-order pipeline watch on the IHS EHR Modernization IDIQ (GDIT prime, 140D0424D0001, $2.54B ceiling). With TO #9 ($325.7M, sustainment & operations, awarded May 2026, contract 140D0426F0370) now placed and the first go-live complete, the IDIQ will continue generating significant task orders for deployment, training, change management, tribal customization, and interoperability across 12 IHS Areas, 574+ federally recognized tribes, and urban Indian health programs. GDIT holds the prime; second-tier opportunities for analytics, custom workflows, and interoperability subcontracting exist. Distinct from the IDIQ-award entry — this tracks the ongoing TO flow. ISBEE set-aside is the most distinctive entry point for Indian-owned firms.",
     "link": "https://orangeslices.ai/gdit-secures-326m-hhs-indian-health-service-path-electronic-health-record-ehr-sustainment-and-operational-services-task/",
     "small_business_eligible": false,
     "source": "https://orangeslices.ai/gdit-secures-326m-hhs-indian-health-service-path-electronic-health-record-ehr-sustainment-and-operational-services-task/",
     "source_urls": [
+      "https://www.ihs.gov/newsroom/ihs-blog/october-2026-blogs/path-ehr-go-live-lawton-supports-a-new-phase-of-modernization",
+      "https://sam.gov/opp/4f692e202b7c4dd4a5c0fb36aafc9f70/view",
       "https://orangeslices.ai/gdit-secures-326m-hhs-indian-health-service-path-electronic-health-record-ehr-sustainment-and-operational-services-task/",
       "https://www.ihs.gov/hit/path-ehr/",
       "https://www.gdit.com/about-gdit/press-releases/gdit-awarded-usd2-5-billion-idiq-contract-for-electronic-health-record/"
     ],
-    "last_verified": "2026-08-17",
+    "last_verified": "2026-10-19",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Ongoing TO pipeline on $2.54B GDIT IHS EHR IDIQ",
@@ -1772,7 +1846,7 @@
         },
         "timeline": {
           "score": "pass",
-          "note": "Active TO flow; go-live Aug 2026 drives more TOs"
+          "note": "Active TO flow; sources sought for end user devices and deployment support closed Sep 28, 2026"
         },
         "competition": {
           "score": "watch",

@@ -61,7 +61,7 @@ CRITICAL GUARDRAILS:
 - These are eBuy Schedule RFQs — responding requires the relevant GSA Schedule.
 - source_url MUST be an ebuy.gsa.gov URL when one exists.
 - NEVER use "T-5 BPA" — correct name is T4NG / T4NG2.
-- CIO-SP4 was cancelled February 2026 — do not include as an active vehicle.
+- CIO-SP4 was cancelled January 30 2026 and never awarded; do not include it as an active vehicle. CIO-SP3, CIO-SP3 SB and CIO-CS take no new orders after October 29 2026.
 - Always include a source URL for every RFQ.
 
 Return ONLY valid JSON, no markdown fences, shaped as: { "opportunities": [...] }`;

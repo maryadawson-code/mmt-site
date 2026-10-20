@@ -87,21 +87,21 @@
 
         <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Migration Watch</p>
         <h1 style="font-size:26px; font-weight:800; margin:0 0 4px;">FPDS Sunset &mdash; What Premium Subscribers Need to Know</h1>
-        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 24px;">FPDS.gov is being decommissioned in favor of SAM.gov contract data. If your pipeline tools, BI dashboards, or competitive-intel scripts still pull from FPDS, you have a migration window measured in months, not years.</p>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 24px;">FPDS.gov's public face is gone. Since February 24, 2026 every public FPDS function lives on SAM.gov, and GSA says the FPDS ATOM feed is next. If your pipeline tools, BI dashboards, or competitive-intel scripts still pull from FPDS, the migration window is measured in months, not years.</p>
 
         <div class="dash-card">
           <h2 style="font-size:18px;font-weight:700;margin:0 0 16px;">Timeline</h2>
           <div class="timeline-row">
             <div class="timeline-date">Feb 24, 2026</div>
-            <div class="timeline-body">FPDS.gov primary site decommissioned. Public-facing FPDS searches return SAM.gov redirects. <a class="ext" href="https://sam.gov/announcements/fpdsgov-decommissions-february-24-2026-0" target="_blank" rel="noopener">Read GSA announcement &rarr;</a></div>
+            <div class="timeline-body">Done. FPDS ezSearch decommissioned and every public-facing FPDS function moved to SAM.gov; FPDS.gov now redirects there. Federal users report contract actions through the SAM Contract Awards Management portal at sam.gov/contracting, the former FPDS database. <a class="ext" href="https://sam.gov/announcements/fpdsgov-decommissions-february-24-2026-0" target="_blank" rel="noopener">Read GSA announcement &rarr;</a></div>
           </div>
           <div class="timeline-row">
-            <div class="timeline-date">FY2026 Q3</div>
-            <div class="timeline-body">FPDS Atom Feed sunset window. Programs still consuming Atom feeds will stop receiving fresh data. Confirm any nightly scrape job that hits the Atom endpoint.</div>
+            <div class="timeline-date">No date published</div>
+            <div class="timeline-body">FPDS ATOM feed sunset. GSA's announcement put it "later in FY 2026" and sam.gov/fpds says the feed will be replaced by the SAM.gov Contract Awards API, but as of October 19, 2026 neither page gives a shutdown date or says it has happened. Treat the feed as borrowed time: confirm any nightly job that hits the ATOM endpoint and build the replacement now. <a class="ext" href="https://sam.gov/fpds" target="_blank" rel="noopener">sam.gov/fpds &rarr;</a></div>
           </div>
           <div class="timeline-row">
-            <div class="timeline-date">FY2027</div>
-            <div class="timeline-body">Full SAM cutover. SAM.gov Contract Data API becomes the only sanctioned source of federal contract award records. <a class="ext" href="https://open.gsa.gov/api/contract-awards/v1/FPDSvsSAM-ContractDataAPI.pdf" target="_blank" rel="noopener">FPDS-vs-SAM field mapping (PDF) &rarr;</a></div>
+            <div class="timeline-date">Live now</div>
+            <div class="timeline-body">SAM.gov Contract Awards API. GSA documents a production endpoint on open.gsa.gov and tells feed consumers to start using it today; on-demand queries, CSV and JSON output, and deleted-contract data are listed as planned enhancements with no dates. GSA has published no date for a final cutover. <a class="ext" href="https://open.gsa.gov/api/contract-awards/v1/FPDSvsSAM-ContractDataAPI.pdf" target="_blank" rel="noopener">FPDS-vs-SAM field mapping (PDF) &rarr;</a></div>
           </div>
         </div>
 
@@ -127,11 +127,12 @@
           <ul style="margin:0;padding-left:20px;font-size:14px;color:var(--mmt-navy);line-height:1.8;">
             <li><a class="ext" href="https://sam.gov/announcements/fpdsgov-decommissions-february-24-2026-0" target="_blank" rel="noopener">GSA: FPDS.gov Decommissions February 24, 2026</a></li>
             <li><a class="ext" href="https://open.gsa.gov/api/contract-awards/v1/FPDSvsSAM-ContractDataAPI.pdf" target="_blank" rel="noopener">FPDS vs SAM Contract Data API field mapping (PDF)</a></li>
-            <li><a class="ext" href="https://open.gsa.gov/api/contract-awards/" target="_blank" rel="noopener">SAM.gov Contract Data API (open.gsa.gov)</a></li>
+            <li><a class="ext" href="https://open.gsa.gov/api/contract-awards/" target="_blank" rel="noopener">SAM.gov Contract Awards API (open.gsa.gov)</a></li>
+            <li><a class="ext" href="https://sam.gov/fpds" target="_blank" rel="noopener">sam.gov/fpds: transition status and reporting guidance</a></li>
           </ul>
         </div>
 
-        <p style="font-size:12px;color:var(--mmt-text-secondary);margin:16px 0 0;">MMT's <a href="/contract-tracker.html" style="color:var(--mmt-teal);">Contract Tracker</a> migrated to SAM.gov as the primary source in early 2026. If you maintain your own pipeline, replicate the field mapping in the PDF above and validate against the same award records before cutting over.</p>
+        <p style="font-size:12px;color:var(--mmt-text-secondary);margin:16px 0 0;">MMT reads award records from USASpending.gov rather than the FPDS feed; the <a href="/premium/single-bidder.html" style="color:var(--mmt-teal);">Sole-Source Watch</a> runs on it. If you maintain your own pipeline, replicate the field mapping in the PDF above and validate against the same award records before cutting over. Status checked October 19, 2026.</p>
       </div>
     </div>
   </div>

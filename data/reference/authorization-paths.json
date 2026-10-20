@@ -29,13 +29,13 @@
         { "date": "2028-12-31", "event": "Planned sunset of existing Rev5 authorizations (Consolidated Rules for 2026)." },
         { "date": "2026-06-25", "event": "FedRAMP launched its Consolidated Rules for 2026." }
       ],
-      "relevance_to_entry_plan": "Still the path most agencies recognize in 2026, but a vendor starting now is starting on a runway that closes to new entrants in June 2027. Sequence Rev5 only where a buyer requires it before 20x is accepted.",
+      "relevance_to_entry_plan": "Still the path most agencies recognize in 2026, but a vendor starting now is starting on a runway that closes to new entrants in June 2027. Sequence Rev5 only where a buyer requires it before 20x is accepted. The program page on 2026-10-19 places the end of life for new Rev5 certifications in FY27 Q3 to Q4, consistent with the June 2027 date.",
       "sources": [
-        { "label": "FedRAMP 20x program page", "url": "https://www.fedramp.gov/20x", "retrieved": "2026-09-20" },
+        { "label": "FedRAMP 20x program page", "url": "https://www.fedramp.gov/20x", "retrieved": "2026-10-19" },
         { "label": "Crowell and Moring on the Consolidated Rules for 2026", "url": "https://www.crowell.com/en/insights/client-alerts/time-for-a-change-fedramp-fundamentally-revamps-program-with-consolidated-rules-for-2026", "retrieved": "2026-09-20" },
         { "label": "GAO-24-106591, Cloud Security: Federal Authorization Program Usage Increasing", "url": "https://www.gao.gov/products/gao-24-106591", "retrieved": "2026-09-20" }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "medium",
       "pending": ["duration: no official published range; agency-specific"]
     },
@@ -46,7 +46,7 @@
       "owner": "FedRAMP PMO (GSA)",
       "applies_to": ["VA", "CMS", "HHS", "NIH", "CDC", "HRSA", "IHS", "FDA", "SAMHSA", "AHRQ", "ONC", "ARPA-H", "ASPR", "GSA"],
       "data_types": ["Cloud-native SaaS at the Low or Moderate impact level"],
-      "requirement": "The replacement path. Machine-readable key security indicators validated by a 3PAO, no agency sponsor needed to begin. Phase One (Low) ran in 2025; Phase Two (Moderate) ran late 2025 into early 2026 with 14 selected providers.",
+      "requirement": "The replacement path. Machine-readable key security indicators validated by a 3PAO, no agency sponsor needed to begin. Phase One (Low) ran in 2025; Phase Two (Moderate) ran late 2025 into early 2026 with 14 selected providers. On 2026-10-19 the program page shows Phase 3 (wide-scale adoption, FY26 Q3 to Q4) as active, with the general submission pipeline planned to open in FY26 Q4, Phase 4 (Class D High pilot) estimated FY27 Q1 to Q2, and Phase 5 (end of life for new Rev5 certifications) estimated FY27 Q3 to Q4. The page says future dates are estimates, not commitments.",
       "process": [
         "Implement and continuously validate the 20x key security indicators.",
         "3PAO assessment against the 20x standard for the target level.",
@@ -60,13 +60,13 @@
       ],
       "relevance_to_entry_plan": "Moderate covers about 80 percent of federal authorizations, which is where health IT SaaS lands. For a vendor with no authorization today, 20x Moderate is the default sequence and Rev5 is the exception.",
       "sources": [
-        { "label": "FedRAMP 20x program page", "url": "https://www.fedramp.gov/20x", "retrieved": "2026-09-20" },
+        { "label": "FedRAMP 20x program page", "url": "https://www.fedramp.gov/20x", "retrieved": "2026-10-19" },
         { "label": "FedRAMP: initial 20x Phase 2 pilot participants", "url": "https://www.fedramp.gov/2025-12-10-announcing-the-initial-20x-phase-2-pilot-participants/", "retrieved": "2026-09-20" },
         { "label": "Crowell and Moring on the Consolidated Rules for 2026", "url": "https://www.crowell.com/en/insights/client-alerts/time-for-a-change-fedramp-fundamentally-revamps-program-with-consolidated-rules-for-2026", "retrieved": "2026-09-20" }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "medium",
-      "pending": ["duration", "exact date 20x Moderate opened to all applicants (secondary sources say Q2 2026)"]
+      "pending": ["duration", "exact date the 20x submission pipeline opened to all applicants (the program page gives only FY26 Q4, July to September 2026, as the planned opening)"]
     },
     {
       "id": "cms_rcr",
@@ -215,7 +215,7 @@
       "owner": "ASTP/ONC with ONC-Authorized Certification Bodies",
       "applies_to": ["ONC", "CMS", "VA", "DHA", "IHS", "STATE_MEDICAID"],
       "data_types": ["Health IT modules that must meet ONC certification criteria for a CMS program or a buyer's requirement"],
-      "requirement": "Certification is a product requirement, not a procurement gate. The HTI-4 final rule (published 2025-08-04, 90 FR 36536, effective 2025-10-01) added electronic prior authorization criteria, an updated e-prescribing criterion and a real-time prescription benefit criterion. The HTI-5 proposed rule (published 2025-12-29; comments closed 2026-02-27) would remove 34 and update 7 of 60 criteria and retain 19 including the HTI-4 criteria. HTI-5 was not final as of 2026-09-20.",
+      "requirement": "Certification is a product requirement, not a procurement gate. The HTI-4 final rule (published 2025-08-04, 90 FR 36536, effective 2025-10-01) added electronic prior authorization criteria, an updated e-prescribing criterion and a real-time prescription benefit criterion. The HTI-5 proposed rule (published 2025-12-29; comments closed 2026-02-27) would remove 34 and update 7 of 60 criteria and retain 19 including the HTI-4 criteria. HTI-5 was not final as of 2026-10-19: the ASTP/ONC rule page (last updated 2026-03-31) still describes a proposed rule, and no final rule turned up in a web search that day.",
       "process": ["Map the product to the certification criteria a buyer or CMS program requires", "Test with an ONC-Authorized Testing Lab and certify through an ONC-ACB", "Maintain the CHPL listing and real-world testing"],
       "duration": null,
       "cost": null,
@@ -230,11 +230,11 @@
         { "label": "HTI-4 final rule (ASTP/ONC)", "url": "https://healthit.gov/regulations/hti-rules/hti-4-final-rule/", "retrieved": "2026-09-20" },
         { "label": "HTI-4 overview and key dates fact sheet (October 2025)", "url": "https://healthit.gov/wp-content/uploads/2025/10/HTI-4-Overview-and-Key-Dates_OCT2025.pdf", "retrieved": "2026-09-20" },
         { "label": "HTI-5 proposed rule, Federal Register 2025-12-29", "url": "https://www.federalregister.gov/documents/2025/12/29/2025-23896/health-data-technology-and-interoperability-astponc-deregulatory-actions-to-unleash-prosperity", "retrieved": "2026-09-20" },
-        { "label": "HTI-5 proposed rule page (ASTP/ONC)", "url": "https://healthit.gov/regulations/hti-rules/hti-5-proposed-rule/", "retrieved": "2026-09-20" }
+        { "label": "HTI-5 proposed rule page (ASTP/ONC)", "url": "https://healthit.gov/regulations/hti-rules/hti-5-proposed-rule/", "retrieved": "2026-10-19" }
       ],
-      "verified": "2026-09-20",
+      "verified": "2026-10-19",
       "confidence": "high",
-      "pending": ["HTI-5 final rule status after 2026-09-20"]
+      "pending": ["HTI-5 final rule status after 2026-10-19"]
     },
     {
       "id": "govramp",

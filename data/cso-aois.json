@@ -4,8 +4,14 @@
     "hand_maintained": true,
     "refresh_rule": "No cron writes this file. Re-verify each open AoI against SAM.gov / the issuing office on a cadence and bump its last_verified. Never bump last_verified without an actual current source - an unverified date is worse than an honestly old one.",
     "parent_link": "Every entry's parent_slug MUST match a slug in contracts.json. scripts/validate-cso-aois.js enforces this.",
-    "status_values": ["open", "upcoming", "closed", "awarded", "cancelled"],
-    "last_reviewed": "2026-08-20"
+    "status_values": [
+      "open",
+      "upcoming",
+      "closed",
+      "awarded",
+      "cancelled"
+    ],
+    "last_reviewed": "2026-10-19"
   },
   "csos": [
     {
@@ -16,13 +22,72 @@
       "active_from": "2026-08-07",
       "active_through": "2027-08-06",
       "scope_note": "Usable by any current or future PAE or PMO across the DHA enterprise: Medical Digital Solutions, Medical Services, Medical Products.",
-      "aoi_watch_note": "No AoIs had posted under this CSO as of the last review. The CSO announcement itself establishes only the procedures; the Government may post, extend or revise AoIs at any time, and each one sets its own authority, problem statement, evaluation criteria, submission criteria and anticipated time to award.",
-      "last_verified": "2026-08-20",
+      "aoi_watch_note": "First AoI posted: HT003826SC005-AOI0001 (AWACS, end user services for PAE Medical Digital Solutions), presolicitation August 14 2026, solicitation September 10 2026, white papers due September 14 2026; the notice archived September 29 2026 with no award posted on SAM.gov as of the October 19 2026 check. The CSO announcement itself establishes only the procedures and was last modified on SAM.gov September 30 2026; the Government may post, extend or revise AoIs at any time, and each one sets its own authority, problem statement, evaluation criteria, submission criteria and anticipated time to award.",
+      "last_verified": "2026-10-19",
       "source_urls": [
+        "https://sam.gov/opp/cd16b90540b7407fb4de1e028cea74d4/view",
         "https://missionmeetstech.com/documents/dha-enterprise-wide-cso-ht003826sc005.pdf",
         "https://orangeslices.ai/dha-opens-enterprise-wide-commercial-solutions-opportunity/"
       ],
-      "aois": []
+      "aois": [
+        {
+          "aoi_id": "HT003826SC005-AOI0001",
+          "title": "PAE Medical Digital Solutions End User Services (EUS): Application, Workflow, Adoption, and Change Support (AWACS)",
+          "status": "closed",
+          "presolicitation_posted": "2026-08-14",
+          "solicitation_posted": "2026-09-10",
+          "response_due": "2026-09-14",
+          "award_expected": null,
+          "awardee": null,
+          "value": null,
+          "naics": "541512",
+          "psc": "DA01",
+          "set_aside": "None",
+          "instrument": "FAR-based contract (for example FAR Part 12) or prototype Other Transaction agreement under 10 U.S.C. 4022; a 12-month base plus four 12-month options anticipated, per the SAM.gov notice",
+          "note": "First requirement competed under the enterprise CSO. PAE MDS (the seat succeeding PEO DHMS) is moving end user services for its portfolio from legacy labor-intensive support contracts to a unified outcome-based delivery model across 11 user domains and 8 service pillars, briefed at the June 18 2026 industry day. White papers were due by email September 14 2026 at 5:00 PM EDT; the Q&A posted September 10 2026. No award was posted on SAM.gov as of the October 19 2026 check. MMT analysis: Capture Corner, September 4 2026.",
+          "last_verified": "2026-10-19",
+          "source_urls": [
+            "https://sam.gov/opp/5ad10c73d29b487fa70e750479bb0517/view",
+            "https://sam.gov/opp/c0b8a82ad8084732ba09980285ceadda/view"
+          ]
+        }
+      ]
+    },
+    {
+      "parent_slug": "dha-paratus-cso-ht003826sc004",
+      "cso_number": "HT003826SC004",
+      "title": "DHA PARATUS (Profiling Action and Readiness Tracking Unified System) Commercial Solutions Opening",
+      "issuing_office": "DHA Contracting Activity (DHACA)",
+      "active_from": null,
+      "active_through": null,
+      "scope_note": "Third DHA CSO on file beside HT003826SC005 and HT003825SC001. Scope beyond AoI 1 is not stated in the notice read on 2026-10-19; the CSO's active dates are pending.",
+      "aoi_watch_note": "AoI 1 (Periodic Health Assessment Modernization) posted July 23 2026 with responses due July 27 2026 and is closed; no award verified as of the October 19 2026 check. The CSO's own active window, phases and instruments beyond the prototype OTA path were not in the notice read, so they stay null here rather than guessed.",
+      "last_verified": "2026-10-19",
+      "source_urls": [
+        "https://sam.gov/opp/53b337e7deec4fa683c84e6e74a3735e/view"
+      ],
+      "aois": [
+        {
+          "aoi_id": "1",
+          "title": "Periodic Health Assessment Modernization",
+          "status": "closed",
+          "presolicitation_posted": null,
+          "solicitation_posted": "2026-07-23",
+          "response_due": "2026-07-27",
+          "award_expected": null,
+          "awardee": null,
+          "value": null,
+          "naics": "541512",
+          "psc": null,
+          "set_aside": null,
+          "instrument": "Prototype Other Transaction agreement under 10 U.S.C. 4022, per the SAM.gov notice",
+          "note": "First and so far only AoI under PARATUS. Four-day response window, July 23 to July 27 2026. Award not verified as of October 19 2026; the notice does not state a PSC, a set-aside or a value.",
+          "last_verified": "2026-10-19",
+          "source_urls": [
+            "https://sam.gov/opp/53b337e7deec4fa683c84e6e74a3735e/view"
+          ]
+        }
+      ]
     },
     {
       "parent_slug": "peo-dhms-cso-competitive-solutions-opening",
@@ -32,9 +97,10 @@
       "active_from": null,
       "active_through": "2026-07-01",
       "scope_note": "Predecessor CSO scoped to PEO DHMS rather than the DHA enterprise. Superseded in breadth by HT003826SC005.",
-      "aoi_watch_note": "AoIs below are carried over from verified contracts.json coverage as of the 2026-08-17 re-verification pass. AoI 3 established the prototype-to-production precedent now available enterprise-wide under HT003826SC005.",
-      "last_verified": "2026-08-17",
+      "aoi_watch_note": "AoIs 1b through 4 are carried over from verified contracts.json coverage as of the 2026-08-17 re-verification pass; AoI 6 added from SAM.gov on 2026-10-19. The base CSO notice (HT0038-25-S-0001, SAM.gov bc2b02f206b2455a8bcd2664402451f6) stated it would remain open until July 1 2026 and archived July 16 2026. AoI 3 established the prototype-to-production precedent now available enterprise-wide under HT003826SC005.",
+      "last_verified": "2026-10-19",
       "source_urls": [
+        "https://sam.gov/opp/bc2b02f206b2455a8bcd2664402451f6/view",
         "https://www.executivegov.com/articles/dha-ess-next-cso-peo-dhms"
       ],
       "aois": [
@@ -60,7 +126,7 @@
           "award_expected": null,
           "awardee": "T6 Health Systems",
           "value": "$219,728,874.92 (not independently verified)",
-          "note": "Awarded November 19, 2025 under CSO HT0038-25-S-C001, period of performance through 2030. Tracked in detail as its own listing entry.",
+          "note": "Awarded November 19, 2025 under CSO HT0038-25-S-0001, period of performance through 2030. Tracked in detail as its own listing entry.",
           "last_verified": "2026-08-17",
           "related_slug": "t6-health-systems-aoi-2-peo-dhms-cso",
           "source_urls": [
@@ -94,6 +160,20 @@
           "source_urls": [
             "https://www.executivegov.com/articles/dha-ess-next-cso-peo-dhms"
           ]
+        },
+        {
+          "aoi_id": "6",
+          "title": "Autonomous Coding and Denials Management Services",
+          "status": "cancelled",
+          "response_due": "2026-03-09",
+          "award_expected": null,
+          "awardee": null,
+          "value": null,
+          "note": "Competed under CSO HT003825SC001 for prototype OTAs under 10 U.S.C. 4022; white papers were due March 9 2026 (Revision 1 lowered the impact level to IL4; Revision 2 named the support contractors). SAM.gov notice HT003826X0006 states the AoI was cancelled in its entirety on August 3 2026 because the Government requirement changed.",
+          "last_verified": "2026-10-19",
+          "source_urls": [
+            "https://sam.gov/opp/e78ad90bd043404d86fea5e7460f3134/view"
+          ]
         }
       ]
     },
@@ -105,9 +185,13 @@
       "active_from": null,
       "active_through": "2027-01-28",
       "scope_note": "NAICS 541618. Tracked because DHA is migrating discrete, project-scoped work off the Workforce 3.0 IDIQ into this CSO and HT003825SC001. OCI mitigation is a defined Phase 1a proposal element rather than a bar to entry.",
-      "aoi_watch_note": "Responses accepted through January 28, 2027. No individual AoIs recorded yet in this registry.",
-      "last_verified": "2026-08-17",
-      "source_urls": [],
+      "aoi_watch_note": "Responses accepted through January 28, 2027. Individual Program Requirement notices issued under the CSO on SAM.gov: HT003826SC001-01 (February 6 2026, responses due February 19 2026), HT003826SC001-02 (posted March 11 2026; the SAM record lists a February 23 2026 due date, which is earlier than the posting, so the dates are inconsistent as listed), HT003826SC001-03 (published March 20 2026, proposals due April 16 2026, Q&A posted April 2 2026, notice archived September 1 2026). Awards under them are not recorded in this registry.",
+      "last_verified": "2026-10-19",
+      "source_urls": [
+        "https://sam.gov/opp/a52432b3db87417fa81b0888f57e562e/view",
+        "https://sam.gov/opp/8ba02d41dc6148b9b126cabc4bdb79d5/view",
+        "https://sam.gov/opp/b385e4eec10b40afb92c26e66803e07c/view"
+      ],
       "aois": []
     }
   ]

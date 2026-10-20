@@ -1,5 +1,14 @@
 [
   {
+    "name": "2026 AMSUS Annual Meeting",
+    "date": "2026-03-02",
+    "endDate": "2026-03-05",
+    "location": "Gaylord National Resort and Convention Center, National Harbor, MD",
+    "url": "https://amsus.org/page/2026AnnualMeeting",
+    "type": "conference",
+    "description": "Society of Federal Health Professionals annual meeting covering military medicine, VA health, and public health."
+  },
+  {
     "name": "HIMSS 2026 Global Health Conference",
     "date": "2026-03-09",
     "endDate": "2026-03-12",
@@ -34,6 +43,15 @@
     "registrationUrl": "https://fedhealth.pscouncil.org/",
     "type": "conference",
     "description": "Senior executives from industry and government discuss critical policy and acquisition priorities in civilian and military health, with speakers from HHS, VA, and DoD."
+  },
+  {
+    "name": "AFCEA Bethesda Health IT Summit 2026",
+    "date": "2026-05-26",
+    "location": "Bethesda North Marriott, Rockville, MD",
+    "url": "https://nitaac.nih.gov/resources/training-and-events/20260526/event-2026-afcea-health-it-summit",
+    "type": "conference",
+    "description": "Federal-focused health IT summit with DHA, VA, and HHS speakers. Smaller and more contracting-officer-heavy than HIMSS.",
+    "endDate": "2026-05-27"
   },
   {
     "name": "VETS26 Conference",
@@ -82,50 +100,110 @@
     "description": "National Contract Management Association annual flagship event for federal contracting and acquisition professionals. Featured on the HHS OSDBU industry calendar."
   },
   {
-    "name": "DHITS 2026 \u2014 Defense Health Information Technology Symposium",
-    "date": "2026-08-04",
-    "location": "San Antonio, TX (per prior years)",
-    "url": "https://www.health.mil/Military-Health-Topics/Technology",
-    "registrationNote": "Date not yet announced \u2014 annual cadence, typically first week of August. Check health.mil for confirmation.",
-    "type": "conference",
-    "description": "DHA's flagship federal health IT event. Vendor expo + DHA program-office sessions on MHS GENESIS, JOMIS, EIDS, and DHA modernization priorities."
-  },
-  {
     "name": "Military Health System Research Symposium",
-    "date": "2026-08-24",
-    "endDate": "2026-08-27",
-    "location": "Kissimmee, FL",
-    "url": "https://www.health.mil",
-    "registrationNote": "Registration typically opens May 2026",
+    "date": "2026-08-03",
+    "endDate": "2026-08-06",
+    "location": "Gaylord Palms Resort and Convention Center, Kissimmee, FL",
+    "url": "https://www.dvidshub.net/news/568550/registration-opens-2026-military-health-system-research-symposium",
     "type": "conference",
     "description": "Premier scientific meeting for military and federal health research, combat casualty care, and operational medicine."
   },
   {
-    "name": "AFCEA Federal Health IT Summit",
-    "date": "2026-09-15",
-    "location": "Bethesda, MD (per prior years)",
-    "url": "https://www.afcea.org",
-    "registrationNote": "Date not yet announced \u2014 annual cadence, typically September. Check afcea.org for confirmation.",
+    "name": "DHITS 2026 — Defense Health Information Technology Symposium",
+    "date": "2026-08-11",
+    "location": "Hyatt Regency New Orleans, New Orleans, LA",
+    "url": "https://www.dha.mil/Events/2026/06/25/16/56/2026-DHITS-Symposium",
     "type": "conference",
-    "description": "Federal-focused health IT day with DHA, VA, HHS speakers. Smaller and more contracting-officer-heavy than HIMSS."
+    "description": "DHA's flagship federal health IT event. Vendor expo plus DHA program-office sessions on MHS GENESIS, JOMIS, EIDS, and DHA modernization priorities. Premium members get every 2026 deck summarized in the DHITS 2026 Slide Library.",
+    "endDate": "2026-08-13",
+    "registrationUrl": "https://www.dha.mil/Events/2026/06/25/16/56/2026-DHITS-Symposium"
+  },
+  {
+    "name": "NCMA Warfighter Acquisition Forum",
+    "date": "2026-11-12",
+    "location": "Ronald Reagan Building, 1300 Pennsylvania Ave NW, Washington, DC 20004",
+    "url": "https://events.ncmahq.org/event/WarfighterAcquisitionForum2026/home/",
+    "registrationUrl": "https://events.ncmahq.org/event/WarfighterAcquisitionForum2026/home/",
+    "type": "conference",
+    "description": "National Contract Management Association one-day forum on defense acquisition. Useful for anyone selling into DHA through DoD contracting channels."
   },
   {
     "name": "HLTH 2026",
-    "date": "2026-10-18",
-    "location": "Las Vegas, NV (per prior years)",
-    "url": "https://hlth.com",
-    "registrationNote": "Date not yet announced \u2014 annual cadence, typically mid-October to early November. Check hlth.com for confirmation.",
+    "date": "2026-11-15",
+    "location": "The Venetian Expo Center, Las Vegas, NV",
+    "url": "https://hlth.com/2026event",
     "type": "conference",
-    "description": "Largest commercial health innovation conference. Federal health IT contractor networking, payer/provider/vendor convergence \u2014 historically draws DHA, VA, HHS leadership."
+    "description": "Largest commercial health innovation conference. Payer, provider, and vendor convergence with federal health IT contractor networking; historically draws DHA, VA, and HHS leadership.",
+    "endDate": "2026-11-18",
+    "registrationUrl": "https://hlth.com/2026event"
   },
   {
-    "name": "AMSUS Federal Health Conference",
-    "date": "2026-11-30",
-    "endDate": "2026-12-04",
-    "location": "Washington, DC",
-    "url": "https://www.amsus.org",
-    "registrationNote": "Registration typically opens summer 2026",
+    "name": "ARPA-H Other Transaction (OT) Training",
+    "date": "2026-11-18",
+    "endDate": "2026-11-19",
+    "location": "Virtual",
+    "url": "https://arpa-h.gov/news-and-events/events",
+    "registrationUrl": "https://engage.arpa-h.gov/ot-training-november-2026",
+    "type": "webinar",
+    "description": "ARPA-H's two-day training on how its Other Transaction agreements work. ARPA-H funds through OTs rather than FAR contracts, so this is the mechanics briefing for anyone planning to respond to its solicitations."
+  },
+  {
+    "name": "AFCEA Bethesda Health IT Preview",
+    "date": "2026-12-02",
+    "location": "Hyatt Regency Tysons Corner Center, Tysons, VA",
+    "url": "https://bethesdaevents.afceachapters.org/hitspreview27",
+    "registrationUrl": "https://bethesdaevents.afceachapters.org/hitspreview27",
     "type": "conference",
-    "description": "Society of Federal Health Professionals annual meeting covering military medicine, VA health, and public health."
+    "description": "AFCEA Bethesda's preview session ahead of the January 2027 Health IT Summit. Federal health IT program and acquisition leaders in a smaller room."
+  },
+  {
+    "name": "AFCEA Bethesda Health IT Summit 2027",
+    "date": "2027-01-25",
+    "endDate": "2027-01-26",
+    "location": "Bethesda North Marriott, Rockville, MD",
+    "url": "https://bethesdaevents.afceachapters.org/HITS27",
+    "registrationUrl": "https://bethesdaevents.afceachapters.org/HITS27",
+    "type": "conference",
+    "description": "Federal-focused health IT summit with DHA, VA, and HHS speakers. Smaller and more contracting-officer-heavy than HIMSS."
+  },
+  {
+    "name": "NCMA Nexus 2027",
+    "date": "2027-02-21",
+    "endDate": "2027-02-23",
+    "location": "Grand Hyatt San Antonio River Walk, 600 E Market Street, San Antonio, TX 78205",
+    "url": "https://events.ncmahq.org/event/Nexus2027/home/",
+    "registrationUrl": "https://events.ncmahq.org/event/Nexus2027/home/",
+    "type": "conference",
+    "description": "National Contract Management Association's contract management conference for government and industry acquisition professionals."
+  },
+  {
+    "name": "HIMSS 2027 Global Health Conference",
+    "date": "2027-04-05",
+    "endDate": "2027-04-08",
+    "location": "McCormick Place Convention Center, Chicago, IL",
+    "url": "https://www.himssconference.com/",
+    "registrationUrl": "https://www.himssconference.com/",
+    "type": "conference",
+    "description": "Largest health IT conference. Preconference day April 5 requires separate registration; the main conference and exhibition run April 6 to 8. Federal health IT buyers and the Oracle Health, Epic, and interoperability vendors all show up."
+  },
+  {
+    "name": "VETS27 Conference",
+    "date": "2027-05-18",
+    "endDate": "2027-05-21",
+    "location": "New Orleans, LA",
+    "url": "https://nvsbc.org/events/",
+    "registrationUrl": "https://nvsbc.org/events/",
+    "type": "conference",
+    "description": "National Veteran Small Business Coalition annual conference. Federal procurement matchmaking for SDVOSB, VOSB, and veteran-led firms, with VA and DoD small business offices in the room."
+  },
+  {
+    "name": "NCMA World Congress 2027",
+    "date": "2027-07-25",
+    "endDate": "2027-07-28",
+    "location": "Gaylord Rockies, Aurora, CO",
+    "url": "https://ncmahq.org/Web/Events/World-Congress.aspx",
+    "registrationUrl": "https://www.ncmahq.org/Shared_Content/CSI/World-Congress-2027-Wizard/World-Congress-Registration.aspx",
+    "type": "conference",
+    "description": "National Contract Management Association annual flagship event for federal contracting and acquisition professionals."
   }
 ]
