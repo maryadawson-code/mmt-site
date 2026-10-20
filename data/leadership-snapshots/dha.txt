@@ -6,8 +6,6 @@ A .mil website belongs to an official U.S. Department of Defense organization.
 Secure .mil websites use HTTPS
 A lock (
 ) or https:// means you've safely connected to the .mil website. Share sensitive information only on official, secure websites.
-DHA.mil Planned Outage: Oct. 19, 2026
-From about 6-7 p.m. ET, DHA.mil will be unavailable while we undergo routine maintenance.
 Search
 About DHA
 About Us
