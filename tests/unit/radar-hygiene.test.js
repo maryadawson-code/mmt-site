@@ -155,3 +155,30 @@ describe("applyRadarHygiene", () => {
     expect(applyRadarHygiene(undefined).removed).toEqual({ fabricated: 0, archived: 0, closed: 0, duplicates: 0 });
   });
 });
+
+// 2026-10-09: the daily sweep archives from the same plan the cleanup script
+// uses, so the DB and the feed agree on what is dead.
+describe("planRadarArchive", () => {
+  it("buckets fabricated, closed and duplicate rows, most serious first, and counts the total", async () => {
+    const { planRadarArchive, findDuplicateLosers } = await import("../../netlify/functions/lib/radar-hygiene.js");
+    const rows = [
+      { id: 1, title: "fake", source_url: "https://sam.gov/opp/HT003826RE001", response_deadline: "2019-01-01" },
+      { id: 2, title: "closed", source_url: "https://sam.gov/opp/" + "a".repeat(32) + "/view", response_deadline: "2026-07-01" },
+      { id: 3, title: "dup", solicitation_number: "S1", scan_date: "2026-08-01", response_deadline: "2026-12-01" },
+      { id: 4, title: "dup", solicitation_number: "S1", scan_date: "2026-08-04", response_deadline: "2026-12-01" },
+      { id: 5, title: "live", response_deadline: "2026-12-31" },
+    ];
+    const plan = planRadarArchive(rows, { now: NOW });
+    expect(plan.fabricated_sam_permalink.map((r) => r.id)).toEqual([1]);
+    expect(plan.closed_past_deadline.map((r) => r.id)).toEqual([2]);
+    expect(plan.duplicate_notice.map((r) => r.id)).toEqual([3]);
+    expect(plan.total).toBe(3);
+    expect([...findDuplicateLosers(rows)]).toEqual([3]);
+  });
+
+  it("keepClosed leaves past-deadline rows alone", async () => {
+    const { planRadarArchive } = await import("../../netlify/functions/lib/radar-hygiene.js");
+    const plan = planRadarArchive([{ id: 2, response_deadline: "2026-07-01" }], { now: NOW, keepClosed: true });
+    expect(plan.total).toBe(0);
+  });
+});

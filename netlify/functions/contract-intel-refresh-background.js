@@ -24,6 +24,7 @@ const { checkFreshness } = require("./lib/stale-detector");
 const { disambiguate } = require("./lib/entity-disambiguator");
 const { trackAnthropic } = require("./lib/cost-tracker");
 const { getRefreshRoster } = require("./lib/refresh-roster");
+const { planOrphans, applyOrphanPlan } = require("./lib/orphan-intel");
 const { computeCoverage } = require("./lib/refresh-coverage");
 const { validateSources } = require("./lib/url-validator");
 const { sanitizeNotes, strippedNotes } = require("./lib/intel-notes-sanitizer");
@@ -594,9 +595,36 @@ exports.handler = async (event) => {
 
   // Check which contracts already have fresh data (updated within last 20 hours)
   // This allows re-triggering to pick up where a timeout left off
-  const { data: existing } = await supabase
+  const { data: existingRaw } = await supabase
     .from("contract_intel")
     .select("contract_name, last_updated");
+
+  // 2026-10-09: reconcile orphaned rows before the roster loop. A row whose
+  // contract_name drifted from contracts.json (a rename, an em dash) is
+  // never upserted again, so it aged until the Friday report listed it and
+  // someone ran scripts/reconcile-orphan-intel.js by hand. Now the daily
+  // refresh renames the only copy to its roster name, deletes a stale
+  // duplicate, and leaves anything it cannot resolve for the report.
+  let existing = existingRaw || [];
+  let orphanSummary = { deleted: 0, renamed: 0, failed: 0, review: 0 };
+  if (!forceContract) {
+    try {
+      const plan = planOrphans(existing, getRefreshRoster().map((c) => c.name));
+      if (plan.delete.length || plan.rename.length) {
+        orphanSummary = await applyOrphanPlan(supabase, plan, { sourceFunction: "contract-intel-refresh-background" });
+        console.log(`Orphan reconcile: deleted=${orphanSummary.deleted} renamed=${orphanSummary.renamed} failed=${orphanSummary.failed} review=${orphanSummary.review}`);
+        const deleted = new Set(plan.delete.map((d) => d.name));
+        const renamed = new Map(plan.rename.map((r) => [r.name, r.canonical]));
+        existing = existing
+          .filter((r) => !deleted.has(r.contract_name))
+          .map((r) => (renamed.has(r.contract_name) ? { ...r, contract_name: renamed.get(r.contract_name) } : r));
+      } else {
+        orphanSummary.review = plan.review.length;
+      }
+    } catch (err) {
+      console.error("Orphan reconcile failed (refresh continues):", err.message);
+    }
+  }
 
   const freshCutoff = new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString();
   const freshContracts = new Set(
@@ -905,6 +933,7 @@ exports.handler = async (event) => {
       api_calls: totalCalls,
       run_ms: Date.now() - runStart,
       coverage,
+      orphans: orphanSummary,
     },
   });
 

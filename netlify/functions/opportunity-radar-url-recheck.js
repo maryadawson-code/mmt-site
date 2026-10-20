@@ -45,6 +45,8 @@ const { createClient } = require("@supabase/supabase-js");
 const { withOpsLogging } = require("./lib/scheduled-fn-wrapper");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { isRootDomainUrl } = require("./lib/url-validator");
+const { planRadarArchive } = require("./lib/radar-hygiene");
+const { fetchLiveRadarRows, archiveRadarPlan } = require("./lib/radar-rows");
 
 const BATCH_LIMIT = 80;
 const HEAD_TIMEOUT_MS = 6000;
@@ -194,6 +196,23 @@ async function _handler() {
         },
       });
     } catch { /* non-blocking */ }
+  }
+
+  // 2026-10-09: the hygiene backfill runs here daily. The read-time guard
+  // (lib/radar-hygiene.js) already hides past-deadline, fabricated and
+  // duplicate rows from the feed, but counts, the digest and watchlist
+  // matching read the table, and the Friday report carried "past-deadline
+  // still live: 29" with a note to run the cleanup script by hand.
+  try {
+    const live = await fetchLiveRadarRows(supabase);
+    const plan = planRadarArchive(live, { now: new Date() });
+    summary.hygiene = plan.total
+      ? await archiveRadarPlan(supabase, plan, { sourceFunction: "opportunity-radar-url-recheck" })
+      : { archived: 0, errors: 0, fabricated: 0, closed: 0, duplicate: 0, live_rows: live.length };
+    summary.hygiene.live_rows = live.length;
+  } catch (err) {
+    summary.hygiene = { error: String(err.message || err).slice(0, 300) };
+    console.warn(`radar hygiene sweep failed: ${err.message}`);
   }
 
   try {

@@ -167,6 +167,46 @@ function applyRadarHygiene(rows, { now = new Date(), includeClosed = false } = {
   };
 }
 
+// The duplicate LOSERS: every instance of a dedup key except the preferred
+// one (same tiebreak as _preferred, so the DB and the feed agree on which
+// copy survives). Returns a Set of row ids.
+function findDuplicateLosers(rows) {
+  const groups = new Map();
+  for (const r of rows || []) {
+    const key = dedupKey(r);
+    if (!key) continue;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(r);
+  }
+  const losers = new Set();
+  for (const group of groups.values()) {
+    if (group.length < 2) continue;
+    let winner = group[0];
+    for (const r of group.slice(1)) winner = _preferred(winner, r);
+    for (const r of group) if (r !== winner) losers.add(r.id);
+  }
+  return losers;
+}
+
+// The archive plan for a set of LIVE rows: which rows to archive and why.
+// Precedence: fabricated > closed > duplicate (most serious first). This is
+// the backfill the daily opportunity-radar-url-recheck sweep applies since
+// 2026-10-09 (the Friday report had carried "past-deadline still live: 29"
+// with a note to run scripts/cleanup-opportunity-radar.js by hand); the
+// script and the sweep share it so the DB and the feed agree.
+function planRadarArchive(rows, { now = new Date(), keepClosed = false } = {}) {
+  const input = Array.isArray(rows) ? rows : [];
+  const dupLosers = findDuplicateLosers(input.filter((r) => !isFabricated(r) && (keepClosed || !isClosed(r, now))));
+  const plan = { fabricated_sam_permalink: [], closed_past_deadline: [], duplicate_notice: [] };
+  for (const row of input) {
+    if (isFabricated(row)) { plan.fabricated_sam_permalink.push(row); continue; }
+    if (!keepClosed && isClosed(row, now)) { plan.closed_past_deadline.push(row); continue; }
+    if (dupLosers.has(row.id)) plan.duplicate_notice.push(row);
+  }
+  plan.total = plan.fabricated_sam_permalink.length + plan.closed_past_deadline.length + plan.duplicate_notice.length;
+  return plan;
+}
+
 module.exports = {
   isClosed,
   isArchived,
@@ -174,4 +214,6 @@ module.exports = {
   dedupKey,
   dedupeOpportunities,
   applyRadarHygiene,
+  findDuplicateLosers,
+  planRadarArchive,
 };

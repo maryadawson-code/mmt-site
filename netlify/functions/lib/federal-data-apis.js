@@ -636,6 +636,10 @@ async function searchSAMOpportunities({ keyword, relaxKeyword, naics, agency, so
       date: o.data.award.date || "",
       awardee: o.data.award.awardee ? o.data.award.awardee.name || "" : "",
     } : null,
+    // 2026-10-09: the tracker re-verify reads whether a CSO notice still
+    // stands. SAM answers active as "Yes" / "No" and archiveDate as a date.
+    active: o.active || "",
+    archive_date: o.archiveDate || "",
     url: o.uiLink || `https://sam.gov/opp/${o.noticeId || ""}/view`,
   });
 

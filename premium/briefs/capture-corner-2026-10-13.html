@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capture Corner: Who Builds the Clock &middot; MMT Premium</title>
+  <meta name="description" content="October 13, 2026. LOE 1 read as a buy · the campaign plan's dated tasks as capture windows · MEND and the build-or-license decision · PARATUS and the systems it replaces · the virtual health buildout · the access stack in transition · prevention lines">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; --ci-gold-bg:#FEF9E7; --mmt-red:#E63946; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .brief-body { font-size:15px; line-height:1.75; color:#314155; }
+    .brief-body h2 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:40px 0 14px; letter-spacing:-0.02em; }
+    .brief-body h3 { font-size:17px; font-weight:700; color:var(--mmt-navy); margin:28px 0 10px; }
+    .brief-body h4 { font-size:15px; font-weight:700; color:var(--mmt-navy); margin:20px 0 8px; }
+    .brief-body p { margin-bottom:16px; max-width:65ch; }
+    .brief-body ul { margin-bottom:16px; padding-left:1.25rem; }
+    .brief-body ol { margin-bottom:16px; padding-left:1.5rem; }
+    .brief-body li { margin-bottom:8px; }
+    .brief-body a { color:var(--mmt-teal); text-decoration:underline; text-underline-offset:3px; }
+    .brief-body strong { color:var(--mmt-navy); }
+    .brief-body em { color:var(--mmt-text-secondary); }
+    .brief-body hr { border:none; border-top:1px solid var(--mmt-border); margin:36px 0; }
+    .brief-body blockquote { border-left:3px solid var(--mmt-teal); padding:8px 16px; margin:16px 0; color:var(--mmt-text-secondary); background:rgba(69,123,157,0.04); border-radius:0 6px 6px 0; }
+    .brief-body img { max-width:100%; height:auto; display:block; margin:24px 0; border:1px solid var(--mmt-border); border-radius:8px; }
+    .brief-body table { width:100%; border-collapse:collapse; margin:16px 0 24px; font-size:14px; }
+    .brief-body th, .brief-body td { border:1px solid var(--mmt-border); padding:10px 12px; text-align:left; vertical-align:top; }
+    .brief-body th { background:var(--mmt-soft); color:var(--mmt-navy); font-weight:700; }
+    .pills { margin:8px 0 24px; }
+    .pill { display:inline-block; padding:4px 10px; background:rgba(69,123,157,0.08); color:var(--mmt-teal); border-radius:14px; font-size:11px; font-weight:600; margin:2px 4px 2px 0; }
+    .pill-red { background:rgba(230,57,70,0.08); color:var(--mmt-red); }
+    .pill-gold { background:var(--ci-gold-bg); color:var(--ci-gold); }
+    .back-link { font-size:13px; font-weight:600; color:var(--mmt-teal); text-decoration:none; }
+    .back-link:hover { opacity:0.7; }
+    .gate-notice { background:linear-gradient(180deg,#FFFFFF 0%,#F3F4F6 100%); border:1px solid var(--mmt-border); border-radius:12px; padding:32px 28px; text-align:center; margin:32px auto; max-width:540px; }
+    .gate-notice h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin-bottom:10px; }
+    .gate-notice p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:16px; line-height:1.55; }
+    .gate-cta { display:inline-block; padding:12px 24px; background:var(--mmt-navy); color:var(--mmt-white); font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; }
+    .section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ci-gold); }
+    .deep-dive-card { margin:48px 0 16px; padding:32px 28px; border:2px solid var(--ci-gold); border-radius:12px; background:linear-gradient(180deg,#FFFFFF 0%,var(--ci-gold-bg) 100%); }
+    .deep-dive-card h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:0 0 12px; letter-spacing:-0.01em; }
+    .deep-dive-card p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:14px; line-height:1.6; max-width:none; }
+    .deep-dive-price { display:inline-flex; align-items:baseline; gap:8px; margin:4px 0 16px; font-weight:800; color:var(--mmt-navy); }
+    .deep-dive-price .amount { font-size:28px; }
+    .deep-dive-price .unit { font-size:13px; font-weight:600; color:var(--mmt-text-secondary); text-transform:uppercase; letter-spacing:0.06em; }
+    .brief-body a.deep-dive-cta,
+    a.deep-dive-cta { display:inline-block; padding:14px 26px; background:var(--ci-gold); color:#FFFFFF; font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; letter-spacing:0.02em; }
+    .brief-body a.deep-dive-cta:hover,
+    a.deep-dive-cta:hover { opacity:0.92; color:#FFFFFF; }
+    .deep-dive-examples { font-size:13px; color:var(--mmt-text-secondary); font-style:italic; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <main class="wrap" style="padding:48px 0 80px; max-width:820px;">
+    <a href="/capture-corner.html" class="back-link">&larr; Capture Corner</a>
+
+    <div style="margin-top:20px; margin-bottom:8px;">
+      <div class="section-label">MMT Premium &middot; Capture Corner &middot; October 13, 2026</div>
+    </div>
+    <h1 style="font-size:clamp(26px,3.2vw,38px);line-height:1.1;letter-spacing:-0.03em;margin-bottom:10px;">Who Builds the Clock</h1>
+    <p style="font-size:15px;color:var(--mmt-text-secondary);margin-bottom:20px;"><em>LOE 1 read as a buy · the campaign plan's dated tasks as capture windows · MEND and the build-or-license decision · PARATUS and the systems it replaces · the virtual health buildout · the access stack in transition · prevention lines</em></p>
+
+    <div class="pills">
+      <span class="pill pill-gold">Capture Corner</span>
+      <span class="pill ">DHA FY27 campaign plan</span>
+      <span class="pill pill-red">Risk: dates move on quarterly updates</span>
+    </div>
+
+    <div data-gate="free" style="display:block;">
+      <div class="gate-notice">
+        <h3>&#9733; Premium Capture Corner</h3>
+        <p>This issue is the companion to &quot;The Waiting Days,&quot; Part 1 of the Mission Meets Tech series on DHA's FY27 campaign plan. The public piece follows Line of Effort 1, warfighter medical readiness, through the limited-duty profile and argues that every lost warrior day is either a healing day or a waiting day. This brief reads the campaign plan's LOE 1 tasks as a buying schedule: what is due when, which office owns it, and which contracts sit underneath. Eleven tasks are due October 31, and the first real acquisition decision lands December 31.</p>
+        <a class="gate-cta" href="/pricing">See premium plans</a>
+      </div>
+    </div>
+
+    <div data-access="premium" data-gate="premium" class="brief-body">
+
+<p><em>Capture Corner is the premium BD intelligence companion to Mission Meets Tech. Independent analysis. Not a recommendation, not vendor advocacy, not capture material. Built for federal health BD, capture, and proposal leaders who need analytical depth, not headlines.</em></p>
+<p><em>This issue is the companion to &quot;The Waiting Days,&quot; Part 1 of the Mission Meets Tech series on DHA&#39;s FY27 campaign plan. The public piece follows Line of Effort 1, warfighter medical readiness, through the limited-duty profile and argues that every lost warrior day is either a healing day or a waiting day. This brief reads the campaign plan&#39;s LOE 1 tasks as a buying schedule: what is due when, which office owns it, and which contracts sit underneath.</em></p>
+<hr>
+<h2>1. The picture at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Line of effort</td>
+<td>LOE 1: by 2028, reduce 90 percent of lost warrior days outside standard physiologic healing timelines; PACOM and Core 15 prioritized; led by Rear Adm. Reginald S. Ewing III, deputy Col. Matthew Barnes [CC1]</td>
+</tr>
+<tr>
+<td>Duration standard</td>
+<td>MEND: about 200 musculoskeletal conditions, 196 in the first tranche by January 31, 2027; 90 percent of profiles at or below the median; ACL, shoulder, and spine first [CC1]</td>
+</tr>
+<tr>
+<td>Profiling platform</td>
+<td>PARATUS CSO HT003826SC004, posted July 20, 2026; first prototype award due October 31, 2026 [CC2][CC1]</td>
+</tr>
+<tr>
+<td>Virtual health</td>
+<td>Orthopedic virtual consults due October 31, 2026; VIPRR acquisition options and a portfolio plan due December 31; six virtual pilots due July 31, 2027 [CC1]</td>
+</tr>
+<tr>
+<td>Access stack</td>
+<td>Telehealth, tele-critical care, and coding moving to direct contracts; nurse advice line on bridges; referral center not yet awarded; virtual PT pilot on a sole-source extension to March 29, 2027 [CC3][CC4][CC5][CC6]</td>
+</tr>
+<tr>
+<td>Money</td>
+<td>+$200.4 million FY27 for ambient listening, video visits, and Tele-Critical Care; one-time FY26 $4.5 million orthopedic surgical training increase reversed [CC7]</td>
+</tr>
+</tbody></table>
+<p><strong>Confidence: High on campaign plan tasks and dates</strong>, read from the plan&#39;s LOE 1 and LOE 2 task lists. <strong>High on solicitation numbers, contract actions, and budget figures</strong>, read from SAM.gov listings, war.gov contract announcements, and the FY27 MHS justification. <strong>Medium on vendor positions</strong>, which rest on public notices, trade reporting, and one vendor white paper. <strong>Analytical on the market reads.</strong></p>
+<p><strong>The lead finding for a capture team: the campaign plan turns LOE 1 into a dated buying schedule, and the first deadline is October 31. Eleven LOE 1 tasks are due October 31, 2026, most of them dashboards, algorithms, standards, and plans that DHA offices will build with the contracts and staff they already have. The new buys cluster from December through July: VIPRR acquisition options and a virtual health portfolio plan on December 31, MEND standards in January, PARATUS deliverables and private sector referral feeds in March, the deployability module and provider scorecard in June, and six virtual health pilots in July. A firm that can help DHA measure the waiting clock separately from the healing clock fits nearly every one of them.</strong></p>
+<hr>
+<h2>2. The buying schedule</h2>
+<p><strong>Confidence: High on dates and lead offices, which come from the plan. Analytical on the capture column. The plan calls for quarterly updates that can adapt, refine, or add tasks, so dates can move.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Due</th>
+<th>LOE 1 task</th>
+<th>Lead office</th>
+<th>Capture read</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>October 31, 2026</td>
+<td>Orthopedic virtual consultation process for active-duty members; scheduling algorithm prioritizing active-duty in-person or virtual specialty care in mental health and musculoskeletal lines</td>
+<td>Healthcare Operations; Medical Affairs</td>
+<td>Telehealth workflow and scheduling analytics</td>
+</tr>
+<tr>
+<td>October 31, 2026</td>
+<td>PARATUS periodic health assessment prototype award</td>
+<td>PAE Medical Digital Solutions with the DHA Contracting Activity</td>
+<td>The winner sets the data backbone the profiling module joins</td>
+</tr>
+<tr>
+<td>October 31, 2026</td>
+<td>Access compliance dashboards; network appointment standards for active-duty members; readiness execution requirements; cause coding gap analysis; inpatient mental health expansion plan</td>
+<td>OWHA; Healthcare Operations; Public Health; J9</td>
+<td>Internal builds that shape later buys</td>
+</tr>
+<tr>
+<td>December 31, 2026</td>
+<td>VIPRR primary care capacity &quot;based on leadership-approved options for acquisition&quot;; virtual health portfolio transformation plan built on HL7 FHIR</td>
+<td>Healthcare Operations</td>
+<td>The first real virtual care acquisition decision</td>
+</tr>
+<tr>
+<td>December 31, 2026</td>
+<td>Manning and network analysis for the 15-day target; TRICARE Operations Manual changes to prioritize active duty; baseline for reestablishing care after a move</td>
+<td>Defense Health Networks; TRICARE Health Plan; Healthcare Operations</td>
+<td>Staffing demand signal and managed care modifications</td>
+</tr>
+<tr>
+<td>January 31, 2027</td>
+<td>MEND first tranche of 196 standards in service readiness systems; monthly lost-warrior-day reports</td>
+<td>Medical Affairs</td>
+<td>The build-or-license question is answered by now</td>
+</tr>
+<tr>
+<td>March 30 and 31, 2027</td>
+<td>MEND remediation plans; PARATUS minimum viable product; private sector referral feeds into the health record and PARATUS; Warfighter Readiness 2.0 initial capability; AI scheduling and referral acquisition strategy under LOE 4</td>
+<td>Medical Affairs; PAE Medical Digital Solutions; TRICARE Health Plan; OWHA; Healthcare Operations</td>
+<td>Integration work and a scheduling acquisition strategy in writing</td>
+</tr>
+<tr>
+<td>June 30, 2027</td>
+<td>Provider scorecard; quarterly MEND assessments; PARATUS deployability module in MHS GENESIS; LOE 2 operating room dashboards with active-duty surgical wait time</td>
+<td>OWHA; Medical Affairs; PAE Medical Digital Solutions; Defense Health Networks</td>
+<td>The surgical wait data the waiting clock needs</td>
+</tr>
+<tr>
+<td>July 31, 2027</td>
+<td>Three outpatient and three inpatient virtual health pilots; operational virtual health pilots for half the finalized need</td>
+<td>Healthcare Operations</td>
+<td>The most open virtual care lane</td>
+</tr>
+<tr>
+<td>September 30, 2027</td>
+<td>PARATUS commander view; legacy virtual health analysis; hearing equipment procurement and rollout; cause coding policy</td>
+<td>OWHA; Healthcare Operations; Public Health</td>
+<td>Analysis, training, and equipment buys</td>
+</tr>
+</tbody></table>
+<p>Two dates sit outside the plan. The continuing resolution expires December 11, and the full-year bill decides whether the $200.4 million digital health increase executes. The FY28 request, expected early in 2027, is the first budget written after the plan. [CC8][CC7]</p>
+<p>My read is that October 31 is mostly an internal deadline and December 31 is the first real acquisition decision. The VIPRR language is the plan saying a buy is coming, and the portfolio plan due the same day decides which legacy programs survive into it.</p>
+<hr>
+<h2>3. MEND and the build-or-license decision</h2>
+<p><strong>Confidence: High on the plan&#39;s MEND tasks and the commercial products. Analytical on the decision.</strong></p>
+<p>MEND, for Medical Evaluation and Normalization of Duration, covers the top musculoskeletal conditions, about 200, with 196 identified so far. Medical Affairs loads the first tranche into the services&#39; readiness systems by January 31, 2027, reports lost warrior days outside standard timelines monthly from that date, delivers remediation plans by March 31, and begins quarterly effectiveness assessments by June 30. OWHA builds a provider-specific scorecard by June 30 comparing the orthopedic duty-limiting patients each provider sees with the limited-duty status each assigns. The target is 90 percent of profiles at or below the median, and the first priority pathways are ACL surgery, arthroscopic shoulder surgery, and spinal surgery. [CC1]</p>
+<p>The commercial market already sells durations. MDGuidelines, owned by ReedGroup, which Alight acquired, publishes physiological benchmarks for uncomplicated cases with an API, and ODG by MCG builds best-case, average, and maximum durations from more than 10 million lost-time cases. [CC9][CC10][CC11] Navy Medicine wrote its own in 2021, and average musculoskeletal limited duty at Naval Medical Forces Atlantic fell from 141.97 to 101.39 days. [CC12]</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>What it looks like</th>
+<th>What it buys</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>License</td>
+<td>DHA licenses a commercial benchmark set and calibrates to military job demands</td>
+<td>Content licensing, calibration analytics, integration into PARATUS</td>
+</tr>
+<tr>
+<td>Build</td>
+<td>DHA writes its own standards from service data on the Navy model</td>
+<td>Clinical informatics, profile-history data science, standards governance</td>
+</tr>
+<tr>
+<td>Hybrid</td>
+<td>Commercial benchmarks check DHA-built standards</td>
+<td>Both, plus benchmark comparison reporting</td>
+</tr>
+</tbody></table>
+<p>Two reads follow from the timeline. First, 196 identified conditions and a January deadline suggest DHA is building the content in-house; licensing and calibrating a commercial set inside sixteen weeks would be fast for any agency. The open lane is calibration, benchmark comparison, and the analytics stacked on top: monthly reports, remediation tracking, quarterly assessments, and the scorecard. Second, the one remediation example the plan gives is &quot;first available surgery date acceptance,&quot; and the surgical wait data lives in LOE 2&#39;s operating room dashboards from June 30, 2027. [CC1] Joining referral, scheduling, and surgical timestamps to the profile record separates waiting days from healing days. [CC13] No commercial duration product sells that today, and it is the most defensible analytics offer in LOE 1.</p>
+<hr>
+<h2>4. PARATUS and the systems it replaces</h2>
+<p><strong>Confidence: High on the solicitation and the plan&#39;s PARATUS tasks. Analytical on the capture reads.</strong></p>
+<p>DHA&#39;s Contracting Activity posted Commercial Solutions Opening HT003826SC004 on July 20, 2026, for PEO Defense Healthcare Management Systems: a unified data platform to replace six service-specific legacy systems, with periodic health assessment modernization open and profiling and waivers anticipated. The architecture calls for IL5 hosting, an IL6 cross-domain solution, Unity Catalog-aligned governance, and FHIR R4, HL7 v2.5.1, SNOMED CT, ICD-10, and LOINC data contracts, with awards as other transactions under 10 U.S.C. 4022. [CC2] Trade reporting describes a six-phase evaluation built on live demonstrations, with a data-conformance gate at Phase 2. [CC14]</p>
+<p>The plan sets the milestones: the assessment prototype award by October 31, 2026; a minimum viable product and automated private sector referral feeds into the health record and PARATUS by March 31, 2027; a deployability module delivered as a SMART on FHIR application inside MHS GENESIS, with a provider acknowledgment and disposition workflow, by June 30; and a commander view of flagged cases by September 30, 2027. The performance target is a profile action or readiness disposition on 95 percent of the deployment-limiting cases PARATUS flags. [CC1]</p>
+<table>
+<thead>
+<tr>
+<th>Legacy system</th>
+<th>Service</th>
+<th>Role today</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>e-Profile (in MODS)</td>
+<td>Army</td>
+<td>Profiling system of record [CC15]</td>
+</tr>
+<tr>
+<td>MEDPROS</td>
+<td>Army</td>
+<td>Readiness data system of record [CC15]</td>
+</tr>
+<tr>
+<td>MRRS</td>
+<td>Navy and Marine Corps</td>
+<td>Individual medical readiness tracking [CC16]</td>
+</tr>
+<tr>
+<td>LIMDU SMART</td>
+<td>Navy and Marine Corps</td>
+<td>Limited-duty case management [CC17]</td>
+</tr>
+<tr>
+<td>ASIMS</td>
+<td>Air Force and Space Force</td>
+<td>Individual medical readiness tracking [CC18]</td>
+</tr>
+</tbody></table>
+<p>Three capture reads follow. First, Unity Catalog is Databricks&#39; governance layer, so the architecture points toward a Databricks-based platform; that is an inference, and teams should confirm it in the Q&amp;A. [CC2] Second, MEND standards must land in the legacy readiness systems by January 31, before PARATUS can absorb them, so the transition work is a market of its own. The Army&#39;s MODS services ran on IDIQ W81K0419D0007, awarded to Tiber Creek Consulting in 2019, and MEDCOM&#39;s FY24 forecast listed a $40 million small business recompete through 2029; confirm the current holder. [CC19][CC20] Third, the March referral feeds put network specialty waits into the same platform as the profile, and reserve health assessments arrive through OptumServe&#39;s RHRP-4 contract, so the data contracts need to take both or the count has holes. [CC21]</p>
+<hr>
+<h2>5. The virtual health buildout</h2>
+<p><strong>Confidence: High on the plan&#39;s virtual health tasks. Medium on vendor positions, which rest partly on a vendor white paper. Analytical on the reads.</strong></p>
+<p>The plan&#39;s virtual health objective calls for more synchronous and asynchronous capacity and a 5 percent increase in primary care appointments done virtually. Beyond the dated tasks in Section 2, it ties the nurse advice line and VIPRR to a 10 percent rise in use and a 10 percent drop in private sector urgent care visits, adds text and chat for virtual appointments in the spring, and calls for an analysis of legacy virtual health capabilities and workforce by September 30, 2027. The portfolio plan due December 31 must reconfigure legacy programs for HL7 FHIR compliance and interoperability &quot;across platforms and commercial partners.&quot; [CC1]</p>
+<p>Amwell has already mapped itself to this list. Its white paper on the FY27 effort walks each task and pitches its platform as the common virtual care layer for the portfolio plan. It reports about 400,000 annual virtual visits in the DHA environment against about 124,000 in the legacy environment, 98 percent technical success, 92 percent provider and 91 percent patient satisfaction, and more than 99.9 percent uptime for My Military Health visits. It says VIPRR already runs on My Military Health scheduled virtual visits, and it names Sword Health as its partner for the orthopedic virtual consults. [CC22] Sword holds the virtual physical therapy pilot on a sole-source extension, and Amwell said in August that negotiations on its direct DHA contract were ongoing. [CC6][CC23] The figures are company-reported. DHA&#39;s own BRAVE program, run by its Virtual Medical Center, cut the first mental health appointment wait at Misawa from 32 days to 5. [CC24]</p>
+<p>My read is that the orthopedic consults and VIPRR capacity favor the platform in place, and Amwell and Sword have arrived as a pair. The open lanes for everyone else are the portfolio plan itself, through FHIR interoperability and legacy program rationalization, the six pilots due in July, the legacy analysis due in September 2027, and outcome measurement, which no one has published. A firm that can show waiting days saved per injured service member, measured independently of the platform vendor, has an offer DHA cannot get from its incumbents.</p>
+<hr>
+<h2>6. The access stack in transition</h2>
+<p><strong>Confidence: High on contract actions and plan tasks. Medium on status where the record is silent.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Current position</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Nurse advice line</td>
+<td>Optum, on bridge modifications</td>
+<td>$25.3 million modification June 17, 2026; follow-on solicitation closed October 2025, no award located [CC4][CC25]</td>
+</tr>
+<tr>
+<td>Referral and appointing</td>
+<td>DHA Enterprise Referral Care Coordination Center</td>
+<td>Reverse industry day June 16 to 18, 2026; the plan wants coordinated appointment plans at Carl R. Darnall, Womack, Colorado Springs, and Eglin between December 2026 and June 2027 [CC5][CC1]</td>
+</tr>
+<tr>
+<td>Scheduling and booking</td>
+<td>DHA</td>
+<td>LOE 4 acquisition strategy to modernize booking and integrate AI into scheduling and referral workflows due March 30, 2027 [CC1]</td>
+</tr>
+<tr>
+<td>Enterprise telehealth</td>
+<td>Amwell, previously under a Leidos task order</td>
+<td>Named in DHA&#39;s June 2026 notice of intent to contract directly; non-binding transition target of July 2026 [CC3][CC26]</td>
+</tr>
+<tr>
+<td>Tele-critical care and coding</td>
+<td>Philips; Solventum</td>
+<td>Named in the same notice; &quot;Best of Breed&quot; there is a category label for non-EHR vendors [CC3]</td>
+</tr>
+<tr>
+<td>Virtual physical therapy</td>
+<td>Sword Health, sole source</td>
+<td>Pilot at Bahrain, Carl R. Darnall, Martin, Portsmouth, and Rodriguez; follow-on RFI cancelled; extension through March 29, 2027 [CC27][CC6][CC28]</td>
+</tr>
+</tbody></table>
+<p>The waiting clock in the public issue runs straight through this table. The 15-day specialty target depends on referral routing and appointing, the referral center has no contractor yet, and the March scheduling strategy is the first written signal of what DHA will buy for it. Whoever holds the referral center, the scheduling buy, and the virtual PT follow-on will own the data that shows whether LOE 1&#39;s access targets are met.</p>
+<hr>
+<h2>7. Prevention and public health lines</h2>
+<p><strong>Confidence: High on the plan&#39;s targets and the cited baselines. Analytical on the market.</strong></p>
+<p><strong>Injury cause coding.</strong> The plan raises cause coding from 10 percent of new injury encounters to 50 percent within a year, with a gap analysis due October 31, 2026 and policy and training due September 30, 2027. [CC1] Only 10 percent of 5.97 million injury encounters from 2016 through 2019 carried a cause code, and overuse injuries less than 2 percent of the time. [CC29] With ambient documentation now enterprise-wide and Solventum named for coding, my read is that prompting for mechanism in ambient notes, with software suggesting the code, is the fastest route to 50 percent, with audits for accuracy. [CC30][CC3]</p>
+<p><strong>Hearing.</strong> The plan adds capacity for 408,000 hearing surveillance exams and 350,000 fit tests. Boothless audiometry courses of action are due January 30, 2027, and procurement of NIOSH-compliant equipment, boothless audiometers named, with a Phase 1 rollout to hospitals on Air Force installations and Navy bases with mobile hearing conservation trucks, is due September 30, 2027. [CC1] That is the clearest equipment buy in LOE 1. The force tested 1,355,246 members in 2023, and the Army&#39;s 169 boothless units matched booth thresholds across about 12,000 exams; one technician still cannot monitor several boothless tests at once, and that limitation is the opening. [CC31][CC32]</p>
+<p><strong>Blast overpressure.</strong> A consolidated exposure and brain health assessment is due December 31, 2026, and a risk management plan with resources through PPBE by March 31, 2027. [CC1] GAO found resource constraints impeded cognitive assessments and exposure tracking, and DHA&#39;s monitoring tool covers all 15 Tier 1 weapons systems. [CC33][CC34]</p>
+<p><strong>Health promotion and embedded care.</strong> Public Health owes a clinical health promotion scan and core operating model with resource requirements by January 31, 2027, aimed at a 5 to 10 percent cut in musculoskeletal injury risk through waist circumference, body composition, BMI, prior injury, and profile status. [CC1] Army H2F carries $325.6 million in FY27 Regular Army operation and maintenance funds, and a 2026 study tied H2F brigades to 5.9 percent fewer limited-duty workdays after musculoskeletal injury; the July 1 Capture Corner mapped the recompete. [CC35][CC36][CC37]</p>
+<hr>
+<h2>8. The counterargument, stated fairly</h2>
+<p><strong>Confidence: This is the strongest case against the reads above, and parts of it are right.</strong></p>
+<p><em>Dates move.</em> The plan builds in quarterly updates that can change tasks, and most October 31 items are internal builds that can slip without any contract action. Treat the schedule as a sequence more than a calendar.</p>
+<p><em>Transitions can be smooth.</em> DHA&#39;s sole-source notice reports that no respondent recommended replacing the core components, and direct contracts with existing vendors may change the paper more than the service. [CC3] The re-contracting risk is real for the referral center, scheduling, and virtual PT, and smaller for telehealth.</p>
+<p><em>Virtual care evidence is thin.</em> DHA has published no outcome numbers for the virtual PT pilot, and the strongest figures in circulation come from the platform vendor. [CC28][CC22] Teams selling virtual musculoskeletal care should bring their own outcome measures, defined in waiting days and healing days.</p>
+<p><em>Standards may shrink some markets.</em> If MEND shortens profiles, demand for services tied to long profiles falls. That is the policy working, and it argues for selling measurement and prevention over volume.</p>
+<p><em>The architecture inference may be wrong.</em> Unity Catalog alignment does not guarantee a Databricks platform.</p>
+<hr>
+<h2>9. What to do in the next ninety days</h2>
+<p><strong>Confidence: Analytical.</strong></p>
+<ol>
+<li><p><strong>Map your offer to the October 31 tasks and sell to the lead office.</strong> Most are internal builds by Healthcare Operations, Medical Affairs, and OWHA, supported through vehicles those offices already use. [CC1]</p>
+</li>
+<li><p><strong>Get in front of the VIPRR decision before December 31.</strong> Bring capacity models and outcome measures, and leave platform features to the incumbent. [CC1]</p>
+</li>
+<li><p><strong>Shape the virtual health portfolio plan.</strong> FHIR interoperability, legacy program rationalization, and the July pilots are the open lanes. [CC1][CC22]</p>
+</li>
+<li><p><strong>Read the PARATUS CSO for the profiling area of interest before it posts.</strong> Map your data model to the listed standards, the six legacy exports, and the March referral feeds. [CC2][CC14][CC1]</p>
+</li>
+<li><p><strong>Build a waiting-clock demonstration on the ACL pathway.</strong> Join synthetic referral, appointment, and surgery timestamps to a synthetic profile and show healing and waiting days separately. It answers the plan&#39;s own remediation example and fits a live-demo evaluation. [CC13][CC1]</p>
+</li>
+<li><p><strong>Sell MEND support as calibration and analytics.</strong> Benchmark comparison and scorecard analytics fit a standard DHA appears to be writing itself. [CC9][CC11][CC12]</p>
+</li>
+<li><p><strong>Track the equipment and scheduling buys.</strong> Hearing equipment by September 30, 2027 and the AI scheduling acquisition strategy by March 30, 2027 are the written signals of new money in and around LOE 1. [CC1][CC32]</p>
+</li>
+</ol>
+<hr>
+<p>Mary</p>
+<p>Mission Meets Tech Premium</p>
+<hr>
+<p><em>Next Capture Corner: the companion to the next part of the campaign plan series. Subscribers will receive an alert when it publishes.</em></p>
+<p><em>Capture Corner is an independent intelligence product. It is not affiliated with the Defense Health Agency, the Department of War, or any company named here, and it is not connected to any offeror&#39;s bid strategy. Premium subscription includes access to the standing intelligence sidebar plus the searchable archive.</em></p>
+<hr>
+<h2>Sources</h2>
+<p>[CC1] Defense Health Agency, FY27 campaign plan, including &quot;Delivering Warfighter Readiness, Fiscal Year 2027,&quot; October 2026. Source for: the LOE 1 North Star, priorities, and leads; MEND, PARATUS, access, virtual health, care continuity, and public health tasks, targets, lead offices, and due dates; the LOE 2 operating room dashboard; and the LOE 4 scheduling acquisition strategy task.</p>
+<p>[CC2] HigherGov listing of SAM.gov Commercial Solutions Opening HT003826SC004, &quot;Profiling Action and Readiness Tracking Unified System (PARATUS),&quot; posted July 20, 2026 by the DHA Contracting Activity for PEO DHMS. Source for: the replacement of six service-specific legacy systems, the three areas of interest, the common architecture and data standards, and other transaction authority under 10 U.S.C. 4022. <a href="https://www.highergov.com/contract-opportunity/profiling-action-and-readiness-tracking-unified-sy-ht003826sc004-s-1c1bb/">https://www.highergov.com/contract-opportunity/profiling-action-and-readiness-tracking-unified-sy-ht003826sc004-s-1c1bb/</a></p>
+<p>[CC3] HigherGov listing of DHA notice of intent HT003826CEXXX1, sole source to MHS GENESIS solution providers, June 2026. Source for: intended direct contracts with Amwell, Philips, Solventum, Oracle Health, and Henry Schein; the &quot;Best of Breed&quot; category label; the non-binding transition targets of July 2026 for Philips and Amwell, November 2026 for Oracle Health, and July 2027 for Henry Schein and Solventum; and the statement that no respondent recommended replacing core components. <a href="https://www.highergov.com/contract-opportunity/notice-of-intent-sole-source-to-mhs-genesis-solu-ht003826cexxx1-r-48a8c/">https://www.highergov.com/contract-opportunity/notice-of-intent-sole-source-to-mhs-genesis-solu-ht003826cexxx1-r-48a8c/</a></p>
+<p>[CC4] Department of War, &quot;Contracts for June 17, 2026.&quot; Source for: the $25.3 million bridge modification to OptumHealth Care Solutions for the nurse advice line. <a href="https://www.war.gov/News/Contracts/Contract/Article/4520478/contracts-for-june-17-2026/">https://www.war.gov/News/Contracts/Contract/Article/4520478/contracts-for-june-17-2026/</a></p>
+<p>[CC5] HigherGov listing, &quot;DHA Enterprise Referral Care Coordination Center (RC3),&quot; June 2026. Source for: the June 16 to 18, 2026 reverse industry day and the scope. <a href="https://www.highergov.com/contract-opportunity/dha-enterprise-referral-care-coordination-center-rc3-6-4-2026-s-d09f8/">https://www.highergov.com/contract-opportunity/dha-enterprise-referral-care-coordination-center-rc3-6-4-2026-s-d09f8/</a></p>
+<p>[CC6] Abierto listing of DHA notice HT001125NOCAE007. Source for: the six-month sole-source extension of the virtual physical therapy pilot, September 30, 2026 through March 29, 2027. <a href="https://abierto.us/opportunities/ht001125nocae007">https://abierto.us/opportunities/ht001125nocae007</a></p>
+<p>[CC7] Department of War, Office of the Under Secretary of War (Comptroller), &quot;Military Health System, Fiscal Year 2027 Budget Estimates, Volume 1,&quot; April 2026. Source for: the $200.4 million DHA digital health increase (p. 79) and the reversal of the one-time $4.5 million FY2026 congressional increase for orthopedic surgical training (OP-5 exhibit). <a href="https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf">https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf</a></p>
+<p>[CC8] American Association of Colleges of Osteopathic Medicine, &quot;President Trump Signs Continuing Resolution to Fund Government Through December 11,&quot; September 8, 2026. <a href="https://www.aacom.org/news-reports/news/2026/09/08/president-trump-signs-continuing-resolution-to-fund-government-through-december-11">https://www.aacom.org/news-reports/news/2026/09/08/president-trump-signs-continuing-resolution-to-fund-government-through-december-11</a></p>
+<p>[CC9] MDGuidelines, &quot;Duration Benchmarks Methodology.&quot; Source for: physiological benchmarks for uncomplicated cases. <a href="https://www.mdguidelines.com/wp-content/uploads/MDG_Articles/MDG_WhitePapers/Duration-Benchmarks-Methodology-0321-v4.pdf">https://www.mdguidelines.com/wp-content/uploads/MDG_Articles/MDG_WhitePapers/Duration-Benchmarks-Methodology-0321-v4.pdf</a></p>
+<p>[CC10] MDGuidelines, &quot;ReedGroup acquired by Alight.&quot; Source for: ownership. <a href="https://www.mdguidelines.com/library/reedgroup-acquired-by-alight/">https://www.mdguidelines.com/library/reedgroup-acquired-by-alight/</a></p>
+<p>[CC11] MCG, &quot;ODG Return-to-Work Guidelines,&quot; and ODG by MCG Best Practices FAQ. Source for: durations built from more than 10 million lost-time cases and best-case, average, and maximum durations. <a href="https://www.mcg.com/odg/solutions/workers-comp/return-to-work-guidelines-modeling/">https://www.mcg.com/odg/solutions/workers-comp/return-to-work-guidelines-modeling/</a></p>
+<p>[CC12] Military Medicine, 2024, vol. 189, issue 7-8, e1683. Source for: average musculoskeletal limited duty falling from 141.97 to 101.39 days after the 2021 condition-based guide. <a href="https://academic.oup.com/milmed/article/189/7-8/e1683/7603516">https://academic.oup.com/milmed/article/189/7-8/e1683/7603516</a></p>
+<p>[CC13] Military Medicine, 2025, vol. 190, issue 3-4, e675. Source for: ACL return-to-duty rates by time to surgery and the 220-day mean wait. <a href="https://academic.oup.com/milmed/article/190/3-4/e675/7750429">https://academic.oup.com/milmed/article/190/3-4/e675/7750429</a></p>
+<p>[CC14] OrangeSlices AI, &quot;DHA opens competition for AI-enabled medical readiness platform under PARATUS,&quot; 2026. Source for: the six-phase evaluation, live demonstrations, the Phase 2 data-conformance gate, and later phases under prototype agreements. Secondary. <a href="https://orangeslices.ai/dha-opens-competition-for-ai-enabled-medical-readiness-platform-under-paratus/">https://orangeslices.ai/dha-opens-competition-for-ai-enabled-medical-readiness-platform-under-paratus/</a></p>
+<p>[CC15] Department of the Army Pamphlet 40-502, &quot;Medical Readiness Procedures.&quot; Source for: e-Profile as the profiling system of record and MEDPROS as the readiness system of record. <a href="https://ga.ng.mil/Portals/49/G1/documents/SOP/2025/MEDICAL/07CH3/DA%20PAM%2040-502.pdf">https://ga.ng.mil/Portals/49/G1/documents/SOP/2025/MEDICAL/07CH3/DA%20PAM%2040-502.pdf</a></p>
+<p>[CC16] Bureau of Medicine and Surgery, BUMEDNOTE 6110, signed March 9, 2026. Source for: MRRS as the Department of the Navy individual medical readiness system. <a href="https://www.med.navy.mil/Portals/62/Documents/BUMED/Directives/Notices/BUMEDNOTE%206110%20(signed%209%20Mar%202026).pdf">https://www.med.navy.mil/Portals/62/Documents/BUMED/Directives/Notices/BUMEDNOTE%206110%20(signed%209%20Mar%202026).pdf</a></p>
+<p>[CC17] MyNavy HR, CPPA systems help desk points of contact, September 2024. Source for: LIMDU SMART as the limited-duty management system. <a href="https://www.mynavyhr.navy.mil/Portals/55/Support/PayPers/CPCResources/CPPA_SYSTEMS_HELP_DESK_POC_SEP24.pdf">https://www.mynavyhr.navy.mil/Portals/55/Support/PayPers/CPCResources/CPPA_SYSTEMS_HELP_DESK_POC_SEP24.pdf</a></p>
+<p>[CC18] Health.mil, &quot;Immunization Tracking Systems.&quot; Source for: ASIMS as the Air Force and Space Force readiness tracking system. <a href="https://www.health.mil/Military-Health-Topics/Health-Readiness/Immunization-Healthcare/Immunization-Tracking-Systems">https://www.health.mil/Military-Health-Topics/Health-Readiness/Immunization-Healthcare/Immunization-Tracking-Systems</a></p>
+<p>[CC19] Federal Compass, contract detail W81K0419D0007. Source for: the MODS services IDIQ awarded to Tiber Creek Consulting in February 2019. Confirm current holder. <a href="https://www.federalcompass.com/award-contract-detail/W81K0419D0007">https://www.federalcompass.com/award-contract-detail/W81K0419D0007</a></p>
+<p>[CC20] U.S. Army Medical Command, small business acquisition forecast, FY24 (December 2023). Source for: the forecast $40 million MODS small business recompete through 2029. <a href="https://api.army.mil/e2/c/downloads/2024/01/23/81490eb5/medcom-sb-acquisition-forcast-fy24-dec23-1.pdf">https://api.army.mil/e2/c/downloads/2024/01/23/81490eb5/medcom-sb-acquisition-forcast-fy24-dec23-1.pdf</a></p>
+<p>[CC21] Washington Technology, &quot;Optum&#39;s federal arm wins $1.6B military care contract,&quot; April 2026. Source for: RHRP-4, its ceiling and term, its scope including periodic health assessments, and QTC as the RHRP-3 incumbent. <a href="https://www.washingtontechnology.com/contracts/2026/04/optums-federal-arm-wins-16b-military-care-contract/412900/">https://www.washingtontechnology.com/contracts/2026/04/optums-federal-arm-wins-16b-military-care-contract/412900/</a></p>
+<p>[CC22] Amwell, &quot;Accelerating the FY27 DHA Virtual Health Campaign,&quot; white paper, October 2026. Source for: company-reported figures of about 400,000 annual virtual visits versus about 124,000 in the legacy environment, a threefold increase in completed visits, 98 percent technical success, 92 percent provider and 91 percent patient satisfaction, more than 99.9 percent My Military Health uptime, VIPRR use of My Military Health scheduled virtual visits, the mapping of the platform to the FY27 virtual health tasks, and Sword Health as partner for orthopedic virtual consultation. Vendor-reported; not independently verified.</p>
+<p>[CC23] Fierce Healthcare, &quot;Amwell deepens partnership with Defense Health Agency, boosts 2026 revenue outlook,&quot; August 5, 2026. Source for: Amwell&#39;s Q2 2026 statement that negotiations on the sole-source contract were ongoing. <a href="https://www.fiercehealthcare.com/finance/amwell-boasts-dha-intent-sole-source-contract-q2-earnings-touts-increasing-subscription">https://www.fiercehealthcare.com/finance/amwell-boasts-dha-intent-sole-source-contract-q2-earnings-touts-increasing-subscription</a></p>
+<p>[CC24] Defense Health Agency, &quot;BRAVE virtual mental health helps all service members get therapy,&quot; August 4, 2025. Source for: 84 locations, about 60,000 sessions, and the Misawa first-appointment change from 32 to 5 days. <a href="https://www.dha.mil/News/2025/08/04/15/40/BRAVE-virtual-mental-health-helps-all-service-members-get-therapy">https://www.dha.mil/News/2025/08/04/15/40/BRAVE-virtual-mental-health-helps-all-service-members-get-therapy</a></p>
+<p>[CC25] SweetSpot listing for the GNAL-NG solicitation. Source for: the follow-on solicitation closing in October 2025. Secondary; no award located as of October 9, 2026. <a href="https://console.sweetspotgov.com/federal-contracts/f0007fdc-a0a6-505a-8068-e716a30eaebc">https://console.sweetspotgov.com/federal-contracts/f0007fdc-a0a6-505a-8068-e716a30eaebc</a></p>
+<p>[CC26] Leidos, &quot;Leidos awarded $180M Defense Health Agency virtual health task order,&quot; 2023. Source for: the prior task order covering enterprise virtual health. <a href="https://www.leidos.com/insights/leidos-awarded-180m-defense-health-agency-virtual-health-task-order">https://www.leidos.com/insights/leidos-awarded-180m-defense-health-agency-virtual-health-task-order</a></p>
+<p>[CC27] HigherGov listing, RFI HT001126RFI0247, &quot;RFI for Virtual Physical Therapy Program,&quot; cancelled. Source for: the cancelled follow-on and the $2,605,000 pilot award HT001125PE007. <a href="https://www.highergov.com/contract-opportunity/rfi-for-virtual-physical-therapy-program-ht001126rfi0247-r-86fe5/">https://www.highergov.com/contract-opportunity/rfi-for-virtual-physical-therapy-program-ht001126rfi0247-r-86fe5/</a></p>
+<p>[CC28] Defense Health Agency, &quot;Virtual Physical Therapy Pilot.&quot; Source for: the pilot sites and DHA&#39;s statement of reduced waits and lost duty days without published figures. <a href="https://dha.mil/Offices-and-Programs/Virtual-Physical-Therapy-Pilot">https://dha.mil/Offices-and-Programs/Virtual-Physical-Therapy-Pilot</a></p>
+<p>[CC29] Medical Surveillance Monthly Report, &quot;Injury Cause Coding,&quot; February 1, 2025. Source for: the 10 percent cause-coding baseline and overuse coding below 2 percent. <a href="https://health.mil/News/Articles/2025/02/01/MSMR-Injury-Cause-Coding">https://health.mil/News/Articles/2025/02/01/MSMR-Injury-Cause-Coding</a></p>
+<p>[CC30] Defense Health Agency, &quot;Ambient listening to support warfighters,&quot; July 6, 2026. Source for: the ambient documentation rollout from about 400 providers at four sites to enterprise scale. <a href="https://dha.mil/News/2026/07/06/13/20/Ambient-listening-to-support-warfighters">https://dha.mil/News/2026/07/06/13/20/Ambient-listening-to-support-warfighters</a></p>
+<p>[CC31] Hearing Center of Excellence, &quot;CY23 Hearing Health Report,&quot; February 19, 2025. Source for: 1,355,246 military members tested in calendar 2023. <a href="https://www.health.mil/Reference-Center/Fact-Sheets/2025/02/19/CY-23-Hearing-Health-Report">https://www.health.mil/Reference-Center/Fact-Sheets/2025/02/19/CY-23-Hearing-Health-Report</a></p>
+<p>[CC32] Military Medicine, 2023, vol. 188, Supplement 6, p. 529. Source for: 169 boothless audiometers (140 WAHTS, 29 Kuduwave), about 12,000 exams, comparable thresholds, and the single-test monitoring limitation. <a href="https://academic.oup.com/milmed/article/188/Supplement_6/529/7388282">https://academic.oup.com/milmed/article/188/Supplement_6/529/7388282</a></p>
+<p>[CC33] U.S. Government Accountability Office, GAO-26-107829. Source for: resource constraints on cognitive assessments and exposure tracking, the Department&#39;s concurrence and expected completion by December 2026, and DOEHRS-IH exposure tracking. <a href="https://files.gao.gov/reports/GAO-26-107829/index.html">https://files.gao.gov/reports/GAO-26-107829/index.html</a></p>
+<p>[CC34] Defense Health Agency, &quot;Blast Exposure Monitoring Tool Reaches Critical Milestone,&quot; August 14, 2025. Source for: coverage of all 15 Tier 1 weapons systems. <a href="https://www.dha.mil/News/2025/08/14/15/52/Blast-Exposure-Monitoring-Tool-Reaches-Critical-Milestone">https://www.dha.mil/News/2025/08/14/15/52/Blast-Exposure-Monitoring-Tool-Reaches-Critical-Milestone</a></p>
+<p>[CC35] Department of the Army, &quot;FY 2027 Budget Overview.&quot; Source for: $325.6 million in FY27 Regular Army operation and maintenance for H2F. <a href="https://www.asafm.army.mil/Portals/72/Documents/BudgetMaterial/2027/pbr/Army%20FY%202027%20Budget%20Overview.pdf">https://www.asafm.army.mil/Portals/72/Documents/BudgetMaterial/2027/pbr/Army%20FY%202027%20Budget%20Overview.pdf</a></p>
+<p>[CC36] Murray et al., JAMA Network Open, 2026, via Army Times, September 18, 2026. Source for: 5.9 percent fewer limited-duty workdays after musculoskeletal injury in brigades with H2F teams. <a href="https://www.armytimes.com/news/your-military/2026/09/18/armys-h2f-program-linked-to-faster-injury-recovery-among-soldiers-study-finds/">https://www.armytimes.com/news/your-military/2026/09/18/armys-h2f-program-linked-to-faster-injury-recovery-among-soldiers-study-finds/</a></p>
+<p>[CC37] Mission Meets Tech, Capture Corner, &quot;The FY2027 Human-Performance Cliff,&quot; July 1, 2026. Author&#39;s prior work.</p>
+<p>Sources verified as of October 9, 2026.</p>
+
+
+    <div class="deep-dive-card">
+  <div class="section-label" style="color:var(--ci-gold);margin-bottom:8px;">Custom Deep Dive &middot; Premium Add-On</div>
+  <h3>Want a custom deep-dive on any line in this brief?</h3>
+  <p>This brief maps LOE 1 as a dated buying schedule: the October 31 internal builds, the December 31 VIPRR decision, MEND's build-or-license question, the PARATUS architecture and the six systems it replaces, the virtual health lanes Amwell and Sword have not closed, the access stack in transition, and the hearing and cause-coding buys. It stops short of your position: which lead office your vehicle already reaches, how your data model conforms to the PARATUS standards, and what a waiting-clock demonstration looks like on your own ACL data. A custom deep-dive picks it up there.</p>
+  <div class="deep-dive-price"><span class="amount">$50</span><span class="unit">one-time &middot; 5&ndash;7 business day turnaround</span></div>
+  <p>I will pull the additional public-record sources, read the visible signal, and write a 4&ndash;6 page custom intelligence memo on the area you select. You name the question; I do the BD-grade analysis.</p>
+  <p style="margin-bottom:18px;"><a class="deep-dive-cta" href="https://buy.stripe.com/6oUdRb2NEaQI3uM6KL4c803">Buy a Custom Deep Dive &mdash; $50 &rarr;</a></p>
+  <p class="deep-dive-examples">Examples: <em>Deep Dive &mdash; PARATUS profiling data model against the six legacy exports &middot; Deep Dive &mdash; waiting-clock demonstration on the ACL pathway &middot; Deep Dive &mdash; virtual health portfolio plan and the July 2027 pilots</em></p>
+</div>
+
+    </div>
+  </main>
+
+  <footer class="footer"></footer>
+</body>
+</html>

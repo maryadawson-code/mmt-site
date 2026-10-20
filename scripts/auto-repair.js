@@ -112,8 +112,8 @@ function repairCopyrightYear() {
 // failure that left the tracker months stale on 2026-08-17). Re-verification
 // is NOT a mechanical repair — it requires checking SAM.gov / USASpending and
 // changing status/value with evidence. That work lives in
-// scripts/reverify-contract-tracker.js (federal-data-backed, opens a review
-// PR via .github/workflows/contract-tracker-reverify.yml). auto-repair only
+// netlify/functions/contract-tracker-reverify-background.js (daily, SAM.gov +
+// USASpending, commits to main; lib/tracker-reverify.js). auto-repair only
 // touches unambiguous, reversible cosmetic fixes; it must never bump
 // last_verified. Do not reintroduce this.
 function repairContractsLastVerified() { /* intentionally a no-op — see note above */ }

@@ -92,51 +92,9 @@ function buildSeedJson(rows) {
   };
 }
 
-async function githubGetFile(repo, path, token) {
-  const url = `https://api.github.com/repos/${repo}/contents/${encodeURIComponent(path)}?ref=main`;
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/vnd.github+json",
-      "X-GitHub-Api-Version": "2022-11-28",
-    },
-  });
-  if (res.status === 404) return { sha: null, content: null };
-  if (!res.ok) throw new Error(`github GET ${path}: ${res.status} ${(await res.text()).slice(0, 200)}`);
-  const json = await res.json();
-  const content = Buffer.from(json.content || "", "base64").toString("utf8");
-  return { sha: json.sha, content };
-}
-
-async function githubPutFile(repo, path, token, { content, sha, message, branch }) {
-  const url = `https://api.github.com/repos/${repo}/contents/${encodeURIComponent(path)}`;
-  const body = {
-    message,
-    content: Buffer.from(content, "utf8").toString("base64"),
-    branch: branch || "main",
-  };
-  if (sha) body.sha = sha;
-  const res = await fetch(url, {
-    method: "PUT",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/vnd.github+json",
-      "X-GitHub-Api-Version": "2022-11-28",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) throw new Error(`github PUT ${path}: ${res.status} ${(await res.text()).slice(0, 300)}`);
-  return res.json();
-}
-
-async function triggerNetlifyBuild() {
-  const hook = process.env.NETLIFY_BUILD_HOOK_URL;
-  if (!hook) return { skipped: "no_build_hook" };
-  const res = await fetch(hook, { method: "POST" });
-  if (!res.ok) throw new Error(`netlify build hook: ${res.status} ${(await res.text()).slice(0, 200)}`);
-  return { triggered: true, status: res.status };
-}
+// GitHub Contents API calls live in lib/github-contents.js (2026-10-09),
+// shared with contract-tracker-reverify-background.js.
+const { githubGetFile, githubPutFile, triggerNetlifyBuild } = require("./lib/github-contents");
 
 async function _handler() {
   const SUPABASE_URL = process.env.SUPABASE_URL;
