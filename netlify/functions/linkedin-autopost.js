@@ -100,9 +100,12 @@ function firstCommentHtml(post) {
  * today. If nothing approved is due but an unapproved one is, return it
  * flagged so the handler can alert Mary instead of silently skipping a
  * campaign day (the placeholder-bearing Ask MMT posts ship approved=false).
+ * A post whose campaign carries `paused` in `campaigns` is not due: it is
+ * neither published nor alerted on until the pause is removed.
  */
-function selectDue(posts, today) {
-  const dueToday = (posts || []).filter((p) => p.publish_date === today);
+function selectDue(posts, today, campaigns) {
+  const paused = (p) => Boolean(p.campaign && campaigns && campaigns[p.campaign] && campaigns[p.campaign].paused);
+  const dueToday = (posts || []).filter((p) => p.publish_date === today && !paused(p));
   const approved = dueToday.find((p) => p.approved === true);
   if (approved) return { post: approved, unapproved: false };
   const pending = dueToday.find((p) => p.approved !== true);
@@ -241,7 +244,7 @@ function makeHandler(deps = {}) {
     const campaign = loadCampaignImpl();
     if (!campaign) return { statusCode: 500, body: JSON.stringify({ error: "campaign_missing" }) };
 
-    const picked = selectDue(campaign.posts, today);
+    const picked = selectDue(campaign.posts, today, campaign.campaigns);
     const due = picked.post;
     if (!due) return { statusCode: 200, body: JSON.stringify({ noop: "nothing_due", today }) };
     const label = campaignLabel(due, campaign);

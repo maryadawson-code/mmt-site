@@ -97,6 +97,12 @@ describe("selectDue", () => {
     expect(selectDue(sample, "2026-09-26")).toEqual({ post: null, unapproved: false });
     expect(selectDue(undefined, "2026-09-26").post).toBe(null);
   });
+  it("a paused campaign's post is not due: neither published nor alerted on", () => {
+    const posts = [{ id: "p", campaign: "ask-mmt-2026", publish_date: "2026-10-21", approved: false, format: "text", body: "x" }];
+    expect(selectDue(posts, "2026-10-21", { "ask-mmt-2026": { paused: "2026-10-20" } })).toEqual({ post: null, unapproved: false });
+    expect(selectDue(posts, "2026-10-21", { "ask-mmt-2026": {} }).post).toBe(posts[0]);
+    expect(selectDue(posts, "2026-10-21").post).toBe(posts[0]);
+  });
   it("live file: every Ask MMT date resolves to exactly one candidate", () => {
     for (const d of posts.filter((p) => p.campaign === "ask-mmt-2026").map((p) => p.publish_date)) {
       expect(selectDue(posts, d).post, d).toBeTruthy();

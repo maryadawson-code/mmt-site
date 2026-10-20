@@ -1,6 +1,11 @@
 {
   "campaign": "ask-mmt-2026",
   "source": "Ask MMT Campaign Package, 2026-09-10 (sections 7.1, 7.4, 7.5)",
+  "paused": {
+    "since": "2026-10-20",
+    "by": "Mary",
+    "note": "Campaign paused on Mary's instruction 2026-10-20. The daily cron runs but sends nothing (welcome steps and the monthly reset) while this block exists. Delete the block to resume; each address picks up at its next unsent step."
+  },
   "notes": [
     "Tokens: {{CAP_PREMIUM}}, {{CAP_INSTITUTIONAL}}, {{FREE_CAP}} are filled from netlify/functions/lib/ask-mmt-access.js at send time so the number in the email is the number the server enforces.",
     "Founding Member lines assume spots are still open (package checklist item 16). If Founding closes, remove the Founding sentences here and in data/linkedin-campaign/posts.json.",

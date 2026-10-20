@@ -28,7 +28,8 @@
 // Premium members the soft-launch note, because the marker was written after
 // the loop. The soft-launch marker is now written before its loop as well.
 //
-// Kill switch: ASK_MMT_CAMPAIGN_EMAILS_DISABLED="true". Per-run send cap
+// Kill switch: ASK_MMT_CAMPAIGN_EMAILS_DISABLED="true", or a `paused` block
+// in emails.json (no env change needed). Per-run send cap
 // MAX_SENDS_PER_RUN. Reads the ops_events tables with .range() pagination
 // (PostgREST caps a request at 1000 rows).
 // ============================================================================
@@ -234,6 +235,12 @@ function makeHandler(deps = {}) {
     const supabase = createClientImpl(env.SUPABASE_URL, env.SUPABASE_SERVICE_KEY);
     let emails;
     try { emails = loadEmails(); } catch (e) { return { statusCode: 500, body: JSON.stringify({ error: "copy_missing", detail: e.message }) }; }
+    // A `paused` block in emails.json stops every send (welcome steps and the
+    // monthly reset) without an env change or a redeploy of the bundle, and
+    // claims nothing, so the day is still open when the pause lifts.
+    if (emails.paused) {
+      return { statusCode: 200, body: JSON.stringify({ skipped: "paused", since: emails.paused.since || null, today }) };
+    }
 
     // CLAIM the run before any send: one run per ET day, earliest claim wins.
     const run = await claimOnce(supabase, {

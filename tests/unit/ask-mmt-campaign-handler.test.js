@@ -21,6 +21,9 @@ function setup({ store = seedMembers(), now = "2026-09-14T13:15:00Z", onSend } =
     env: ENV, now: () => new Date(now),
     createClient: () => fakeSupabase(store, { clock: () => new Date(now) }),
     sendEmail: async (m) => { if (onSend) onSend(m, store); sends.push(m); return { success: true }; },
+    // The live file has been paused since 2026-10-20; these tests replay the
+    // 2026-09-14 claim race, so they read the copy with the pause lifted.
+    loadEmails: () => { const { paused: _paused, ...live } = campaign.loadEmails(); return live; },
   });
   const run = () => handler().then((r) => JSON.parse(r.body));
   return { run, store, sends };
@@ -66,6 +69,21 @@ describe("ask-mmt-campaign-emails: the run is claimed before any send", () => {
     expect(out.soft_launch).toEqual({ status: "already_sent" });
     expect(memberSends(next.sends)).toHaveLength(0);
     expect(rowsOf(t.store, "ops_events", "ASK_MMT_CAMPAIGN_RUN").map((r) => r.details.today)).toEqual(["2026-09-14", "2026-09-15"]);
+  });
+
+  it("a paused emails.json runs nothing and claims nothing (no env change needed)", async () => {
+    const store = seedMembers();
+    const handler = makeHandler({
+      env: ENV, now: () => new Date("2026-10-21T13:15:00Z"), createClient: () => fakeSupabase(store),
+      loadEmails: () => ({ ...campaign.loadEmails(), paused: { since: "2026-10-20" } }),
+      sendEmail: async () => { throw new Error("no"); },
+    });
+    expect(JSON.parse((await handler()).body)).toMatchObject({ skipped: "paused", since: "2026-10-20" });
+    expect(rowsOf(store, "ops_events")).toHaveLength(0);
+  });
+
+  it("the live emails.json is paused (Mary, 2026-10-20); remove `paused` to resume", () => {
+    expect(campaign.loadEmails().paused).toMatchObject({ since: "2026-10-20" });
   });
 
   it("the kill switch runs nothing and claims nothing", async () => {
