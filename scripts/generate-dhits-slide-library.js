@@ -57,7 +57,7 @@ const HIGHLIGHTS = [
     decks: ['mr-pat-flanders-opening-plenary'],
   },
   {
-    lead: 'Federal EHR, as of July 2026.',
+    lead: 'Federal EHR, as DHA counted it in July 2026.',
     text: '138 of 138 parent military treatment facilities and 14 of 170 VA Medical Centers complete, with 223,000+ users and 8.8M+ unique patients in the record.',
     decks: ['technical-governance-and-infrastructure-operating-the-federal-ehr'],
   },
@@ -316,6 +316,7 @@ ${t.sessions.map((s) => sessionHtml(t, s)).join('\n')}
 
     <div class="dash-card ds-overview">
       <p>DHA ran the 2026 Defense Health Information Technology Symposium ${esc(event.dates.replace(/-/, ' to ').replace(', 2026', ''))} at the ${esc(event.venue)}. The theme was &ldquo;${esc(event.theme)}.&rdquo; After the show, DHA posted ${deckCount} slide decks on the event site: four plenaries and eight breakout tracks, ${pageCount.toLocaleString('en-US')} slides in all.${recordings.length ? ` It also posted ${recordings.length} plenary recordings, about ${Math.round(recMinutes / 60)} hours of leaders talking and taking questions.` : ''}</p>
+      <p>This library is a fixed record of the 2026 symposium. The figures below are what DHA presented in August 2026, summarized once and left as presented; nothing here updates after the event, so read every number with that date attached.</p>
       <p>I pulled every deck into one place. Each one below has a short summary and the specifics worth knowing, so you can find the three decks that matter to your pursuit without opening all ${deckCount}. Every link opens the original deck right where DHA posted it.${recordings.length ? ` The recordings are where leaders said what the slides leave out, so each one has its key moments with timestamps that jump straight to that part of the video.` : ''}</p>
       <h2>What stood out</h2>
       <ul>

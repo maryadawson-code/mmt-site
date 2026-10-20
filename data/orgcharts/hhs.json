@@ -2,18 +2,21 @@
   "schema_version": "1.0",
   "agency": "HHS",
   "agency_full_name": "U.S. Department of Health and Human Services",
-  "data_as_of": "2026-05-18",
+  "data_as_of": "2026-10-19",
   "primary_source_date": "2026-04-27",
+  "verification_note": "HCA roster and ASFR Key Personnel pages re-read 2026-10-19: all ten HCAs, their acting status, emails and phones, and every ASFR Office of Acquisitions name match. The HCA page still carries HHS's own 'content last reviewed April 27, 2026' stamp; the ASFR page now reads October 9, 2026. OMAS leadership and the strategic buying center directors come from the May 2026 Acquisition Solutions Day deck and have no public page to re-verify against.",
   "primary_sources": [
     {
       "label": "HHS Heads of Contracting Activity (HCA) — official roster",
       "url": "https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html",
-      "as_of": "2026-04-27"
+      "as_of": "2026-04-27",
+      "re_verified": "2026-10-19"
     },
     {
       "label": "ASFR Key Personnel — official roster",
       "url": "https://www.hhs.gov/about/agencies/asfr/key-personnel/index.html",
-      "as_of": "2026-04-27"
+      "as_of": "2026-10-09",
+      "re_verified": "2026-10-19"
     },
     {
       "label": "HHS OSDBU — Small Business Specialists by OpDiv",

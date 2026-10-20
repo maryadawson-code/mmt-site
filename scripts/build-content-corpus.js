@@ -421,7 +421,10 @@ function buildIdiqVehicles() {
         v.psc ? `PSC: ${v.psc}` : "",
         v.burn_status ? `MMT burn status: ${v.burn_status}` : "",
         v.incumbent_vulnerability_score ? `MMT Incumbent Vulnerability Score: ${v.incumbent_vulnerability_score}/5` : "",
-        v.forecast_event ? `MMT forecast: ${v.forecast_event} (${v.forecast_window || ""}) — ${v.forecast_confidence_pct || "?"}% confidence` : "",
+        // Window and confidence print only when the dataset carries them. An
+        // awarded vehicle has no forecast confidence to state, and "?% confidence"
+        // read as an unknown forecast rather than a settled fact.
+        v.forecast_event ? `MMT forecast: ${v.forecast_event}${v.forecast_window ? ` (${v.forecast_window})` : ""}${v.forecast_confidence_pct ? ` — ${v.forecast_confidence_pct}% confidence` : ""}` : "",
         v.mmt_note ? `MMT note: ${v.mmt_note}` : "",
         v.primary_source_url ? `Primary source: ${v.primary_source_url}` : "",
       ].filter(Boolean).join("\n");

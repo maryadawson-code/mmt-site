@@ -1,17 +1,17 @@
 {
   "_schema": {
-    "version": "1.0",
-    "last_verified": "2026-08-05",
-    "note": "FY2027 federal health / health-IT appropriation lines from the congressional budget justifications. Each line's FY26 enacted -> FY27 request change and percentage were verified internally consistent before publish. Dollars in $ millions. This is budget INTENT (where money is planned), distinct from obligated-contract data.",
-    "verification": "30 of the workbook's 104 rows retained: the internally-consistent budget-justification block. The Treasury account-level rows below it use different column semantics (FY25->FY26 account resources) and were excluded to avoid a mixed table.",
+    "version": "1.1",
+    "last_verified": "2026-10-19",
+    "note": "FY2027 federal health / health-IT appropriation lines from the congressional budget justifications. Each line's FY26 enacted -> FY27 request change and percentage were verified internally consistent before publish. Dollars in $ millions. This is budget INTENT (where money is planned), distinct from obligated-contract data. Re-verified 2026-10-19 line by line against the VA FY2027 Budget in Brief (April 2026), the HHS FY2027 Budget in Brief, and Military Health System FY2027 Budget Estimates Volume 1 (COMP and PSCP J-Book); every FY26 and FY27 figure matched its source. The DoD source link previously pointed at a directory that now returns 404; it now points at the Volume 1 PDF. ARPA-H and ONC lines added from the HHS Budget in Brief summary table.",
+    "verification": "30 of the workbook's 104 rows retained: the internally-consistent budget-justification block. The Treasury account-level rows below it use different column semantics (FY25->FY26 account resources) and were excluded to avoid a mixed table. 2026-10-19: the HHS Budget in Brief summary table labels its FY2026 column as 2026 with a footnote rather than the word enacted; the Labor-HHS FY2026 act (Division B of P.L. 119-75) was signed 2026-02-03, before the budget was released, so the column is treated as enacted. The two CMS lines carry the same totals because the Program Management account is CMS's whole discretionary program level in the Budget in Brief.",
     "sources": [
       {
         "label": "VA FY2027 Budget Submission (Budget in Brief)",
         "url": "https://department.va.gov/wp-content/uploads/2026/04/2027-BiB.pdf"
       },
       {
-        "label": "Military Health System FY2027 Budget Estimates, Vol. 1",
-        "url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+        "label": "Military Health System FY2027 Budget Estimates, Vol. 1 (COMP and PSCP Justification Estimates and Data Book)",
+        "url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf"
       },
       {
         "label": "HHS FY2027 Budget in Brief",
@@ -205,7 +205,7 @@
       "change_m": 741.9,
       "change_pct": 0.0178,
       "basis": "FY25: (actual execution) | FY26: (enacted) | FY27: (COMP 20,341.643 + PSCP 22,175.472)",
-      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf"
     },
     {
       "agency": "DHA",
@@ -216,7 +216,7 @@
       "change_m": 1451.9,
       "change_pct": 0.8607,
       "basis": "FY25: (OBBBA, available beginning FY2025) | FY26: (FY2026 \"Mandatory Spend\", O-1 exhibit)",
-      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf"
     },
     {
       "agency": "DHA",
@@ -227,7 +227,7 @@
       "change_m": 1401.6,
       "change_pct": 0.0675,
       "basis": "FY26: (enacted) | FY27: (moved to new account 0146D PSCP)",
-      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf"
     },
     {
       "agency": "DHA",
@@ -238,7 +238,7 @@
       "change_m": 128.2,
       "change_pct": 0.0119,
       "basis": "FY26: disc enacted (11,435.135 incl. $700.0 mandatory)",
-      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf"
     },
     {
       "agency": "DHA",
@@ -249,7 +249,7 @@
       "change_m": 328.4,
       "change_pct": 0.1445,
       "basis": "FY26: disc enacted (2,371.798 incl. $100.0 mandatory)",
-      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf"
     },
     {
       "agency": "DHA",
@@ -260,7 +260,7 @@
       "change_m": 11.9,
       "change_pct": 0.0336,
       "basis": "FY26: (enacted)",
-      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf"
     },
     {
       "agency": "DHA",
@@ -271,7 +271,7 @@
       "change_m": -1453.3,
       "change_pct": -0.5878,
       "basis": "FY26: (enacted)",
-      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf"
     },
     {
       "agency": "DHA",
@@ -282,7 +282,7 @@
       "change_m": 3.4,
       "change_pct": 0.0069,
       "basis": "FY26: (enacted)",
-      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf"
     },
     {
       "agency": "DHA",
@@ -293,7 +293,7 @@
       "change_m": -0.9,
       "change_pct": -0.1486,
       "basis": "FY26: (enacted)",
-      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf"
     },
     {
       "agency": "DHA",
@@ -304,7 +304,7 @@
       "change_m": 1.1,
       "change_pct": 0.0044,
       "basis": "FY26: (enacted)",
-      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf"
     },
     {
       "agency": "DHA",
@@ -315,7 +315,7 @@
       "change_m": 0.0,
       "change_pct": 0.0014,
       "basis": "FY26: (enacted)",
-      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/"
+      "source_url": "https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf"
     },
     {
       "agency": "HHS",
@@ -348,6 +348,28 @@
       "change_m": -1434.0,
       "change_pct": -0.1731,
       "basis": "FY25: (BA 4,137) | FY26: (enacted; BA 4,137) | FY27: (BA 3,700)",
+      "source_url": "https://www.hhs.gov/sites/default/files/fy-2027-budget-in-brief.pdf"
+    },
+    {
+      "agency": "ARPA-H",
+      "line": "Advanced Research Projects Agency for Health, discretionary budget authority",
+      "fy25_m": 1500.0,
+      "fy26_m": 1500.0,
+      "fy27_m": 945.0,
+      "change_m": -555.0,
+      "change_pct": -0.37,
+      "basis": "FY26: (enacted) | FY27: request; HHS Budget in Brief summary table and ARPA-H chapter, verified 2026-10-19",
+      "source_url": "https://www.hhs.gov/sites/default/files/fy-2027-budget-in-brief.pdf"
+    },
+    {
+      "agency": "ONC",
+      "line": "Office of the National Coordinator for Health IT, program level",
+      "fy25_m": 69.0,
+      "fy26_m": 69.0,
+      "fy27_m": 50.0,
+      "change_m": -19.0,
+      "change_pct": -0.2754,
+      "basis": "FY26: (enacted) program level; budget authority was 33 in FY26 and zero in the FY27 request, the rest is user fees and transfers; HHS Budget in Brief summary table, verified 2026-10-19",
       "source_url": "https://www.hhs.gov/sites/default/files/fy-2027-budget-in-brief.pdf"
     }
   ]

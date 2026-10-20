@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CR &amp; Appropriations Exposure Map &mdash; MMT Premium</title>
   <meta name="robots" content="noindex">
-  <meta name="description" content="Which federal-health-IT contracts are at risk under each upcoming Continuing Resolution and appropriations deadline. Plain-English impact, capture playbook, and authoritative sources.">
+  <meta name="description" content="Which federal-health-IT contracts are at risk under the FY2027 continuing resolution and each appropriations deadline. Plain-English impact, capture playbook, and authoritative sources.">
   <link rel="stylesheet" href="/styles/tailwind.css">
   <link rel="icon" href="/favicon-v3.png" type="image/png">
   <style>
@@ -119,7 +119,7 @@
 
         <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mmt-text-secondary);margin-bottom:8px;">MMT Premium &middot; Budget Risk</p>
         <h1 style="font-size:24px; font-weight:800; margin:0 0 4px;">CR &amp; Appropriations Exposure Map</h1>
-        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 20px;">Which federal-health-IT pursuits are at risk under each upcoming Continuing Resolution or appropriations deadline. Plain-English impact, capture playbook, authoritative sources.</p>
+        <p style="font-size:14px;color:var(--mmt-text-secondary);margin:0 0 20px;">Which federal-health-IT pursuits are at risk under the FY2027 continuing resolution and each appropriations deadline. Plain-English impact, capture playbook, authoritative sources.</p>
 
         <div class="status-band" id="statusBand"></div>
 
@@ -135,15 +135,15 @@
 
         <div class="dash-card">
           <h2 style="font-size:16px;font-weight:700;margin:0 0 8px;">How to use this page</h2>
-          <p style="font-size:13px;color:var(--mmt-navy);line-height:1.65;margin:0 0 8px;">For each upcoming deadline, ask three questions about your pipeline:</p>
+          <p style="font-size:13px;color:var(--mmt-navy);line-height:1.65;margin:0 0 8px;">FY2027 is running on a continuing resolution through December 11, and no full-year bill is law yet. For each pursuit in your pipeline, I would ask three questions:</p>
           <ol style="font-size:13px;color:var(--mmt-navy);line-height:1.65;margin:0 0 0;padding-left:22px;">
-            <li><strong>Is the funding source authorized through this deadline?</strong> If your pursuit depends on FY27 new starts and FY27 isn't enacted by Sept 30, that pursuit slips.</li>
-            <li><strong>Is there a task-order alternative on an existing IDIQ?</strong> TOs against existing vehicles obligate against the parent IDIQ ceiling and don't require new appropriations action.</li>
-            <li><strong>What's your CR-scenario timing?</strong> If the agency falls under CR, expect 30&ndash;90 days of restricted spending. Pre-position your re-engagement plan now, not in October.</li>
+            <li><strong>Is this a new start?</strong> Section 104 of the continuing resolution bars any project or activity that did not have funds in FY2026. If your pursuit is a new program, it waits for a full-year appropriation, and December 11 is the earliest that can happen.</li>
+            <li><strong>Is there a task-order alternative on an existing IDIQ?</strong> Task orders against a vehicle the agency already holds obligate against the parent ceiling and do not need new appropriations action. That is the safe ground until the freeze lifts.</li>
+            <li><strong>What happens to your pursuit if December 11 passes without full-year bills?</strong> Another stopgap keeps the freeze running; a lapse stops new work cold. Build both scenarios now and keep a task-order list you can pull forward in January.</li>
           </ol>
         </div>
 
-        <p style="font-size:12px;color:var(--mmt-text-secondary);margin:8px 0 0;">Source: <a href="https://www.crfb.org/blogs/upcoming-congressional-fiscal-policy-deadlines" target="_blank" rel="noopener" style="color:var(--mmt-teal);">CRFB upcoming fiscal-policy deadlines</a>. Refreshed monthly. Cross-link with the <a href="/contract-tracker.html" style="color:var(--mmt-teal);">Contract Tracker</a> to identify which of your pursuits are exposed to each deadline.</p>
+        <p style="font-size:12px;color:var(--mmt-text-secondary);margin:8px 0 0;">Sources: the enacted text of P.L. 119-103 on govinfo, CRS report R49353, congress.gov bill records and the <a href="https://www.crfb.org/blogs/appropriations-watch-fy-2027" target="_blank" rel="noopener" style="color:var(--mmt-teal);">CRFB FY2027 appropriations tracker</a>; each card links its own. Re-verified monthly. Cross-link with the <a href="/contract-tracker.html" style="color:var(--mmt-teal);">Contract Tracker</a> to identify which of your pursuits are exposed to each deadline.</p>
       </div>
     </div>
   </div>
@@ -174,7 +174,8 @@
         // date is labeled instead of reading as upcoming, and a live one
         // shows the countdown.
         var html = (d.deadlines||[]).map(function(item){
-          var isHighRisk = (item.label||'').toLowerCase().includes('fiscal year end') || (item.label||'').toLowerCase().includes('cr');
+          var lbl = (item.label||'').toLowerCase();
+          var isHighRisk = lbl.includes('fiscal year end') || lbl.includes('expires') || lbl.includes('continuing resolution');
           var left = daysUntil(item.date);
           var timing = left === null ? '' : (left < 0
             ? '<span class="label passed">Passed ' + (-left) + 'd ago</span>'
@@ -196,7 +197,7 @@
             (agencies ? '<div class="agencies">'+agencies+'</div>' : '') +
             '<div class="capture"><strong>Capture read:</strong> '+esc(item.capture_read)+'</div>' +
             related +
-            (item.source_url ? '<a class="src" href="'+esc(item.source_url)+'" target="_blank" rel="noopener">Source: CRFB &rarr;</a>' : '') +
+            (item.source_url ? '<a class="src" href="'+esc(item.source_url)+'" target="_blank" rel="noopener">Source &rarr;</a>' : '') +
           '</div>';
         }).join('');
         document.getElementById('deadlines').innerHTML = html;

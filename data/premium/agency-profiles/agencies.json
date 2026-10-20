@@ -4,9 +4,9 @@
     "abbrev": "DHA",
     "name": "Defense Health Agency",
     "type": "Combat Support Agency (DoD)",
-    "lastUpdated": "2026-07-09",
-    "description": "DoD's combat support agency for the Military Health System. Buys MHS GENESIS, PEO DHMS, OPMED (operational medicine systems including JOMIS and MHS GENESIS-Theater), EIDS, HCDS, enterprise imaging, and the cyber and data modernization layer beneath them. Reorganized April 20, 2026 with FOC target July 19; Office of Warfighter Health Advantage (OWHA) consolidates data, analytics, AI, and digital health.",
-    "mmtRead": "DHA reorganized April 20, 2026 with FOC target July 19. PEO DHMS retains executive authority over MHS GENESIS, OPMED programs (JOMIS, MHS GENESIS-Theater, deployable / Role 1-2-3 medical C2, blood inventory, theater data movement), and DMIX / EIDS. Organizationally PEO DHMS sits under AD-RDA/CAE, but the EHR portfolio's acquisition reporting runs directly to USW(A&S). The Office of Warfighter Health Advantage (RDML Tracy Farrill, just appointed) consolidates data, analytics, AI, and digital health into a single seat. The HCDS deployment RFP and the Leidos bridge are both inside the three-PAE transition window. Per the June 9, 2026 AD-RDA All Hands, the formal portfolios are PAE Medical Systems (MS), Medical Products (MP), and Medical Digital Solutions (MDS); PAE MDS is the consolidation seat absorbing PEO DHMS and PEO Medical Systems.",
+    "lastUpdated": "2026-10-19",
+    "description": "DoD's combat support agency for the Military Health System. Buys MHS GENESIS, PEO DHMS, OPMED (operational medicine systems including JOMIS and MHS GENESIS-Theater), EIDS, HCDS, enterprise imaging, and the cyber and data modernization layer beneath them. Reorganized April 20, 2026; the three Portfolio Acquisition Executive seats under AD-RDA/CAE are staffed as of September 2026. The Office of Warfighter Health Advantage (OWHA) consolidates data, analytics, AI, and digital health.",
+    "mmtRead": "DHA reorganized April 20, 2026 and the acquisition side has settled into three portfolios under the Component Acquisition Executive: PAE Medical Systems, PAE Medical Products, and PAE Medical Digital Solutions (the seat that absorbed PEO DHMS and PEO Medical Systems). PEO DHMS still holds MHS GENESIS, OPMED (JOMIS, MHS GENESIS-Theater, deployable Role 1-2-3 medical C2, blood inventory, theater data movement) and EIDS, and health.mil still describes it as reporting directly to the Under Secretary for Acquisition and Sustainment while administratively attached to DHA. OWHA changed hands in September 2026: RDML Tracy Farrill is retiring and Brig. Gen. Jason Lennen now directs it. HCDS (the MHS GENESIS follow-on) is still pre-solicitation and Leidos holds the reported bridge through about 2028. FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026, so a slipped DHA award this quarter is a program decision, not a funding excuse.",
     "officialSources": [
       {
         "label": "DHA organizational structure (dha.mil)",
@@ -30,10 +30,11 @@
       "OPMED (operational medicine: JOMIS, MHS GENESIS-Theater, deployable systems)"
     ],
     "procurementSignals": [
-      "HCDS deployment RFP (inside PAE transition window)",
-      "PEO DHMS Deployment Solutions HT003826RE001 ($300M, proposals due Apr 21 2026)",
-      "DHA Data Governance HT001126RE011 (~$34M WOSB)",
-      "Leidos bridge ~$1.4B sole-source (competition delayed to 2028 earliest)"
+      "HCDS (MHS GENESIS follow-on): pre-solicitation, no RFP date published; Leidos holds the reported $1.4B+ sole-source bridge through about 2028",
+      "PEO DHMS Deployment Solutions HT003826RE001 ($300M; proposals closed Apr 21 2026): the contract tracker carries it as awarded (Aug 2026) with the awardee not yet confirmed from an official notice",
+      "DHA Data Governance HT001126RE011 (~$34M WOSB; proposals closed Jan 9 2026): award not yet confirmed",
+      "DHA Enterprise-Wide CSO HT003826SC005 and the PEO DHMS CSO: open, rolling submissions by Area of Interest",
+      "Leidos bridge ~$1.4B sole-source (HCDS competition no earlier than 2028)"
     ],
     "openVehicles": [
       "DHITUC",
@@ -43,8 +44,8 @@
     ],
     "premiumLocked": true,
     "budget": {
-      "fy2026_enacted": "$10.8B (COMP)",
-      "fy2027_request": "$11.2B (+3.7%)",
+      "fy2026_enacted": "$41.8B Defense Health Program discretionary (enacted); IM/IT $2.27B; MHS GENESIS/DHMSM O&M $488M",
+      "fy2027_request": "$42.5B DHP discretionary (+1.8%); IM/IT $2.60B (+14.5%); DHMSM O&M $491M; DHP RDT&E $1.02B (down 58.8%)",
       "key_programs": [
         "MHS GENESIS deployment",
         "Enterprise Imaging",
@@ -52,10 +53,11 @@
         "MHS EITS"
       ],
       "at_risk": [
-        "EHRM funding (30% withheld pending June 1 conditions)"
+        "FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026: no new starts until the CR lifts",
+        "DHP RDT&E request falls from $2.47B to $1.02B in the FY2027 submission"
       ]
     },
-    "current_read": "DHA reorganization is in execution: IOC began April 20, 2026, FOC target July 19. The Component Acquisition Executive seat is now confirmed: Dr. Matthew G. Clark holds AD-RDA/CAE, succeeding RDML Arena, who ran it Acting through the IOC stand-up. The rest of the front office is still Acting (Brett Scheideman, Principal Deputy/DCAE; COL Basia Bujak, Military Deputy; CMSgt Christine Collins, Senior Enlisted Leader). The construct consolidates to three PAEs (Medical Systems, Medical Products, Medical Digital Solutions); PAE MDS has captured roughly 80 percent of the combined PEO DHMS + PEO Medical Systems portfolio and is mid 90-day stand-up behind a Unified IT Systems Migration Plan. EHR portfolio acquisition reporting still runs directly to USW(A&S). DHACA obligated $15.8B in FY26 (up $2.9B over FY25) on fewer actions. The HCDS deployment RFP and the Leidos bridge remain inside the transition window.",
+    "current_read": "The reorganization is past the stand-up phase. Dr. Matthew G. Clark is the confirmed AD-RDA / Component Acquisition Executive with RDML Ivonne Arena as Principal Deputy; James Perkins holds PAE Medical Digital Solutions, Caitlyn Felkoski is Acting PAE Medical Products and Madeleine Friedman is Acting PAE Medical Services, all per the DHA Director's 21 SEP 2026 leadership message (tracked in MMT's key-people file). OWHA moved from RDML Tracy Farrill (retiring) to Brig. Gen. Jason Lennen. DHA targeted full operating capability for July 19, 2026; I have not found a public DHA statement that declares FOC reached, so treat the PAE workforce map as still settling. The dha.mil organization page (read Oct 19, 2026) lists Mr. William Walker as Assistant Director, Healthcare Administration and Operations. HCDS stays pre-solicitation and the Leidos bridge runs to about 2028. FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026.",
     "key_vehicles": [
       "DHITUC",
       "MHS EITS",
@@ -63,19 +65,22 @@
       "PEO DHMS Deployment Solutions"
     ],
     "key_offices": [
-      "AD-RDA (Component Acquisition Executive)",
-      "Three PAEs (per 09 JUN 2026 All Hands): Medical Systems (MS), Medical Products (MP), Medical Digital Solutions (MDS); MDS lead assignment is a Key Next Step",
-      "PEO DHMS (Defense Healthcare Management Systems)",
-      "OWHA (Office of Warfighter Health Advantage)",
-      "DHACA (Defense Health Agency Contracting Activity)"
+      "AD-RDA / Component Acquisition Executive: Dr. Matthew G. Clark (confirmed); Principal Deputy: RDML Ivonne Arena",
+      "AD-HCAO (Healthcare Administration and Operations): Mr. William Walker, Assistant Director (dha.mil Organizational Structure page, read 2026-10-19; no Acting label)",
+      "PAE Medical Digital Solutions: James Perkins (the seat succeeding PEO DHMS and PEO Medical Systems)",
+      "PAE Medical Products: Caitlyn Felkoski (Acting); PAE Medical Services: Madeleine Friedman (Acting)",
+      "PEO DHMS (Defense Healthcare Management Systems): DHMSM, JOMIS, EIDS",
+      "OWHA (Office of Warfighter Health Advantage): Brig. Gen. Jason Lennen, Director (RDML Tracy Farrill retiring, Sept 2026)",
+      "DHACA (Defense Health Agency Contracting Activity): James Watkins, Director",
+      "CIO / J-6: Pat Flanders (CIO only; acquisition authority moved to the PAE line)"
     ],
     "recent_awards": [],
     "upcoming_signals": [
-      "FOC milestone July 19 2026 (transition in execution)",
-      "HCDS deployment RFP this quarter",
-      "PAE Medical Digital Solutions lead assignment (Key Next Step)",
-      "First Capability Trade Council (CTC) convenes July 1 2026",
-      "PEO DHMS + PEO Medical Systems portfolios consolidating into PAE MDS"
+      "HCDS solicitation: pre-solicitation with no published RFP date; watch for an industry day or draft RFP from PAE MDS / PEO DHMS",
+      "PAE MDS portfolio map, charter and unified IT-systems migration plan: the June 9 All Hands put these milestones in Aug-Sep 2026; the final workforce map has not been published",
+      "Ambient listening (clinical documentation) enterprise rollout continuing from the Feb 2026 start",
+      "DHA Enterprise-Wide CSO and PEO DHMS CSO Areas of Interest (rolling)",
+      "CR exposure: FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026; new starts wait for full-year appropriations"
     ],
     "related_tags": [
       "Military Health System",
@@ -125,8 +130,8 @@
       "items": [
         {
           "label": "Beneficiaries",
-          "value": "9.6M+",
-          "context": "MHS GENESIS reach"
+          "value": "9.5M+",
+          "context": "MHS GENESIS reach (fact sheet as of Feb 2026)"
         },
         {
           "label": "Users",
@@ -151,7 +156,7 @@
       {
         "signal": "Ambient clinical documentation enterprise rollout (Feb 2026 start)",
         "buyer": "DHA / DHMSM",
-        "window": "FY2026",
+        "window": "FY2026-FY2027",
         "source_id": "dhmsm_fact"
       },
       {
@@ -171,16 +176,17 @@
       {
         "label": "DHA Data Strategy",
         "url": "https://dha.mil/Reference-Library/d/e/f/Defense-Health-Agency-Data-Strategy",
-        "verified_at": "2026-05-12",
+        "verified_at": "2026-10-19",
         "confidence": "high",
         "id": "dha_data"
       },
       {
         "label": "Health.mil DHMSM fact sheet",
         "url": "https://www.health.mil/Reference-Center/Fact-Sheets/2026/03/24/DOD-Healthcare-Management-System-Modernization-Fact-Sheet",
-        "verified_at": "2026-05-12",
+        "verified_at": "2026-10-19",
         "confidence": "high",
-        "id": "dhmsm_fact"
+        "id": "dhmsm_fact",
+        "caveat": "PDF fact sheet dated AS OF FEB 2026; counts (9.5M+ beneficiaries, 194,000 users, 3,800 facilities) are DHMSM's own."
       }
     ]
   },
@@ -189,9 +195,9 @@
     "abbrev": "VA",
     "name": "Department of Veterans Affairs / Veterans Health Administration",
     "type": "Cabinet Department / Integrated Health System",
-    "lastUpdated": "2026-07-09",
-    "description": "Largest integrated US healthcare system (1,298 facilities, 9M+ enrolled veterans). VHA RISE reorganization, HELM / VALIP supply chain DevSecOps, CCN Next Gen community care, and EHRM Oracle Health deployment all run in parallel. VA OIT operates the IT layer through T4NG2 and IHT 2.0; imaging and ambient AI are active growth areas.",
-    "mmtRead": "VA is mid-reorganization (VHA RISE, December 2025 announcement) and mid-modernization. EHRM is back on track with four Michigan sites live April 11, 2026 (first wave of 13 sites for 2026). T4NG2 awarded ($60.7B, 33 final awardees post-protest); IHT 2.0 ($14B, 100% SDVOSB, 9 awardees) covers VHA technology services through 2035. CCN Next Gen proposals due April 3, 2026 (in award review). HELM / VALIP supply-chain DevSecOps is the under-tracked acquisition + financial-system integration lane; VA Ambient Scribe IDIQ (36C10B26R0006) is in active GAO protest with decision due August 6, 2026. The capture frame is agency shift before RFP: read RISE, then map to EHRM / CCN / HELM signals.",
+    "lastUpdated": "2026-10-19",
+    "description": "Largest integrated US healthcare system (1,298 facilities, 9M+ enrolled veterans). VHA RISE reorganization, HELM / VALIP supply chain DevSecOps, CCN Next Gen community care, and EHRM Oracle Health deployment all run in parallel. VA OIT operates the IT layer through T4NG2 and IHT 2.0; imaging and ambient AI are active growth areas. Eleven medical centers went live on the Federal EHR in 2026 with Alaska and Cleveland next on October 24.",
+    "mmtRead": "VA is mid-reorganization (VHA RISE, December 2025 announcement) and mid-modernization. EHRM is on cadence: Michigan (Apr 11), Ohio (Jun 6) and Indiana (Aug 22) put 11 medical centers live in 2026, Alaska and Cleveland go October 24, 2026, and digital.va.gov now schedules waves every two months through November 2027 on the way to all 170 medical centers by November 2031. T4NG2 is awarded ($60.7B, 33 final awardees post-protest); IHT 2.0 ($14B, 100% SDVOSB, 9 awardees) covers VHA technology services through 2035. CCN Next Gen proposals were received April 17, 2026 and the award is still pending. The VA Ambient Scribe IDIQ (36C10B26R0006) protest (Vexcel, B-424447.1) was dismissed May 19, 2026, so that award decision is VA's to make. HELM / VALIP supply-chain DevSecOps is the under-tracked acquisition and financial-system integration lane. The capture frame is agency shift before RFP: read RISE, then map to EHRM / CCN / HELM signals.",
     "officialSources": [
       {
         "label": "VA OIT — EHR deployment schedule (digital.va.gov)",
@@ -233,23 +239,23 @@
       "Data Loss Prevention / DLP ($20M-$49M recompete, OIS/Tamara Neal; Maveris/T4NG incumbent; ZTA data-pillar) [APBI FY26]"
     ],
     "procurementSignals": [
-      "CCN Next Gen Medical 36C10G26R0003 (proposals closed Apr 3 2026)",
-      "VA Ambient Scribe protest decision due Aug 6 2026",
+      "CCN Next Gen Medical 36C10G26R0003 (proposals received Apr 17 2026; award pending)",
+      "VA Ambient Scribe IDIQ 36C10B26R0006: GAO protest B-424447.1 (Vexcel) dismissed May 19 2026; awards not yet announced",
       "VA Enterprise Imaging 36C10X25Q0015 pre-RFP",
       "VA Health Services DevSecOps 36C10B26Q0163 sources sought",
       "VA Supply Chain DevSecOps / HELM sources sought (36C10B26Q0163 adjacent)",
       "VHA RISE structural milestones (regional consolidation cadence)",
-      "APBI FY26: Q4 FY26 RFP cluster — Application Services, ICMS, EDGE, ERP, Cloud Broker, App Hosting Compute & Storage, Mainframe Services, and CMS (contract writing system) all target Q4 FY26 solicitation (notional per APBI)",
-      "APBI FY26: EDGE RFP live on SAM.gov (36C10B26Q0245); RFI completed, RFP Q1 FY27, award Q2 FY27 (context)",
-      "APBI FY26: CMS (Contract Management System) Industry Day held June 18 2026; RFI Q3 FY26, RFP/award Q4 FY26",
-      "APBI FY26: OIT PDAS Zack Schwartz framed the recompete wave at the June 2026 industry day — 'incumbency is not a guarantee' — signaling EDGE, HTMSS, CSOC, TSS 3.0, OMEGA and CGT are genuinely open competes",
-      "APBI FY26: new-start cluster off the June deck — Contact Center CRM Modernization ($350M-$400M, PDS), Inventory Management Modernization IDIQ ($500M-$700M, PDS), Cloud Broker Service ($1B-$1.9B, IO) and ERP ($1B-$1.7B, IO) are the large NEW starts (not recompetes)",
-      "APBI FY26: EUS end-user refresh lane — Endpoints 3.0 / EaaS ($100M/yr), Supporting Technology 3.0 ($50M-$99M), Contact Center Infrastructure ($50M/5yr); CCS lane — Enterprise Guest Wi-Fi 2.0 ($100M-$249M) and Unified Comm Server on SEWP ($20M-$49M)"
+      "APBI FY26 slated a Q4 FY26 RFP cluster (Application Services, ICMS, EDGE, ERP, Cloud Broker, App Hosting Compute & Storage, Mainframe Services, CMS contract writing system). FY26 has closed and I have not confirmed any of those solicitations posted on SAM.gov as of Oct 19 2026; treat each as slipped until a notice appears",
+      "APBI FY26: EDGE RFI completed; the deck put the RFP in Q1 FY27 and award in Q2 FY27 (notional)",
+      "APBI FY26: CMS (Contract Management System) Industry Day held June 18 2026; the deck put RFP and award in Q4 FY26 (not confirmed released)",
+      "APBI FY26: OIT PDAS Zack Schwartz framed the recompete wave at the June 2026 industry day ('incumbency is not a guarantee'), so EDGE, HTMSS, CSOC, TSS 3.0, OMEGA and CGT are genuinely open competes",
+      "APBI FY26 new-start cluster: Contact Center CRM Modernization ($350M-$400M, PDS), Inventory Management Modernization IDIQ ($500M-$700M, PDS), Cloud Broker Service ($1B-$1.9B, IO) and ERP ($1B-$1.7B, IO). New starts are exposed while FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026",
+      "APBI FY26: EUS end-user refresh lane (Endpoints 3.0 / EaaS $100M/yr, Supporting Technology 3.0 $50M-$99M, Contact Center Infrastructure $50M/5yr); CCS lane (Enterprise Guest Wi-Fi 2.0 $100M-$249M, Unified Comm Server on SEWP $20M-$49M)"
     ],
     "openVehicles": [
       "T4NG2",
       "IHT 2.0 (VA Health Connect)",
-      "CCN Next Gen Medical (post-protest pending)",
+      "CCN Next Gen Medical (proposals received Apr 17 2026; award pending)",
       "Context (public research, dated): T4NG EXPIRED — ordering ended Mar 6 2026; successor is T4NG2 [Washington Technology / HigherGov 2026]",
       "Context (public research, dated): T4NG2 ACTIVE — $60.7B, SDVOSB set-aside, 33-prime closed roster (no on-ramp); protests resolved Mar 30 2026 (Judge Silfen ruled for VA); HTMSS and DLP reqs tagged T4NG expected to ride T4NG2 [Washington Technology 2026-03-31; Truvisory 2026-05-26]",
       "Context (public research, dated): NASA SEWP VI awarded June 22 2026 (364 initial awardees); ordering opens Nov 1 2026; SEWP V extended through Sep 30 2026 (options to Apr 30 2027). SEWP-based reqs (Unified Comm Server, ICMS) likely ride SEWP VI once ordering opens [GovConFeed / Washington Technology 2026-06-23]",
@@ -258,8 +264,8 @@
     ],
     "premiumLocked": true,
     "budget": {
-      "fy2026_enacted": "$325B (total)",
-      "fy2027_request": "$332B (+2.2%)",
+      "fy2026_enacted": "$138.3B discretionary (enacted); $453.3B total budget authority; OIT $6.22B; EHRM $3.40B",
+      "fy2027_request": "$150.6B discretionary (+8.9%); $488.2B total (+7.7%); OIT $6.31B (+1.4%); EHRM $4.24B (+24.7%)",
       "key_programs": [
         "EHRM modernization",
         "Community Care Network",
@@ -267,10 +273,11 @@
         "Ambient AI scribe"
       ],
       "at_risk": [
-        "EHRM deployment pace (congressional scrutiny)"
+        "EHRM deployment pace (congressional scrutiny); the FY27 EHRM request is up 24.7% and rides on the 2026 go-lives holding",
+        "FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026, which holds EHRM and OIT at the FY26 rate until full-year bills pass"
       ]
     },
-    "current_read": "VA executed CCN Next Gen procurement (proposals due Apr 3 2026, currently in award review). EHRM Michigan wave went live Apr 11 2026 (first 4 of 13 planned sites). T4NG2 awarded with 33 final roster after protest resolution. The VA Ambient Scribe IDIQ has an open GAO protest (B-424447.1, decision Aug 6 2026).",
+    "current_read": "EHRM is the proof point now: 11 medical centers live in 2026 (Michigan Apr 11, Ohio Jun 6, Indiana Aug 22), Alaska and Cleveland scheduled Oct 24, 2026, then Milwaukee, Iron Mountain, Tomah and Madison in January 2027 and the Chicago-area sites in March 2027 (digital.va.gov, updated Sept 15, 2026). CCN Next Gen proposals were received Apr 17, 2026 and the award is pending. T4NG2 is awarded with a 33-firm roster after protest resolution. The Ambient Scribe IDIQ protest (B-424447.1) was dismissed May 19, 2026; no awards announced. VA OIT is led by Paul Lawrence (performing the duties of the AS/CIO) with Zachary Schwartz as PDAS. FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026.",
     "key_vehicles": [
       "T4NG2",
       "IHT 2.0",
@@ -283,15 +290,16 @@
       "TSS 3.0 (GSA MAS) [APBI FY26]",
       "Cloud Broker Service (new, vehicle TBD) [APBI FY26]",
       "ERP (new, updated Enterprise License Agreement + SI) [APBI FY26]",
-      "ICMS / Unified Comm Server (leverage SEWP authorities, expect SEWP VI) [APBI FY26]"
+      "ICMS / Unified Comm Server (rides SEWP authorities; expect SEWP VI once ordering opens Nov 1 2026) [APBI FY26]"
     ],
     "key_offices": [
-      "VA OIT (Office of Information and Technology)",
+      "VA OIT (Office of Information and Technology): Paul Lawrence performing the duties of the Assistant Secretary / CIO; Zachary Schwartz, Principal Deputy Assistant Secretary",
       "VHA (Veterans Health Administration)",
       "VA TAC (Technology Acquisition Center)",
       "OAL (Office of Acquisition and Logistics)"
     ],
     "recent_awards": [
+      "VA ambient scribe (sole-source): Rise8 (SDVOSB) with Thoughtworks, 36C10B26C0025, $4.95M, awarded Feb 19 2026, engines Abridge and Knowtex [MMT 2026-09 brief citing HigherGov]",
       "Incumbent to target (EDGE recompete): Deloitte Consulting LLP (VetsEZ team) holds PTEMS 2.0 (~$726M CDLM order 2024); EDGE recompete $1B-$1.9B on GSA Alliant 2 [APBI FY26 + public research]",
       "Incumbent to target (HTMSS recompete): GovCIO holds VA118-16-D-1003 / 36C10B22N10030034 (~$389.9M); recompete $300M-$500M rides T4NG2 [APBI FY26]",
       "Incumbent to target (TSS 3.0 recompete): Booz Allen Hamilton; recompete on GSA MAS [APBI FY26]",
@@ -300,15 +308,17 @@
       "Incumbent to target (Cloud Governance Tool recompete): Four Points Technology, LLC (SDVOSB), NASA SEWP NNG15SD22B, incumbent tool TurboT (~$7M); $5M-$9.9M recompete [APBI FY26 + public research]"
     ],
     "upcoming_signals": [
-      "Michigan EHRM go-lives 2 through 13 (rolling 2026)",
-      "VA Ambient Scribe protest decision Aug 6 2026",
+      "Federal EHR go-lives: Alaska and Cleveland Oct 24 2026; Milwaukee, Iron Mountain, Tomah, Madison Jan 2027; Danville, Hines, Jesse Brown Mar 2027 (digital.va.gov schedule)",
+      "CCN Next Gen award (proposals received Apr 17 2026)",
+      "VA Ambient Scribe IDIQ awards (protest dismissed May 19 2026)",
       "T4NG2 task order ramp-up",
       "VHA RISE: 18-VISN to 5-region rollout milestones (read agency shift before RFP)",
       "HELM / VALIP supply chain DevSecOps procurement activity (acquisition + financial system integration)",
-      "APBI FY26 (notional, subject to change): Q4 FY26 RFPs — IATDR, Application Services, EDGE (RFI complete), ERP, Cloud Broker Service, App Hosting Compute & Storage, Mainframe Services, ICMS, TSS 3.0, CMS",
-      "APBI FY26 (notional): Q1 FY27 award cluster — Application Services, Cloud Broker Service, App Hosting Compute & Storage, ERP, ICMS, LEAF, Project Front Door",
-      "APBI FY26 (notional): FY27 — HTMSS RFP/award Q2, OMEGA RFP Q3/award Q4, DLP RFP Q3/award Q4, Printers as a Service award Q3, Unified Comm Server RFP/award Q3",
-      "APBI FY26 (notional): FY28 — CSOC RFI Q1, RFP Q3, award Q4 (latest of the APBI recompetes)"
+      "APBI FY26 Q4 FY26 RFP cluster (IATDR, Application Services, EDGE, ERP, Cloud Broker Service, App Hosting Compute & Storage, Mainframe Services, ICMS, TSS 3.0, CMS): not confirmed released; watch SAM.gov and the CR",
+      "APBI FY26 (notional): Q1 FY27 award cluster (Application Services, Cloud Broker Service, App Hosting Compute & Storage, ERP, ICMS, LEAF, Project Front Door) depends on RFPs that have not surfaced",
+      "APBI FY26 (notional): FY27 HTMSS RFP/award Q2, OMEGA RFP Q3/award Q4, DLP RFP Q3/award Q4, Printers as a Service award Q3, Unified Comm Server RFP/award Q3",
+      "APBI FY26 (notional): FY28 CSOC RFI Q1, RFP Q3, award Q4 (latest of the APBI recompetes)",
+      "CR exposure: FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026"
     ],
     "related_tags": [
       "Veterans Affairs",
@@ -668,35 +678,60 @@
       "Watch Next"
     ],
     "modernizationTimeline": {
-      "title": "Federal EHR Deployment Schedule (2026)",
-      "scope": "Federal EHR will deploy at 164 medical centers and associated clinics; rollout continues through this decade.",
+      "title": "Federal EHR Deployment Schedule (2026-2027)",
+      "scope": "Federal EHR deploys to all 170 VA medical centers by November 2031 (digital.va.gov, updated Sept 15, 2026). Eleven medical centers went live in 2026; waves run every two months through November 2027.",
       "items": [
         {
-          "window": "April 11, 2026 (Michigan cohort)",
+          "window": "April 11, 2026 (Michigan, live)",
           "sites": [
             "VA Ann Arbor",
             "VA Battle Creek",
             "VA Detroit",
             "VA Saginaw"
           ],
-          "why_it_matters": "First named 2026 wave. Sets cadence and produces the public proof point cited in every subsequent late-2026 solicitation."
+          "why_it_matters": "First 2026 wave and the proof point every later solicitation cites."
         },
         {
-          "window": "Later 2026 waves",
+          "window": "June 6, 2026 (Ohio, live)",
           "sites": [
-            "Chillicothe",
-            "Cincinnati",
-            "Dayton",
-            "Fort Wayne",
-            "Marion",
-            "Indianapolis",
-            "Alaska sites",
-            "Cleveland sites"
+            "Chillicothe VAMC",
+            "Cincinnati VAMC",
+            "Cincinnati VAMC-Fort Thomas",
+            "Dayton VAMC"
           ],
-          "why_it_matters": "Ohio + Indiana + Alaska + Cleveland brings the rollout across multiple VISNs in a single fiscal year. The demand surface expands for change management, clinician training, and interoperability integration."
+          "why_it_matters": "Second wave held the two-month cadence."
         },
         {
-          "window": "APBI FY26 procurement timeline — Q4 FY26 RFPs (notional, advisory, subject to change)",
+          "window": "August 22, 2026 (Indiana, live)",
+          "sites": [
+            "Fort Wayne VAMC",
+            "Marion VAMC (Indiana)",
+            "Richard L. Roudebush VAMC (Indianapolis)"
+          ],
+          "why_it_matters": "Three sites in one wave; the cadence VA is now selling to Congress."
+        },
+        {
+          "window": "October 24, 2026 (scheduled)",
+          "sites": [
+            "Alaska VA Healthcare System (Anchorage)",
+            "Louis Stokes Cleveland VAMC"
+          ],
+          "why_it_matters": "First go-live of FY2027 and the first under the CR. Change management, clinician training and interoperability staffing for 2027 keys off this one."
+        },
+        {
+          "window": "January to November 2027 (scheduled)",
+          "sites": [
+            "Jan: Milwaukee, Iron Mountain, Tomah, Madison",
+            "Mar: Danville, Hines, Jesse Brown (Chicago)",
+            "May: Fargo, Fort Meade, Hot Springs, Minneapolis, Royal C. Johnson Veterans' Memorial Hospital, St. Cloud",
+            "Jul: Des Moines, Grand Island, Iowa City, Omaha",
+            "Sep: American Lake (Tacoma), Boise, Portland, Seattle, Vancouver",
+            "Nov: John J. Cochran Veterans Hospital, St. Louis VAMC-Jefferson Barracks, John J. Pershing VAMC, Marion VAMC (Illinois)"
+          ],
+          "why_it_matters": "Upper Midwest, Northwest and St. Louis in one year. The demand surface for sustainment integrators, trainers and interoperability adapters is now a 2027 calendar, not a hope."
+        },
+        {
+          "window": "APBI FY26 procurement timeline: the Q4 FY26 RFP cluster (notional; FY26 has closed and none confirmed released as of Oct 19 2026)",
           "sites": [
             "IATDR (RFP/award Q4 FY26)",
             "Application Services (RFP Q4 FY26, award Q1 FY27)",
@@ -709,7 +744,7 @@
             "TSS 3.0 (RFP Q4 FY26, award Q2 FY27)",
             "CMS contract writing system (Industry Day Jun 18 2026; RFP/award Q4 FY26)"
           ],
-          "why_it_matters": "The heaviest RFP cluster of the FY26 APBI lands in Q4 FY26 — including the marquee dollar plays (EDGE, ERP, Cloud Broker Service). Position now: RFIs on several are already complete."
+          "why_it_matters": "The heaviest RFP cluster of the FY26 APBI was slated for Q4 FY26, including the marquee dollar plays (EDGE, ERP, Cloud Broker Service). I have not seen those solicitations post. Position anyway: RFIs on several are complete, and a CR-year release lands on short notice."
         },
         {
           "window": "APBI FY26 procurement timeline — FY27/FY28 milestones (notional)",
@@ -724,15 +759,15 @@
           "why_it_matters": "The recompete lane stretches into FY27-FY28. CSOC is the last domino. Every quarter here is notional per VA and shifts with the RISE reorg and appropriations cadence."
         }
       ],
-      "caveat": "DigitalVA states 10 medical centers are currently live on the Federal EHR; the extracted deployment table identifies 6 prior sites. Preserve this discrepancy as an integrity signal — verify before publishing an external numeric live-site count. APBI FY26 procurement milestones are advisory and subject to change; RFI/RFP/Award quarters are notional and discussion at industry day does not guarantee a solicitation.",
+      "caveat": "digital.va.gov (updated Sept 15, 2026) does not state a live-site total; my count of its deployment table is 17 medical centers (1 in 2020, 4 in 2022, 1 joint VA/DoD center in 2024, 11 in 2026). Verify before quoting an external number. APBI FY26 procurement milestones are advisory and subject to change; RFI/RFP/Award quarters are notional and discussion at industry day does not guarantee a solicitation.",
       "source_id": "va_ehr_sched"
     },
-    "contractorRead": "VA's 2026 deployment posture moves the conversation from 'will the program continue?' to 'who supports the wave cadence?' Look at integrator vehicles, change-management staffing, clinician-trainer pipelines, telehealth and interoperability adapters, and EHRM-aligned cybersecurity. Michigan in April is the proof point downstream solicitations will cite. BD read on the FY26 APBI (all quarters notional, advisory, subject to change): the billion-dollar plays are EDGE ($1B-$1.9B, Deloitte/VetsEZ incumbent, Alliant 2), Cloud Broker Service ($1B-$1.9B, new build) and ERP ($1B-$1.7B, new ELA + SI) — these three are where the dollar concentration and the earliest RFPs (Q4 FY26) collide. The recompete lane is a teaming map: GovCIO on HTMSS ($300M-$500M, rides T4NG2 — note the SDVOSB set-aside, 33-prime closed roster), Booz Allen on TSS 3.0, Revolutional (ex-Maveris) on CSOC ($332M, GSA MAS HACS), Sprezzatura on OMEGA ($500M-$999M), and Four Points (SDVOSB) on the Cloud Governance Tool. Zack Schwartz's 'incumbency is not a guarantee' framing (June 2026 industry day) is the signal these recompetes are genuinely open — position as challenger-teammate or subcontractor to the incumbent, not either/or.",
+    "contractorRead": "VA's 2026 deployment posture moves the conversation from 'will the program continue?' to 'who supports the wave cadence?' Look at integrator vehicles, change-management staffing, clinician-trainer pipelines, telehealth and interoperability adapters, and EHRM-aligned cybersecurity. Eleven 2026 go-lives are the proof point downstream solicitations will cite. BD read on the FY26 APBI (all quarters notional, advisory, subject to change): the billion-dollar plays are EDGE ($1B-$1.9B, Deloitte/VetsEZ incumbent, Alliant 2), Cloud Broker Service ($1B-$1.9B, new build) and ERP ($1B-$1.7B, new ELA + SI): these three are where the dollar concentration and the earliest RFPs collide (APBI slated them for Q4 FY26; I have not seen them post, and the CR makes a new start the hardest thing to fund before December 11). The recompete lane is a teaming map: GovCIO on HTMSS ($300M-$500M, rides T4NG2; note the SDVOSB set-aside, 33-prime closed roster), Booz Allen on TSS 3.0, Revolutional (ex-Maveris) on CSOC ($332M, GSA MAS HACS), Sprezzatura on OMEGA ($500M-$999M), and Four Points (SDVOSB) on the Cloud Governance Tool. Zack Schwartz's 'incumbency is not a guarantee' framing (June 2026 industry day) is the signal these recompetes are genuinely open: position as challenger-teammate or subcontractor to the incumbent, not either/or.",
     "watchNext": [
       {
-        "signal": "Post-Michigan cohort lessons-learned + downstream wave staffing",
+        "signal": "Alaska and Cleveland go-lives (Oct 24 2026) and the 2027 wave staffing that follows",
         "buyer": "VA OIT / EHRM",
-        "window": "Q2-Q3 2026",
+        "window": "Q1-Q2 FY2027",
         "source_id": "va_ehr_sched"
       },
       {
@@ -744,19 +779,19 @@
       {
         "signal": "EDGE recompete RFP ($1B-$1.9B; Deloitte/VetsEZ incumbent on PTEMS 2.0, rides GSA Alliant 2). RFI complete; SAM.gov 36C10B26Q0245",
         "buyer": "VA OIT / PDS (Kim Pugh)",
-        "window": "RFP Q1 FY27, award Q2 FY27 (notional per APBI)",
+        "window": "RFP Q1 FY27, award Q2 FY27 (notional per APBI; not yet posted)",
         "source_id": "va_apbi_fy26"
       },
       {
         "signal": "Cloud Broker Service RFP ($1B-$1.9B new; multi-cloud FinOps + FedRAMP High lifecycle)",
         "buyer": "VA OIT / IO (Dave Foster)",
-        "window": "RFP Q4 FY26, award Q1 FY27 (notional per APBI)",
+        "window": "Slated RFP Q4 FY26, award Q1 FY27 (notional per APBI; RFP not confirmed released)",
         "source_id": "va_apbi_fy26"
       },
       {
         "signal": "Enterprise Resource Planning (ERP) RFP ($1B-$1.7B new; updated ELA + systems-integration support)",
         "buyer": "VA OIT / IO (Patrick Prescott)",
-        "window": "RFP Q4 FY26, award Q1 FY27 (notional per APBI)",
+        "window": "Slated RFP Q4 FY26, award Q1 FY27 (notional per APBI; RFP not confirmed released)",
         "source_id": "va_apbi_fy26"
       },
       {
@@ -776,9 +811,9 @@
       {
         "label": "DigitalVA EHR deployment schedule",
         "url": "https://digital.va.gov/ehr-modernization/ehr-deployment-schedule/",
-        "verified_at": "2026-05-12",
-        "confidence": "medium",
-        "caveat": "Page states 10 medical centers currently live; the deployment table identifies 6 prior sites. Treat live-site count as unverified before quoting.",
+        "verified_at": "2026-10-19",
+        "confidence": "high",
+        "caveat": "Page updated Sept 15, 2026. It does not state a live-site total; my count of the deployment table is 17 medical centers. Treat the total as derived, not quoted.",
         "id": "va_ehr_sched"
       },
       {
@@ -796,9 +831,9 @@
     "abbrev": "HHS",
     "name": "Department of Health and Human Services",
     "type": "Cabinet Department (parent of CMS, NIH, FDA, CDC, IHS, ONC, ARPA-H)",
-    "lastUpdated": "2026-05-18",
-    "description": "HHS just realigned. As of January 2026, OMAS (the Office of Mission Acquisition Solutions) is the new contracting activity for all common IT, professional services, and what used to flow through ACF and AHRQ. The department dropped from 13 contracting activities to 10. If you sell common IT or advisory services into HHS, your contracting officer moved. If you sell mission-unique work to NIH, CDC, CMS, FDA, HRSA, IHS, ASPR, ARPA-H, or OIG, you stay where you are.",
-    "mmtRead": "HHS is two stories now, not one. The mission-unique side (NIH for research IT, CMS for claims, FDA for surveillance, ARPA-H for OTA-funded R&D) still buys at the operating division. The common side (laptops, cloud, cybersecurity tools, advisory services, training) flows through OMAS strategic buying centers under EO 14240 and OMB M-25-31. Your BD calendar needs both maps: the operating-division map for mission, the OMAS SBC map for common. Expect the picture to keep moving — the FY26 Budget in Brief signals 28 operating divisions consolidating to 15 plus 5 regional offices closing.",
+    "lastUpdated": "2026-10-19",
+    "description": "HHS realigned in January 2026. OMAS (the Office of Mission Acquisition Solutions) is the consolidated contracting activity for common IT and professional services, and it absorbed what used to flow through ACF and AHRQ. The department dropped from 13 contracting activities to 10. If you sell common IT or advisory services into HHS, your contracting officer moved. If you sell mission-unique work to NIH, CDC, CMS, FDA, HRSA, IHS, ASPR, ARPA-H, or OIG, you stay where you are. One more move lands this month: every NITAAC GWAC (CIO-SP3, CIO-SP3 SB, CIO-CS) stops taking new orders October 29, 2026.",
+    "mmtRead": "HHS is two stories now, not one. The mission-unique side (NIH for research IT, CMS for claims, FDA for surveillance, ARPA-H for OTA-funded R&D) still buys at the operating division. The common side (laptops, cloud, cybersecurity tools, advisory services, training) flows through OMAS strategic buying centers under EO 14240 and OMB M-25-31. Your BD calendar needs both maps. Two dates frame the next quarter: NITAAC's GWACs take their last new orders October 29, 2026 (CIO-SP4 was cancelled in January), so common IT that used to ride CIO-SP3 moves to the GSA portfolio; and FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026. The FY2027 Budget in Brief asks for $111.1B in discretionary budget authority against $128.7B enacted for FY2026, and its operating-division list already shows the consolidated Administration for a Healthy America and the Administration for Children, Families, and Communities.",
     "officialSources": [
       {
         "label": "HHS HCA and Key Managers roster",
@@ -817,6 +852,10 @@
         "url": "https://www.hhs.gov/about/organization/org-chart/index.html"
       },
       {
+        "label": "HHS FY2027 Budget in Brief (hhs.gov)",
+        "url": "https://www.hhs.gov/about/budget/budget-in-brief/index.html"
+      },
+      {
         "label": "HHS FY2026 Budget in Brief",
         "url": "https://www.hhs.gov/sites/default/files/fy-2026-budget-in-brief.pdf"
       },
@@ -827,6 +866,10 @@
       {
         "label": "HHS AI Strategy & Implementation",
         "url": "https://www.hhs.gov/programs/topic-sites/ai/strategy-implementation/index.html"
+      },
+      {
+        "label": "NITAAC notice: all GWACs sunset Oct 29, 2026 (nitaac.nih.gov)",
+        "url": "https://nitaac.nih.gov/resources/news/important-notice-nitaac-gwacs-cio-sp3-cio-sp3-sb-and-cio-cs"
       }
     ],
     "keyPrograms": [
@@ -838,15 +881,17 @@
     "procurementSignals": [
       "Common IT and PS through OMAS SBC-IT (Adam Vance) and SBC-PS (Scott Bredow)",
       "ACF / AHRQ mission-unique work now in OMAS SBC-Mission (Trish James)",
-      "NIH, CDC, CMS, FDA, HRSA, IHS, ASPR, ARPA-H, OIG — each retains its own HCA and contracting authority"
+      "NIH, CDC, CMS, FDA, HRSA, IHS, ASPR, ARPA-H, OIG — each retains its own HCA and contracting authority",
+      "NITAAC CIO-SP3, CIO-SP3 SB and CIO-CS: no new orders after Oct 29 2026; orders placed on or after Jun 8 2026 end by Dec 31 2028; future requirements go to GSA vehicles and other agency sources"
     ],
     "openVehicles": [
-      "OASIS+, NASA SEWP V/VI, GSA MAS IT, NITAAC CIO-SP — the canonical buying paths OMAS leverages today"
+      "OASIS+, NASA SEWP V/VI, GSA MAS IT: the buying paths OMAS uses today",
+      "NITAAC CIO-SP3 / CIO-SP3 SB / CIO-CS: last new order Oct 29 2026 (CIO-SP4 cancelled January 2026); no successor NITAAC vehicle"
     ],
     "premiumLocked": false,
     "budget": {
-      "fy2026_enacted": "$127B (discretionary)",
-      "fy2027_request": "$131B (+3.1%)",
+      "fy2026_enacted": "$128.7B discretionary budget authority (enacted, reorg-comparable; $128.5B on the existing structure)",
+      "fy2027_request": "$112.2B discretionary (-12.8%); $111.1B after cancellations and rescissions",
       "key_programs": [
         "Data modernization (cross-OPDIV)",
         "Interoperability enforcement (ONC)",
@@ -854,33 +899,35 @@
         "HIPAA modernization (policy)"
       ],
       "at_risk": [
-        "Public health preparedness funding (proposed cuts)"
+        "Public health preparedness funding (proposed cuts)",
+        "FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026; the FY27 request cuts HHS discretionary 12.8%, so the full-year bills decide which operating-division lines hold"
       ]
     },
-    "current_read": "OMAS is the new front door for common IT and Professional Services at HHS, effective January 2026. ACF and AHRQ no longer have their own contracting authority — their work flows through OMAS SBC-Mission. The nine other HCAs (ARPA-H, CDC, CMS, FDA, HRSA, IHS, NIH, ASPR, OIG) keep mission-unique procurement. PACT is now an HHS Agency Priority Goal. The FY25 spend total dropped to $28.2B (down $16.3B from final FY25 obligations) on HCEI cuts. Three of the ten HCAs are still Acting (ARPA-H, CDC, CMS) — expect leadership churn at the biggest spenders.",
+    "current_read": "OMAS is the front door for common IT and Professional Services at HHS, effective January 2026. ACF and AHRQ no longer have their own contracting authority; their work flows through OMAS SBC-Mission. The nine other HCAs (ARPA-H, CDC, CMS, FDA, HRSA, IHS, NIH, ASPR, OIG) keep mission-unique procurement. The official HCA roster has not changed since HHS last reviewed it on April 27, 2026 (I re-read it October 19, 2026): the same three HCAs are still Acting (ARPA-H, CDC, CMS), and they are still the biggest spenders. ASFR's key personnel page (reviewed October 9, 2026) now lists Anthony Kram as Associate DAS for Acquisitions under Jennifer Johnson and shows the Principal Deputy ASFR seat vacant. PACT is an HHS Agency Priority Goal. The FY25 spend total dropped to $28.2B on HCEI cuts. NITAAC's GWACs close to new orders October 29, 2026, and FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026.",
     "key_vehicles": [
       "OASIS+ (consolidated professional-services BIC)",
       "NASA SEWP V / SEWP VI (IT hardware and software)",
       "GSA MAS IT (multiple-award schedule)",
-      "NITAAC CIO-SP (NIH-issued, government-wide IT)",
+      "NITAAC CIO-SP3 / CIO-SP3 SB / CIO-CS (NIH-issued): last new order Oct 29 2026; CIO-SP4 cancelled; no successor at NITAAC",
       "OMAS internal strategic-sourcing vehicles (under development, Year-2 outlook)"
     ],
     "key_offices": [
-      "OMAS (Office of Mission Acquisition Solutions) — Quentin McCoy, HCA",
-      "OMAS SBC-IT — Adam Vance, Director (common enterprise IT, software, cyber, cloud, AI tools)",
-      "OMAS SBC-PS — Scott Bredow, Director (advisory, scientific, training, programmatic)",
-      "OMAS SBC-Mission — Tatricia (Trish) James, Director (ACF, AHRQ, Staff Divisions, Secretary initiatives)",
-      "ASFR / Office of Acquisitions — Jennifer Johnson, DAS for Acquisitions and Senior Procurement Executive",
-      "OSDBU — Shannon Jackson, Executive Director (reports to HHS Deputy Secretary)",
-      "HHS IDEAS Lab — Kimberly Himes, Acquisition Innovation Advocate and Industry Liaison"
+      "OMAS (Office of Mission Acquisition Solutions): Quentin McCoy, HCA (roster reviewed Apr 27 2026, unchanged Oct 19 2026)",
+      "OMAS SBC-IT: Adam Vance, Director (common enterprise IT, software, cyber, cloud, AI tools)",
+      "OMAS SBC-PS: Scott Bredow, Director (advisory, scientific, training, programmatic)",
+      "OMAS SBC-Mission: Tatricia (Trish) James, Director (ACF, AHRQ, Staff Divisions, Secretary initiatives)",
+      "ASFR / Office of Acquisitions: Jennifer Johnson, DAS for Acquisitions; Anthony Kram, Associate DAS for Acquisitions; Sonya Carrion, Executive Director, Strategic Programs & Business Systems (ASFR page reviewed Oct 9 2026)",
+      "OSDBU: Shannon Jackson, Executive Director (reports to the HHS Deputy Secretary; page reviewed Aug 19 2026)",
+      "HHS IDEAS Lab: Kimberly Himes, Acquisition Innovation Advocate and Industry Liaison (per the May 2026 Solutions Day deck)"
     ],
     "recent_awards": [],
     "upcoming_signals": [
-      "OMAS Market Hour launches June 2026 — 10-minute capability demos + 5-minute Q&A. Contact IndustryLiaison@hhs.gov.",
-      "RFO 8.4 / GSAR 538.7103 rewrites schedule ordering. Three tiers (at-or-below MPT, MPT-to-SAT, above-SAT). RFIs now drive who makes the RFQ list.",
-      "FY26 Budget in Brief consolidation: 28 operating divisions to 15, plus 5 regional offices closing.",
-      "SBCX subcontracting opportunity feature in development at osdbu.hhs.gov.",
-      "HIPAA security rule update (proposed rulemaking)."
+      "NITAAC GWAC sunset: last new orders Oct 29 2026 on CIO-SP3, CIO-SP3 SB and CIO-CS; move common IT pursuits to GSA MAS IT, SEWP and OASIS+",
+      "OMAS Market Hour launched June 2026 per the May deck (10-minute demo plus 5-minute Q&A). HHS has not published a session schedule I could find; the Vendor Profile Form via IndustryLiaison@hhs.gov is still the path in",
+      "RFO 8.4 / GSAR 538.7103 schedule ordering: three tiers (at-or-below MPT, MPT-to-SAT, above-SAT); RFIs drive who makes the RFQ list",
+      "FY2027 Budget in Brief: $111.1B discretionary request; the OpDiv budget justifications already list the consolidated AHA and ACFC. Full-year bills after the Dec 11 2026 CR decide what holds",
+      "SBCX subcontracting opportunity feature in development at osdbu.hhs.gov; FY26 HHS small business goal 25%",
+      "HIPAA security rule update (proposed rulemaking)"
     ],
     "related_tags": [
       "HHS",
@@ -909,20 +956,26 @@
         "ACF and AHRQ independent contracting authority was eliminated and absorbed by OMAS SBC-Mission."
       ],
       "vendor_watch": [
-        "Vehicle posture: be on GSA MAS IT, NASA SEWP, NITAAC CIO-SP, OASIS+. These are the canonical buying paths OMAS leverages.",
-        "OMAS Market Hour (June 2026): submit the Vendor Profile Form via IndustryLiaison@hhs.gov. Customer-interest-driven selection.",
+        "Vehicle posture: be on GSA MAS IT, NASA SEWP and OASIS+. NITAAC CIO-SP3 takes no new orders after Oct 29 2026, so a CIO-SP3-only posture goes dark this quarter.",
+        "OMAS Market Hour (launched June 2026): submit the Vendor Profile Form via IndustryLiaison@hhs.gov. Customer-interest-driven selection; no public session calendar yet.",
         "RFO 8.4 (GSAR 538.7103) tier rules: RFIs now drive who makes RFQ lists. Respond with facts, not brochures.",
         "Small business: SBCX (osdbu.hhs.gov) is being expanded with a subcontracting opportunity feature — register and watch."
       ],
       "source_id": "hhs_omas_solutions_day"
     },
-    "contractorRead": "Two BD plans, not one. For common IT and Professional Services, build the OMAS SBC relationship and submit the Vendor Profile Form for Market Hour. For mission-unique work, your operating-division contracting officer is unchanged. Watch what comes off ACF and AHRQ recompetes — those move into OMAS SBC-Mission and reopen the field. Confirm presence on OASIS+, NASA SEWP, GSA MAS IT, and NITAAC CIO-SP, because OMAS leverages those vehicles today. Treat any quarterly OMAS Market Hour as a real foot in the door, not a vendor event.",
+    "contractorRead": "Two BD plans, not one. For common IT and Professional Services, build the OMAS SBC relationship and submit the Vendor Profile Form for Market Hour. For mission-unique work, your operating-division contracting officer is unchanged. Watch what comes off ACF and AHRQ recompetes; those move into OMAS SBC-Mission and reopen the field. Confirm presence on OASIS+, NASA SEWP and GSA MAS IT, because those are the vehicles OMAS buys through today, and get off a CIO-SP3-only posture before October 29, 2026. Treat any OMAS Market Hour slot as a real foot in the door, not a vendor event.",
     "watchNext": [
       {
-        "signal": "OMAS Market Hour first session (June 2026) — Vendor Profile Form submissions due now",
+        "signal": "OMAS Market Hour cadence after the June 2026 launch (no public schedule yet); Vendor Profile Form still open",
         "buyer": "OMAS programs + acquisition staff",
-        "window": "June 2026",
+        "window": "FY2027 Q1",
         "source_id": "hhs_omas_solutions_day"
+      },
+      {
+        "signal": "NITAAC GWAC sunset: last new orders Oct 29 2026; orders after Jun 8 2026 end by Dec 31 2028; common IT demand shifts to GSA vehicles",
+        "buyer": "OMAS SBC-IT + every HHS OpDiv that rode CIO-SP3",
+        "window": "Oct 29 2026, then FY2027",
+        "source_id": "nitaac_sunset"
       },
       {
         "signal": "ACF / AHRQ recompete sweep absorbed into OMAS SBC-Mission",
@@ -937,10 +990,10 @@
         "source_id": "hhs_omas_solutions_day"
       },
       {
-        "signal": "FY26 Budget consolidation milestones (28 OpDivs to 15; 5 regional offices closing)",
+        "signal": "OpDiv consolidation now visible in the FY2027 budget justifications (AHA, ACFC) and the $111.1B discretionary request",
         "buyer": "HHS department level",
-        "window": "FY2026-FY2027",
-        "source_id": "hhs_fy26_bib"
+        "window": "FY2027 appropriations (CR through Dec 11 2026)",
+        "source_id": "hhs_fy27_bib"
       },
       {
         "signal": "HHS AI compliance plan publications and OpDiv alignment activity",
@@ -954,22 +1007,25 @@
         "id": "hhs_hca_roster",
         "label": "HHS HCA and Key Managers roster",
         "url": "https://www.hhs.gov/grants-contracts/grants-business-contacts/hca-and-key-managers/index.html",
-        "verified_at": "2026-04-27",
-        "confidence": "high"
+        "verified_at": "2026-10-19",
+        "confidence": "high",
+        "caveat": "HHS 'content last reviewed April 27, 2026'; re-read Oct 19, 2026 through the desktop browser (hhs.gov returns 403 to automated fetches)."
       },
       {
         "id": "hhs_asfr_personnel",
         "label": "HHS ASFR Key Personnel page",
         "url": "https://www.hhs.gov/about/agencies/asfr/key-personnel/index.html",
-        "verified_at": "2026-04-27",
-        "confidence": "high"
+        "verified_at": "2026-10-19",
+        "confidence": "high",
+        "caveat": "HHS 'content last reviewed October 9, 2026'."
       },
       {
         "id": "hhs_osdbu",
         "label": "HHS OSDBU — Small Business Specialists by OpDiv",
         "url": "https://www.hhs.gov/about/agencies/asfr/acquisition/osdbu/index.html",
-        "verified_at": "2026-05-07",
-        "confidence": "high"
+        "verified_at": "2026-10-19",
+        "confidence": "high",
+        "caveat": "HHS 'content last reviewed August 19, 2026'; FY26 small business goal 25%."
       },
       {
         "id": "hhs_omas_solutions_day",
@@ -993,6 +1049,21 @@
         "verified_at": "2026-05-12",
         "confidence": "high",
         "caveat": "Page does not state contract clauses, vehicles, or procurement requirements. Vendor implications are watch items, not confirmed buys."
+      },
+      {
+        "id": "nitaac_sunset",
+        "label": "NITAAC notice: all NITAAC GWACs sunset October 29, 2026",
+        "url": "https://nitaac.nih.gov/resources/news/important-notice-nitaac-gwacs-cio-sp3-cio-sp3-sb-and-cio-cs",
+        "verified_at": "2026-10-19",
+        "confidence": "high"
+      },
+      {
+        "id": "hhs_fy27_bib",
+        "label": "HHS FY2027 Budget in Brief (landing page; $111.1B discretionary request)",
+        "url": "https://www.hhs.gov/about/budget/budget-in-brief/index.html",
+        "verified_at": "2026-10-19",
+        "confidence": "high",
+        "caveat": "Landing page read Oct 19, 2026 (reviewed June 23, 2026). The PDF itself blocked automated reads; OpDiv-level FY27 lines come from data/budget-signals.json."
       }
     ],
     "opportunityMap": {
@@ -1022,9 +1093,9 @@
     "abbrev": "ASTP/ONC",
     "name": "Assistant Secretary for Technology Policy / Office of the National Coordinator for Health IT",
     "type": "HHS Sub-Office (regulatory, not a primary buyer)",
-    "lastUpdated": "2026-05-13",
-    "description": "Sets health IT interoperability standards, certifies EHR technology under ONC Health IT Certification, owns USCDI evolution, runs TEFCA implementation through the RCE (Sequoia Project), and enforces information blocking under 45 CFR Part 171.",
-    "mmtRead": "ONC's procurement footprint is small. Its regulatory leverage is enormous: USCDI determines what data EHRs must exchange, TEFCA determines who participates in the network, and information blocking enforcement determines who pays the penalty. Track ONC for what it enables, not what it buys.",
+    "lastUpdated": "2026-10-19",
+    "description": "ASTP/ONC sets health IT interoperability standards, certifies EHR technology under the ONC Health IT Certification Program, owns USCDI evolution (v6 final July 24, 2025; draft v7 posted), runs TEFCA through the RCE (Sequoia Project), and enforces information blocking under 45 CFR Part 171. HTI-5, proposed December 2025, would cut 34 of 60 certification criteria and revise seven; no final rule as of October 19, 2026.",
+    "mmtRead": "ONC's procurement footprint is small. Its regulatory reach is enormous: USCDI determines what data EHRs must exchange, TEFCA determines who participates in the network, and information blocking enforcement determines who pays the penalty. The live question this quarter is HTI-5: the proposed rule (comment period closed February 27, 2026) strips 34 certification criteria and reorients the program around FHIR APIs, and some removals are written to take effect January 1, 2027. Track ONC for what it enables and what it stops requiring, not what it buys.",
     "officialSources": [
       {
         "label": "ONC About",
@@ -1035,29 +1106,34 @@
         "url": "https://www.healthit.gov/topic/interoperability/policy/trusted-exchange-framework-and-common-agreement-tefca"
       },
       {
-        "label": "USCDI",
-        "url": "https://www.healthit.gov/isa/united-states-core-data-interoperability-uscdi"
+        "label": "USCDI (Interoperability Standards Platform)",
+        "url": "https://isp.healthit.gov/united-states-core-data-interoperability-uscdi"
       },
       {
         "label": "Information Blocking rule",
         "url": "https://www.healthit.gov/topic/information-blocking"
+      },
+      {
+        "label": "HTI-5 proposed rule chart (healthit.gov)",
+        "url": "https://healthit.gov/resources/hti-5-proposed-rule-chart/"
       }
     ],
     "keyPrograms": [
-      "TEFCA implementation (Sequoia Project as RCE)",
-      "USCDI versioning and adoption",
-      "ONC Health IT Certification Program",
+      "TEFCA implementation (Sequoia Project as RCE, five-year contract from August 2023)",
+      "USCDI versioning and adoption (v6 final; draft v7)",
+      "ONC Health IT Certification Program (HTI-5 proposed overhaul)",
       "Information Blocking enforcement"
     ],
     "procurementSignals": [
-      "USCDI v4 draft (expected mid-2026)",
+      "HTI-5 final rule timing (proposed Dec 2025; comments closed Feb 27 2026; no final rule found as of Oct 19 2026)",
+      "USCDI v7 draft on the ISP; v6 (Jul 24 2025) is the latest final version",
       "TEFCA participant onboarding milestones"
     ],
     "openVehicles": [],
     "premiumLocked": true,
     "budget": {
-      "fy2026_enacted": "$62M",
-      "fy2027_request": "$65M (+4.8%)",
+      "fy2026_enacted": "not yet verified: the HHS FY2027 Budget in Brief PDF blocked automated reads on 2026-10-19",
+      "fy2027_request": "not yet verified: the HHS FY2027 Budget in Brief PDF blocked automated reads on 2026-10-19",
       "key_programs": [
         "TEFCA implementation",
         "USCDI expansion",
@@ -1065,22 +1141,24 @@
         "EHR certification"
       ],
       "at_risk": [
-        "ONC budget is small and vulnerable to broader HHS cuts"
+        "ONC's budget is small and exposed to the 12.8% HHS-wide discretionary cut in the FY27 request; FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026"
       ]
     },
-    "current_read": "ONC is enforcing TEFCA and expanding USCDI. Information blocking enforcement actions are increasing. ONC procurement is limited but its regulatory decisions shape billions in private-sector and government health IT spending.",
+    "current_read": "ASTP/ONC is running three tracks at once. Certification: HTI-5 (proposed December 2025) would remove 34 of 60 certification criteria and revise seven, with some removals dated January 1, 2027; the comment period closed February 27, 2026 and I found no final rule as of October 19, 2026. Standards: USCDI v6 was published July 24, 2025 and draft v7 is on the Interoperability Standards Platform. Exchange: TEFCA runs under Common Agreement v2.1 (February 2025) with the Sequoia Project as RCE. Information blocking enforcement material was last refreshed April 2026 (portal process fact sheet). ONC's own org page (updated June 17, 2026) lists three offices: the Immediate Office, Programs and Implementation, and Standards, Certification, and Analysis. Next public marker: ONC Annual Meeting February 3, 2027.",
     "key_vehicles": [],
     "key_offices": [
-      "ONC (direct)",
-      "Standards and Technology Division",
-      "Policy Division",
-      "RCE (Sequoia Project, contractor-operated)"
+      "Immediate Office of the National Coordinator (National Coordinator, Deputy National Coordinators, Chief Privacy Officer, Chief Medical Officer)",
+      "Office of Programs and Implementation",
+      "Office of Standards, Certification, and Analysis",
+      "RCE (Sequoia Project, contractor-operated; five-year contract awarded August 2023)"
     ],
     "recent_awards": [],
     "upcoming_signals": [
-      "USCDI v4 draft (mid-2026)",
-      "TEFCA expansion",
-      "Information blocking enforcement actions"
+      "HTI-5 final rule (certification criteria removals; some dated Jan 1 2027)",
+      "USCDI v7 final (draft on the ISP)",
+      "TEFCA expansion under Common Agreement v2.1",
+      "Information blocking enforcement actions",
+      "ONC Annual Meeting Feb 3 2027"
     ],
     "related_tags": [
       "Interoperability",
@@ -1111,18 +1189,21 @@
       "Contractor Read"
     ],
     "policyModule": {
-      "title": "HTI-2 Final Rule + TEFCA",
+      "title": "HTI-2 Final Rule, HTI-5 Proposed Rule, TEFCA",
       "confirmed_facts": [
         "The HTI-2 final rule finalizes TEFCA-related provisions supporting electronic health information access, exchange, and use.",
         "The rule establishes 45 CFR Part 172 for TEFCA-related provisions.",
         "The rule amends information-blocking regulations by adding TEFCA Manner Exception definitions.",
-        "The rule makes no changes to the existing TEFCA Manner Exception at 45 CFR § 171.403."
+        "The rule makes no changes to the existing TEFCA Manner Exception at 45 CFR § 171.403.",
+        "HTI-5 (proposed December 2025) lists 41 certification criteria for change: 34 removals and 7 revisions, with timing of 'effective date of final rule' or January 1, 2027 (healthit.gov chart, updated Dec 30 2025).",
+        "ASTP/ONC is withdrawing certain not-yet-finalized proposals from the HTI-2 proposed rule (HTI-2 final rule page, updated April 29 2026)."
       ],
       "vendor_watch": [
         "TEFCA transparency and reliability documentation as a deliverable compliance artifact set.",
         "QHIN ecosystem positioning: partnership, integration, or QHIN-adjacent service models.",
         "Information-blocking compliance posture as a product attribute, not only a legal review.",
-        "Privacy, security, and trust documentation built to TEFCA Manner Exception expectations."
+        "Privacy, security, and trust documentation built to TEFCA Manner Exception expectations.",
+        "Certification roadmap: build flexibility for HTI-5 criteria removals until a final rule publishes; do not sunset a criterion on a proposed date."
       ],
       "source_id": "onc_hti2"
     },
@@ -1133,15 +1214,29 @@
         "buyer": "ASTP/ONC + QHINs",
         "window": "Through FY2027",
         "source_id": "onc_hti2"
+      },
+      {
+        "signal": "HTI-5 final rule publication and the Jan 1 2027 criteria removals",
+        "buyer": "ASTP/ONC + certified developers",
+        "window": "FY2027",
+        "source_id": "onc_hti5"
       }
     ],
     "sources": [
       {
         "label": "ASTP/ONC HTI-2 Final Rule",
         "url": "https://healthit.gov/regulations/hti-rules/hti-2-final-rule/",
-        "verified_at": "2026-05-12",
+        "verified_at": "2026-10-19",
         "confidence": "high",
         "id": "onc_hti2"
+      },
+      {
+        "id": "onc_hti5",
+        "label": "ASTP/ONC HTI-5 Proposed Rule Chart",
+        "url": "https://healthit.gov/resources/hti-5-proposed-rule-chart/",
+        "verified_at": "2026-10-19",
+        "confidence": "high",
+        "caveat": "Chart describes a proposed rule; no final-rule status on the page (last updated Dec 30, 2025)."
       }
     ]
   },
@@ -1150,9 +1245,9 @@
     "abbrev": "ARPA-H",
     "name": "Advanced Research Projects Agency for Health",
     "type": "HHS Research Agency (OTA / ISO-style funding)",
-    "lastUpdated": "2026-05-12",
+    "lastUpdated": "2026-10-19",
     "description": "Newest federal health research agency (est. 2022). Funds breakthrough health technology through Other Transaction Authority (OTA) and ISO-style program structures. Accessible to non-traditional vendors through program-manager-led solicitations.",
-    "mmtRead": "ARPA-H's procurement model is the access lever. OTA awards are not constrained by FAR-style competition rules, which is why non-traditional vendors and academic-industry teams can win. Watch ADVOCATE (agentic clinical AI), Sprint for Women's Health, and the next program announcement wave for FY2027.",
+    "mmtRead": "ARPA-H's procurement model is the access lever. OTA awards are not constrained by FAR-style competition rules, which is why non-traditional vendors and academic-industry teams can win. ADVOCATE moved from solicitation to performers on September 9, 2026 (Atman Health, Tempus AI and UpDoc on the patient-facing agent; Stanford on the supervisory agent; Duke and Kaiser Permanente on implementation), and the agency has launched SPECTRA, SURPASS, BIOGAMI and a biosensors effort since mid-September. The four Mission Office ISOs stay open on a rolling basis; there are no open SBIR/STTR topics right now.",
     "officialSources": [
       {
         "label": "ARPA-H ADVOCATE program",
@@ -1164,42 +1259,54 @@
       }
     ],
     "keyPrograms": [
-      "ADVOCATE (agentic clinical AI)",
+      "ADVOCATE (agentic clinical AI for cardiovascular care; performers announced Sep 9 2026)",
+      "SPECTRA (autism diagnosis and precision care; launched Sep 17 2026)",
+      "SURPASS (faster clinical trials; launched Sep 30 2026)",
+      "BIOGAMI (protein dysfunction; work started Oct 9 2026)",
       "Sprint for Women's Health",
       "Health Security and Resilience"
     ],
     "procurementSignals": [
-      "ADVOCATE TA1/TA2/TA3 awards (June 2026)",
-      "Sprint for Women's Health solicitation rolling",
-      "FY2027 budget zeroed in HHS proposal — executing on existing FY2026 funds"
+      "ADVOCATE awards made Sep 9 2026 ($62.7M over four years; up to $33.7M in year one; six performers; JHU/APL as evaluation partner)",
+      "New program ISOs open on arpa-h.gov: Emerging Health Innovators, FASTPASS, UNIQUE, SURPASS, SPECTRA (limited windows; no deadlines on the listing page)",
+      "Mission Office ISOs (Health Science Futures, Proactive Health, Resilient Systems, Scalable Solutions) rolling",
+      "No open SBIR/STTR opportunities as of Oct 19 2026"
     ],
     "openVehicles": [
       "OTA (program-specific, not a unified vehicle)"
     ],
     "premiumLocked": true,
     "budget": {
-      "fy2026_enacted": "$1.5B",
-      "fy2027_request": "Zeroed in proposed budget (executing FY2026 funds)",
+      "fy2026_enacted": "$1.5B (the level advocacy letters cite for the FY26 act; not yet confirmed against the HHS FY2027 Budget in Brief)",
+      "fy2027_request": "not yet verified: the HHS FY2027 Budget in Brief PDF blocked automated reads on 2026-10-19",
       "key_programs": [
         "ADVOCATE",
+        "SPECTRA",
+        "SURPASS",
         "Sprint for Women's Health",
         "Health Security"
       ],
       "at_risk": [
-        "FY2027 budget zeroed in HHS proposal"
+        "FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026"
       ]
     },
-    "current_read": "ARPA-H is executing first wave of major programs. ADVOCATE awards expected June 2026. OTA model accessible to non-traditional vendors.",
+    "current_read": "ARPA-H is in execution and still launching. ADVOCATE performers were announced September 9, 2026: TA1 patient-facing clinical AI agents go to Atman Health, Tempus AI and UpDoc; TA2 supervisory agent to Stanford; TA3 health-system implementation to Duke and Kaiser Permanente; $62.7M over four years with up to $33.7M committed in year one, Haider Warraich as program manager and JHU/APL as evaluation partner, with FDA working the regulatory framework alongside. September and October brought SPECTRA, SURPASS, BIOGAMI, a biosensors kickoff, and new teams on critical care. Director: Alicia Jackson; Acting HCA: Benjamin Bryant (still Acting on the HHS roster). FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026.",
     "key_vehicles": [
       "OTA vehicles (program-specific)"
     ],
     "key_offices": [
-      "ARPA-H HQ (Dallas, TX)",
-      "Program Managers (direct engagement model)"
+      "Office of the Director: Alicia Jackson (arpa-h.gov/about/people, Aug 2026)",
+      "Four Mission Offices: Health Science Futures, Proactive Health, Resilient Systems, Scalable Solutions (each with a rolling ISO)",
+      "Program Managers (direct engagement model)",
+      "Business Innovation Division: Benjamin Bryant, Deputy Director and Acting Head of Contracting Activity"
     ],
-    "recent_awards": [],
+    "recent_awards": [
+      "ADVOCATE (Sep 9 2026): TA1 Atman Health, Tempus AI, UpDoc; TA2 Stanford University; TA3 Duke University, Kaiser Permanente. $62.7M over four years, up to $33.7M in year one. Evaluation partner JHU/APL."
+    ],
     "upcoming_signals": [
-      "ADVOCATE TA1/TA2/TA3 awards June 2026",
+      "Program ISO windows for Emerging Health Innovators, FASTPASS, UNIQUE, SURPASS and SPECTRA (check each ISO for its close date)",
+      "Mission Office ISO Solution Summaries (rolling)",
+      "FY2027 appropriations for ARPA-H after the Dec 11 2026 CR",
       "New program announcements (rolling)"
     ],
     "related_tags": [
@@ -1217,40 +1324,31 @@
       "groups": [
         {
           "mechanism": "Programs (limited-window via ISOs)",
-          "note": "Programs are announced through Innovative Solution Openings with fixed application windows.",
+          "note": "Programs are announced through Innovative Solution Openings with fixed application windows. Listed on arpa-h.gov Oct 19 2026.",
           "items": [
             {
-              "name": "1-CURE"
+              "name": "Emerging Health Innovators (EHI)"
             },
             {
-              "name": "BoSS"
+              "name": "FASTPASS"
             },
             {
-              "name": "CIRCLE"
+              "name": "UNIQUE"
             },
             {
-              "name": "Delphi"
+              "name": "SURPASS"
             },
             {
-              "name": "HEARING"
-            },
-            {
-              "name": "IGoR"
-            },
-            {
-              "name": "STOMP"
+              "name": "SPECTRA"
             }
           ]
         },
         {
           "mechanism": "Initiatives + Small Business",
-          "note": "2026 SBIR/STTR topics published; TIGAR Exploratory Topic open.",
+          "note": "ASCENT-IBO is the listed initiative. ARPA-H states there are currently no open small business (SBIR/STTR) opportunities.",
           "items": [
             {
-              "name": "2026 SBIR/STTR topics"
-            },
-            {
-              "name": "TIGAR Exploratory Topic"
+              "name": "ASCENT-IBO"
             }
           ]
         },
@@ -1288,19 +1386,32 @@
         "source_id": "arpa_h_open"
       },
       {
-        "signal": "2026 SBIR/STTR topic windows + TIGAR Exploratory deadlines",
+        "signal": "SBIR/STTR reopening (none open as of Oct 19 2026) and program ISO close dates",
         "buyer": "ARPA-H",
-        "window": "FY2026",
+        "window": "FY2027",
         "source_id": "arpa_h_open"
+      },
+      {
+        "signal": "ADVOCATE year-one execution and FDA regulatory framework for patient-facing clinical AI",
+        "buyer": "ARPA-H + FDA",
+        "window": "FY2027",
+        "source_id": "arpa_h_advocate"
       }
     ],
     "sources": [
       {
         "label": "ARPA-H Open Funding Opportunities",
         "url": "https://arpa-h.gov/explore-funding/open-funding-opportunities",
-        "verified_at": "2026-05-12",
+        "verified_at": "2026-10-19",
         "confidence": "high",
         "id": "arpa_h_open"
+      },
+      {
+        "id": "arpa_h_advocate",
+        "label": "ARPA-H press release: ADVOCATE performers (Sep 9, 2026)",
+        "url": "https://arpa-h.gov/news-and-events/arpa-h-launches-worlds-first-bid-build-fda-authorized-clinical-ai-cardiovascular",
+        "verified_at": "2026-10-19",
+        "confidence": "high"
       }
     ]
   },
@@ -1442,9 +1553,9 @@
     "abbrev": "IHS",
     "name": "Indian Health Service",
     "type": "HHS Operating Division (federal-tribal health system)",
-    "lastUpdated": "2026-05-12",
-    "description": "Federal health system serving American Indian and Alaska Native populations. Currently executing PATH EHR Modernization on Oracle Cerner / Oracle Health to replace the legacy RPMS system. Vendor: GDIT.",
-    "mmtRead": "IHS PATH is the active EHR modernization arc — replacing RPMS with Oracle Health on the GDIT platform. Tribal health IT procurement intersects with both federal contracting and tribal sovereignty considerations, which constrains what vendors can compete and how.",
+    "lastUpdated": "2026-10-19",
+    "description": "Federal health system serving American Indian and Alaska Native populations. PATH EHR (Oracle Health on a GDIT-integrated platform) went live at its first site, the Lawton Service Unit in Oklahoma, on September 26, 2026, beginning the replacement of RPMS after nearly 40 years.",
+    "mmtRead": "IHS PATH is now a live program, not a plan. Lawton Indian Hospital, Anadarko Indian Health Center and Carnegie Indian Health Center cut over September 26, 2026 after a soft go-live in August, and the IHS CIO reported first-week patient portal and e-prescribing activity on October 13. The next cohorts are not yet named. Tribal health IT procurement intersects with both federal contracting and tribal sovereignty considerations, which constrains what vendors can compete and how.",
     "officialSources": [
       {
         "label": "IHS PATH EHR",
@@ -1453,42 +1564,53 @@
       {
         "label": "IHS About",
         "url": "https://www.ihs.gov/aboutihs/"
+      },
+      {
+        "label": "IHS CIO blog: PATH EHR go-live at Lawton (Oct 13, 2026)",
+        "url": "https://www.ihs.gov/newsroom/ihs-blog/october-2026-blogs/path-ehr-go-live-lawton-supports-a-new-phase-of-modernization"
       }
     ],
     "keyPrograms": [
-      "PATH EHR Modernization (Oracle Health, GDIT prime, RPMS replacement)",
+      "PATH EHR Modernization (Oracle Health, GDIT prime, RPMS replacement; first site live Sep 26 2026)",
+      "Four Directions Warehouse (4DW) clinical data repository (ATO granted; enterprise archive for legacy and ongoing patient data)",
       "Tribal Health IT"
     ],
     "procurementSignals": [
-      "PATH deployment rollout (rolling)",
+      "PATH cohort deployments after Lawton (next federal, tribal and urban sites not yet named)",
+      "PATH task-order pipeline under the GDIT IDIQ (140D0424D0001)",
       "Tribal-facing IT support task orders"
     ],
     "openVehicles": [
-      "PATH EHR (single-prime, GDIT)"
+      "PATH EHR (single-prime, GDIT IDIQ 140D0424D0001)"
     ],
     "premiumLocked": true,
     "budget": {
-      "fy2026_enacted": "$8.1B",
-      "fy2027_request": "$8.4B",
+      "fy2026_enacted": "not yet verified: the HHS FY2027 Budget in Brief PDF blocked automated reads on 2026-10-19",
+      "fy2027_request": "not yet verified: the HHS FY2027 Budget in Brief PDF blocked automated reads on 2026-10-19",
       "key_programs": [
         "PATH EHR Modernization",
         "Tribal Health IT support"
       ],
       "at_risk": [
-        "IHS funding cycle dependency"
+        "FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026"
       ]
     },
-    "current_read": "PATH is the active modernization. Tribal sovereignty considerations shape competition.",
+    "current_read": "PATH EHR is live at one service unit. Lawton (Lawton Indian Hospital, Anadarko and Carnegie health centers) went live September 26, 2026; in week one the portal sent more than 2,900 reminders, patients requested refills on more than 800 medications, and the system exchanged immunization data with the Oklahoma registry (IHS CIO Mitchell Thornbrugh, Oct 13, 2026). The go-live date moved more than once (August 1, then a two-phase plan with a late-September cutover). IHS has not named the next cohort. The IHS HCA (Chantel Smith) is permanent on the HHS roster. FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026.",
     "key_vehicles": [
       "PATH EHR (GDIT)"
     ],
     "key_offices": [
-      "IHS Office of Information Technology",
-      "Area Offices"
+      "IHS Office of Information Technology: Mitchell Thornbrugh, Chief Information Officer",
+      "12 Area Offices (Alaska, Albuquerque, Bemidji, Billings, California, Great Plains, Nashville, Navajo, Oklahoma City, Phoenix, Portland, Tucson)",
+      "Lawton Service Unit (Oklahoma City Area): first PATH site"
     ],
-    "recent_awards": [],
+    "recent_awards": [
+      "Four Directions Warehouse (4DW) clinical data repository: Cherokee Nation Integrated Health, LLC (ISBEE set-aside) [MMT contract tracker, verified Aug 2026]"
+    ],
     "upcoming_signals": [
-      "PATH deployment rollout"
+      "Next PATH deployment cohort announcement (sites and dates not yet published)",
+      "PATH sustainment and deployment task orders under the GDIT IDIQ",
+      "Lessons-learned from Lawton feeding the cohort playbook (training, revenue cycle, registry interfaces)"
     ],
     "related_tags": [
       "Tribal Health",
@@ -1519,10 +1641,10 @@
     "contractorRead": "IHS PATH is a multi-year EHR modernization with three customer surfaces: direct service, Tribal, and Urban. Capture posture is to position around interoperability with VA and DHA, centralized support and disaster recovery, and the Tribal/Urban consultation model. Per-site point solutions are the wrong shape; managed-service and platform plays fit.",
     "watchNext": [
       {
-        "signal": "PATH EHR phase-by-phase deployment status (validate against current IHS HIT announcements before quoting externally)",
-        "buyer": "IHS HIT",
-        "window": "Multi-year",
-        "source_id": "ihs_hit"
+        "signal": "PATH EHR next-cohort sites and dates after the Sep 26 2026 Lawton go-live",
+        "buyer": "IHS OIT",
+        "window": "FY2027",
+        "source_id": "ihs_path_blog"
       },
       {
         "signal": "Tribal and Urban partnership consultation activity and downstream procurement variations",
@@ -1535,9 +1657,17 @@
       {
         "label": "IHS Health IT Modernization",
         "url": "https://www.ihs.gov/hit/",
-        "verified_at": "2026-05-12",
+        "verified_at": "2026-10-19",
         "confidence": "high",
-        "id": "ihs_hit"
+        "id": "ihs_hit",
+        "caveat": "Program page carries no dates; status comes from the IHS CIO blog."
+      },
+      {
+        "id": "ihs_path_blog",
+        "label": "IHS CIO blog: PATH EHR go-live at Lawton supports a new phase of modernization (Oct 13, 2026)",
+        "url": "https://www.ihs.gov/newsroom/ihs-blog/october-2026-blogs/path-ehr-go-live-lawton-supports-a-new-phase-of-modernization",
+        "verified_at": "2026-10-19",
+        "confidence": "high"
       }
     ]
   },
@@ -1546,9 +1676,9 @@
     "abbrev": "CDC",
     "name": "Centers for Disease Control and Prevention",
     "type": "HHS Operating Division (public health agency)",
-    "lastUpdated": "2026-05-12",
-    "description": "Federal public health agency. Buys data modernization, surveillance, and analytics tooling through DMI, PHDS, DIBBs, and DCIPHER (Palantir Foundry-based). State, tribal, local, and territorial (STLT) adoption of DIBBs tools is a tracked metric.",
-    "mmtRead": "CDC's procurement focus is data modernization. DMI is the umbrella; PHDS is the data services layer; DIBBs is the toolkit; DCIPHER is the Palantir-based surveillance platform. The 2026 target is greater than 30 percent STLT adoption of at least one DIBBs product.",
+    "lastUpdated": "2026-10-19",
+    "description": "Federal public health agency. Buys data modernization, surveillance, and analytics tooling through the Public Health Data Strategy, the One CDC Data Platform (1CDP), the DIBBs toolkit, and DCIPHER (Palantir Foundry-based). The Office of Public Health Data, Surveillance, and Technology (OPHDST) leads the work.",
+    "mmtRead": "CDC's procurement focus is data modernization, and the 2026 milestones are written as numbers you can hold them to: eCR in production at 65 percent of critical access hospitals and 50 percent of all hospitals, FHIR mortality exchange with 23 vital-records jurisdictions, three modernized NBS services, and at least six core data sources on 1CDP. DIBBs is the free toolkit (five products as of June 2026). The newest signal is an RFI on data intermediaries with comments due November 20, 2026, alongside a released CDC AI strategy.",
     "officialSources": [
       {
         "label": "CDC Data Modernization",
@@ -1557,17 +1687,23 @@
       {
         "label": "CDC DIBBs",
         "url": "https://www.cdc.gov/data-modernization/php/technologies/about-dibbs.html"
+      },
+      {
+        "label": "CDC Public Health Data Strategy 2026 milestones",
+        "url": "https://www.cdc.gov/public-health-data-strategy/php/about/phds-milestones.html"
       }
     ],
     "keyPrograms": [
-      "Data Modernization Initiative (DMI)",
-      "Public Health Data Strategy (PHDS)",
-      "DIBBs toolkit",
-      "DCIPHER (Palantir Foundry surveillance)"
+      "Public Health Data Strategy (PHDS) 2026 milestones",
+      "One CDC Data Platform (1CDP)",
+      "DIBBs toolkit (Difference in Docs, eCR Refiner, eCR Viewer, Query Connector, Text to Code)",
+      "DCIPHER (Palantir Foundry surveillance)",
+      "Data Modernization Initiative (DMI) funding line since FY2020"
     ],
     "procurementSignals": [
-      "DIBBs STLT adoption acceleration (2026 target greater than 30 percent)",
-      "DMI follow-on activity"
+      "RFI on data intermediaries (national intermediary framework for data sharing): comments due Nov 20 2026",
+      "CDC AI strategy released 2026; PHDS milestone 2.06 calls for generative AI guidance for STLT partners and 2.07 for at least one public-private AI partnership",
+      "DIBBs STLT adoption (no numeric target on the DIBBs page as of June 2026)"
     ],
     "openVehicles": [
       "DMI program vehicles",
@@ -1575,30 +1711,32 @@
     ],
     "premiumLocked": true,
     "budget": {
-      "fy2026_enacted": "$9.2B",
-      "fy2027_request": "$9.0B",
+      "fy2026_enacted": "not yet verified: the HHS FY2027 Budget in Brief PDF blocked automated reads on 2026-10-19",
+      "fy2027_request": "not yet verified: the HHS FY2027 Budget in Brief PDF blocked automated reads on 2026-10-19",
       "key_programs": [
-        "DMI",
         "PHDS",
+        "1CDP",
         "DIBBs",
         "DCIPHER"
       ],
       "at_risk": [
-        "Public health preparedness funding (proposed cuts)"
+        "Public health preparedness funding (proposed cuts)",
+        "FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026"
       ]
     },
-    "current_read": "CDC is driving DIBBs adoption at the STLT level and continuing DCIPHER expansion on Palantir Foundry.",
+    "current_read": "CDC is driving the 2026 PHDS milestones (page updated Apr 30 2026, reviewed Aug 31 2026) and consolidating onto 1CDP, including moving emergency-department data processing there. DIBBs lists five products (June 22 2026). The data modernization page (May 27 2026) reports 85 percent of ED visits available for situational awareness and 1,500-plus wastewater sites, and opens an RFI on data intermediaries with comments due November 20, 2026. The CDC HCA (Christine Godfrey) is still Acting on the HHS roster. FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026.",
     "key_vehicles": [
       "DMI / PHDS program vehicles"
     ],
     "key_offices": [
-      "CSELS (Center for Surveillance, Epidemiology, and Laboratory Services)",
-      "Office of Public Health Data, Surveillance, and Technology"
+      "Office of Public Health Data, Surveillance, and Technology (OPHDST; created 2022, leads data modernization)"
     ],
     "recent_awards": [],
     "upcoming_signals": [
-      "DIBBs adoption milestones",
-      "DCIPHER expansion"
+      "Data intermediaries RFI: comments due Nov 20 2026",
+      "PHDS 2026 milestone closeout: eCR 65% CAH / 50% all hospitals, FHIR mortality 23 jurisdictions, NBS 7 migrations, 1CDP Partner Workspace",
+      "DCIPHER expansion",
+      "FY2027 appropriations after the Dec 11 2026 CR"
     ],
     "related_tags": [
       "Public Health",
@@ -1618,35 +1756,35 @@
         {
           "window": "2026",
           "sites": [
-            "Electronic Case Reporting (eCR) scaling"
+            "Electronic Case Reporting (eCR): production at 65% of critical access hospitals and 50% of all hospitals; 70% of ELC-funded health departments processing eCR"
           ],
           "why_it_matters": "eCR closes the loop between EHRs and public health surveillance. Vendor surface includes EHR-side connector work, jurisdictional ingestion, and case routing."
         },
         {
           "window": "2026",
           "sites": [
-            "Mortality FHIR exchange"
+            "FHIR mortality exchange with 6 more vital-records jurisdictions (23 total); FHIR birth exchange (13 total)"
           ],
-          "why_it_matters": "Modernizes how mortality data flows between vital records, CDC, and downstream public health users. FHIR-mediated APIs and provenance tracking are core."
+          "why_it_matters": "Modernizes how vital records flow between jurisdictions, CDC, and downstream users. FHIR-mediated APIs and provenance tracking are core."
         },
         {
           "window": "2026",
           "sites": [
-            "National Notifiable Diseases Surveillance System (NBS) modernization"
+            "NBS: 3 modernized services delivered; six NBS 6 jurisdictions committed to NBS 7"
           ],
           "why_it_matters": "NBS replatform creates an integration surface for jurisdictional case management and reporting tools."
         },
         {
           "window": "2026",
           "sites": [
-            "One CDP products and assets (1CDP)"
+            "1CDP: at least 6 core data sources and 10 reusable tools; Partner Workspace access begins; ED data processing moves to 1CDP"
           ],
-          "why_it_matters": "1CDP framing consolidates the CDC data platform. Capture moves are around shared services, identity, and reusable analytics."
+          "why_it_matters": "1CDP consolidates the CDC data platform. Capture moves are around shared services, identity, and reusable analytics."
         },
         {
           "window": "2026",
           "sites": [
-            "Multi-jurisdictional Data Network (MDN) governance"
+            "Multi-jurisdictional Data Network (MDN): emergency implementation; at least 3 jurisdictions on HL7 Case Notification MDN; governance for 4 of 6 core data sources"
           ],
           "why_it_matters": "Governance posture shapes how data-sharing agreements, technical standards, and partner onboarding work. Leading indicator for tooling and policy-implementation services."
         }
@@ -1672,7 +1810,7 @@
       {
         "signal": "PHDS 2026 milestone status updates and downstream STLT procurement activity",
         "buyer": "CDC + STLT partners",
-        "window": "FY2026",
+        "window": "FY2026 closeout into FY2027",
         "source_id": "cdc_phds"
       },
       {
@@ -1685,17 +1823,19 @@
     "sources": [
       {
         "label": "CDC Data Modernization Initiative (DMI)",
-        "url": "https://www.cdc.gov/surveillance/data-modernization/index.html",
-        "verified_at": "2026-05-12",
+        "url": "https://www.cdc.gov/data-modernization/php/about/index.html",
+        "verified_at": "2026-10-19",
         "confidence": "high",
-        "id": "cdc_dmi"
+        "id": "cdc_dmi",
+        "caveat": "Page last updated May 27, 2026; DMI appears only as the FY2020 funding-line history, current work is framed as PHDS and 1CDP."
       },
       {
         "label": "CDC Public Health Data Strategy 2026 Milestones",
         "url": "https://www.cdc.gov/public-health-data-strategy/php/about/phds-milestones.html",
-        "verified_at": "2026-05-12",
+        "verified_at": "2026-10-19",
         "confidence": "high",
-        "id": "cdc_phds"
+        "id": "cdc_phds",
+        "caveat": "Page updated Apr 30, 2026, reviewed Aug 31, 2026; it lists 2026 targets without met/in-progress status."
       }
     ]
   },
@@ -1704,9 +1844,9 @@
     "abbrev": "FDA",
     "name": "Food and Drug Administration",
     "type": "HHS Operating Division (regulated-product oversight)",
-    "lastUpdated": "2026-05-12",
-    "description": "Regulates food, drugs, biologics, devices, and tobacco. Buys post-market surveillance and regulated-product data systems through Sentinel, market-research vehicles, and operating-division IT modernization. Sentinel 3.0 market research is active (75F40126SSN00100).",
-    "mmtRead": "FDA Sentinel is the flagship post-market drug surveillance program. Sentinel 3.0 is in market-research stage with eight tiers spanning data broker services (1-6), GOCO platform (Tier 7), and scientific support (Tier 8). NAICS 518210.",
+    "lastUpdated": "2026-10-19",
+    "description": "Regulates food, drugs, biologics, devices, and tobacco. Buys post-market surveillance and regulated-product data systems through Sentinel, market-research vehicles, and operating-division IT modernization. Sentinel 3.0 has moved past sources sought: FDA issued a draft RFP for the Data Broker contract (Tiers 1-6, notice 75F40126SSN00101) and awarded the Studies-as-a-Service scientific support task in March 2026.",
+    "mmtRead": "FDA Sentinel is the flagship post-market drug surveillance program. Sentinel 3.0 is being bought in pieces: a draft RFP for the Data Broker contract covering Tiers 1-6 (previously 1-5) is out under notice 75F40126SSN00101, the original market research (75F40126SSN00100) says FDA revised the operational framework, and the Studies-as-a-Service scientific support task went to Vets Synergetic Group as an 8(a) order in March 2026. NAICS 518210. The GOCO platform and scientific support tiers have no final RFP date I can confirm.",
     "officialSources": [
       {
         "label": "FDA Sentinel Initiative",
@@ -1723,24 +1863,27 @@
       "Regulated-product data systems"
     ],
     "procurementSignals": [
-      "Sentinel 3.0 sources sought 75F40126SSN00100 (closed Mar 23 2026; full RFP expected 2026)"
+      "Sentinel 3.0 Data Broker (Tiers 1-6): draft RFP notice 75F40126SSN00101; final RFP date not published",
+      "Sentinel 3.0 market research 75F40126SSN00100 (closed Mar 23 2026): FDA states the framework was revised to a first contract for Data Partners / Data Broker Tiers 1-6",
+      "Sentinel 3.0 Studies-as-a-Service task order 75F40126F19073 awarded Mar 24 2026 (8(a); $3.96M obligated per USAspending)"
     ],
     "openVehicles": [
       "FDA Sentinel program vehicles"
     ],
     "premiumLocked": true,
     "budget": {
-      "fy2026_enacted": "$7.2B",
-      "fy2027_request": "$7.5B",
+      "fy2026_enacted": "not yet verified: the HHS FY2027 Budget in Brief PDF blocked automated reads on 2026-10-19",
+      "fy2027_request": "not yet verified: the HHS FY2027 Budget in Brief PDF blocked automated reads on 2026-10-19",
       "key_programs": [
         "Sentinel 3.0",
         "Operating-division IT modernization"
       ],
       "at_risk": [
-        "User fee renegotiation cycle"
+        "User fee renegotiation cycle",
+        "FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026"
       ]
     },
-    "current_read": "Sentinel 3.0 market research active. Eight-tier scope across data, platform, and scientific support.",
+    "current_read": "Sentinel 3.0 is past market research. FDA has a draft RFP out for the Data Broker contract (Tiers 1-6, notice 75F40126SSN00101) and has already placed the Studies-as-a-Service scientific support order (75F40126F19073, Vets Synergetic Group LLC, start Mar 24 2026, $3.96M obligated on USAspending). The public Sentinel page still describes the three-center structure (Harvard Pilgrim operations center, innovation center, Deloitte-led outreach center) and was last updated March 2024, so read solicitation notices, not the program page, for what is being bought. The FDA HCA (Leonard Grant) is permanent on the HHS roster. FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026.",
     "key_vehicles": [
       "Sentinel program vehicles"
     ],
@@ -1748,9 +1891,13 @@
       "Office of Surveillance and Epidemiology",
       "FDA OIT"
     ],
-    "recent_awards": [],
+    "recent_awards": [
+      "Sentinel 3.0 Studies-as-a-Service (scientific support): Vets Synergetic Group LLC, task order 75F40126F19073 under 75F40124D00020, start Mar 24 2026, $3,963,576 obligated (USAspending, read Oct 19 2026)"
+    ],
     "upcoming_signals": [
-      "Sentinel 3.0 full RFP release"
+      "Sentinel 3.0 Data Broker (Tiers 1-6) final RFP (no date published)",
+      "Sentinel 3.0 GOCO platform (Tier 7) and scientific support (Tier 8) solicitations",
+      "FY2027 appropriations and user-fee reauthorization after the Dec 11 2026 CR"
     ],
     "related_tags": [
       "Drug Safety",
@@ -1781,6 +1928,12 @@
     "contractorRead": "FDA DMAP is the strategic frame; specific procurement signals live in individual FDA centers (CDER, CBER, CDRH, CFSAN, CVM) and offices. Capture posture is to align with the three DMAP components (drivers, practices, partnerships) and then trace into the specific center that owns the high-value driver project. Treat DMAP as stable framing, not a current acquisition forecast.",
     "watchNext": [
       {
+        "signal": "Sentinel 3.0 Data Broker final RFP after the draft (75F40126SSN00101)",
+        "buyer": "FDA OAGS / Office of Surveillance and Epidemiology",
+        "window": "FY2027",
+        "source_id": "fda_sentinel"
+      },
+      {
         "signal": "DMAP follow-on implementation publications and center-level activity",
         "buyer": "FDA + centers",
         "window": "Ongoing",
@@ -1791,10 +1944,18 @@
       {
         "label": "FDA Data Modernization Action Plan (DMAP)",
         "url": "https://www.fda.gov/about-fda/reports/data-modernization-action-plan",
-        "verified_at": "2026-05-12",
+        "verified_at": "2026-10-19",
         "confidence": "medium",
-        "caveat": "DMAP is a high-level strategy. Pair with newer FDA implementation publications and center-level activity before publishing client-facing capture briefs.",
+        "caveat": "Page content current as of 03/03/2021. DMAP is a high-level strategy; pair with center-level activity before publishing client-facing capture briefs.",
         "id": "fda_dmap"
+      },
+      {
+        "id": "fda_sentinel",
+        "label": "FDA Sentinel Initiative (program page) and USAspending award 75F40126F19073",
+        "url": "https://www.fda.gov/safety/fdas-sentinel-initiative",
+        "verified_at": "2026-10-19",
+        "confidence": "medium",
+        "caveat": "Program page last updated March 2024. Draft RFP notice numbers are as reported by SAM.gov aggregators; the task-order award is from USAspending."
       }
     ]
   },
@@ -1935,9 +2096,9 @@
     "abbrev": "GSA",
     "name": "General Services Administration",
     "type": "Acquisition Channel (governmentwide IT vehicles)",
-    "lastUpdated": "2026-05-13",
-    "description": "Acquisition channel + GSAR owner. Runs Alliant 3 (active, no ceiling), Polaris (small business), 8(a) STARS III ($50B), OASIS+ (professional services). GSAR — the GSA Acquisition Regulation, including the GSAR 552.239-7001 AI procurement clause — sets governmentwide AI and IT procurement governance language. Track GSA vehicles AND the GSAR rule-shaping lane.",
-    "mmtRead": "Alliant 3 went live with NTP March 10 2026 (42 Phase 1 contractors). Polaris small business GWAC is active. 8(a) STARS III ordering window runs through Jul 1 2026 with GSA option through 2029. OASIS+ continues on-ramping. The GSAR layer — particularly the GSAR 552.239-7001 AI procurement clause and the Refresh 32 acceptance work — is the rule-shaping signal vendors should track alongside vehicle access; AI procurement governance is moving faster than the vehicle on-ramps.",
+    "lastUpdated": "2026-10-19",
+    "description": "Acquisition channel + GSAR owner. Runs Alliant 3 (active, no ceiling, ordering through March 9, 2031), Polaris (small business pools; HUBZone and SDVOSB ordering since Dec 2, 2025, WOSB since Mar 9, 2026), 8(a) STARS III ($50B, ordering now through July 1, 2029), and OASIS+ (professional services, Phase II rolling awards since May 2026). GSAR, the GSA Acquisition Regulation, including proposed clause 552.239-7001 on safeguarding data in LLM systems, sets governmentwide AI and IT procurement language. After October 29, 2026, GSA vehicles also inherit the demand that used to ride NITAAC CIO-SP3.",
+    "mmtRead": "Alliant 3 went live with NTP March 10, 2026 and orders through March 9, 2031. Polaris pools are ordering (HUBZone and SDVOSB since December 2025, WOSB since March 2026). 8(a) STARS III no longer closes in July 2026: GSA's page now shows ordering through July 1, 2029 with performance to July 1, 2034. OASIS+ has 13 domains and Phase II rolling awards began May 12, 2026. The GSAR layer matters as much as the vehicles: GSAR 552.239-7001 is still a proposed clause, revised June 17, 2026 and narrowed to LLM systems that process government data, and NITAAC's GWAC sunset (last new orders October 29, 2026) pushes HHS common IT onto GSA MAS IT, Alliant 3 and OASIS+.",
     "officialSources": [
       {
         "label": "GSA Alliant 3",
@@ -1954,20 +2115,25 @@
       {
         "label": "GSA OASIS+",
         "url": "https://www.gsa.gov/buy-through-us/products-and-services/professional-services/buy-services/oasis-plus"
+      },
+      {
+        "label": "NITAAC GWAC sunset notice (demand shifts to GSA vehicles)",
+        "url": "https://nitaac.nih.gov/resources/news/important-notice-nitaac-gwacs-cio-sp3-cio-sp3-sb-and-cio-cs"
       }
     ],
     "keyPrograms": [
-      "Alliant 3 (no ceiling, NTP Mar 10 2026)",
-      "Polaris (small business GWAC)",
-      "8(a) STARS III ($50B, Jul 2026 ordering end)",
-      "OASIS+ (professional services, no ceiling)",
-      "GSAR (GSA Acquisition Regulation) — AI procurement governance, e.g., 552.239-7001"
+      "Alliant 3 (no ceiling, NTP Mar 10 2026, ordering through Mar 9 2031)",
+      "Polaris (small business GWAC; HUBZone, SDVOSB and WOSB pools ordering)",
+      "8(a) STARS III ($50B, ordering through Jul 1 2029)",
+      "OASIS+ (professional services, no ceiling, 13 domains, Phase II rolling on-ramp)",
+      "GSAR (GSA Acquisition Regulation): proposed clause 552.239-7001 on LLM data safeguarding"
     ],
     "procurementSignals": [
       "Alliant 3 task orders ramping",
-      "8(a) STARS III ordering window closes Jul 1 2026",
-      "OASIS+ on-ramp opportunities",
-      "GSAR 552.239-7001 AI clause (procurement-governance watch)"
+      "8(a) STARS III ordering extended through Jul 1 2029 (gsa.gov, updated Sep 18 2026)",
+      "OASIS+ Phase II rolling apparent-awardee announcements (first posted May 12 2026)",
+      "GSAR 552.239-7001 (proposed; revised draft Jun 17 2026 retitled to LLM data safeguarding) procurement-governance watch",
+      "NITAAC GWAC sunset Oct 29 2026 moves HHS common IT demand to GSA vehicles"
     ],
     "openVehicles": [
       "Alliant 3",
@@ -1987,7 +2153,7 @@
       ],
       "at_risk": []
     },
-    "current_read": "Track GSA vehicles for the access lane, not the agency mission.",
+    "current_read": "Track GSA vehicles for the access lane, not the agency mission. What changed since spring: STARS III ordering runs to July 1, 2029 (not July 2026); Polaris HUBZone, SDVOSB and WOSB pools are ordering; OASIS+ is on-ramping through Phase II rolling awards across 13 domains; and the proposed GSAR AI clause was rewritten June 17, 2026 to cover only LLM systems that process government data, with the comment process still open as far as I can confirm. NITAAC's GWACs close to new orders October 29, 2026, so GSA MAS IT, Alliant 3 and OASIS+ pick up that work. FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026.",
     "key_vehicles": [
       "Alliant 3",
       "Polaris",
@@ -2001,7 +2167,9 @@
     "recent_awards": [],
     "upcoming_signals": [
       "Alliant 3 task order release",
-      "8(a) STARS III ordering window close"
+      "OASIS+ Phase II rolling awards (watch SAM.gov announcements)",
+      "GSAR 552.239-7001 final clause text and effective date",
+      "Post-Oct 29 2026 migration of former NITAAC CIO-SP3 requirements to GSA vehicles"
     ],
     "related_tags": [
       "Acquisition Channel",
@@ -2043,20 +2211,23 @@
           ]
         },
         {
-          "mechanism": "Domains",
-          "note": "OASIS+ covers professional services domains, structured to scope task orders into a category.",
+          "mechanism": "Domains (13)",
+          "note": "OASIS+ covers 13 professional services domains (gsa.gov, updated Oct 15 2026), structured to scope task orders into a category.",
           "items": [
             {
-              "name": "Management and Advisory"
-            },
-            {
-              "name": "Technical and Engineering"
-            },
-            {
-              "name": "Research and Development"
+              "name": "Management & Advisory"
             },
             {
               "name": "Intelligence Services"
+            },
+            {
+              "name": "Facilities"
+            },
+            {
+              "name": "Research & Development"
+            },
+            {
+              "name": "Technical & Engineering"
             },
             {
               "name": "Environmental"
@@ -2066,31 +2237,46 @@
             },
             {
               "name": "Enterprise Solutions"
+            },
+            {
+              "name": "Business Administration"
+            },
+            {
+              "name": "Financial Services"
+            },
+            {
+              "name": "Human Capital"
+            },
+            {
+              "name": "Marketing and Public Relations"
+            },
+            {
+              "name": "Social Services"
             }
           ]
         },
         {
           "mechanism": "Ordering Mechanics",
-          "note": "Task orders are issued by federal agencies through a Delegation of Procurement Authority (DPA) workflow with required training. The Symphony portal handles ordering activity. GSA publishes a contractor list updated weekly.",
+          "note": "Task orders are issued by federal agencies through a Delegation of Procurement Authority (DPA) workflow with required training. GSA publishes a contractor list updated weekly. Phase II rolling apparent-awardee announcements began May 12, 2026 on SAM.gov.",
           "items": [
             {
               "name": "DPA + required training"
             },
             {
-              "name": "Symphony portal"
+              "name": "Weekly contractor list (GSA-published)"
             },
             {
-              "name": "Weekly contractor list (GSA-published)"
+              "name": "Phase II rolling on-ramp (since May 12 2026)"
             }
           ]
         }
       ],
       "source_id": "gsa_oasis_plus"
     },
-    "contractorRead": "OASIS+ is the governmentwide IDIQ family for professional services. It is emphatically NOT a health IT-specific vehicle. The six contract families plus seven domains shape where task orders land. Capture posture for health IT vendors: position OASIS+ as the channel for advisory, management, R&D, or enterprise-solutions work adjacent to health IT delivery (program management, capture strategy, evaluation studies). Do not market OASIS+ as a direct health IT acquisition lane; that mischaracterization will fail evaluator scrutiny.",
+    "contractorRead": "OASIS+ is the governmentwide IDIQ family for professional services. It is emphatically NOT a health IT-specific vehicle. The six contract families plus 13 domains shape where task orders land. Capture posture for health IT vendors: position OASIS+ as the channel for advisory, management, R&D, or enterprise-solutions work adjacent to health IT delivery (program management, capture strategy, evaluation studies). Do not market OASIS+ as a direct health IT acquisition lane; that mischaracterization will fail evaluator scrutiny.",
     "watchNext": [
       {
-        "signal": "DPA training updates and Symphony portal changes affecting ordering velocity",
+        "signal": "DPA training updates and ordering-portal changes affecting ordering velocity",
         "buyer": "GSA + ordering agencies",
         "window": "Continuous",
         "source_id": "gsa_oasis_plus"
@@ -2100,16 +2286,37 @@
         "buyer": "GSA",
         "window": "Weekly",
         "source_id": "gsa_oasis_plus"
+      },
+      {
+        "signal": "STARS III ordering window now runs to Jul 1 2029; 8(a) task orders awarded after Jul 2 2026 may perform to Jul 1 2034",
+        "buyer": "GSA + 8(a) ordering agencies",
+        "window": "Through FY2029",
+        "source_id": "gsa_stars3"
       }
     ],
     "sources": [
       {
         "label": "GSA OASIS+ (Professional Services)",
         "url": "https://www.gsa.gov/buy-through-us/products-and-services/professional-services/buy-services/oasis-plus",
-        "verified_at": "2026-05-12",
+        "verified_at": "2026-10-19",
         "confidence": "high",
-        "caveat": "OASIS+ is a non-IT professional services IDIQ. Do not market it as a direct health IT acquisition lane.",
+        "caveat": "OASIS+ is a non-IT professional services IDIQ. Do not market it as a direct health IT acquisition lane. Page updated Oct 15, 2026.",
         "id": "gsa_oasis_plus"
+      },
+      {
+        "id": "gsa_stars3",
+        "label": "GSA 8(a) STARS III (ordering through July 1, 2029)",
+        "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/8a-stars-iii",
+        "verified_at": "2026-10-19",
+        "confidence": "high",
+        "caveat": "Page updated Sep 18, 2026."
+      },
+      {
+        "id": "gsa_alliant3",
+        "label": "GSA Alliant 3 (NTP Mar 10, 2026; ordering through Mar 9, 2031)",
+        "url": "https://www.gsa.gov/technology/it-contract-vehicles-and-purchasing-programs/gwacs/alliant-3",
+        "verified_at": "2026-10-19",
+        "confidence": "high"
       }
     ]
   },
