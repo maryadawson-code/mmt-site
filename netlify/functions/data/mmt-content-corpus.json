@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-20T04:02:54.182Z",
-  "total": 617,
+  "generated_at": "2026-10-20T13:51:46.628Z",
+  "total": 618,
   "counts": {
     "articles": 142,
     "friday_briefs": 47,
@@ -12,7 +12,7 @@
     "forecast_rows": 195,
     "budget_lines": 32,
     "cso_aois": 11,
-    "key_people": 7,
+    "key_people": 8,
     "forecast_delta": 3,
     "gao_sustain": 2
   },
@@ -3498,7 +3498,7 @@
       "type": "contract_intel",
       "title": "VA IE&O (TISTA, task order 36C10B26F0468)",
       "slug": "va-ie-o-tista-task-order-36c10b26f0468-",
-      "date": "2026-10-18",
+      "date": "2026-10-19",
       "description": "Update Oct 5, 2026: OrangeSlices reported on Oct 2, 2026 that TISTA Science and Technology won a 5-year VA IE&O award, task order 36C10B26F0468 at about $164.1M, over 14 other bidders, alongside a separate SCM DSO award (36C10B26F0452, abou",
       "tags": [
         "Department of Veterans Affairs / VA TAC",
@@ -3649,7 +3649,7 @@
       "type": "contract_intel",
       "title": "VA Health Connect / IHT 2.0",
       "slug": "va-health-connect-iht-2-0",
-      "date": "2026-10-18",
+      "date": "2026-10-19",
       "description": "Update Oct 5, 2026: OrangeSlices reports that the IHT 2.0 protest forced VHA to award sole-source bridges for continuity, including a health informatics professional and technical services bridge to SDVOSB Rock Ferry dba MD Informatix and a",
       "tags": [
         "Department of Veterans Affairs / VHA",
@@ -4006,7 +4006,7 @@
       "type": "contract_intel",
       "title": "Swingtide — Market Intelligence Support",
       "slug": "swingtide-market-intelligence-support",
-      "date": "2026-10-18",
+      "date": "2026-10-19",
       "description": "Update Aug 17, 2026: Swingtide Inc awarded a 10-month DHA PEO DHMS Market Intelligence Support Services contract, HT003826CE001, $745,000, single bidder, posted January 2026. Market intelligence support, ~$745K, awarded Jan 2026. Solicitati",
       "tags": [
         "Defense Health Agency",
@@ -4125,7 +4125,7 @@
       "type": "contract_intel",
       "title": "IHS Four Directions Warehouse (4DW) — Clinical Data Repository",
       "slug": "ihs-four-directions-warehouse-4dw-clinical-data-repository",
-      "date": "2026-10-18",
+      "date": "2026-10-19",
       "description": "Update Aug 17, 2026: Cherokee Nation Integrated Health, LLC won the IHS 4DW modernization contract (140D0424C0039), $36,367,134.84, PoP Sept 24, 2024 to Sept 23, 2029; ISBEE set-aside. IHS Health IT Modernization program contract for develo",
       "tags": [
         "Indian Health Service (IHS) / HHS",
@@ -10578,6 +10578,24 @@
       "url": "/premium/key-people",
       "source_url": "https://arpa-h.gov/about/people",
       "excerpt": "Agency: Advanced Research Projects Agency for Health (ARPA-H) (ARPA-H)\nKey people (20), verified 2026-10-19:\nAlicia Jackson, Director, ARPA-H, Agency-wide direction; sets strategic priorities across the four mission offices.\nRafid Fadul, Chief Medical Officer; assuming some Deputy Director duties, Clinical advisor; cross-cutting medical perspective on programs.\nMaxwell Watkins, Chief of Staff, Operations and execution support to the Director.\nSara Reistad-Long, Chief Strategy Officer, Strategic Affairs Office, Agency strategy and the Strategic Affairs Office.\nGene Civillico, Director, Health Science Futures, Mission office — high-risk basic-to-translational health science. Neurobiologist; joined ARPA-H in September 2026 from FDA's Center for Devices and Radiological Health, where he led neurotechnology regulatory science tools and review teams for breakthrough neuromodulation devices.\nTyler Best, Deputy Director, Health Science Futures, Mission office — high-risk basic-to-translational health science. Held the office as Acting Director through at least Aug 25, 2026.\nGlen Coppersmith, Director, Proactive Health, Mission office — prevention, wellness, behavioral and mental health.\nNikolaos Ipiotis, Chief Information Officer, Office of Information Technology and Data Innovation, ARPA-H IT/data infrastructure across all programs.\nChristopher Pashley, Chief Information Security Officer, ARPA-H security posture; FedRAMP, FISMA, ATO oversight.\nCarmelita Chadwick-Gallo, Director, Comptroller Division, ARPA-H budget execution and financial controls.\nDan Barry, General Counsel, Legal advisor to ARPA-H leadership; OTA and contract law.\nAndrew Carney, Program Manager, Proactive Health, Programs in the Proactive Health mission office.\nJames Coburn, Program Manager, Scalable Solutions, Programs in the Scalable Solutions mission office, which lists no office leadership as of Oct 19, 2026.\nKaren Schmaling, Portfolio Lead, Proactive Health, Portfolio-level coordination across multiple Proactive Health programs.\nDavid Gunning, Program Manager, Proactive Health, Specific program in the Proactive Health portfolio.\nJen Cama, Director, Division of Government Relations and Strategy, ARPA-H external affairs; congressional and interagency engagement.\nKeith Martin, Director, Administration and Management; Executive Officer, Agency administration, operations, and the executive office.\nNeil Wyant, Director, Office of Commercialization, Transition of ARPA-H program outputs to market and to federal customers.\nCatherine Stevens, Director, Business Innovation Division, Heads the Business Innovation Division, the billet the April 2026 vacancy announcement described as ARPA-H's highest acquisition authority, holding Head of Contracting authority including bid-protest and claims decisions.\nBenjamin Bryant, Deputy Director, Business Innovation Division; Acting Head of Contracting Activity (per the HHS HCA roster), Runs the acquisition shop day to day. The HHS HCA roster still lists him as Acting HCA; the ARPA-H People page gives no HCA title to anyone.\nSource: https://arpa-h.gov/about/people",
+      "premium": true
+    },
+    {
+      "id": "key-people-vha",
+      "type": "key_people",
+      "title": "Department of Veterans Affairs, Veterans Health Administration (Office of Veterans Community Care) (VHA) key people",
+      "agency": "VHA",
+      "slug": "vha",
+      "date": "2026-10-20",
+      "description": "Janet Cabeen, Executive Director, Networks and Contracts Management, Office of Veterans Community Care (SES)",
+      "tags": [
+        "key-people",
+        "leadership",
+        "VHA"
+      ],
+      "url": "/premium/key-people",
+      "source_url": "https://department.va.gov/biographies/",
+      "excerpt": "Agency: Department of Veterans Affairs, Veterans Health Administration (Office of Veterans Community Care) (VHA)\nKey people (1), verified 2026-10-20:\nJanet Cabeen, Executive Director, Networks and Contracts Management, Office of Veterans Community Care (SES), Leads CCN Next Gen, the community care network recompete. Her stated plan: one purchasing structure for community care, Veterans Care Agreements and local healthcare contracts folded into the network, stronger Third Party Administrator (TPA) performance oversight, and Veteran and Family Member Programs (VFMP) run alongside community care.\nSource: https://department.va.gov/biographies/",
       "premium": true
     },
     {
