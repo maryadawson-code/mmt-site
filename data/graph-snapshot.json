@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-10-20T13:51:16.783Z",
-  "node_count": 511,
-  "edge_count": 775,
+  "generated_at": "2026-10-22T13:04:11.213Z",
+  "node_count": 512,
+  "edge_count": 776,
   "nodes": [
     {
       "id": "peo-dhms-deployment",
@@ -663,7 +663,7 @@
         "classification": "Solicitation",
         "status": "awarded",
         "naics": "541512",
-        "last_verified": "2026-10-19"
+        "last_verified": "2026-10-21"
       }
     },
     {
@@ -774,7 +774,7 @@
         "classification": "Vendor-Announced",
         "status": "awarded",
         "naics": "541512",
-        "last_verified": "2026-10-19"
+        "last_verified": "2026-10-21"
       }
     },
     {
@@ -961,7 +961,7 @@
         "classification": "IDIQ",
         "status": "awarded",
         "naics": "621999",
-        "last_verified": "2026-10-19"
+        "last_verified": "2026-10-21"
       }
     },
     {
@@ -1378,7 +1378,7 @@
         "classification": "Award",
         "status": "awarded",
         "naics": "541618",
-        "last_verified": "2026-10-19"
+        "last_verified": "2026-10-21"
       }
     },
     {
@@ -1473,7 +1473,7 @@
         "classification": "Award",
         "status": "awarded",
         "naics": "541519",
-        "last_verified": "2026-10-19"
+        "last_verified": "2026-10-21"
       }
     },
     {
@@ -2604,6 +2604,14 @@
       "type": "Agency",
       "canonical_name": "Department of Veterans Affairs, Veterans Health Administration (Office of Veterans Community Care)",
       "properties": {}
+    },
+    {
+      "id": "alicia-skolrood",
+      "type": "Person",
+      "canonical_name": "Alicia Skolrood",
+      "properties": {
+        "title": "Deputy Assistant Under Secretary for Health for Veterans Community Care (VCC)"
+      }
     },
     {
       "id": "janet-cabeen",
@@ -7466,6 +7474,15 @@
       "relation": "leads",
       "properties": {
         "title": "Deputy Director, Business Innovation Division; Acting Head of Contracting Activity (per the HHS HCA roster)"
+      },
+      "weight": 1
+    },
+    {
+      "from_id": "alicia-skolrood",
+      "to_id": "vha",
+      "relation": "leads",
+      "properties": {
+        "title": "Deputy Assistant Under Secretary for Health for Veterans Community Care (VCC)"
       },
       "weight": 1
     },
