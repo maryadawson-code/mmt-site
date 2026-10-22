@@ -412,9 +412,17 @@
       "agency_code": "VHA",
       "agency_name": "Department of Veterans Affairs, Veterans Health Administration (Office of Veterans Community Care)",
       "source_url": "https://department.va.gov/biographies/",
-      "verified_date": "2026-10-20",
-      "note": "Community care is VA's largest purchased-care line and CCN Next Gen is its recompete. The Office of Veterans Community Care (VCC) sits inside VHA. This block holds the one VCC name MMT tracks; the person is not yet on the VA Staff Biographies index, so the entry rests on her own announcement and stays pending official confirmation.",
+      "verified_date": "2026-10-22",
+      "note": "Community care is VA's largest purchased-care line and CCN Next Gen is its recompete. The Office of Veterans Community Care (VCC) sits inside VHA. This block holds the two VCC names MMT tracks: the office's new Deputy Assistant Under Secretary for Health and the Executive Director who runs the network recompete. Neither is on the VA Staff Biographies index snapshot of 2026-10-20 (that index covers Assistant Secretary level and above, so a DAUSH or Executive Director would not appear there), so both entries rest on their own announcements and stay pending official confirmation.",
       "people": [
+        {
+          "name": "Alicia Skolrood",
+          "title": "Deputy Assistant Under Secretary for Health for Veterans Community Care (VCC)",
+          "scope": "Leads the Office of Veterans Community Care, the VHA program office over purchased care, including the CCN Next Gen recompete that Janet Cabeen runs. Joined VHA in 2024 after a career in healthcare middle and senior management (MBA, CPHQ). Her stated priorities: coordinated, high-quality care regardless of where it is delivered, a seamless and integrated system of care, and partnerships with providers, industry, Congress and Veterans.",
+          "why_watch": "The senior executive over community care policy and the CCN Next Gen program office. Her quality-management background (CPHQ) and her 'seamless, integrated system of care' framing point to care coordination, TPA quality oversight and integration with direct care as the themes a community care bid or capability pitch has to answer.",
+          "verified_date": "2026-10-22",
+          "verification_note": "Named Deputy Assistant Under Secretary for Health for Veterans Community Care per her own public announcement, read Oct 22, 2026. Not on the VA Staff Biographies index snapshot of Oct 20, 2026, which covers Assistant Secretary level and above; pending official confirmation on a VA page. Start date and predecessor not stated in the announcement."
+        },
         {
           "name": "Janet Cabeen",
           "title": "Executive Director, Networks and Contracts Management, Office of Veterans Community Care (SES)",
