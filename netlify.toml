@@ -4,13 +4,18 @@
   # validate-dist.js fails the build if dist/ contains any public-facing
   # drift pattern from docs/site-spec.md §14a. If it exits non-zero,
   # Netlify will refuse to deploy.
-  command = "node scripts/sync-newsletters.js; node scripts/sync-linkedin-newsletter.js; node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js && node scripts/newsletter-inventory.js && node scripts/capture-corner-inventory.js && node scripts/qa-contrast-scan.js && node scripts/validate-agency-parity.js && node scripts/validate-agency-profiles.js && node scripts/validate-contract-tracker.js && node scripts/validate-cso-aois.js && node scripts/validate-idiq-vehicles.js && node scripts/validate-capture-intelligence.js && node scripts/validate-gao-sustain.js && node scripts/validate-forecast-delta.js && node scripts/validate-data-freshness.js && node scripts/scan-pii.js && node scripts/validate-no-scrubbed-stubs.js && node scripts/validate-ask-mmt-coverage.js && node scripts/validate-reference-data.js && node scripts/validate-links.js"
+  command = "node scripts/sync-newsletters.js; node scripts/sync-linkedin-newsletter.js; node scripts/validate-node-version.js && node build.js &&node scripts/validate-dist.js && node scripts/validate-routes.js && node scripts/newsletter-inventory.js && node scripts/capture-corner-inventory.js && node scripts/qa-contrast-scan.js && node scripts/validate-agency-parity.js && node scripts/validate-agency-profiles.js && node scripts/validate-contract-tracker.js && node scripts/validate-cso-aois.js && node scripts/validate-idiq-vehicles.js && node scripts/validate-capture-intelligence.js && node scripts/validate-gao-sustain.js && node scripts/validate-forecast-delta.js && node scripts/validate-data-freshness.js && node scripts/scan-pii.js && node scripts/validate-no-scrubbed-stubs.js && node scripts/validate-ask-mmt-coverage.js && node scripts/validate-reference-data.js && node scripts/validate-links.js"
 
 [build.environment]
-  # Pin the build + functions runtime. Netlify's functions runtime follows
-  # the build's Node version; production has been on 22 via the image default.
-  # Explicit so a default change upstream (or a CI pin drift) cannot move it.
-  NODE_VERSION = "22"
+  # Pin the build Node to the security floor in lib/node-floor.js (same number
+  # as .nvmrc, package.json engines and every workflow; tests/unit/node-floor
+  # fails when they drift). A bare "22" resolved whatever 22.x the image had on
+  # the day, which after the 2026-10-21 Node.js security release was a Node
+  # with a remote-code-execution bug in its Brotli decoder.
+  # The functions runtime follows this major (nodejs22.x on Lambda); its
+  # patch level is Netlify's to roll, not this file's. health.js reports the
+  # version the functions actually run and goes "degraded" below the floor.
+  NODE_VERSION = "22.23.4"
 
 [functions]
   directory = "netlify/functions"
