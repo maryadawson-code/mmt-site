@@ -27,8 +27,13 @@ canonical_url: "https://missionmeetstech.com/newsletter/count-the-doors/"
 linkedin_url: "https://www.linkedin.com/pulse/count-doors-mary-womack-s8fae"
 source: claude_newsletter_project
 capture_corner_teaser: "This issue follows LOE 4 through the doors. Premium's Capture Corner and monthly Capture Intelligence Sheets track the contracts and budget lines underneath it, with sourced action windows. It lives behind the paywall at missionmeetstech.com/pricing."
-capture_corner: []
+capture_corner:
+  - "Settle the nurse line question before December 17. The incumbent runs the line on a bridge that ends that day, the GNAL-NG follow-on drew two GAO protests that were both dismissed, and no award has been announced. Price any triage, booking, or warm-transfer capability to the next requirement, booking beyond 24 hours, because the 2019 instruction and its same-day ceiling are what that requirement replaces."
+  - "Answer DHA's eleven RC3 questions in writing before the next RFI. The enterprise appointing center is in DoDI 5000.74 market research, with an RFP expected in the second quarter of FY2027 and an award in the first quarter of FY2028, and the requirements owner said on the record it may be one solution or several. Real-time availability across sites, recapture determination, and the many-to-one transition from 110 incumbents are the three discriminators, and the small business office sits on the IPT reviewing bundling."
+  - "Sell the quality half, where the FY27 money sits. Sterile processing has a business case RFI across eight of nine networks, HPV self-collection is due at every MTF by November 30, NSQIP reviewer and champion staffing is due December 31, and ambient AI adoption carries a 67 percent target by May 30, 2027. Treat the deferral guidance due December 31 as a draft requirement for the RC3 RFP and read it the day it posts."
 ---
+
+![A hospital hallway with six navy doors, one lit in teal, and red lines running to each door from a thermometer reading 102.8 on the floor beside a medicine bottle, a dosing cup, and a blanket.](/images/newsletter/2026-10-23/cover-count-the-doors.png)
 
 # Count the Doors
 
