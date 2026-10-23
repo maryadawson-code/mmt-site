@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-10-22T13:05:08.408Z",
-  "total": 286,
+  "generated_at": "2026-10-23T13:37:21.601Z",
+  "total": 287,
   "note": "Public subset of mmt-content-corpus.json (premium=false items only). For unauthenticated endpoints. Per Sprint C 2026-05-14.",
   "counts": {
-    "articles": 142,
+    "articles": 143,
     "contracts": 67,
     "glossary": 42,
     "idiq_vehicles": 35
@@ -2517,6 +2517,30 @@
       "premium": false
     },
     {
+      "id": "article-count-the-doors",
+      "type": "article",
+      "title": "Count the Doors",
+      "slug": "count-the-doors",
+      "date": "2026-10-23",
+      "description": "Part 4 of a series on DHA's FY27 campaign plan, one line of effort at a time. It is two in the morning at Eglin Air Force Base and a child has a fever. The parent has at least six ways into military medicine and no single place to start. DHA's FY27 campaign plan promises 90 percent patient satisfaction by 2028 and dates fourteen tasks that add or rebuild a way in. This issue follows that one call through the doors, the rule the plan writes for sending patients out to the civilian network, the single door DHA is designing outside the plan, and the five dated steps that would get from six doors to one with what DHA already owns.",
+      "tags": [
+        "Defense Health Agency",
+        "Military Health System",
+        "FY2027 Campaign Plan",
+        "TRICARE",
+        "Nurse Advice Line",
+        "Access to Care",
+        "Virtual Health",
+        "Patient Experience",
+        "Referral Management",
+        "Eglin Air Force Base",
+        "Leapfrog Safety Grade"
+      ],
+      "url": "/newsletter/count-the-doors/",
+      "excerpt": "Count the Doors Part 4 of a series on DHA's FY27 campaign plan, one line of effort at a time. It is two in the morning at Eglin Air Force Base and a child has a fever. The parent has at least six ways into military medicine and no single place to start. DHA's FY27 campaign plan promises 90 percent patient satisfaction by 2028 and dates fourteen tasks that add or rebuild a way in. This issue follows that one call through the doors, the rule the plan writes for sending patients out to the civilian network, the single door DHA is designing outside the plan, and the five dated steps that would get from six doors to one with what DHA already owns. Friends, Take a TRICARE Prime family at Eglin Air Force Base. It is two in the morning, a thirteen-year-old has a fever that will not break, and the parent picks up the phone. The first decision of the night is which number to dial, and that decision is what the fourth line of effort in DHA's FY27 campaign plan is about, whether or not the plan says so. The fourth line, the healthcare enterprise beneficiaries deserve, is led by Maj. Gen. Jeannine Ryder, and its promise for 2028 is plain: 90 percent of patients satisfied with their care, every specialty referral seen within 28 days, an A or B safety grade at every eligible military hospital, and cancer screening above national benchmarks. [1][2] The satisfaction piece has the shortest clock of anything in the plan. Inpatient satisfaction is to rise from 75 to 85 percent and outpatient by 10 points no later than December 2026, ten weeks from the day this issue publishes. [1] This series has walked the plan one line at a time, the profile clock in Part 1, the hospital bench in Part 2, the blood shelf on Guam in Part 3. The yardstick here is the 90 percent, and the way to test it is to follow one call. The plan dates fourteen tasks that add, rebuild, or train a way in, and none that says where a family starts. By my count the family at Eglin has at least six doors. We will open them in the order the parent would. Option one The parent dials 1-800-TRICARE and presses one. That is the Nurse Advice Line, and a nurse picks up at any hour. The nurse asks about the fever, the breathing, and how long it has been going on, and then does one of four things: talks the parent through care at home, books a same-day appointment at the clinic, writes a referral to a civilian urgent care, or, since February, books a video visit with a military provider through a program called VIPRR, which takes patients 12 and older and opens its first slots at 6:30 in the morning Eastern. [3][4] If the fever is the kind that belongs in an emergency room, the nurse says so. What the nurses do with those calls is the quiet success of the system. The line handles more than 530,000 calls a year, about 1,400 a day, and 82 percent of them come from families enrolled at a military hospital. [3][5] Three in ten of those callers set out for a civilian emergency room, and the nurses sent one in ten. [5] The rest went to self-care, the clinic, or urgent care, and satisfaction runs above 91 percent. [5] At a June industry day, the requirements owner for DHA's next appointing system relayed the director's own figure for the line, twelve years at 94 percent or better; it is the door DHA holds up as the model. [6] So the plan leans on it. By December 31, DHA's communications office owes a campaign to push use of the nurse line and VIPRR up 10 percent and visits to civilian urgent care down 10 percent. [1] The bet is simple: more fevers triaged by a nurse at 2 a.m., fewer families in a civilian urgent care at 8 a.m. Two facts about that door sit outside the family's view. The first is a rule. DHA's own instruction on the nurse line, signed in October 2019, makes it a primary care manager for advice around the clock and lets it book only appointments a nurse has judged necessary within 24 hours. Everything else stays with the hospital's appointment line, and the instruction is explicit about the boundary: \"MTFs shall not refer or transfer beneficiaries who need an appointment to the NAL.\" [7] The nurse can book tonight and cannot book next week, and the hospital is told in writing not to send the parent back to the nurse line for it. The split between those two doors is a design with a signature on it. The second is a clock. The incumbent contractor runs the nurse line on a bridge contract that DHA extended in June by $25.3 million, through December 17, 2026. [8] The follow-on contract took proposals a year ago, drew two protests, both dismissed, and has no announced award. [9] The plan's push to send more calls to the line is due December 31. [1] The push comes due fourteen days after the contract. The next morning The fever breaks by sunrise. The video visit at 6:30 ends with an antibiotic and an instruction to follow up with the child's own doctor in a week, and now the parent needs the other door. At Eglin, the hospital's appointment line runs through a regional care coordination center, one of two the plan describes as mature, and the plan gives Eglin until March 31 to deliver a regional appointment plan. [1] The odds are against a quick slot. In FY2024, by DHA's own evaluation of the TRICARE program, the third available same-day appointment at a military hospital came 2.8 days out against a one-day standard, and at one hospital it averaged 60. [5] Families saw their own primary care manager at fewer than half of their visits, 48.8 percent, down from the year before. [5] Those are the numbers the plan is trying to move, and every one of them moved the wrong way in a single year. The hospital cannot always see its own calendar. The first date in this line of effort is October 31, eight days from now, when the Office of Warfighter Health Advantage owes an access dashboard for every beneficiary category, and the inspector general found last year that staff at all 15 overseas hospitals it audited spent significant time working around inaccurate data in the dashboards DHA already has. [1][10] A scheduler who cannot trust the screen cannot promise the parent a slot. If the hospital cannot see the child quickly, the plan has an answer, and it points out the door. By December 31, DHA's healthcare operations office owes guidance for adjusting deferrals, the system's word for sending a referral to the civilian network instead of filling it in-house, so that when the network's access standard beats the hospital's actual performance, the patient goes out. [1] In plain terms: when the civilian side is faster, send the family out. Out that door, the family meets the directory. To find a civilian pediatrician or a therapist, they search the contractor's provider list, and in 2024 GAO called 342 behavioral health listings in those directories and estimated that most were inaccurate. [11] The plan's answer is a task for the contractors, due December 31, to collect beneficiary feedback on whether the directory's appointments exist. [1] The rule sends the family to a list GAO found mostly wrong for mental health, and the fix for the list is a form. That rule rests on something awkward. In the same evaluation, Prime families with a civilian primary care manager, and beneficiaries in TRICARE Select, rated their health plan above the civilian benchmark for three straight years, while families empaneled at a military hospital rated theirs below it. [5] The survey adjusts for age and health and not for who chose what, so the gap may say as much about who gets sent out as about the care. My read is that it is still the strongest number DHA has for the deferral rule, and the most uncomfortable one for a task in the same line that compares military and civilian hospitals on safety grades \"to reinforce MTF value proposition.\" [5][1] The plan wants the family to come in. Its own data says the families it sends out are the happier ones. Count the doors Suppose the family skips the phone. The patient portal books a scheduled virtual vi",
+      "premium": false
+    },
+    {
       "id": "contract-community-care-network-next-gen-ccn-ng-",
       "type": "contract_intel",
       "title": "Community Care Network Next Gen (CCN NG)",
@@ -2572,7 +2596,7 @@
       "type": "contract_intel",
       "title": "DHA Data Governance / Data Methods and Strategy (HT001126CE015)",
       "slug": "dha-data-governance-data-methods-and-strategy-ht001126ce015-",
-      "date": "2026-10-21",
+      "date": "2026-10-22",
       "description": "Update Oct 19, 2026: awarded. USASpending carries contract HT001126CE015 to Taurian Consulting 2 LLC (the Guidehouse and ReefPoint joint venture I reported in the Sep 11, 2026 brief) at $8,466,696, period Feb 25, 2026 to Jun 28, 2027, NAICS",
       "tags": [
         "Defense Health Agency (DHA)",
@@ -2725,7 +2749,7 @@
       "type": "contract_intel",
       "title": "VA IE&O (TISTA, task order 36C10B26F0468)",
       "slug": "va-ie-o-tista-task-order-36c10b26f0468-",
-      "date": "2026-10-21",
+      "date": "2026-10-22",
       "description": "Update Oct 5, 2026: OrangeSlices reported on Oct 2, 2026 that TISTA Science and Technology won a 5-year VA IE&O award, task order 36C10B26F0468 at about $164.1M, over 14 other bidders, alongside a separate SCM DSO award (36C10B26F0452, abou",
       "tags": [
         "Department of Veterans Affairs / VA TAC",
@@ -2876,7 +2900,7 @@
       "type": "contract_intel",
       "title": "VA Health Connect / IHT 2.0",
       "slug": "va-health-connect-iht-2-0",
-      "date": "2026-10-21",
+      "date": "2026-10-22",
       "description": "Update Oct 5, 2026: OrangeSlices reports that the IHT 2.0 protest forced VHA to award sole-source bridges for continuity, including a health informatics professional and technical services bridge to SDVOSB Rock Ferry dba MD Informatix and a",
       "tags": [
         "Department of Veterans Affairs / VHA",
@@ -3233,7 +3257,7 @@
       "type": "contract_intel",
       "title": "Swingtide — Market Intelligence Support",
       "slug": "swingtide-market-intelligence-support",
-      "date": "2026-10-21",
+      "date": "2026-10-22",
       "description": "Update Aug 17, 2026: Swingtide Inc awarded a 10-month DHA PEO DHMS Market Intelligence Support Services contract, HT003826CE001, $745,000, single bidder, posted January 2026. Market intelligence support, ~$745K, awarded Jan 2026. Solicitati",
       "tags": [
         "Defense Health Agency",
@@ -3352,7 +3376,7 @@
       "type": "contract_intel",
       "title": "IHS Four Directions Warehouse (4DW) — Clinical Data Repository",
       "slug": "ihs-four-directions-warehouse-4dw-clinical-data-repository",
-      "date": "2026-10-21",
+      "date": "2026-10-22",
       "description": "Update Aug 17, 2026: Cherokee Nation Integrated Health, LLC won the IHS 4DW modernization contract (140D0424C0039), $36,367,134.84, PoP Sept 24, 2024 to Sept 23, 2029; ISBEE set-aside. IHS Health IT Modernization program contract for develo",
       "tags": [
         "Indian Health Service (IHS) / HHS",
