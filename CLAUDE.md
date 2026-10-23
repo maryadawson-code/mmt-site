@@ -108,6 +108,7 @@ Mary's voice: warm but fierce, story-first, conversational, technical but access
 - Anthropic web_search is unreliable from serverless; MarketPulse research uses Perplexity `sonar-pro`.
 - The local harness `ANTHROPIC_API_KEY` is a JWT that 401s; local scripts read the real key from `.env`.
 - A scheduled trigger reaches its background worker only through `lib/trigger-background.js` (two bounded attempts, 202 is the only success); a bare `fetch` in a trigger is a regression (one connect timeout failed award-tracker on 2026-09-21).
+- Node.js has one security floor, `lib/node-floor.js` (2026-10-23): `.nvmrc`, `netlify.toml` NODE_VERSION, `package.json` engines and every workflow (`node-version-file`) carry that exact patch, `scripts/validate-node-version.js` gates the build, and `health.js` reports the Lambda's own `process.version` as `node_runtime` (degraded below the floor). On a Node.js security release, raise the floor, never a bare major; a vendor telemetry email about the Node version is read against `/health`, and rolling keys is Mary's call, not a repo change.
 - A function whose `schedule` is commented out is a public URL: wrap it with `lib/scheduled-only.js` or delete it, and delete a fired one-shot sender rather than leave it scheduled. Admin actions authorize on the signed subscriber token via `lib/admin-auth.js`, never on an `x-admin-email` header (four bulk-send and reconcile functions trusted that header until 2026-09-30).
 
 ## Operations

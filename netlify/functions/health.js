@@ -10,6 +10,7 @@ const fs = require("fs");
 const path = require("path");
 const { createClient } = require("@supabase/supabase-js");
 const { Sentry } = require("./lib/sentry");
+const { checkNodeVersion } = require("./lib/node-floor");
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -67,6 +68,21 @@ async function staleOrdersCheck(supabase, now = Date.now()) {
   } catch (err) {
     return { ...base, status: "unknown", error: err.message };
   }
+}
+
+/**
+ * The Node.js the function runtime is on, against the security floor.
+ *
+ * netlify.toml pins the build Node, but the Lambda runtime (nodejs22.x) is
+ * patched on Netlify's schedule, and stripe-node reports this process's
+ * version to Stripe on every call. This is the only place that version is
+ * visible from outside, so the Deploy Gate warns the day it lags the floor.
+ */
+function nodeRuntimeCheck(version = process.version) {
+  const v = checkNodeVersion(version);
+  const out = { status: v.status, version: v.version, floor: v.floor };
+  if (v.reason) out.reason = v.reason;
+  return out;
 }
 
 exports.handler = async (event) => {
@@ -160,6 +176,13 @@ exports.handler = async (event) => {
     "health",
   ];
 
+  // --- Node.js runtime against the security floor ---
+  // Below the floor, or unreadable, the site is "degraded": HTTP 200 and a
+  // Deploy Gate warning that names the version, so a lagging Lambda patch is
+  // seen the day it happens instead of in a vendor's telemetry email.
+  checks.node_runtime = nodeRuntimeCheck();
+  if (checks.node_runtime.status !== "ok" && overallStatus === "healthy") overallStatus = "degraded";
+
   // --- Stale orders (scoring stuck in processing >30 min) ---
   // Stuck orders, or a check that could not run, make the site "degraded":
   // still HTTP 200, and the Deploy Gate raises a warning instead of passing in
@@ -188,5 +211,6 @@ exports.handler = async (event) => {
 };
 
 exports.staleOrdersCheck = staleOrdersCheck;
+exports.nodeRuntimeCheck = nodeRuntimeCheck;
 exports.buildVersion = buildVersion;
 exports.BUILD_INFO_REL = BUILD_INFO_REL;
