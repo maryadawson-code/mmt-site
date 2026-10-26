@@ -1,11 +1,11 @@
 {
   "_meta": {
     "description": "Pursuit Calendar seed events. Source of truth when Supabase pursuit_calendar table is unreachable. Times are America/New_York (ET). Status is computed dynamically by the renderer for date-based events; explicit status values (Protest, Protest Due, Watch, Needs Source) are honored as-is.",
-    "last_curated_at": "2026-10-19",
+    "last_curated_at": "2026-10-26",
     "curator": "automated",
     "timezone": "America/New_York",
-    "window_start": "2026-10-19",
-    "window_end": "2027-01-17"
+    "window_start": "2026-10-26",
+    "window_end": "2027-01-24"
   },
   "events": [
     {
@@ -19,6 +19,20 @@
       "category": "deadline",
       "status_override": null,
       "source_url": "https://sam.gov/workspace/contract/opp/f680b73a6c10415a83f09f448894e5bb/view",
+      "source_system": "sam.gov",
+      "notes": "Sol: HT003826SC005-AOI0002 · NAICS 541512 · Set-aside: No Set aside used"
+    },
+    {
+      "id": "cecd6dcc-be24-40e8-a517-98d5155c919a",
+      "title": "Defense Health Agency (DHA), Portfolio Acquisition Executive, Medical Digital Solutions (PAE MDS), Enterprise Intelligence & Data Solutions (EIDS) Program Management Office (PMO), Data Exchange Services Operations, Modernization, and Develo",
+      "event_date": "2026-10-28",
+      "event_time_et": null,
+      "agency": "DHA",
+      "vehicle": "HT003826SC005-AOI0002",
+      "ref": null,
+      "category": "deadline",
+      "status_override": null,
+      "source_url": "https://sam.gov/workspace/contract/opp/79e1f7cd1194437ead5d5941b3c63a98/view",
       "source_system": "sam.gov",
       "notes": "Sol: HT003826SC005-AOI0002 · NAICS 541512 · Set-aside: No Set aside used"
     }
