@@ -98,6 +98,7 @@ Medicare Advantage Rates & Statistics
 Medicare-Medicaid coordination
 Back to menu
 section title h3
+Program Integrity Pillars for Medicaid and the Children’s Health Insurance Program (CHIP)
 Qualified Medicare beneficiary program
 Resources
 Qualified Medicare beneficiary program
@@ -109,7 +110,7 @@ Reports & Guidance
 Program of All-Inclusive Care for the Elderly (PACE)
 Reporting Fraud
 Resources for Medicare-Medicaid plans
-Resources for State Medicaid Agencies
+Program Integrity Pillars for Medicaid and the Children’s Health Insurance Program (CHIP)
 Healthcare Fraud Prevention Partnership
 Clinical Templates
 Appeals & grievances
@@ -341,6 +342,7 @@ Electronic Prior Authorization
 Back to menu
 section title h3
 Overview
+Employer Statement of Support
 Flu
 Back to menu
 section title h3
@@ -508,11 +510,11 @@ Instagram.com/drozcms
 Linkedin.com/showcase/administrator-oz
 Administration
 Rebekah Armstrong
-Chief of Staff
+Deputy Administrator & Chief of Staff
 Stephanie Carlton
 Deputy Administrator, Chief Clinical AI Officer
 John Brooks
-Deputy Administrator and Director
+Deputy Administrator & Director of Medicare
 Kimberly Brandt
 Deputy Administrator & Chief Operating Officer
 John Czajkowski
@@ -520,17 +522,14 @@ Deputy Chief Operating Officer
 Offices
 Office of the Administrator
 Office of the Actuary
-Office of Healthcare Experience and Interoperability
 Office of Communications
 Office of Enterprise Data & Analytics
 Federal Coordinated Health Care Office
 Office of Legislation
-Office of Minority Health
 Office of Program Operations & Local Engagement
 Office of Strategic Operations & Regulatory Affairs
 Operations
 Chief Operating Officer
-Digital Service at CMS
 Emergency Preparedness & Response Operations
 Office of Acquisition & Grants Management
 Office of Financial Management
