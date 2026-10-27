@@ -135,7 +135,7 @@ async function creditPlan(stripe, email, now) {
   if (credit && credit.creditCents > 0) {
     const coupon = await stripe.coupons.create({
       amount_off: credit.creditCents, currency: "usd", duration: "once", max_redemptions: 1,
-      name: `Credit for ${credit.unusedDays} unused days of MMT Premium`,
+      name: `MMT Premium credit: ${credit.unusedDays} unused days`,
       metadata: { app: "mmt", replaces_subscription: credit.subscription.id, unused_days: String(credit.unusedDays), total_days: String(credit.totalDays) },
     });
     discounts.push({ coupon: coupon.id });
