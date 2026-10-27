@@ -4,8 +4,8 @@
 // invoice link Mary sends. Dry run by default. docs/team-plan-spec.md.
 //
 //   netlify dev:exec -- node scripts/team-invoice.js \
-//     --company "FHAS" --billing-email thunter@fhas.com --seats 4 \
-//     [--seat-emails a@x.com,b@x.com] [--credit-from thunter@fhas.com] [--apply]
+//     --company "<company>" --billing-email <billing contact> --seats 4 \
+//     [--seat-emails <email>,<email>] [--credit-from <email of a member already paying>] [--apply]
 //
 // What --apply does, in order:
 //   1. finds or creates the Stripe customer for the billing email
