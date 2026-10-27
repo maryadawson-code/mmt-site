@@ -82,6 +82,33 @@ netlify dev:exec -- node scripts/team-invoice.js --company "Acme" --billing-emai
 It prints the hosted invoice link to send. The billing email is always a seat
 so the billing contact can sign in and manage seats at `/premium/team/`.
 
+Invoices to an accounts-payable inbox: Stripe mails only the customer's own
+address and its API cannot add recipients, so a team carries
+`metadata.ap_email`. Pass `--ap-email` when starting the team, or later:
+
+```
+netlify dev:exec -- node scripts/team-billing-contact.js --subscription sub_xxx --ap-email ap@acme.com --apply
+```
+
+It emails the open invoice there now (`lib/team-plan.js sendInvoiceNotice`,
+once per invoice, `customer_events invoice_sent / mmt_team`) and the
+webhook's `invoice.finalized` handler sends every later invoice. To have
+Stripe's own emails copy AP as well, add the address under the customer's
+"Emails to CC" in the Stripe dashboard (dashboard only).
+
+Paid by ACH, wire or check: Stripe never sees the money, and seats only turn
+on when Stripe holds a paid invoice. Once the bank shows it:
+
+```
+netlify dev:exec -- node scripts/team-invoice-paid.js --invoice in_xxx --reference "ACH trace 123" --apply
+```
+
+That marks the invoice paid out of band, which fires `invoice.paid`; the
+webhook activates the seats and cancels a replaced personal plan. Never hand
+edit `mp_users` to let a team in early. The hosted invoice page takes cards,
+Link and wallets; ACH debit on the page is a Stripe account setting, Mary's
+call.
+
 Add or remove a seat: the billing contact does it on `/premium/team/`, or
 Mary edits `mmt_seats` on the subscription in the Stripe dashboard (the
 metadata change fires `customer.subscription.updated`).
@@ -103,4 +130,5 @@ monthly allowance in `agent-pricing.json` unless listed in
 
 `TEAM_SEATS_SYNCED` (every sync, with activated/deactivated/failed lists),
 `TEAM_SYNC_FAILED` (webhook path threw; the hourly sync repairs),
-`TEAM_REPLACED_SUBSCRIPTION_CANCELED`.
+`TEAM_REPLACED_SUBSCRIPTION_CANCELED`, `TEAM_INVOICE_NOTICE_FAILED` (the AP copy of an
+invoice did not send; rerun `scripts/team-billing-contact.js --resend`).

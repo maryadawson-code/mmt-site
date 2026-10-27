@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // ============================================================================
 // scripts/stripe-setup-team.js — create (or re-price) the Stripe objects the
-// MMT Team plan bills through, and make sure the MMT webhook hears invoice.paid.
+// MMT Team plan bills through, and make sure the MMT webhook hears invoice.paid and invoice.finalized.
 // Idempotent. Dry run by default.
 //
 //   netlify dev:exec -- node scripts/stripe-setup-team.js            # plan only
@@ -11,7 +11,7 @@
 //   - product "MMT Team" (metadata mmt_key = team_seat)
 //   - one yearly per-seat price at the published rate, found later by lookup
 //     key (no env var: the Lambda env is capped at 4KB)
-//   - invoice.paid on the missionmeetstech.com stripe-webhook endpoint
+//   - invoice.paid and invoice.finalized on the missionmeetstech.com stripe-webhook endpoint
 //
 // The rate comes from netlify/functions/data/team-pricing.json. When it
 // changes, run this again: it creates the new price, moves the lookup key and
@@ -28,7 +28,7 @@ const APPLY = process.argv.includes("--apply");
 const PRODUCT_KEY = "team_seat";
 const WEBHOOK_PATH = "/.netlify/functions/stripe-webhook";
 const WEBHOOK_HOST = "missionmeetstech.com";
-const NEEDED_EVENT = "invoice.paid";
+const NEEDED_EVENTS = ["invoice.paid", "invoice.finalized"];
 
 async function findProduct(stripe) {
   for await (const p of stripe.products.list({ active: true, limit: 100 })) {
@@ -74,15 +74,17 @@ async function ensureWebhookEvent(stripe) {
   for await (const w of stripe.webhookEndpoints.list({ limit: 50 })) {
     if (w.url === `https://${WEBHOOK_HOST}${WEBHOOK_PATH}`) { endpoint = w; break; }
   }
-  if (!endpoint) { console.log(`  webhook: no endpoint at https://${WEBHOOK_HOST}${WEBHOOK_PATH}; add ${NEEDED_EVENT} by hand`); return false; }
-  if (endpoint.enabled_events.includes(NEEDED_EVENT) || endpoint.enabled_events.includes("*")) {
-    console.log(`  webhook: ${endpoint.id} already receives ${NEEDED_EVENT}`);
+  if (!endpoint) { console.log(`  webhook: no endpoint at https://${WEBHOOK_HOST}${WEBHOOK_PATH}; add ${NEEDED_EVENTS.join(", ")} by hand`); return false; }
+  const all = endpoint.enabled_events.includes("*");
+  const missing = all ? [] : NEEDED_EVENTS.filter((e) => !endpoint.enabled_events.includes(e));
+  if (!missing.length) {
+    console.log(`  webhook: ${endpoint.id} already receives ${NEEDED_EVENTS.join(", ")}`);
     return true;
   }
-  console.log(`  webhook: ${endpoint.id} does not receive ${NEEDED_EVENT}. ${APPLY ? "Adding." : "Would add."}`);
+  console.log(`  webhook: ${endpoint.id} does not receive ${missing.join(", ")}. ${APPLY ? "Adding." : "Would add."}`);
   if (!APPLY) return false;
-  await stripe.webhookEndpoints.update(endpoint.id, { enabled_events: [...endpoint.enabled_events, NEEDED_EVENT] });
-  console.log(`  webhook: ${endpoint.id} now receives ${NEEDED_EVENT}`);
+  await stripe.webhookEndpoints.update(endpoint.id, { enabled_events: [...endpoint.enabled_events, ...missing] });
+  console.log(`  webhook: ${endpoint.id} now receives ${NEEDED_EVENTS.join(", ")}`);
   return true;
 }
 
@@ -112,6 +114,6 @@ async function ensureWebhookEvent(stripe) {
   }
   const price = product ? await ensurePrice(stripe, product.id, cents) : null;
   const hooked = await ensureWebhookEvent(stripe);
-  if (product && price && hooked) console.log(`VERIFIED: product ${product.id}, price ${price.id} (${team.SEAT_LOOKUP_KEY}) at ${cents} cents per seat per year, webhook receives ${NEEDED_EVENT}`);
+  if (product && price && hooked) console.log(`VERIFIED: product ${product.id}, price ${price.id} (${team.SEAT_LOOKUP_KEY}) at ${cents} cents per seat per year, webhook receives ${NEEDED_EVENTS.join(", ")}`);
   else console.log("dry run: nothing created." + (APPLY ? " Re-run to verify." : ""));
 })().catch((e) => { console.error("failed:", String(e.message).slice(0, 300)); process.exit(1); });
