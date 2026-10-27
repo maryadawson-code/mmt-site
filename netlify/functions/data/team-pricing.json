@@ -1,0 +1,13 @@
+{
+  "_doc": "MMT Team plan: one product for every team account (docs/team-plan-spec.md). A team buys N seats on one yearly Stripe subscription; every seat gets Premium (institutional tier) plus Agent Access included. These are Mary's numbers; nobody else sets them. To change the seat price: edit this file, open a PR, deploy, then run `netlify dev:exec -- node scripts/stripe-setup-team.js --apply` (it creates the new price, moves the lookup key and archives the old one).",
+  "seat_usd_per_year": 300,
+  "min_seats": 2,
+  "max_seats": 50,
+  "invoice_days_until_due": 30,
+  "product_name": "MMT Team",
+  "lookup_key": "mmt_team_seat_year",
+  "confirmed": true,
+  "confirmed_by": "Mary Womack",
+  "confirmed_at": "2026-10-27",
+  "basis": "Mary's 2026-10-27 offer to FHAS: four seats, Premium plus AI agent access on every seat, $1,200 a year. $300 a seat a year is that offer stated per seat so every team buys the same product at the same rate."
+}

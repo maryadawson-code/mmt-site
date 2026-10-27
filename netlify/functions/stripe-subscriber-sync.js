@@ -38,6 +38,7 @@ const {
   classifySubscription,
   buildUnclassifiedOpsRow,
 } = require("./lib/stripe-price-classification");
+const team = require("./lib/team-plan");
 
 const STRIPE_PRICE_FOUNDING = process.env.STRIPE_PRICE_FOUNDING;
 const STRIPE_PRICE_FOUNDING_YEARLY = process.env.STRIPE_PRICE_FOUNDING_YEARLY;
@@ -88,8 +89,14 @@ exports.handler = async () => {
   }
   console.log(`stripe-subscriber-sync: ${subs.length} active+trialing Stripe subscriptions`);
 
+  // Team plan subscriptions (docs/team-plan-spec.md) are reconciled by
+  // lib/team-plan.js below, never by the per-customer premium path: a team
+  // is "active" in Stripe on 30-day invoice terms before anyone has paid.
+  const teamSubs = subs.filter((s) => team.isTeamSubscription(s));
+  const personal = subs.filter((s) => !team.isTeamSubscription(s));
+
   // Filter to MMT premium price IDs.
-  const mmt = subs.filter((s) => classifyTier(s) !== null);
+  const mmt = personal.filter((s) => classifyTier(s) !== null);
   console.log(`  ${mmt.length} match MMT premium price-id whitelist`);
 
   // Pull current mp_users rows for cross-check.
@@ -198,6 +205,8 @@ exports.handler = async () => {
     }
   }
 
+  const teams = await syncTeams(stripe, supabase, teamSubs);
+
   // Always log a sweep summary so silent gaps surface in dashboards.
   // Fixed 2026-06-11: ops_events has no `signature` column (the grouping
   // column is `error_signature`), so every sweep log since launch failed
@@ -214,6 +223,7 @@ exports.handler = async () => {
         already_current,
         upserted,
         skipped_no_email,
+        teams,
         upsert_report: upsertReport.slice(0, 25),
         ran_at: new Date().toISOString(),
       },
@@ -231,6 +241,49 @@ exports.handler = async () => {
       already_current,
       upserted,
       skipped_no_email,
+      teams,
     }),
   };
 };
+
+/**
+ * Backstop for the team webhook path: every live team subscription is
+ * re-synced (idempotent), and any seat row whose subscription is no longer
+ * active/trialing in Stripe is re-checked against Stripe so a canceled or
+ * unpaid team never keeps its seats on a missed webhook.
+ */
+async function syncTeams(stripe, supabase, teamSubs) {
+  const report = { subscriptions: teamSubs.length, synced: 0, activated: 0, deactivated: 0, failed: 0, orphans_checked: 0, errors: [] };
+  const runOne = async (sub) => {
+    try {
+      const r = await team.syncTeamSeats(stripe, supabase, sub, { source: "stripe-subscriber-sync" });
+      await team.cancelReplacedSubscription(stripe, supabase, sub, "stripe-subscriber-sync");
+      report.synced += 1;
+      report.activated += r.activated.length;
+      report.deactivated += r.deactivated.length;
+      report.failed += r.failed.length;
+    } catch (err) {
+      report.errors.push({ subscription_id: sub.id, error: String(err.message).slice(0, 200) });
+      console.error(`stripe-subscriber-sync: team sync failed for ${sub.id}: ${err.message}`);
+    }
+  };
+  for (const sub of teamSubs) await runOne(sub);
+  try {
+    const orphanIds = await team.orphanTeamSubscriptionIds(supabase, teamSubs.map((s) => s.id));
+    for (const id of orphanIds) {
+      report.orphans_checked += 1;
+      let sub;
+      try {
+        sub = await stripe.subscriptions.retrieve(id, { expand: ["customer"] });
+      } catch (err) {
+        report.errors.push({ subscription_id: id, error: `retrieve: ${String(err.message).slice(0, 200)}` });
+        continue;
+      }
+      await runOne(sub);
+    }
+  } catch (err) {
+    report.errors.push({ error: `orphan scan: ${String(err.message).slice(0, 200)}` });
+  }
+  if (report.subscriptions || report.orphans_checked) console.log(`stripe-subscriber-sync: teams ${JSON.stringify(report)}`);
+  return report;
+}
