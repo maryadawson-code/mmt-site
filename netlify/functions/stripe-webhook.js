@@ -15,6 +15,7 @@ const { sendEmail } = require("./lib/send-email");
 const { logOpsEvent } = require("./lib/ops-ledger");
 const { buildFoundingMemberWelcome, buildPremiumWelcome } = require("./lib/email-templates/founding-member-welcome");
 const { Sentry } = require("./lib/sentry");
+const team = require("./lib/team-plan");
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
@@ -131,6 +132,16 @@ function isMmtEvent(stripeEvent) {
   if (meta.app && meta.app !== "mmt") return { mmt: false, reason: `metadata_app_${meta.app}` };
   if (meta.app === "mmt") return { mmt: true, reason: "metadata_app_mmt" };
   if (meta.product === "mmt_premium") return { mmt: true, reason: "metadata_product_mmt_premium" };
+  if (meta.product === team.TEAM_PRODUCT) return { mmt: true, reason: "metadata_product_mmt_team" };
+  // Invoices carry their subscription's metadata (team plan, 2026-10-27):
+  // invoice.paid is what activates team seats, so the invoice must pass here.
+  if (obj.object === "invoice") {
+    const subMeta = team.invoiceSubscriptionMetadata(obj);
+    if (subMeta.app && subMeta.app !== "mmt") return { mmt: false, reason: `invoice_metadata_app_${subMeta.app}` };
+    if (subMeta.app === "mmt" || subMeta.product === "mmt_premium" || subMeta.product === team.TEAM_PRODUCT) {
+      return { mmt: true, reason: "invoice_subscription_metadata" };
+    }
+  }
   // Subscription-shaped objects carry items.data[].price.id — accept any
   // MMT premium price (founding OR non-founding annual/monthly).
   if (obj.items && Array.isArray(obj.items.data)) {
@@ -138,12 +149,45 @@ function isMmtEvent(stripeEvent) {
     if (match) return { mmt: true, reason: `price_id_whitelist:${match.price.id}` };
     const addon = obj.items.data.find((i) => i && i.price && AGENT_ACCESS_ADDON_PRICE_IDS.includes(i.price.id));
     if (addon) return { mmt: true, reason: `agent_addon_price:${addon.price.id}` };
+    // Team seat price is found by lookup key, never by env (lib/team-plan.js).
+    const seat = obj.items.data.find((i) => i && i.price && i.price.lookup_key === team.SEAT_LOOKUP_KEY);
+    if (seat) return { mmt: true, reason: "team_seat_price" };
   }
   return { mmt: false, reason: "no_mmt_signal" };
 }
 
 // Legacy value — existing Supabase records use "lethality_test"
 const FEATURE_NAME = "lethality_test";
+
+/**
+ * Team plan (docs/team-plan-spec.md): seats follow the subscription, and
+ * activate only once Stripe holds a paid invoice for it. Runs on subscription
+ * created/updated/deleted and on invoice.paid. Returns { ok, ... }; a throw
+ * is reported, not re-thrown, so the webhook still answers Stripe and the
+ * hourly stripe-subscriber-sync backstop repairs the rows.
+ */
+async function handleTeamSubscription(stripe, supabase, sub, eventType) {
+  try {
+    const seats = await team.syncTeamSeats(stripe, supabase, sub, { source: "stripe-webhook" });
+    const replaced = await team.cancelReplacedSubscription(stripe, supabase, sub, "stripe-webhook");
+    console.log(`stripe-webhook: team ${sub.id} ${eventType} — live=${seats.live} activated=${seats.activated.length} deactivated=${seats.deactivated.length} failed=${seats.failed.length}`);
+    return { ok: seats.failed.length === 0, live: seats.live, activated: seats.activated.length, deactivated: seats.deactivated.length, failed: seats.failed.length, replaced };
+  } catch (err) {
+    console.error(`stripe-webhook: team sync failed for ${sub.id}: ${err.message}`);
+    const { error } = await supabase.from("ops_events").insert({
+      event_type: "TEAM_SYNC_FAILED",
+      source_function: "stripe-webhook",
+      severity: "error",
+      error_signature: "team_seats_sync",
+      details: { subscription_id: sub.id, event_type: eventType, error: String(err.message).slice(0, 300) },
+    });
+    if (error) console.error(`stripe-webhook: ops_events insert failed (TEAM_SYNC_FAILED): ${error.message}`);
+    return { ok: false, error: err.message };
+  }
+}
+
+// Exposed for tests only (tests/unit/stripe-webhook-team.test.js).
+exports._isMmtEvent = isMmtEvent;
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
@@ -443,6 +487,12 @@ exports.handler = async (event) => {
     case "customer.subscription.created":
     case "customer.subscription.updated": {
       const sub = stripeEvent.data.object;
+      if (team.isTeamSubscription(sub)) {
+        const result = await handleTeamSubscription(stripe, supabase, sub, stripeEvent.type);
+        if (!result.ok) return { statusCode: 200, body: JSON.stringify({ received: true, warning: "team sync failed; logged" }) };
+        await recordEventProcessed();
+        return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type, team: result }) };
+      }
       // Email resolution — metadata first, then Stripe customer object
       let subEmail = (sub.metadata && sub.metadata.user_email) || null;
       if (!subEmail && sub.customer) {
@@ -769,6 +819,12 @@ exports.handler = async (event) => {
 
     case "customer.subscription.deleted": {
       const sub = stripeEvent.data.object;
+      if (team.isTeamSubscription(sub)) {
+        const result = await handleTeamSubscription(stripe, supabase, sub, stripeEvent.type);
+        if (!result.ok) return { statusCode: 200, body: JSON.stringify({ received: true, warning: "team sync failed; logged" }) };
+        await recordEventProcessed();
+        return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type, team: result }) };
+      }
       // TKT-5 (2026-04-29): mirror the .created handler's email + premium-tier
       // resolution. Prior code only checked metadata.product === "mmt_premium"
       // and only used metadata.user_email, so subscriptions canceled via Stripe
@@ -799,8 +855,20 @@ exports.handler = async (event) => {
         else console.log(`stripe-webhook: ${subEmail} agent_seats → 0 (add-on canceled)`);
       }
 
-      // Revoke premium tier
+      // Revoke premium tier, unless the row is now carried by a different live
+      // subscription (a team seat that replaced a personal plan, 2026-10-27):
+      // the old plan's cancellation must not take the new one down.
+      let keptByOther = false;
       if (isMmtPremium && subEmail) {
+        const { data: row } = await supabase
+          .from("mp_users")
+          .select("email, subscription_status, stripe_subscription_id")
+          .ilike("email", subEmail.toLowerCase().trim())
+          .maybeSingle();
+        keptByOther = team.rowBelongsToAnotherSubscription(row, sub.id);
+        if (keptByOther) console.log(`stripe-webhook: ${subEmail} stays on ${row.stripe_subscription_id}; not revoked for deleted ${sub.id}`);
+      }
+      if (isMmtPremium && subEmail && !keptByOther) {
         const { error: revokeErr } = await supabase
           .from("mp_users")
           .update({ subscription_tier: "free", subscription_status: "canceled" })
@@ -832,6 +900,30 @@ exports.handler = async (event) => {
           details: { type: stripeEvent.type, subscription_id: sub.id, status: sub.status, customer: sub.customer, email: subEmail, mmt_premium: isMmtPremium },
         });
         if (logErr) console.error("stripe-webhook: ops_events insert failed (stripe_subscription deleted):", logErr.message);
+      }
+      await recordEventProcessed();
+      return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type }) };
+    }
+
+    case "invoice.paid": {
+      // Team plan: the paid invoice is what turns seats on (send_invoice
+      // subscriptions are "active" in Stripe before anyone pays).
+      const invoice = stripeEvent.data.object;
+      const subId = team.subscriptionIdOfInvoice(invoice);
+      let sub = null;
+      if (subId) {
+        try {
+          sub = await stripe.subscriptions.retrieve(subId, { expand: ["customer", "latest_invoice"] });
+        } catch (err) {
+          console.error(`stripe-webhook: could not load subscription ${subId} for invoice ${invoice.id}: ${err.message}`);
+          return { statusCode: 200, body: JSON.stringify({ received: true, warning: "subscription lookup failed; sync will retry" }) };
+        }
+      }
+      if (sub && team.isTeamSubscription(sub)) {
+        const result = await handleTeamSubscription(stripe, supabase, sub, stripeEvent.type);
+        if (!result.ok) return { statusCode: 200, body: JSON.stringify({ received: true, warning: "team sync failed; logged" }) };
+        await recordEventProcessed();
+        return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type, team: result }) };
       }
       await recordEventProcessed();
       return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type }) };

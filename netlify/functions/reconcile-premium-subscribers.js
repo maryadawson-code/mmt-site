@@ -20,6 +20,7 @@ const { createClient } = require("@supabase/supabase-js");
 const { requireAdmin } = require("./lib/admin-auth");
 const Stripe = require("stripe");
 const { upsertCustomer, logCustomerEvent } = require("./lib/customer-sync");
+const { rowBelongsToAnotherSubscription } = require("./lib/team-plan");
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -129,9 +130,16 @@ exports.handler = async (event) => {
       // Check current state
       const { data: user } = await supabase
         .from("mp_users")
-        .select("id, subscription_tier, subscription_status, founding_member")
+        .select("id, subscription_tier, subscription_status, founding_member, stripe_subscription_id")
         .eq("email", normalizedEmail)
         .maybeSingle();
+
+      // A row carried by a different live subscription (a team seat that
+      // replaced this personal plan) is not this subscription's to downgrade.
+      if (!isActive && rowBelongsToAnotherSubscription(user, sub.id)) {
+        results.already_correct++;
+        continue;
+      }
 
       const needsUpdate =
         !user ||

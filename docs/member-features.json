@@ -18,6 +18,19 @@
       "noindex": true
     },
     {
+      "feature_name": "Team seats",
+      "public_marketing_urls": [],
+      "member_url": "/premium/team.html",
+      "backing_function": "netlify/functions/team-seats.js",
+      "entitlement_required": "institutional (a seat on an MMT Team plan) or the team's billing contact",
+      "public_locked_preview_behavior": "inline mmt_premium gate → /dashboard.html; seat changes require the signed subscriber token",
+      "expected_data_source": "Stripe team subscription (metadata.mmt_seats, quantity, paid invoices) + mp_users rows keyed by stripe_subscription_id (lib/team-plan.js)",
+      "freshness_sla_hours": null,
+      "title_signature": "Your team",
+      "smoke_test_url": "/premium/team.html",
+      "noindex": true
+    },
+    {
       "feature_name": "Ask MMT",
       "public_marketing_urls": [
         "/ask",

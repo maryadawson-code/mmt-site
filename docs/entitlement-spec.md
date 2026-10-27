@@ -7,7 +7,7 @@ Canonical source: `netlify/functions/lib/entitlement.js`. This doc explains the 
 | `tier` value     | Meaning                              | How it's set                            |
 |------------------|--------------------------------------|-----------------------------------------|
 | `admin`          | Mary or staff override               | `mp_users.tier = 'admin'`               |
-| `institutional`  | $2,500–5,000/yr team plan            | `subscription_tier = 'institutional'` + active|
+| `institutional`  | Team plan seat (`docs/team-plan-spec.md`) or a bespoke institutional deal | `subscription_tier = 'institutional'` + active; team seats also carry `grant_reason = 'team_seat'` and the team's `stripe_subscription_id` |
 | `founding`       | $199 Founding Member                 | `subscription_tier = 'premium'` (or `mmt_premium_founding`) + active + `founding_member = true` |
 | `premium`        | $29/mo or $249/yr Premium            | `subscription_tier = 'premium'` + active |
 | `free`           | Has account, no paid sub             | row exists, no active sub               |
