@@ -929,6 +929,28 @@ exports.handler = async (event) => {
       return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type }) };
     }
 
+    case "invoice.finalized": {
+      // Team plan: a finalized invoice goes to the team's AP address too
+      // (metadata.ap_email). Stripe only mails the customer's own address.
+      const invoice = stripeEvent.data.object;
+      const subId = team.subscriptionIdOfInvoice(invoice);
+      let sub = null;
+      if (subId) {
+        try {
+          sub = await stripe.subscriptions.retrieve(subId, { expand: ["customer"] });
+        } catch (err) {
+          console.error(`stripe-webhook: could not load subscription ${subId} for invoice ${invoice.id}: ${err.message}`);
+          return { statusCode: 200, body: JSON.stringify({ received: true, warning: "subscription lookup failed" }) };
+        }
+      }
+      let notice = { sent: false, reason: "not_team" };
+      if (sub && team.isTeamSubscription(sub)) {
+        notice = await team.sendInvoiceNotice(supabase, stripe, sub, invoice, { source: "stripe-webhook" });
+      }
+      await recordEventProcessed();
+      return { statusCode: 200, body: JSON.stringify({ received: true, type: stripeEvent.type, notice }) };
+    }
+
     case "invoice.payment_failed": {
       const invoice = stripeEvent.data.object;
       console.log(`stripe-webhook: payment failed — invoice ${invoice.id} (customer: ${invoice.customer})`);
