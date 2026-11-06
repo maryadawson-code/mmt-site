@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capture Corner: Who Owns the Handoff &middot; MMT Premium</title>
+  <meta name="description" content="November 6, 2026. The care continuum read as six lanes with six owners · the five-month decision window across every lane · the handoffs as a buying map · the two STR Zero Day pilots and the production decision with no public date · the engagement platform both departments already license, unnamed · the reserve lane and the 2026 rule changes · the executive order's contract review and the bill text">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; --ci-gold-bg:#FEF9E7; --mmt-red:#E63946; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .brief-body { font-size:15px; line-height:1.75; color:#314155; }
+    .brief-body h2 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:40px 0 14px; letter-spacing:-0.02em; }
+    .brief-body h3 { font-size:17px; font-weight:700; color:var(--mmt-navy); margin:28px 0 10px; }
+    .brief-body h4 { font-size:15px; font-weight:700; color:var(--mmt-navy); margin:20px 0 8px; }
+    .brief-body p { margin-bottom:16px; max-width:65ch; }
+    .brief-body ul { margin-bottom:16px; padding-left:1.25rem; }
+    .brief-body ol { margin-bottom:16px; padding-left:1.5rem; }
+    .brief-body li { margin-bottom:8px; }
+    .brief-body a { color:var(--mmt-teal); text-decoration:underline; text-underline-offset:3px; }
+    .brief-body strong { color:var(--mmt-navy); }
+    .brief-body em { color:var(--mmt-text-secondary); }
+    .brief-body hr { border:none; border-top:1px solid var(--mmt-border); margin:36px 0; }
+    .brief-body blockquote { border-left:3px solid var(--mmt-teal); padding:8px 16px; margin:16px 0; color:var(--mmt-text-secondary); background:rgba(69,123,157,0.04); border-radius:0 6px 6px 0; }
+    .brief-body img { max-width:100%; height:auto; display:block; margin:24px 0; border:1px solid var(--mmt-border); border-radius:8px; }
+    .brief-body table { width:100%; border-collapse:collapse; margin:16px 0 24px; font-size:14px; }
+    .brief-body th, .brief-body td { border:1px solid var(--mmt-border); padding:10px 12px; text-align:left; vertical-align:top; }
+    .brief-body th { background:var(--mmt-soft); color:var(--mmt-navy); font-weight:700; }
+    .pills { margin:8px 0 24px; }
+    .pill { display:inline-block; padding:4px 10px; background:rgba(69,123,157,0.08); color:var(--mmt-teal); border-radius:14px; font-size:11px; font-weight:600; margin:2px 4px 2px 0; }
+    .pill-red { background:rgba(230,57,70,0.08); color:var(--mmt-red); }
+    .pill-gold { background:var(--ci-gold-bg); color:var(--ci-gold); }
+    .back-link { font-size:13px; font-weight:600; color:var(--mmt-teal); text-decoration:none; }
+    .back-link:hover { opacity:0.7; }
+    .gate-notice { background:linear-gradient(180deg,#FFFFFF 0%,#F3F4F6 100%); border:1px solid var(--mmt-border); border-radius:12px; padding:32px 28px; text-align:center; margin:32px auto; max-width:540px; }
+    .gate-notice h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin-bottom:10px; }
+    .gate-notice p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:16px; line-height:1.55; }
+    .gate-cta { display:inline-block; padding:12px 24px; background:var(--mmt-navy); color:var(--mmt-white); font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; }
+    .section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ci-gold); }
+    .deep-dive-card { margin:48px 0 16px; padding:32px 28px; border:2px solid var(--ci-gold); border-radius:12px; background:linear-gradient(180deg,#FFFFFF 0%,var(--ci-gold-bg) 100%); }
+    .deep-dive-card h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:0 0 12px; letter-spacing:-0.01em; }
+    .deep-dive-card p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:14px; line-height:1.6; max-width:none; }
+    .deep-dive-price { display:inline-flex; align-items:baseline; gap:8px; margin:4px 0 16px; font-weight:800; color:var(--mmt-navy); }
+    .deep-dive-price .amount { font-size:28px; }
+    .deep-dive-price .unit { font-size:13px; font-weight:600; color:var(--mmt-text-secondary); text-transform:uppercase; letter-spacing:0.06em; }
+    .brief-body a.deep-dive-cta,
+    a.deep-dive-cta { display:inline-block; padding:14px 26px; background:var(--ci-gold); color:#FFFFFF; font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; letter-spacing:0.02em; }
+    .brief-body a.deep-dive-cta:hover,
+    a.deep-dive-cta:hover { opacity:0.92; color:#FFFFFF; }
+    .deep-dive-examples { font-size:13px; color:var(--mmt-text-secondary); font-style:italic; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <main class="wrap" style="padding:48px 0 80px; max-width:820px;">
+    <a href="/capture-corner.html" class="back-link">&larr; Capture Corner</a>
+
+    <div style="margin-top:20px; margin-bottom:8px;">
+      <div class="section-label">MMT Premium &middot; Capture Corner &middot; November 6, 2026</div>
+    </div>
+    <h1 style="font-size:clamp(26px,3.2vw,38px);line-height:1.1;letter-spacing:-0.03em;margin-bottom:10px;">Who Owns the Handoff</h1>
+    <p style="font-size:15px;color:var(--mmt-text-secondary);margin-bottom:20px;"><em>The care continuum read as six lanes with six owners · the five-month decision window across every lane · the handoffs as a buying map · the two STR Zero Day pilots and the production decision with no public date · the engagement platform both departments already license, unnamed · the reserve lane and the 2026 rule changes · the executive order's contract review and the bill text</em></p>
+
+    <div class="pills">
+      <span class="pill pill-gold">Capture Corner</span>
+      <span class="pill ">DHA readiness</span>
+      <span class="pill pill-red">Risk: Undated decisions</span>
+    </div>
+
+    <div data-gate="free" style="display:block;">
+      <div class="gate-notice">
+        <h3>&#9733; Premium Capture Corner</h3>
+        <p>This issue is the companion to &quot;Where the Lost Days Go,&quot; the close of the FY27 campaign plan series. The public piece follows a Guard sergeant and his active-duty counterpart across six stages of care, from the readiness exam to the handoff to VA, and argues that the cheapest readiness gains left in the plan sit at the handoffs between lanes DHA buys separately. This brief reads the same six stages as a buying map, lays out the dates that make the months between now and spring one decision window, compares the two service treatment record pilots on what is public, lays out the enterprise engagement platform both departments already license and what a shared case on it would take, works the reserve lane, and names the questions worth putting in writing.</p>
+        <a class="gate-cta" href="/pricing">See premium plans</a>
+      </div>
+    </div>
+
+    <div data-access="premium" data-gate="premium" class="brief-body">
+
+<p><em>Capture Corner is the premium BD intelligence companion to Mission Meets Tech. Independent analysis. Not a recommendation, not vendor advocacy, not capture material. Built for federal health BD, capture, and proposal leaders who need analytical depth, not headlines.</em></p>
+<p><em>This issue is the companion to &quot;Where the Lost Days Go,&quot; the close of the FY27 campaign plan series. The public piece follows a Guard sergeant and his active-duty counterpart across six stages of care, from the readiness exam to the handoff to VA, and argues that the cheapest readiness gains left in the plan sit at the handoffs between lanes DHA buys separately. This brief reads the same six stages as a buying map, lays out the dates that make the months between now and spring one decision window, compares the two service treatment record pilots on what is public, lays out the enterprise engagement platform both departments already license and what a shared case on it would take, works the reserve lane, and names the questions worth putting in writing. No vendor is named on any contract or license, and nothing here is a view on how any open requirement should be written.</em></p>
+<hr>
+<h2>1. The picture at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Leg</th>
+<th>Standard in force</th>
+<th>System of record</th>
+<th>Vehicle and status</th>
+<th>Evidenced break</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Readiness exam</td>
+<td>PHA every 12 months; complete when recorded in the service IMR system; TFMR goal 90 percent, PMR ceilings 15 percent AC and 25 percent RC [CC1][CC2]</td>
+<td>MEDPROS, MRRS, ASIMS [CC3]</td>
+<td>PARATUS CSO HT003826SC004; AOI 1 (PHA modernization) is the first phase; AOIs 2 (profiling and IMR) and 3 (waivers) anticipated, undated. Remote Health Readiness Program delivers the exam for Reserve Component and Prime Remote members through a civilian network [CC4][CC5]</td>
+<td>Campaign plan names exam-to-readiness-system data exchange as unfinished work [CC6]</td>
+</tr>
+<tr>
+<td>Profile</td>
+<td>MEND standard durations for 196 MSK conditions in service readiness systems by January 31, 2027; ACL among first three pathways [CC6][CC7]</td>
+<td>e-Profile, LIMDU SMART, AF Form 469 [CC7]</td>
+<td>PARATUS AOI 2 (profiling and IMR), anticipated, no date [CC4]</td>
+<td>Profile clock and care clock measured together; ACL case split about four months waiting, six healing [CC7]</td>
+</tr>
+<tr>
+<td>Access</td>
+<td>Active-duty access targets of 1, 7, and 15 days at 100 percent of MTFs [CC6]</td>
+<td>More than 110 appointing contracts and call centers; Nurse Advice Line books within 24 hours [CC8][CC9]</td>
+<td>RC3 RFI (RC3_20261030) on a draft PWS for enterprise appointing, referral management, and care coordination; responses due November 13; award previously signaled for Q1 FY2028 [CC10][CC8]</td>
+<td>No public requirement linking appointing to readiness status (searched-for absence)</td>
+</tr>
+<tr>
+<td>Network care</td>
+<td>28-day network specialty standard; no urgent network time frame as of GAO&#39;s review [CC11]</td>
+<td>Managed care support contracts (T-5), regional</td>
+<td>Senate committee bill: directory accuracy in future MCSCs, IG spot tests, GAO review, digital complaints system; the Senate bill has not reached the floor [CC12]</td>
+<td>FY2022 network specialty visits about 30 days against 28; urgent 17 to 23 days with no standard [CC11]</td>
+</tr>
+<tr>
+<td>Record</td>
+<td>STR to VA within 45 business days; DoDI 6040.45 certification and annual member review; 2016 targets 95 percent AC and 75 percent RC [CC13]</td>
+<td>MHS GENESIS, HAIMS (100M+ artifacts, STRs to VA on request), SPORTS, paper for the Navy [CC14][CC15][CC16]</td>
+<td>Two STR Zero Day pilots (industry name: MySTR): a limited-source &quot;control&quot; pilot and a sole-source &quot;experimental&quot; prototype; no public production decision, criteria, or date [CC17][CC18][CC19]</td>
+<td>2013 Army baseline: 77 percent late, 28 percent incomplete; records still move as certified packages, partly on paper [CC20][CC15]</td>
+</tr>
+<tr>
+<td>Transition</td>
+<td>Joint separation health assessment; BDD filing window 180 to 90 days out; EO 14426 records-at-discharge order effective October 8 [CC21][CC22]</td>
+<td>VBMS pulls from HAIMS; inTransition; Solid Start</td>
+<td>DoD had not implemented the joint SHA as of May 2025; JEC Joint Strategic Plan runs out in FY2027 [CC23][CC24]</td>
+<td>inTransition missed more than 70 percent in 2022; warm handovers unverified, fix due September 2027; Solid Start reached 75.6 percent in 2025 [CC25][CC26][CC27]</td>
+</tr>
+</tbody></table>
+<p><strong>Confidence: High on the standards, the GAO findings, the executive order, and the contract notices as posted. Medium on the pilot descriptions, which combine SAM.gov notices with a builder&#39;s self-report. Low on anything described as current status for PARATUS, the joint SHA, or the pilots&#39; production path; all three are open checks. Analytical on the decision-window read and every owner assignment.</strong></p>
+<p><strong>The lead finding for a capture team: every one of the six lanes has a decision point on the calendar between now and spring, and no single document ties them together. That is the window. The readiness platform&#39;s next two phases are undated but anticipated. The appointing center&#39;s draft work statement closes for comment next week. The managed care directory rules are in the bill. The executive order&#39;s contract review falls on about January 6 and its systems milestone on about March 7, and the two record pilots will be judged against the second date whether or not a decision rule has been published. The handoff fixes in the public piece are standards, identifiers, flags, and reporting fields, which means the work underneath them is data-standard authorship, interface and identity work, measurement, and the contract modifications that carry them. A team that understands which existing vehicle each handoff rides on is reading the same calendar the government is. The platform lane sharpens that: the Army, the Air Force, and VA already hold enterprise licenses on the same engagement and case-management platform, DHA has described a care-coordination system on it, and no public document describes a shared member case between the two departments on the licenses they hold. The work underneath the public piece&#39;s &quot;one case&quot; is governance and configuration on signed licenses, and the January 6 contract review is where it would be written.</strong></p>
+<hr>
+<h2>2. The decision window</h2>
+<p><strong>Confidence: High on each date as a public fact; Medium where a date is calculated or sourced to an aggregator; Analytical on reading them as one window.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Instrument</th>
+<th>What happens</th>
+<th>Lane</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>November 13, 2026</td>
+<td>RC3 RFI (RC3_20261030)</td>
+<td>Industry comments due on the draft PWS for enterprise appointing, referral management, and care coordination; five-year structure [CC10]</td>
+<td>Access</td>
+</tr>
+<tr>
+<td>Lame-duck session</td>
+<td>FY27 NDAA</td>
+<td>House passed H.R. 8800 July 22; the Senate bill stalled after a failed cloture vote July 14 and the NDAA moved to the lame duck. Senate committee directory-accuracy and complaints provisions, Joint DNBI Surveillance and Readiness System; House Sec. 701 (Selected Reserve dental readiness), Sec. 744 (assessments other than PHAs pilot), Sec. 761 (mobile personal health record pilot), Sec. 776 (GAO study of reserve dental readiness), titles only [CC12][CC28]</td>
+<td>Network, exam, record, reserve</td>
+</tr>
+<tr>
+<td>About December 20, 2026</td>
+<td>90 days after the acquisition executive&#39;s swearing-in</td>
+<td>Author&#39;s calculation from the September 21 date; DHA has published no 90-day milestone [CC29]</td>
+<td>All</td>
+</tr>
+<tr>
+<td>About January 6, 2027</td>
+<td>EO 14426 Sec. 2(b)</td>
+<td>DoW and VA complete review of existing IT contracts and add interoperability requirements [CC22]</td>
+<td>Record, exam, access, network</td>
+</tr>
+<tr>
+<td>January 31, 2027</td>
+<td>Campaign plan, MEND</td>
+<td>First tranche of 196 standard MSK profile durations loaded to service readiness systems; first monthly lost-warrior-day report due [CC6][CC7]</td>
+<td>Profile</td>
+</tr>
+<tr>
+<td>About March 7, 2027</td>
+<td>EO 14426 Sec. 2(a)(i)</td>
+<td>Systems and policy for lifetime records sharing due [CC22]</td>
+<td>Record</td>
+</tr>
+<tr>
+<td>Undated, &quot;anticipated&quot;</td>
+<td>PARATUS AOIs 2 and 3</td>
+<td>Profiling and IMR; waivers [CC4]</td>
+<td>Profile, exam</td>
+</tr>
+<tr>
+<td>FY2027</td>
+<td>JEC Joint Strategic Plan FY2022-2027</td>
+<td>Current plan expires; successor is the vehicle for joint SHA and transition commitments [CC24]</td>
+<td>Transition</td>
+</tr>
+<tr>
+<td>September 2027</td>
+<td>GAO-24-106248</td>
+<td>DoW&#39;s estimated completion of the warm-handover analysis [CC26]</td>
+<td>Transition</td>
+</tr>
+<tr>
+<td>Fall 2027</td>
+<td>STR Zero Day control pilot</td>
+<td>Listed period of performance ends, per a contract aggregator; not confirmed in SAM.gov or FPDS [CC17]</td>
+<td>Record</td>
+</tr>
+<tr>
+<td>Q1 FY2028</td>
+<td>Enterprise referral and care coordination center</td>
+<td>Award previously signaled [CC8]</td>
+<td>Access</td>
+</tr>
+</tbody></table>
+<p>Three reads. First, the January 6 contract review is the only date on this list that touches every lane at once, because the order&#39;s language covers existing IT contracts that bear on personnel, health, and service treatment records, and the exam, appointing, network, and records systems all qualify. Second, the March 7 systems milestone arrives before either record pilot&#39;s listed end, so the government will be making a production call with pilot data in hand but without a published rule for reading it; the public documents searched for this brief show no selection criteria and no decision date. Third, the two undated items, PARATUS AOIs 2 and 3, are the ones most likely to absorb whatever handoff standards get written in the next ninety days, since a profiling platform that carries a shared case identifier from profile to referral is the difference between a readiness dashboard and a lost-warrior-day ledger.</p>
+<hr>
+<h2>3. The handoffs as a buying map</h2>
+<p><strong>Confidence: High on each break, tied to a document. Analytical on the fix, the owner, and the last column; owners are proposals.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Break</th>
+<th>Fix</th>
+<th>Proposed owner</th>
+<th>Measure</th>
+<th>What the government would buy or write</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Exam results exchanged or re-keyed into separate service systems [CC6]</td>
+<td>One PHA data standard that every exam source writes to; condition of PARATUS AOI 1 and every exam-delivering contract</td>
+<td>PEO DHMS with DHA Medical Affairs readiness lead</td>
+<td>Days from exam to result posted; share posted without re-keying</td>
+<td>Data-standard authorship; interface work on MEDPROS, MRRS, ASIMS or their PARATUS successor; a clause in the remote exam and theater contracts</td>
+</tr>
+<tr>
+<td>Profile clock and care clock measured together [CC7]</td>
+<td>Shared case identifier from profile to referral so PARATUS splits waiting from healing</td>
+<td>DHA Medical Affairs (MEND lead) with PEO DHMS</td>
+<td>Waiting versus healing days per profile on the ACL pathway</td>
+<td>Identity and matching work across profiling and referral systems; the MEND reporting product due January 31</td>
+</tr>
+<tr>
+<td>Appointing cannot see readiness status (searched-for absence)</td>
+<td>Deployment-limiting status as a triage flag in enterprise appointing</td>
+<td>DHA access-to-care lead</td>
+<td>Share of profiled members booked within 7 and 15 days</td>
+<td>A data element in the RC3 PWS and an interface to the readiness system; a reporting field</td>
+</tr>
+<tr>
+<td>No urgent network time frame; network visits past 28 days [CC11]</td>
+<td>Set the urgent standard; make provider acceptance date a required field</td>
+<td>TRICARE Health Plan</td>
+<td>Days from referral to acceptance to visit, by region</td>
+<td>A managed care contract modification; a data element in referral management; directory accuracy testing if the Senate language survives</td>
+</tr>
+<tr>
+<td>STRs move as certified packages, partly on paper, to VA on request [CC15][CC14]</td>
+<td>Publish pilot evaluation criteria and a production decision date tied to March 7; score both designs on the same measures</td>
+<td>PEO DHMS with Medical Affairs</td>
+<td>Days from separation to complete STR available to VA; share certified complete on first pass</td>
+<td>The production phase of whichever pilot is selected; HAIMS-to-VBMS interface changes from on-request to at-discharge; cutover and change management</td>
+</tr>
+<tr>
+<td>Certification fails at completeness [CC20]</td>
+<td>Required &quot;what is missing&quot; report: non-responding sources, unmatched documents, timeline gaps; member review per DoDI 6040.45</td>
+<td>DHA records policy owner</td>
+<td>Share of STRs with an open gap at separation; gaps closed before transfer</td>
+<td>A reporting requirement in the pilot exit criteria or the next 6040.45 revision; a member-facing review step</td>
+</tr>
+<tr>
+<td>Reserve LOD and civilian care documents do not reach the STR [CC30][CC31]</td>
+<td>LOD determination and remote exam result as required STR artifacts, captured when created, returned through the joint HIE</td>
+<td>Service reserve surgeons with DHA</td>
+<td>Reserve STR completeness at separation against the 75 percent target</td>
+<td>Joint HIE onboarding for remote exam and LOD care providers; a document-type requirement in the STR standard</td>
+</tr>
+<tr>
+<td>Warm handovers given but not verified [CC26]</td>
+<td>Count a handover only on receiving-agency confirmation; Solid Start&#39;s 90/180/365 cadence as the template</td>
+<td>DoW transition office with VA</td>
+<td>Confirmed connection rate for at-risk members</td>
+<td>A data exchange between inTransition, TAP, and Solid Start; text and email outreach GAO recommended</td>
+</tr>
+<tr>
+<td>DoD has not fielded the joint SHA; screens not fully validated [CC23]</td>
+<td>One joint separation assessment with validated screens, as GAO recommended to the JEC</td>
+<td>VA-DoD Joint Executive Committee</td>
+<td>Share of separating members with a joint SHA; positive screens with a completed referral</td>
+<td>Exam contract alignment on both sides; the next JEC strategic plan</td>
+</tr>
+<tr>
+<td>Two departments license the same engagement platform but run separate cases and workflows [CC32][CC33]</td>
+<td>Joint, government-owned member journey case model and event standard; every lane&#39;s contract required to write to it through the existing licenses</td>
+<td>DHA, Army PEO Enterprise, VA OIT through the JEC</td>
+<td>Share of separating members whose case VA can open at separation; days to first VA contact</td>
+<td>Case-model and event-standard authorship; identity matching on the DoD ID number; interfaces from readiness, referral, STR, and transition systems to the shared case; configuration on licenses already held, with a swap-out test in the data contract</td>
+</tr>
+<tr>
+<td>Readiness measured per lane [CC6]</td>
+<td>Lost warrior days by stage, with wait days charged to the stage where they occurred</td>
+<td>DHA Director and LOE 1 lead</td>
+<td>Quarterly lost warrior days by stage</td>
+<td>Analytics across PARATUS, referral management, and MEND data; a published measure</td>
+</tr>
+</tbody></table>
+<p>Three reads. First, eight of the eleven rows are data standards, data elements, or reporting fields, and the technology spend behind them is interface, identity, and analytics work on systems DHA already owns or is already buying. Second, the two rows with real procurement weight are the record row, where a production decision follows the pilots, and the exam row, where PARATUS&#39;s first phase and the remote exam contract both carry the standard forward. Third, the measurement row at the bottom costs the least and governs the most, because once DHA publishes lost warrior days by stage, every lane&#39;s performance is priced against a number the lane did not choose.</p>
+<hr>
+<h2>4. The record lane: two pilots, one decision</h2>
+<p><strong>Confidence: High on the SAM.gov notices. Medium on scope details drawn from a J&amp;A and an aggregator. Low on results, which are the builder&#39;s own account. Analytical on the comparison.</strong></p>
+<p>DHA&#39;s notices call the effort a Service Treatment Record Zero Day capability. Industry calls it MySTR, for My Service Treatment Record; the name comes from a contractor&#39;s earnings call, not from DHA. [CC17][CC19]</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Control pilot</th>
+<th>Experimental pilot</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Instrument</td>
+<td>Task order HT003826FE006 under a GSA vehicle, limited-source J&amp;A [CC17]</td>
+<td>Contract HT003826PE001, sole-source notice of intent [CC18][CC34]</td>
+</tr>
+<tr>
+<td>Design</td>
+<td>Extends the existing EHR environment; scope is pre-implementation, user adoption, change management, and cutover preparation [CC17]</td>
+<td>Separate commercial data layer assembled from GENESIS, MIP, and legacy DHMS sources; working prototype &quot;within 90 days,&quot; estimated 180-day period of performance [CC18]</td>
+</tr>
+<tr>
+<td>Member role</td>
+<td>Not described in public documents</td>
+<td>Portal to &quot;review, correct, and certify&quot; the assembled record (builder&#39;s account) [CC34]</td>
+</tr>
+<tr>
+<td>Gap reporting</td>
+<td>Not described in public documents</td>
+<td>Agents that answer &quot;questions about what is missing&quot;; the builder&#39;s published rules call for reporting non-responding sources, unmatched documents, and timeline gaps [CC34]</td>
+</tr>
+<tr>
+<td>Scale claimed</td>
+<td>Not stated</td>
+<td>One million records, 14 weeks (builder&#39;s claim; untested by anyone else) [CC34]</td>
+</tr>
+<tr>
+<td>Period</td>
+<td>Listed to October 2027 per a contract aggregator; unconfirmed [CC17]</td>
+<td>180 days from a June 2026 signature (builder&#39;s account) [CC34]</td>
+</tr>
+<tr>
+<td>Commercial signal</td>
+<td>Industry says the capability is in operational beta and that work began before the executive order; company statement, not DHA [CC19]</td>
+<td>Builder&#39;s case note and site; vendor self-report [CC34]</td>
+</tr>
+<tr>
+<td>Production decision</td>
+<td>None public</td>
+<td>None public</td>
+</tr>
+<tr>
+<td>Selection criteria</td>
+<td>None public</td>
+<td>None public</td>
+</tr>
+</tbody></table>
+<p>Four reads. First, the structure is sound: a control inside the current environment and an experiment on a separate layer is how an agency isolates what the new layer adds, and the public piece credits DHA for it. Second, the dimension that will decide the comparison is the one neither notice specifies, which is how completeness gets measured; the 2014 audit found certification was the failure point, 6040.45 already requires annual member review, and whichever pilot can show a defensible &quot;what is missing&quot; report at separation is answering the audit directly. Third, the reserve case is the stress test, because the documents most often missing from a reserve STR (line-of-duty determinations, remote exam results, civilian care notes) originate outside GENESIS, and a pilot scoped to GENESIS-resident data will score well on active duty and poorly on the sergeant in the public piece. Fourth, the March 7 milestone arrives before the control pilot&#39;s listed end and after the experimental pilot&#39;s estimated 180 days, so the government will be deciding with uneven evidence; a published rule for weighing it is the constructive ask, and the only one this brief makes.</p>
+<p>The vendor-neutral design rules worth reading against any STR solution, drawn from the experimental pilot&#39;s builder and stated here as principles: every entry linked to its source document; records matched to the person with duplicates removed; anything unresolved routed to a human; every unmasking and every model call logged; models run inside the agency boundary with the application holding its own ATO; and a report of what the system could not do. [CC34] The last rule is the one the 2014 audit and the reserve records findings both point to.</p>
+<hr>
+<h2>5. The platform lane: the layer both departments already license</h2>
+<p><strong>Confidence: High on the Army, Air Force, and VA license facts as published. Medium on the DHA care-coordination system, which rests on a 2024 privacy assessment with no current-use confirmation. Analytical on the shared-case read. The platform is described by function only; its name, product names, and the dollar figures that would identify it are withheld.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Holder</th>
+<th>What is on record</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Army</td>
+<td>Army-wide enterprise license agreement for an enterprise engagement and case-management platform, awarded July 31, 2025, consolidating the Army&#39;s orders; a follow-on IDIQ in January 2026 with two five-year terms and a &quot;hire to retire&quot; scope covering &quot;recruitment, training, deployment, benefits, and transitions for veterans&quot;</td>
+<td>[CC32][CC35]</td>
+</tr>
+<tr>
+<td>Air Force</td>
+<td>Joined the Army vehicle in May 2026; the vehicle was reported as intended to be open to all of the department</td>
+<td>[CC36]</td>
+</tr>
+<tr>
+<td>DHA</td>
+<td>2024 privacy assessment describes a care-coordination system on the same platform&#39;s IL4 government cloud, offering &quot;unified patient records and care coordination&quot; and case management keyed to DoD ID numbers; current use and scale not verified</td>
+<td>[CC37]</td>
+</tr>
+<tr>
+<td>VA</td>
+<td>Calls the platform its &quot;trusted platform as a service foundation,&quot; used across VBA, VHA, and NCA; a July 2026 enterprise license, one year plus two options; a July 27 CRM Modernization RFI to consolidate contact-center systems, including Solid Start, VA Health Connect, and UDO/VOICE, onto it</td>
+<td>[CC38][CC33]</td>
+</tr>
+<tr>
+<td>Security</td>
+<td>The platform&#39;s defense instance holds a FedRAMP High provisional authorization and a DoD IL5 provisional authorization; individual applications still need their own ATO</td>
+<td>[CC39]</td>
+</tr>
+<tr>
+<td>The gap</td>
+<td>No public document describes a shared member case between the two departments on the platform they both license (searched Army, DHA, VA, and trade sources)</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>Four reads. First, the handoff between the departments is no longer a procurement problem on this layer; both sides hold licenses, and VA&#39;s own outreach program is slated to move onto it. What is missing is a government-owned case model and event standard, which is a governance and configuration decision and fits the executive order&#39;s January 6 contract review. Second, the layer is an engagement layer and not a record system: the EHR, HAIMS, the readiness systems, and DEERS remain the systems of record, and a defensible design holds events and pointers, reads and writes through standard interfaces and the joint HIE, and never copies clinical content. Third, the lock-in objection is real and the answer is structural: the government owns the case model, the events, the interfaces, and the measures; every lane&#39;s contract writes to the shared case so many contractors can build different lanes; and the data contract passes a swap-out test. Fourth, the DHA row is the weak link in the public record, and the one question worth asking is whether the 2024 care-coordination system is in production and keyed to the same identifier the Army and VA use.</p>
+<hr>
+<h2>6. The reserve lane</h2>
+<p><strong>Confidence: High on the policy changes as reported by the services and the department. Medium on the scale claim, which is one officer&#39;s article. Analytical on the reads.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Record</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Scale</td>
+<td>The Army Reserve holds nearly one-third of the Army&#39;s medical force and 70 percent of its deployable medical force structure (author&#39;s claim in Military Review) [CC40]</td>
+</tr>
+<tr>
+<td>Built-in slack</td>
+<td>PMR ceiling 25 percent RC against 15 percent AC; 2016 STR targets 75 percent RC against 95 percent AC [CC2][CC13]</td>
+</tr>
+<tr>
+<td>TAMP</td>
+<td>August 10, 2026 USD(P&amp;R) memo removed the &quot;substantially linked&quot; test; Reserve Affairs directed to adjust DEERS; reimbursement for denials on or after April 24, 2020; class action paused [CC41]</td>
+</tr>
+<tr>
+<td>Air Force LOD</td>
+<td>February 1, 2026 DAFI 36-2910 update: in-the-line-of-duty finding for health care access without determining onset, for reservists on an order of 30 days or more with 180 days total active federal service; health care only [CC42]</td>
+</tr>
+<tr>
+<td>Army LOD</td>
+<td>Investigation starts within 5 calendar days; LOD required for RC follow-on care and for MEB packets [CC30]</td>
+</tr>
+<tr>
+<td>LOD risk</td>
+<td>DoD IG found &quot;delayed or denied access to line of duty care presented a risk&quot; for reserve members [CC43]</td>
+</tr>
+<tr>
+<td>Records</td>
+<td>GAO: MEBs request records from private practitioners with &quot;considerable delays&quot; (2006); VBA called Guard and Reserve records delays &quot;system-wide&quot; (2013); dated, used as pattern [CC31]</td>
+</tr>
+<tr>
+<td>Dental</td>
+<td>60.5 percent of Army RC soldiers judged not ready were dental-deficient; House Secs. 701 and 776 on Selected Reserve dental readiness [CC44][CC28]</td>
+</tr>
+<tr>
+<td>What good looks like</td>
+<td>Georgia ARNG ran SRP for about 6,600 soldiers in 19 days at one site; second-highest medical and dental readiness of 54 states and territories (self-reported) [CC45]</td>
+</tr>
+</tbody></table>
+<p>Three reads. First, the two 2026 fixes were a data field and a removed step, and neither required a contract, which is the pattern the public piece builds its argument on; a team working any reserve-adjacent requirement should be able to name the data field or the step its solution removes. Second, the LOD document is a record artifact with a readiness consequence on both ends: it gates care today and it gates the VA claim later, and no public STR requirement yet names it as a mandatory artifact. Third, the Georgia example is a consolidation of the exam stage at the unit level, and the remote exam program is the enterprise version of the same stage; the question for it is whether its results post to the readiness record in a form PARATUS will read, which is the exam-standard handoff in the buying map.</p>
+<hr>
+<h2>7. The counterargument, stated fairly</h2>
+<p><strong>Confidence: The strongest case against the reads above, and parts of it are right.</strong></p>
+<p><em>Lanes are deliberate.</em> Separate competitions protect small business participation, limit lock-in, and manage OCI, and DHA&#39;s EHR follow-on strategy splits work into lanes with no prime integrator on purpose. [CC46] The counter is that the argument is for owning handoffs, and a handoff standard is the thing that lets lanes stay separate without the member paying for it.</p>
+<p><em>The connective layer is being built.</em> PARATUS, the appointing center, the joint HIE, the Joint Longitudinal Viewer, and a shared EHR are all integration investments. The counter is a question: do they share a clock and an identifier, and are the contracts around them required to write to them.</p>
+<p><em>Readiness is above goal.</em> 91.1 percent beats 90. [CC47] The counter is that the number counts compliance on a date, and LOE 1 exists because lost days are invisible inside it.</p>
+<p><em>Transitions hurt.</em> T-5 moved 1.5 million beneficiaries and took most of a year to call resolved. [CC48][CC47] The counter is that a data requirement that survives the vendor change is the thing that makes the next transition cheaper.</p>
+<p><em>One platform means one vendor.</em> Enterprise licenses concentrate spend, and concentration raises cost and bargaining-power concerns. The counter is the guardrail set above: government-owned case model, events, and interfaces; a write-to-the-case clause in every lane&#39;s contract; a swap-out test. The platform can be replaced; the data contract has to survive the replacement.</p>
+<p><em>The record problem is being solved.</em> Two pilots, an industry beta, and an executive order with dates. Agreed, and the brief credits it. The remaining gap is the decision rule and whether the winning design takes in reserve, LOD, and network documents.</p>
+<p><em>Capacity is the constraint.</em> DHA projects a shortfall of &quot;more than 8,000 clinical military medical personnel.&quot; [CC8] A handoff clock adds no clinicians. It shows where the hours go, and that is a finding a short staff can use.</p>
+<hr>
+<h2>8. What to read in the next ninety days</h2>
+<p><strong>Confidence: Analytical. These are documents to pull and questions to put in writing; none is a view on how an open requirement should be written.</strong></p>
+<ol>
+<li><p><strong>Read the RC3 draft PWS for a readiness data element.</strong> The RFI closes November 13. The question worth asking, in writing, is whether the appointing system will receive readiness or profile status from PARATUS or the service systems, and in what form. [CC10]</p>
+</li>
+<li><p><strong>Watch for PARATUS AOI 2.</strong> The profiling and IMR phase is where a shared case identifier would live if DHA writes one, and its posting is the next public signal on the readiness platform. The first phase is where the exam data standard either gets written or does not. [CC4]</p>
+</li>
+<li><p><strong>Confirm the control pilot&#39;s period of performance on SAM.gov or FPDS.</strong> The October 2027 date is from an aggregator. If it holds, the March 7 milestone falls mid-pilot. [CC17]</p>
+</li>
+<li><p><strong>Mark January 6 and read what the two departments publish.</strong> The Sec. 2(b) review is the one public moment at which interoperability requirements get added to existing contracts across every lane. Which contracts are modified, and what data elements they are told to exchange, is the finding. [CC22]</p>
+</li>
+<li><p><strong>Read the MEND reporting product when it lands on January 31.</strong> Whether the monthly lost-warrior-day report distinguishes waiting from healing is the first test of the shared-clock argument. [CC6]</p>
+</li>
+<li><p><strong>Check DoD&#39;s joint SHA status.</strong> GAO had it unimplemented as of May 2025; VA&#39;s budget calls it &quot;the new DoD One Separation Health Assessment.&quot; One call to the Military Health System&#39;s disability evaluation office, or the next GAO recommendation status update, settles it. [CC23][CC49]</p>
+</li>
+<li><p><strong>Pull the NDAA text when the Senate moves, for Secs. 701, 744, 761, and 776 and the Senate committee&#39;s directory and DNBI provisions.</strong> The House passed its bill in July; the Senate&#39;s stalled. Titles today; operative text decides who runs each pilot and what it must report. [CC28][CC12]</p>
+</li>
+<li><p><strong>Read the next JEC Joint Strategic Plan when it posts.</strong> The current plan runs out in FY2027 and is the vehicle for joint SHA, inTransition, and warm-handover commitments. [CC24]</p>
+</li>
+<li><p><strong>Ask the shared-case question before January 6.</strong> Whether the two departments&#39; Sec. 2(b) contract review treats the enterprise licenses they both hold as in-scope IT contracts, and whether a shared member case model is on the list of interoperability requirements to add, is the single question that decides the platform lane. Put it in writing to both departments&#39; review leads. [CC22][CC33]</p>
+</li>
+<li><p><strong>Hold the reserve artifact question.</strong> No public STR requirement names the LOD determination or the remote exam result as mandatory. Whichever pilot&#39;s exit criteria address reserve completeness first is the one that answers the sergeant. [CC30][CC13]</p>
+</li>
+</ol>
+<hr>
+<p>Mary</p>
+<p>Mission Meets Tech Premium</p>
+<hr>
+<p><em>Next Capture Corner: subscribers will receive an alert when it publishes.</em></p>
+<p><em>Capture Corner is an independent intelligence product. It is not affiliated with the Department of Veterans Affairs, the Department of War, or any company named here, and it is not connected to any offeror&#39;s bid strategy. Premium subscription includes access to the standing intelligence sidebar plus the searchable archive.</em></p>
+<hr>
+<h2>Sources</h2>
+<p>[CC1] Department of Defense Instruction 6200.06, &quot;Periodic Health Assessment (PHA) Program.&quot; Source for: the requirement that service members complete a PHA every 12 months. <a href="https://www.esd.whs.mil/Portals/54/Documents/DD/issuances/dodi/620006p.pdf">https://www.esd.whs.mil/Portals/54/Documents/DD/issuances/dodi/620006p.pdf</a></p>
+<p>[CC2] Department of Defense Instruction 6025.19, &quot;Individual Medical Readiness (IMR) Program.&quot; Source for: a PHA counting as complete when the completion date is recorded in the Service-specific IMR electronic tracking system; the total force medical readiness goal of at least 90 percent; and the partially medically ready ceilings of 15 percent for the Active Component and 25 percent for the Reserve Component. <a href="https://www.esd.whs.mil/portals/54/documents/dd/issuances/dodi/602519p.pdf">https://www.esd.whs.mil/portals/54/documents/dd/issuances/dodi/602519p.pdf</a></p>
+<p>[CC3] Health.mil, &quot;Immunization Tracking Systems.&quot; Source for: MEDPROS (Army), MRRS (Navy and Marine Corps), and ASIMS (Air Force) as the service readiness tracking systems. <a href="https://www.health.mil/Military-Health-Topics/Health-Readiness/Immunization-Healthcare/Immunization-Tracking-Systems">https://www.health.mil/Military-Health-Topics/Health-Readiness/Immunization-Healthcare/Immunization-Tracking-Systems</a></p>
+<p>[CC4] SAM.gov, Defense Health Agency, &quot;Profiling Action and Readiness Tracking Unified System (PARATUS),&quot; commercial solutions opening HT003826SC004, posted July 20, 2026. Source for: the goal of replacing &quot;six Service-specific legacy systems with a unified, governed data platform&quot;; the three areas of interest (PHA modernization, profiling and IMR, waivers); IL5 hosting with IL6 cross-domain requirements and capabilities for agentic AI, machine-learning risk scoring, and dashboards; and AOIs 2 and 3 described as anticipated, with no posted dates. <a href="https://sam.gov/opp/f0dd2693099743dda5b724f74d21c1bb/view">https://sam.gov/opp/f0dd2693099743dda5b724f74d21c1bb/view</a></p>
+<p>[CC5] Health.mil, &quot;Remote Health Readiness Program: General,&quot; frequently asked questions, and &quot;Remote Health Readiness Program: Army Reserve.&quot; Source for: the program&#39;s coverage of Reserve Component members and TRICARE Prime Remote members through a civilian network, the services it delivers (PHAs, post-deployment reassessments, mental health assessments, immunizations, labs, dental), and funding by the service components. <a href="https://health.mil/Reference-Center/Frequently-Asked-Questions/Remote-Health-Readiness-Program-General">https://health.mil/Reference-Center/Frequently-Asked-Questions/Remote-Health-Readiness-Program-General</a> and <a href="https://health.mil/Military-Health-Topics/Health-Readiness/Remote-Health-Readiness-Program/Army-Reserve">https://health.mil/Military-Health-Topics/Health-Readiness/Remote-Health-Readiness-Program/Army-Reserve</a></p>
+<p>[CC6] Defense Health Agency, FY27 campaign plan, including &quot;Delivering Warfighter Readiness, Fiscal Year 2027,&quot; October 2026. Source for: the LOE 1 North Star of reducing &quot;90% of lost warrior days outside standard physiologic healing timelines&quot; and its 2028 date; the supporting effort to modernize periodic health assessments and implement &quot;seamless data exchange with service readiness systems&quot;; active-duty access targets of 1, 7, and 15 days for acute, routine, and first specialty care; care continuity after a PCS move; PARATUS as the single tracking platform for LOE 1; and the MEND tranche of 196 musculoskeletal conditions, with the ACL pathway among the first three, due in service readiness systems with monthly lost-warrior-day reporting by January 31, 2027.</p>
+<p>[CC7] Mission Meets Tech, &quot;The Waiting Days,&quot; October 13, 2026. Source for: the service profiling systems (e-Profile, LIMDU SMART, AF Form 469); the MEND tranche of 196 musculoskeletal conditions with the ACL pathway among the first three, due in service readiness systems by January 31, 2027, with the first monthly lost-warrior-days report due the same day; a reservist&#39;s ACL profile of about ten months, about four from injury to the operating room (part clinical settling, part system waiting) and about six healing; and the Navy condition-based limited-duty guide that cut average musculoskeletal limited duty from 141.97 to 101.39 days between FY2021 and FY2022. <a href="https://missionmeetstech.com/newsletter/the-waiting-days/">https://missionmeetstech.com/newsletter/the-waiting-days/</a></p>
+<p>[CC8] Mission Meets Tech, &quot;Count the Doors,&quot; October 23, 2026. Source for: at least six appointing doors at one base; DHA&#39;s June 2026 description of appointing as &quot;fragmented across over 110 separate contracts and call centers&quot;; the Nurse Advice Line&#39;s booking authority for care needed within 24 hours; the enterprise referral and care coordination center award expected in Q1 FY2028; and DHA&#39;s projected shortfall of &quot;more than 8,000 clinical military medical personnel.&quot; <a href="https://missionmeetstech.com/newsletter/count-the-doors/">https://missionmeetstech.com/newsletter/count-the-doors/</a></p>
+<p>[CC9] TRICARE, &quot;Military Health System Nurse Advice Line,&quot; frequently asked questions. Source for: 24/7 operation and the ability to book same-day or next-day appointments for beneficiaries enrolled at a military hospital or clinic. <a href="https://tricare.mil/FAQs/General/~/link.aspx?_id=AC6A9196197C4F0FAAECB5A36B2197CD&_z=z">https://tricare.mil/FAQs/General/~/link.aspx?_id=AC6A9196197C4F0FAAECB5A36B2197CD&amp;_z=z</a></p>
+<p>[CC10] Cleat.ai, summary of DHA request for information RC3_20261030, &quot;Enterprise Referral and Care Coordination Center (RC3),&quot; posted October 30, 2026. Source for: the draft performance work statement covering &quot;appointing, referral management, and care coordination across all DHA Military Treatment Facilities,&quot; the &quot;first-call resolution&quot; goal, the five-year structure, and the November 13, 2026 response date. Aggregator summary; confirm against the SAM.gov notice and any amendment before publication. <a href="https://www.cleat.ai/government/contracts/dha-enterprise-referral-care-coordination-center-contract-rc3-vptx">https://www.cleat.ai/government/contracts/dha-enterprise-referral-care-coordination-center-contract-rc3-vptx</a></p>
+<p>[CC11] U.S. Government Accountability Office, &quot;Defense Health Care: DOD Should Improve Oversight of Referral Wait Times,&quot; GAO-24-106267, 2024. Source for: FY2022 averages of about 16 days for first specialty visits at military hospitals against the 15-day goal, about 30 days for network first specialty visits against the 28-day standard, about 17 days (East) and 23 days (West) for urgent network referrals, DHA having &quot;not established a separate time frame&quot; for urgent network referrals, and DOD&#39;s concurrence with the recommendations. <a href="https://www.gao.gov/assets/d24106267.pdf">https://www.gao.gov/assets/d24106267.pdf</a></p>
+<p>[CC12] Senate Armed Services Committee, &quot;National Defense Authorization Act for Fiscal Year 2027,&quot; executive summary, 2026. Source for: provider directory accuracy requirements in future managed care contracts with random DHA Inspector General testing and a GAO review; a digital system for TRICARE complaints and feedback with three years of annual reports; and the Joint Disease and Non-Battle Injury Surveillance and Readiness System. Committee-reported bill (S. 4784). The House passed H.R. 8800 on July 22, 2026; the Senate bill stalled after a failed cloture vote on July 14 and the NDAA was pushed to the lame-duck session. <a href="https://www.armed-services.senate.gov/imo/media/doc/fy2027_ndaa_exsum.pdf">https://www.armed-services.senate.gov/imo/media/doc/fy2027_ndaa_exsum.pdf</a></p>
+<p>[CC13] Health.mil, Defense Health Agency, &quot;Transfer of Service Treatment Records to VA,&quot; report, March 31, 2016. Source for: the 45-business-day transfer standard; DoD Instruction 6040.45 (November 16, 2015) requirements that the services certify STRs complete and hold annual completeness reviews with members; and the targets of 95 percent of Active Component and 75 percent of Reserve Component STRs uploaded to HAIMS within 45 days. Whether 6040.45 has been reissued since 2015 is an open check. <a href="https://www.health.mil/Reference-Center/Reports/2016/03/31/Transfer-of-Service-Treatment-Records-to-VA">https://www.health.mil/Reference-Center/Reports/2016/03/31/Transfer-of-Service-Treatment-Records-to-VA</a></p>
+<p>[CC14] Health.mil, &quot;Health Artifact and Image Management Solution (HAIMS),&quot; fact sheet, March 13, 2025. Source for: more than 100 million artifacts and images, more than 8,000 active users a month across 600-plus locations, and transfer of STRs to VA through an interface on request. <a href="https://health.mil/Reference-Center/Fact-Sheets/2025/03/13/HAIMS-Fact-Sheet">https://health.mil/Reference-Center/Fact-Sheets/2025/03/13/HAIMS-Fact-Sheet</a></p>
+<p>[CC15] Department of the Navy, NAVADMIN 116/26, May 15, 2026, and Navy Medicine, &quot;Transfer Your Medical and Dental Records.&quot; Source for: the Navy&#39;s 45-calendar-day count; the paper STR assembled with civilian documentation and a DD Form 2963 certification and mailed to a Navy Medicine Records Activity scanning contractor; the exclusion of printed GENESIS and AHLTA pages unless annotated by hand; and the rule that an incomplete STR is not certified complete. <a href="https://www.mynavyhr.navy.mil/Portals/55/Messages/NAVADMIN/NAV2026/NAV26116.pdf">https://www.mynavyhr.navy.mil/Portals/55/Messages/NAVADMIN/NAV2026/NAV26116.pdf</a> and <a href="https://www.med.navy.mil/About-Us/Transfer-Your-Medical-and-Dental-Records/">https://www.med.navy.mil/About-Us/Transfer-Your-Medical-and-Dental-Records/</a></p>
+<p>[CC16] Health.mil, &quot;Service Treatment Record Processing, Tracking, and Monitoring System (SPORTS),&quot; fact sheet, March 3, 2025. Source for: SPORTS assembling, tracking, and monitoring STR creation from DHA records systems, with interfaces to commercial shipping and the paper record tracking application. <a href="https://www.health.mil/Reference-Center/Fact-Sheets/2025/03/03/SPORTS">https://www.health.mil/Reference-Center/Fact-Sheets/2025/03/03/SPORTS</a></p>
+<p>[CC17] SAM.gov, Defense Health Agency, justification and approval for task order HT003826FE006, Service Treatment Record (STR) Zero Day &quot;control&quot; pilot, 2026. Source for: the limited-source award; the scope of &quot;pre-implementation, user adoption, change management and cutover preparation activities in support of a &#39;control&#39; pilot for a Service Treatment Record (STR) Zero Day capability&quot;; and the tie to the existing EHR environment. The period of performance running to October 2027 comes from a contract aggregator and was not confirmed in SAM.gov or FPDS for this issue. The awardee is not named here. <a href="https://sam.gov/workspace/contract/opp/5ef6cb9793044c2bbce04f87becfcd02/view">https://sam.gov/workspace/contract/opp/5ef6cb9793044c2bbce04f87becfcd02/view</a></p>
+<p>[CC18] SAM.gov, Defense Health Agency, notice of intent to sole source, &quot;DHMS/MHS GENESIS/MIP Data Acceleration Prototype,&quot; 2026. Source for: a working data-ecosystem prototype &quot;within 90 days&quot; built from MIP, GENESIS, and legacy DHMS sources; an estimated 180-day period of performance; its description as support for &quot;an experimental pilot for a Service Treatment Record (STR) Zero Day capability&quot;; and the goal of determining &quot;the viability of this modality for future use cases.&quot; The awardee and dollar value are not named here; the value was not verified. <a href="https://sam.gov/workspace/contract/opp/80f8ea46faa24a7abbeca8417aab6276/view">https://sam.gov/workspace/contract/opp/80f8ea46faa24a7abbeca8417aab6276/view</a></p>
+<p>[CC19] Third-quarter 2026 earnings call and release of a publicly traded federal health IT contractor, November 3, 2026. Source for: the industry name &quot;MySTR&quot; (My Service Treatment Record); the call does not itself tie the name to DHA&#39;s STR Zero Day notices, and the linkage is MMT&#39;s; the statement that it &quot;is now in beta test&quot; with work toward contract award and rollout; and that the effort began &quot;well before the President&#39;s September 8th executive order.&quot; Company statement; the company is not named here. <a href="https://finance.yahoo.com/quote/LDOS/earnings/LDOS-Q3-2026-earnings_call-723688.html">https://finance.yahoo.com/quote/LDOS/earnings/LDOS-Q3-2026-earnings_call-723688.html</a></p>
+<p>[CC20] Department of Defense Inspector General, &quot;Army Needs to Improve Service Treatment Record Transfer Process,&quot; DODIG-2014-097, July 31, 2014. Source for: 74,470 of 96,224 Army STRs sent to VA in 2013 (77 percent) not timely and 26,901 (28 percent) not complete, and the finding of a lack of &quot;clear or comprehensive guidance&quot; on the transfer process including the completeness certification. 2013 data; used as the baseline the current policy was built to fix. <a href="https://media.defense.gov/2014/Jul/31/2001713386/-1/-1/1/DODIG-2014-097.pdf">https://media.defense.gov/2014/Jul/31/2001713386/-1/-1/1/DODIG-2014-097.pdf</a></p>
+<p>[CC21] Health.mil, &quot;Separation Health Assessment.&quot; Source for: the single separation evaluation known in the Department of War as the Separation History and Physical Examination and in VA as the Disability Exam. <a href="https://www.health.mil/Military-Health-Topics/Access-Cost-Quality-and-Safety/DES/Separation-Health-Assessment">https://www.health.mil/Military-Health-Topics/Access-Cost-Quality-and-Safety/DES/Separation-Health-Assessment</a></p>
+<p>[CC22] Executive Order 14426, &quot;Accelerating Access to Veterans&#39; Benefits and Employment Opportunities,&quot; signed September 8, 2026, 91 Fed. Reg. 58003, September 11, 2026. Source for: Section 2(a)(iii), records to VA &quot;immediately&quot; at discharge, effective within 30 days (about October 8); Section 2(b), review and modification of existing IT contracts to add interoperability requirements within 120 days (about January 6, 2027); and Section 2(a)(i), systems and policy for lifetime records sharing within 180 days (about March 7, 2027). Dates are calculated from the signing date. <a href="https://www.govinfo.gov/content/pkg/FR-2026-09-11/pdf/2026-18738.pdf">https://www.govinfo.gov/content/pkg/FR-2026-09-11/pdf/2026-18738.pdf</a></p>
+<p>[CC23] U.S. Government Accountability Office, &quot;Military Separation: DOD and VA Should Improve the Separation Health Assessment Process,&quot; GAO-25-107205, 2025. Source for: VA implementing the joint separation health assessment in April 2023; DOD not having implemented it as of May 2025 after a three-site pilot that ended in January 2025; about 50,500 joint assessments administered by VA contractors between May 2023 and April 2024, 33,814 (67 percent) with at least one positive mental health screen; inTransition referral acceptance of 48 percent; and two of five screens using validated tools. <a href="https://files.gao.gov/reports/GAO-25-107205/index.html">https://files.gao.gov/reports/GAO-25-107205/index.html</a></p>
+<p>[CC24] Reserve Organization of America, statement to the Senate Committee on Veterans&#39; Affairs, quoting the VA-DoD Joint Executive Committee Joint Strategic Plan for Fiscal Years 2022-2027. Source for: the plan&#39;s statement that leadership has &quot;moved past the historically bifurcated views that DoD&#39;s role ends and VA&#39;s role begins when the Service member separates,&quot; and the plan&#39;s FY2027 end date. Quoted through a secondary source; the plan itself was not reviewed for this issue. <a href="https://www.veterans.senate.gov/services/files/36819B32-736C-45CF-8ADF-12451D726C56">https://www.veterans.senate.gov/services/files/36819B32-736C-45CF-8ADF-12451D726C56</a></p>
+<p>[CC25] U.S. Government Accountability Office, &quot;Military Health Care: DOD Should Improve Oversight of the inTransition Program,&quot; GAO-24-107752, 2024. Source for: the program not successfully connecting with more than 70 percent of the eligible service members it identified in 2022, and its reliance on telephone outreach. <a href="https://www.gao.gov/products/gao-24-107752">https://www.gao.gov/products/gao-24-107752</a></p>
+<p>[CC26] U.S. Government Accountability Office, &quot;Military Suicide Prevention: DOD Should Improve Oversight of Warm Handovers for Transitioning Service Members,&quot; GAO-24-106248, 2024. Source for: about 41,000 warm handovers between April 2021 and March 2023; more than 4,300 members considered at risk who did not receive one; DOD not ensuring the person-to-person connection occurred; and DOD&#39;s estimated September 2027 completion date for the related recommendation. <a href="https://www.gao.gov/products/gao-24-106248">https://www.gao.gov/products/gao-24-106248</a></p>
+<p>[CC27] Department of Veterans Affairs, &quot;FY 2027 Budget Submission, Volume 3,&quot; April 2026, and VA.gov, &quot;VA Solid Start.&quot; Source for: Solid Start contacts at about 90, 180, and 365 days after separation; 186,995 veterans connected in 2025, a 75.6 percent connection rate; and the Transition Assistance Program serving more than 200,000 transitioning members a year. <a href="https://department.va.gov/wp-content/uploads/2026/04/Volume-3.pdf">https://department.va.gov/wp-content/uploads/2026/04/Volume-3.pdf</a> and <a href="https://www.va.gov/service-member-benefits/solid-start/">https://www.va.gov/service-member-benefits/solid-start/</a></p>
+<p>[CC28] H.R. 8800, National Defense Authorization Act for Fiscal Year 2027, as reported. Source for: Sec. 701 (dental readiness for certain Selected Reserve members), Sec. 744 (pilot on health care assessments other than periodic health assessments), Sec. 761 (pilot on a secure, mobile personal health record), and Sec. 776 (GAO study of reserve dental readiness). Section titles only; operative text not reviewed for this brief. <a href="https://allen.house.gov/uploadedfiles/fy2027_ndaa.pdf">https://allen.house.gov/uploadedfiles/fy2027_ndaa.pdf</a></p>
+<p>[CC29] DVIDS, Defense Health Agency, &quot;Strengthening Acquisition, Research Efforts Will Support Warfighter Readiness and Military Healthcare Services,&quot; 2026. Source for: Matt Clark&#39;s September 21, 2026 swearing-in as DHA Assistant Director for Research, Development, and Acquisition and Component Acquisition Executive, and the quotations &quot;judged on mission outcomes and speed&quot; and &quot;not supporting readiness or resilience, then it doesn&#39;t belong with us.&quot; The 90-day point is the author&#39;s calculation from the swearing-in date; DHA has published no such date. <a href="https://www.dvidshub.net/news/578525/strengthening-acquisition-research-efforts-will-support-warfighter-readiness-and-military-healthcare-services">https://www.dvidshub.net/news/578525/strengthening-acquisition-research-efforts-will-support-warfighter-readiness-and-military-healthcare-services</a></p>
+<p>[CC30] U.S. Army Human Resources Command, &quot;Commander&#39;s Line of Duty Smart Card,&quot; current as of October 19, 2026, and U.S. Army Reserve Medical Management Center, frequently asked questions. Source for: the requirement that a line-of-duty investigation begin within five calendar days; the requirement for an LOD whenever a Reserve Component soldier&#39;s injury or illness needs follow-on care; and LODs as prerequisites for both care and medical evaluation board packets. <a href="https://www.hrc.army.mil/wcmt-api/sites/default/wcmtfiles/files/25752_0.pdf">https://www.hrc.army.mil/wcmt-api/sites/default/wcmtfiles/files/25752_0.pdf</a> and <a href="https://www.usar.army.mil/Resources/Health-Wellness/Medical-Management-Center/FAQs/">https://www.usar.army.mil/Resources/Health-Wellness/Medical-Management-Center/FAQs/</a></p>
+<p>[CC31] U.S. Government Accountability Office, &quot;Military Disability System: Improved Oversight Needed to Ensure Consistent and Timely Outcomes for Reserve and Active Duty Service Members,&quot; GAO-06-362, 2006, and &quot;VA Disability Compensation: Actions Needed to Address Hurdles Facing Program Reform,&quot; GAO-13-453T, 2013. Source for: medical evaluation boards requesting records from private practitioners for reservists&#39; cases with &quot;considerable delays,&quot; and VBA officials describing delays obtaining Guard and Reserve records as &quot;system-wide.&quot; Dated findings used as a long-running pattern. <a href="https://www.gao.gov/assets/gao-06-362.pdf">https://www.gao.gov/assets/gao-06-362.pdf</a> and <a href="https://www.gao.gov/assets/gao-13-453t.pdf">https://www.gao.gov/assets/gao-13-453t.pdf</a></p>
+<p>[CC32] U.S. Army, PEO Enterprise, &quot;PEO Enterprise awards Army-wide ELA for CRM software,&quot; Army.mil, 2025, and Department of War, &quot;Contracts for July 30, 2025.&quot; Source for: the Army-wide enterprise license agreement for an enterprise engagement and case-management platform, awarded July 31, 2025, consolidating the Army&#39;s orders for it. The platform is not named here. <a href="https://www.army.mil/article/287706/peo_enterprise_awards_army_wide_ela_for_crm_software">https://www.army.mil/article/287706/peo_enterprise_awards_army_wide_ela_for_crm_software</a> and <a href="https://www.war.gov/News/Contracts/Contract/Article/4259965/contracts-for-jul-30-2025/">https://www.war.gov/News/Contracts/Contract/Article/4259965/contracts-for-jul-30-2025/</a></p>
+<p>[CC33] SAM.gov, Department of Veterans Affairs, &quot;Market Research Request: VA Customer Relationship Management (CRM) Modernization,&quot; 36C10B27Q0006, July 27, 2026. Source for: VA&#39;s plan to consolidate contact-center CRM systems, including VA Solid Start, VA Health Connect, and UDO/VOICE, onto its enterprise platform. Request for information, not an award. <a href="https://sam.gov/workspace/contract/opp/19b4631d6b5a40c3beedea27874ba443/view">https://sam.gov/workspace/contract/opp/19b4631d6b5a40c3beedea27874ba443/view</a></p>
+<p>[CC34] Public case note by the builder of the experimental STR pilot, &quot;Assembling Health Records for Review,&quot; 2026. Source for: the design description of governed data products with lineage, software agents that answer questions across documents &quot;including questions about what is missing,&quot; a member portal to &quot;review, correct, and certify&quot; the record, and a run at the scale of one million records. Vendor self-report; results have not been independently tested. MMT does not name vendors on either pilot. <a href="https://strataedge.ai/insights/assembling-health-records-for-review">https://strataedge.ai/insights/assembling-health-records-for-review</a></p>
+<p>[CC35] Yahoo Finance, &quot;US Army signs multi-billion dollar deal,&quot; January 2026. Source for: the Army follow-on IDIQ with two five-year terms and a &quot;hire to retire&quot; scope covering &quot;recruitment, training, deployment, benefits, and transitions for veterans.&quot; Ceiling value not printed; the platform is not named here. <a href="https://finance.yahoo.com/news/us-army-signs-multi-billion-130500652.html">https://finance.yahoo.com/news/us-army-signs-multi-billion-130500652.html</a></p>
+<p>[CC36] Nextgov, &quot;Air Force taps Army contract for personnel modernization work,&quot; May 2026. Source for: the Air Force joining the Army&#39;s enterprise vehicle for the platform and the report that the vehicle was intended to be open to all of the department. Trade press; the platform is not named here. <a href="https://www.nextgov.com/emerging-tech/2026/05/air-force-taps-salesforces-army-contract-personnel-modernization-work/413522/">https://www.nextgov.com/emerging-tech/2026/05/air-force-taps-salesforces-army-contract-personnel-modernization-work/413522/</a></p>
+<p>[CC37] Health.mil, Privacy Impact Assessment, DD Form 2930, &quot;HealthForce Nexus,&quot; April 5, 2024. Source for: a DHA care-coordination system on the same platform&#39;s IL4 government cloud, offering &quot;unified patient records and care coordination&quot; and case management keyed to DoD ID numbers. 2024 document; current use and scale were not verified for this issue. <a href="https://www.health.mil/Reference-Center/Forms/2024/04/05/HealthForce-Nexus">https://www.health.mil/Reference-Center/Forms/2024/04/05/HealthForce-Nexus</a></p>
+<p>[CC38] Department of Veterans Affairs, DigitalVA Product Marketplace, platform listing. Source for: VA&#39;s description of the platform as its &quot;trusted platform as a service foundation,&quot; used across VBA, VHA, and NCA. The platform is not named here. <a href="https://digital.va.gov/marketplace/product/salesforce/?_pager=3">https://digital.va.gov/marketplace/product/salesforce/?_pager=3</a></p>
+<p>[CC39] Platform vendor help documentation, &quot;Government Cloud Available Products and Features.&quot; Source for: FedRAMP High provisional authorization and DoD IL5 provisional authorization for the platform&#39;s defense instance. Vendor documentation; the platform is not named here. <a href="https://help.salesforce.com/s/articleView?id=000396813&language=en_US&type=1">https://help.salesforce.com/s/articleView?id=000396813&amp;language=en_US&amp;type=1</a></p>
+<p>[CC40] Military Review, September-October 2025, &quot;Reserve Medical Force.&quot; Source for: the Army Reserve holding nearly one-third of the Army&#39;s medical force and 70 percent of its deployable medical force structure. Author&#39;s claim in a professional journal article, not an official statistic. <a href="https://www.armyupress.army.mil/Portals/7/military-review/Archives/English/so25/Reserve-Medical-Force/Reserve-Medical-Force-ua.pdf">https://www.armyupress.army.mil/Portals/7/military-review/Archives/English/so25/Reserve-Medical-Force/Reserve-Medical-Force-ua.pdf</a></p>
+<p>[CC41] Federal News Network, &quot;DoD changes transitional health care eligibility for reservists following lawsuit,&quot; August 2026, and National Veterans Legal Services Program, &quot;New Military Policy Expands Entitlement of Reservists to Transitional Assistance Management Program Benefits,&quot; 2026. Source for: the August 10, 2026 USD(P&amp;R) memorandum removing the &quot;substantially linked&quot; requirement for TAMP eligibility, the direction to Reserve Affairs to adjust DEERS, reimbursement for members denied on or after April 24, 2020, and the paused class action. <a href="https://federalnewsnetwork.com/defense-news/2026/08/dod-changes-transitional-health-care-eligibility-for-reservists-following-lawsuit">https://federalnewsnetwork.com/defense-news/2026/08/dod-changes-transitional-health-care-eligibility-for-reservists-following-lawsuit</a> and <a href="https://nvlsp.org/new-military-policy-expands-entitlement-of-reservists-to-transitional-assistance-management-program-benefits/">https://nvlsp.org/new-military-policy-expands-entitlement-of-reservists-to-transitional-assistance-management-program-benefits/</a></p>
+<p>[CC42] Air Force Reserve Command, &quot;Air Force issues new guidance to streamline line of duty decisions for reservists,&quot; 2026. Source for: the February 1, 2026 update to DAFI 36-2910 allowing an in-the-line-of-duty finding for health care access without determining when the condition began, for reservists on a single order of 30 days or more with at least 180 days of total active federal service, limited to health care. <a href="https://www.afrc.af.mil/News/Article-Display/Article/4416649/air-force-issues-new-guidance-to-streamline-line-of-duty-decisions-for-reservis/">https://www.afrc.af.mil/News/Article-Display/Article/4416649/air-force-issues-new-guidance-to-streamline-line-of-duty-decisions-for-reservis/</a></p>
+<p>[CC43] Department of Defense Inspector General, &quot;Assessment of DoD-Provided Healthcare for Members of the United States Armed Forces Reserve Components,&quot; DODIG-2015-002. Source for: the finding that &quot;delayed or denied access to line of duty care presented a risk&quot; for reserve component members. <a href="https://www.dodig.mil/Reports/Audits-and-Evaluations/Article/1119071/assessment-of-dod-provided-healthcare-for-members-of-the-united-states-armed-fo/">https://www.dodig.mil/Reports/Audits-and-Evaluations/Article/1119071/assessment-of-dod-provided-healthcare-for-members-of-the-united-states-armed-fo/</a></p>
+<p>[CC44] Mission Meets Tech, &quot;The Keystone,&quot; August 28, 2026. Source for: a reservist losing TAMP coverage to a DEERS coding field, and dental deficiency as the largest single reason Army Reserve Component soldiers were judged not ready. <a href="https://missionmeetstech.com/newsletter/the-keystone/">https://missionmeetstech.com/newsletter/the-keystone/</a></p>
+<p>[CC45] Georgia National Guard, &quot;GA ARNG achieves high medical readiness through comprehensive Soldier Readiness,&quot; 2026. Source for: soldier readiness processing for about 6,600 soldiers in 19 days at one site and the second-highest medical and dental readiness among the 54 states and territories. Self-reported unit account. <a href="https://ga.ng.mil/Public-Affairs/Media/Newsroom/News/Article/4592030/ga-arng-achieves-high-medical-readiness-through-comprehensive-soldier-readiness/">https://ga.ng.mil/Public-Affairs/Media/Newsroom/News/Article/4592030/ga-arng-achieves-high-medical-readiness-through-comprehensive-soldier-readiness/</a></p>
+<p>[CC46] Mission Meets Tech, contract tracker, &quot;HCDS: Health Care Delivery Solutions (MHS GENESIS Follow-On).&quot; Source for: DHA&#39;s lane-based EHR follow-on strategy with no prime integrator. <a href="https://missionmeetstech.com/contracts/hcds-health-care-delivery-solutions-mhs-genesis-follow-on/">https://missionmeetstech.com/contracts/hcds-health-care-delivery-solutions-mhs-genesis-follow-on/</a></p>
+<p>[CC47] Department of War, Office of the Under Secretary of War (Comptroller), &quot;Military Health System, Fiscal Year 2027 Budget Estimates, Volume 1,&quot; April 2026, p. 9, and Mission Meets Tech, &quot;The Recapture Year,&quot; October 2, 2026. Source for: total force medical readiness of 91.1 percent in Q4 FY2025 against the 90 percent goal, and the budget materials&#39; description of T-5 transition problems as &quot;largely resolved&quot; by year end. <a href="https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf">https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf</a> and <a href="https://missionmeetstech.com/newsletter/the-recapture-year/">https://missionmeetstech.com/newsletter/the-recapture-year/</a></p>
+<p>[CC48] Military Officers Association of America, &quot;TRICARE Contract Changeover: After 6 Months of Challenges, What&#39;s Next?&quot; 2025. Source for: the January 1, 2025 T-5 transition moving more than 1.5 million beneficiaries between regions and the referral, claims, and other-health-insurance problems that followed. <a href="https://www.moaa.org/content/publications-and-media/news-articles/2025-news-articles/advocacy/tricare-contract-changeover-after-6-months-of-challenges,-whats-next/">https://www.moaa.org/content/publications-and-media/news-articles/2025-news-articles/advocacy/tricare-contract-changeover-after-6-months-of-challenges,-whats-next/</a></p>
+<p>[CC49] Department of Veterans Affairs, &quot;FY 2026 Budget Submission, Volume 3: Burial and Benefits Programs and Department Administration,&quot; June 2025. Source for: VA&#39;s statement that its separation health assessment approach &quot;aligns with the new DoD One Separation Health Assessment.&quot; DOD&#39;s current implementation status is an open check. <a href="https://department.va.gov/wp-content/uploads/2025/06/2026-Volume-3-Burial-and-Benefits-Programs-and-Department-Administration.pdf">https://department.va.gov/wp-content/uploads/2025/06/2026-Volume-3-Burial-and-Benefits-Programs-and-Department-Administration.pdf</a></p>
+<p>Sources verified as of November 5, 2026.</p>
+
+
+    <div class="deep-dive-card">
+  <div class="section-label" style="color:var(--ci-gold);margin-bottom:8px;">Custom Deep Dive &middot; Premium Add-On</div>
+  <h3>Want a custom deep-dive on any line in this brief?</h3>
+  <p>This brief maps the six lanes of the care continuum as a buying map, the decision window between November 13 and March 7, the two service treatment record pilots, the engagement platform both departments already license, and the reserve lane. It stops short of your position: which lane your past performance supports, which existing vehicle your handoff work rides on, and what to put in writing to the contract review leads before January 6. A custom deep-dive picks it up there.</p>
+  <div class="deep-dive-price"><span class="amount">$50</span><span class="unit">one-time &middot; 5&ndash;7 business day turnaround</span></div>
+  <p>I will pull the additional public-record sources, read the visible signal, and write a 4&ndash;6 page custom intelligence memo on the area you select. You name the question; I do the BD-grade analysis.</p>
+  <p style="margin-bottom:18px;"><a class="deep-dive-cta" href="https://buy.stripe.com/6oUdRb2NEaQI3uM6KL4c803">Buy a Custom Deep Dive &mdash; $50 &rarr;</a></p>
+  <p class="deep-dive-examples">Examples: <em>Deep Dive &mdash; PARATUS AOI 2 positioning &middot; Deep Dive &mdash; RC3 readiness data element response &middot; Deep Dive &mdash; STR pilot production path</em></p>
+</div>
+
+    </div>
+  </main>
+
+  <footer class="footer"></footer>
+</body>
+</html>

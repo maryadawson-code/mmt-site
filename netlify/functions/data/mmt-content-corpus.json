@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-11-02T23:40:47.765Z",
-  "total": 622,
+  "generated_at": "2026-11-06T01:07:04.734Z",
+  "total": 624,
   "counts": {
-    "articles": 144,
-    "friday_briefs": 49,
+    "articles": 145,
+    "friday_briefs": 50,
     "monthly_briefs": 4,
     "contracts": 67,
     "capture_intel": 30,
@@ -2573,6 +2573,30 @@
       "premium": false
     },
     {
+      "id": "article-the-desk-after-the-clinic",
+      "type": "article",
+      "title": "The Desk After the Clinic",
+      "slug": "the-desk-after-the-clinic",
+      "date": "2026-11-03",
+      "description": "A Guard sergeant hurts his knee at annual training, goes home, and needs his health record for three people at once. Every military hospital now keeps that record in one system. Handing him a copy still takes six logins and a wait that changes with the hospital. This issue follows his request through the desk, finds the parts of the fix DHA already owns, and lays out five steps, each with a proposed owner, to finish the job the clinic started.",
+      "tags": [
+        "military health records",
+        "MHS GENESIS",
+        "DHA",
+        "GAO",
+        "records release",
+        "AHLTA",
+        "redaction",
+        "Executive Order 14426",
+        "FY27 NDAA",
+        "health informatics",
+        "Federal EHR"
+      ],
+      "url": "/newsletter/the-desk-after-the-clinic/",
+      "excerpt": "The Desk After the Clinic A Guard sergeant hurts his knee at annual training, goes home, and needs his health record for three people at once. Every military hospital now keeps that record in one system. Handing him a copy still takes six logins and a wait that changes with the hospital. This issue follows his request through the desk, finds the parts of the fix DHA already owns, and lays out five steps, each with a proposed owner, to finish the job the clinic started. Friends, A staff sergeant in an Army National Guard engineer company, sixteen years in, is on the second week of annual training in July when his knee gives out under a section of bridge decking. The Army hospital on post sees him that afternoon, takes the MRI, and writes him up. Two days later he is home, ninety miles from the post, with a propane route to drive and a knee that needs a surgeon. Three people need his record before anything else can happen. The unit's readiness NCO needs documentation \"sufficient to substantiate the medical condition\" to decide whether the injury happened in the line of duty, and until that decision is made the Guard cannot authorize the surgery. [2] The orthopedic surgeon's office wants the MRI and the visit notes before it will book him. And the sergeant wants a copy himself, because for a Guard member the record is the thing that follows him home. The hospital's records desk is on post. He is not. He prints a DD Form 2870, signs it, and mails it. [3] His record is complete and it is in one system at that hospital, which is more than a sergeant who enlisted in 2010 could have said. MHS GENESIS, the record every military hospital and clinic now runs on, finished fielding in March 2024. [4] The question his envelope puts to the system is a simple one: how long until he holds a copy. The yardstick for this issue is just as simple. One published number of days a family can plan around, and a processor who opens one system to fill the request. Both are within reach, and most of the parts are already on DHA's shelf. What happens to his form On post, a records processor opens his request and starts looking. The MRI images are in one system. The visit notes are in another. His deployment physical from 2012 sits in the system the hospital used before GENESIS, and the chart from his first enlistment may be in a box. The Government Accountability Office watched desks like this one work this year and listed what a processor opens to assemble one record: MHS GENESIS, AHLTA, Essentris, HAIMS, Paper Record Tracking, and the Joint Longitudinal Viewer. [1] Six logins for one knee. Then every page gets read for someone else's name. Redaction is \"the most cumbersome part\" of the job, GAO found, especially for large or scanned files, and one facility reported a single 10,000-page record took about six days. [1] The sergeant's file is nowhere near that size, but it sits in the same queue. The patient portal does not get him around it. One official estimated the portal shows about 40 percent of a record, and the hospital pages that explain it to patients note that nothing from before GENESIS is there. [1][5] How long he should expect to wait depends on which hospital he wrote to. DHA's manual says 30 business days. [3] Facility pages post anywhere from 20 duty days to 60 business days, and I want to be careful with those numbers, because a posted standard is a promise. [5][6][7][8] GAO asked for the measurement and could not get one: 133 of 547 facilities reported release data, and the agency could not confirm the numbers it had. [1] The desks are short-handed too. Two of the four facilities GAO visited reported staffing challenges, with hiring freezes limiting backfill, and one of them had worked out its own fix, an arrangement in which a facility with spare processors takes work from one without. [1] Hold onto that one. So the sergeant waits on a number the system has not measured. Another copy of his record, meanwhile, moves without a desk at all. The copy that moves on its own If the sergeant had separated this summer instead of going home, his service treatment record would have reached VA without anyone filling out a form. When a veteran files a claim, the Veterans Benefits Administration's system requests the record from HAIMS on its own, for anyone whose service ended on or after January 1, 2014. [1] AHLTA Web Print feeds the same channel. [9] On the clinical side, the joint Health Information Exchange carries prescriptions, labs, and notes between military clinicians and civilian providers on the two big national networks, and it has reached more than 90 percent of American hospitals since 2023. Active-duty members cannot opt out of it, which is a readiness decision and the right one. [10][11] In September the White House put a clock on that path. Executive Order 14426, signed September 8, directs the Secretary of War to send a departing member's personnel file, health record, and service treatment record to VA \"immediately when a service member is discharged or released from the Armed Forces.\" [12] The requirement took effect within 30 days, on October 8. A review of the two departments' IT contracts for interoperability is due about January 6, and updated systems and policy about March 7. [12] The order says nothing about the member's own copy. [12] That is fine; it was written to speed up benefits, and it does. But set the two paths side by side. The government gets the sergeant's record the day he leaves, system to system, with an executive order behind it. The sergeant mails a form and waits for a number of days that changes with the hospital. The Military Health System can move a record across a department line without a human touching it, and it can learn to hand the same record to the man it belongs to in a week. The plumbing for the first proves the second can be built, and most of that plumbing is already in the building. What is already on the shelf The manual starts a clock the day his request lands. DHA-PM 6025.02 tells a facility to raise any request still open on the tenth working day to the hospital director. [3] Kenner Army Health Clinic's local policy records every disclosure in the PHI Management Tool. [8] Put those two facts together and DHA already generates the data a turnaround metric needs; a day-10 escalation is a timestamp, and a disclosure log is a completion date. The numbers GAO could not get exist at the facility level. They have not been rolled up. The six systems the processor opened are already being closed. DHA has archived the old CHCS system at 26 facilities and Essentris at 31, with AHLTA in progress, according to its archiving vendor, and its Legacy Evolutionary Analytics office exists to take retired systems off the books. [13] DHA's February privacy assessment for AHLTA says its capabilities \"are expected to be fully subsumed by MHS GENESIS\" no later than October 2026. [14] Whether that date held is an open check as I write, and it is the most useful date on the records desk's calendar, because every retired system is one fewer login per request. DHA has also been shopping for a Legacy Data Consolidation Solution for health information assets, one archive for what the old systems held. [15] Build it so a records processor can search it, and the sergeant's six logins become two: GENESIS and the archive. The platform can export. Oracle Health's certified modules include an electronic health information export capability and the FHIR interfaces the federal rules require. [16] Whether DHA has turned on single-patient export inside GENESIS is a question I could not answer from public documents, and it is the first one I would ask, because an export button is most of a records desk. The facility fix scales. The arrangement GAO found, one facility's spare processors working another's queue, is a network staffing model in miniature, and DHA's nine Defense Health Networks are the natural place to run it on purpose. [1] And leadersh",
+      "premium": false
+    },
+    {
       "id": "brief-capture-corner-2026-04-29",
       "type": "premium_brief",
       "title": "DHA Reorganization: Sixteen Changes, Five That Move Your Pipeline",
@@ -3218,6 +3242,21 @@
       "premium": true
     },
     {
+      "id": "brief-capture-corner-2026-11-03",
+      "type": "premium_brief",
+      "title": "Who Builds the Desk",
+      "slug": "capture-corner-2026-11-03",
+      "date": "2026-11-03",
+      "description": "Who Builds the Desk The records desk read as a buying map · the legacy archive and the AHLTA date · the redaction tooling market and its federal precedents · export, intake, and delivery on the Oracle",
+      "tags": [
+        "premium",
+        "friday-brief"
+      ],
+      "url": "/premium/briefs/capture-corner-2026-11-03.html",
+      "excerpt": "Who Builds the Desk The records desk read as a buying map · the legacy archive and the AHLTA date · the redaction tooling market and its federal precedents · export, intake, and delivery on the Oracle platform · the standards and reporting templates a bidder can cite · EO 14426 and the FY27 NDAA sections that touch the person's copy This issue is the companion to \"The Desk After the Clinic.\" The public piece follows a Guard sergeant's records request through the systems a DHA processor opens, sets the government's automated path beside the person's manual one, and lays out five steps DHA could take with what it already owns. This brief reads the same desk as a buying map, works the legacy archive and the AHLTA absorption date, lays out the redaction and release tooling market with its federal precedents, and maps the executive order and the two NDAA sections that would change the requirement. Capture Corner is the premium BD intelligence companion to Mission Meets Tech. Independent analysis. Not a recommendation, not vendor advocacy, not capture material. Built for federal health BD, capture, and proposal leaders who need analytical depth, not headlines. This issue is the companion to \"The Desk After the Clinic.\" The public piece follows a Guard sergeant's records request through the systems a DHA processor opens, sets the government's automated path beside the person's manual one, and lays out five steps DHA could take with what it already owns. This brief reads the same desk as a buying map, works the legacy archive and the AHLTA absorption date, lays out the redaction and release tooling market with its federal precedents, and maps the executive order and the two NDAA sections that would change the requirement. 1. The picture at a glance Field Detail The desk A DD Form 2870 request is filled by a processor who checks MHS GENESIS, AHLTA, Essentris, HAIMS, Paper Record Tracking, and the Joint Longitudinal Viewer, then reviews and redacts every page; GAO calls redaction \"the most cumbersome part,\" one facility reported about six days for a 10,000-page record, and one official estimated the patient portal holds about 40 percent of the record [CC1] Scale 9.5 million beneficiaries, 547 facilities; 133 facilities reported release data and GAO could not confirm its reliability; two of four visited facilities reported staffing shortfalls with hiring freezes limiting backfill [CC1] Standards in force DHA-PM 6025.02: 30 business days, copies free to the patient, escalation to the MTF Director at the tenth working day; posted facility standards from 20 duty days to 30 to 60 business days; HIPAA Right of Access: 30 calendar days plus one 30-day extension [CC2][CC3][CC4] The automated path VBMS requests service treatment records from HAIMS at claim establishment for service ending on or after January 1, 2014; AHLTA Web Print uploads through HAIMS; the joint HIE reaches more than 90 percent of U.S. hospitals [CC1][CC5][CC6] The archive DHA's archiving vendor reports CHCS archived at 26 facilities and Essentris at 31 with AHLTA in progress; DHA's February privacy assessment says AHLTA capabilities are \"expected to be fully subsumed by MHS GENESIS\" no later than October 2026; a Legacy Data Consolidation Solution for health information assets has been through an RFI under the Enterprise Intelligence and Data Solutions program [CC7][CC8][CC9] The recommendation GAO-27-107784, Recommendation 5: ASD(HA) with the DHA Director to assess the records processing framework inside the health informatics business-function study, \"such as consolidating databases or using artificial intelligence\"; DOD concurred; the parent business-function study had a March 31, 2026 target with no reported update as of April [CC1][CC10] The dates EO 14426: records to VA at discharge effective October 8; IT contract interoperability review due about January 6, 2027; systems and policy due about March 7, 2027. FY27 NDAA: House Sec. 761 personal health record pilot; Senate Sec. 721 secure access prototype; both in lame-duck reconciliation [CC11][CC12] Confidence: High on the GAO findings, the manual, the executive order, and the facility pages. Medium on the archive status, which rests on a vendor statement and a privacy assessment's forward-looking language. Low on whether AHLTA was absorbed on schedule and whether single-patient export is enabled in GENESIS; both are open checks. Analytical on the market reads. The lead finding for a capture team: the records desk is the first place the health informatics study can show a result, and the buy underneath it is three lanes, not one. The archive lane is the legacy consolidation work already in motion under EIDS, and the question that decides its value for release of information is whether a processor can search it. The tooling lane is assisted redaction and secure delivery, where HHS and State have already run pilots and VA has done market research for an enterprise FOIA and eDiscovery platform. The measurement lane is the cheapest and the least contested: the day-10 escalations and the PHI Management Tool disclosure log already generate turnaround data at every facility, and the agency that rolls it up first sets the metric everyone else is held to. The executive order funds attention on the government-to-government path through March. The person's path is where the requirement has not been written, and a team that writes it in the language of GAO's fifth recommendation is answering a question DOD has already agreed to ask. 2. The desk as a buying map Confidence: High on each break, which is tied to a GAO page or a DHA document. Analytical on the owner and the capture column; the owners are proposals. Break Fix Proposed owner Measure What gets bought Processors open six systems per request [CC1] Make the consolidation archive a release source; retire processor logins to each legacy system once its data is archived DHA CIO/J-6 with the Legacy Evolutionary Analytics office Systems opened per request Archive search and retrieval, data migration validation, identity matching across legacy sources Redaction of large and scanned files [CC1] AI-assisted PII and PHI detection with human approval of every release DHA CDAO with the Privacy and Civil Liberties Office Hours per 1,000 pages; QA error rate Redaction tooling, OCR for scanned records, review workflow, audit trail Posted standards vary by facility [CC2][CC3] One enterprise standard in calendar days, published nationally, with a delay letter ASD(HA) and the DHA Director, in the next revision of DHA-PM 6025.02 Share of requests closed within 30 calendar days Policy support; the reporting product behind the standard Release data unreliable; 133 of 547 facilities reporting [CC1] Roll up the day-10 escalations and the disclosure log into a quarterly published number DHA Privacy and Civil Liberties Office Quarterly turnaround, by facility and network Data integration from PHIMT and the escalation record; a dashboard; the metric definition Paper, email, and in-person intake at some sites [CC13] Digital request intake through the GENESIS portal's secure messaging Solution Delivery Division Share of requests submitted digitally Portal workflow configuration, identity proofing for non-portal requesters, forms automation Ad hoc email delivery; most Navy improper releases traced to unsecured email [CC1] Standard secure electronic delivery DHA CIO Email-related incidents Secure file transfer, encryption at rest and in transit, delivery receipt Uneven staffing; hiring freezes [CC1] Pool release work at the network level, building on the facility-to-facility agreement GAO found Defense Health Network directors Backlog by network Staffing models, surge labor under existing medical support contracts Pre-2014 paper records [CC1] Targeted digitization on the NARA and VA model DHA with VA Paper share of releases Scanning, indexing, quality control; the NPRC model is the reference Two departments, one platform, two ",
+      "premium": true
+    },
+    {
       "id": "migrated--premium-briefs-2026-03-21",
       "type": "premium_brief",
       "title": "Week of March 21, 2026",
@@ -3423,7 +3462,7 @@
       "type": "contract_intel",
       "title": "DHA Data Governance / Data Methods and Strategy (HT001126CE015)",
       "slug": "dha-data-governance-data-methods-and-strategy-ht001126ce015-",
-      "date": "2026-11-01",
+      "date": "2026-11-04",
       "description": "Update Oct 19, 2026: awarded. USASpending carries contract HT001126CE015 to Taurian Consulting 2 LLC (the Guidehouse and ReefPoint joint venture I reported in the Sep 11, 2026 brief) at $8,466,696, period Feb 25, 2026 to Jun 28, 2027, NAICS",
       "tags": [
         "Defense Health Agency (DHA)",
@@ -3576,7 +3615,7 @@
       "type": "contract_intel",
       "title": "VA IE&O (TISTA, task order 36C10B26F0468)",
       "slug": "va-ie-o-tista-task-order-36c10b26f0468-",
-      "date": "2026-11-01",
+      "date": "2026-11-04",
       "description": "Update Oct 5, 2026: OrangeSlices reported on Oct 2, 2026 that TISTA Science and Technology won a 5-year VA IE&O award, task order 36C10B26F0468 at about $164.1M, over 14 other bidders, alongside a separate SCM DSO award (36C10B26F0452, abou",
       "tags": [
         "Department of Veterans Affairs / VA TAC",
@@ -3727,7 +3766,7 @@
       "type": "contract_intel",
       "title": "VA Health Connect / IHT 2.0",
       "slug": "va-health-connect-iht-2-0",
-      "date": "2026-11-01",
+      "date": "2026-11-04",
       "description": "Update Oct 5, 2026: OrangeSlices reports that the IHT 2.0 protest forced VHA to award sole-source bridges for continuity, including a health informatics professional and technical services bridge to SDVOSB Rock Ferry dba MD Informatix and a",
       "tags": [
         "Department of Veterans Affairs / VHA",
@@ -4084,7 +4123,7 @@
       "type": "contract_intel",
       "title": "Swingtide — Market Intelligence Support",
       "slug": "swingtide-market-intelligence-support",
-      "date": "2026-11-01",
+      "date": "2026-11-04",
       "description": "Update Aug 17, 2026: Swingtide Inc awarded a 10-month DHA PEO DHMS Market Intelligence Support Services contract, HT003826CE001, $745,000, single bidder, posted January 2026. Market intelligence support, ~$745K, awarded Jan 2026. Solicitati",
       "tags": [
         "Defense Health Agency",
@@ -4203,7 +4242,7 @@
       "type": "contract_intel",
       "title": "IHS Four Directions Warehouse (4DW) — Clinical Data Repository",
       "slug": "ihs-four-directions-warehouse-4dw-clinical-data-repository",
-      "date": "2026-11-01",
+      "date": "2026-11-04",
       "description": "Update Aug 17, 2026: Cherokee Nation Integrated Health, LLC won the IHS 4DW modernization contract (140D0424C0039), $36,367,134.84, PoP Sept 24, 2024 to Sept 23, 2029; ISBEE set-aside. IHS Health IT Modernization program contract for develo",
       "tags": [
         "Indian Health Service (IHS) / HHS",
