@@ -23,6 +23,7 @@ const pricing = require("../data/team-pricing.json");
 const { sendEmail } = require("./send-email");
 const { logCustomerEvent } = require("./customer-sync");
 const { buildTeamSeatWelcome } = require("./email-templates/team-seat-welcome");
+const { buildTeamInvoiceNotice } = require("./email-templates/team-invoice-notice");
 
 const TEAM_PRODUCT = "mmt_team";
 const SEAT_LOOKUP_KEY = pricing.lookup_key;
@@ -138,6 +139,68 @@ async function billingEmailOf(stripe, sub) {
     return normalizeEmail(customer && customer.email);
   }
   return "";
+}
+
+/** The customer's accounts-payable address, if the team gave one (metadata.ap_email). */
+function apEmailOf(sub) {
+  return normalizeEmail(sub && sub.metadata && sub.metadata.ap_email);
+}
+
+const INVOICE_NOTICE_EVENT = "invoice_sent";
+
+/**
+ * Email a finalized, unpaid team invoice to the team's AP address. Stripe
+ * mails the customer's own address and its API cannot add recipients, so
+ * this is the only route an invoice has to a customer's AP inbox. Sent once
+ * per invoice (customer_events invoice_sent / mmt_team, metadata.invoice_id).
+ * Returns { sent, reason }; never throws on a send failure.
+ */
+async function sendInvoiceNotice(supabase, stripe, sub, invoice, { source = "team-plan", force = false } = {}) {
+  const ap = apEmailOf(sub);
+  if (!ap) return { sent: false, reason: "no_ap_email" };
+  if (!invoice || !invoice.id) return { sent: false, reason: "no_invoice" };
+  if (invoice.status !== "open") return { sent: false, reason: `invoice_${invoice.status || "unknown"}` };
+  if (!invoice.hosted_invoice_url) return { sent: false, reason: "no_hosted_url" };
+
+  const { data: prior, error: readErr } = await supabase
+    .from("customer_events")
+    .select("id, metadata")
+    .eq("email", ap)
+    .eq("event_type", INVOICE_NOTICE_EVENT)
+    .eq("product", WELCOME_PRODUCT)
+    .limit(100);
+  if (readErr) console.warn(`team-plan: invoice notice lookup failed for ${ap}: ${readErr.message}`);
+  const already = (prior || []).some((r) => r.metadata && r.metadata.invoice_id === invoice.id);
+  if (already && !force) return { sent: false, reason: "already_sent" };
+
+  const billingEmail = await billingEmailOf(stripe, sub);
+  const { subject, html, text } = buildTeamInvoiceNotice({
+    company: (sub.metadata && sub.metadata.company) || (sub.customer && sub.customer.name) || "your",
+    invoiceNumber: invoice.number || invoice.id,
+    amountDueCents: invoice.amount_remaining != null ? invoice.amount_remaining : invoice.amount_due,
+    hostedUrl: invoice.hosted_invoice_url,
+    pdfUrl: invoice.invoice_pdf || null,
+    dueAt: invoice.due_date ? new Date(invoice.due_date * 1000).toISOString() : null,
+    seats: seatCapacity(sub) || null,
+    billingEmail,
+  });
+  const result = await sendEmail({ to: ap, subject, html, text, from: "Mary at Mission Meets Tech <mary@missionmeetstech.com>" });
+  if (!result || !result.success) {
+    const { error } = await supabase.from("ops_events").insert({
+      event_type: "TEAM_INVOICE_NOTICE_FAILED", source_function: source, severity: "error", error_signature: "team_invoice_notice",
+      user_email: ap, details: { subscription_id: sub.id, invoice_id: invoice.id, reason: (result && result.error) || "send_failed" },
+    });
+    if (error) console.error(`team-plan: ops_events insert failed (TEAM_INVOICE_NOTICE_FAILED): ${error.message}`);
+    return { sent: false, reason: (result && result.error) || "send_failed" };
+  }
+  await logCustomerEvent(supabase, {
+    email: ap,
+    eventType: INVOICE_NOTICE_EVENT,
+    product: WELCOME_PRODUCT,
+    amountCents: invoice.amount_remaining != null ? invoice.amount_remaining : invoice.amount_due,
+    metadata: { subscription_id: sub.id, invoice_id: invoice.id, invoice_number: invoice.number || null, resend_message_id: result.id || result.messageId || null, sent_via: source },
+  });
+  return { sent: true, to: ap };
 }
 
 async function findRow(supabase, email) {
@@ -359,6 +422,8 @@ module.exports = {
   teamIsPaid,
   rowBelongsToAnotherSubscription,
   billingEmailOf,
+  apEmailOf,
+  sendInvoiceNotice,
   syncTeamSeats,
   cancelReplacedSubscription,
   orphanTeamSubscriptionIds,
