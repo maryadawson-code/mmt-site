@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-11-08T16:12:28.887Z",
-  "node_count": 520,
-  "edge_count": 780,
+  "generated_at": "2026-11-08T16:19:57.702Z",
+  "node_count": 521,
+  "edge_count": 781,
   "nodes": [
     {
       "id": "peo-dhms-deployment",
@@ -2244,7 +2244,7 @@
       "type": "Person",
       "canonical_name": "Dr. Matthew G. Clark",
       "properties": {
-        "title": "Assistant Director, Research, Development & Acquisition; Component Acquisition Executive (Confirmed)"
+        "title": "Assistant Director, Research, Development & Acquisition; Component Acquisition Executive (Confirmed); Senior Procurement Executive (reported)"
       }
     },
     {
@@ -2405,6 +2405,14 @@
       "canonical_name": "Rear Adm. Sara Newman",
       "properties": {
         "title": "Director, DHA-Public Health"
+      }
+    },
+    {
+      "id": "mr-dan-gall",
+      "type": "Person",
+      "canonical_name": "Mr. Dan Gall",
+      "properties": {
+        "title": "Director, TRICARE Health Plan (reported)"
       }
     },
     {
@@ -7150,7 +7158,7 @@
       "to_id": "dha",
       "relation": "leads",
       "properties": {
-        "title": "Assistant Director, Research, Development & Acquisition; Component Acquisition Executive (Confirmed)"
+        "title": "Assistant Director, Research, Development & Acquisition; Component Acquisition Executive (Confirmed); Senior Procurement Executive (reported)"
       },
       "weight": 1
     },
@@ -7331,6 +7339,15 @@
       "relation": "leads",
       "properties": {
         "title": "Director, DHA-Public Health"
+      },
+      "weight": 1
+    },
+    {
+      "from_id": "mr-dan-gall",
+      "to_id": "dha",
+      "relation": "leads",
+      "properties": {
+        "title": "Director, TRICARE Health Plan (reported)"
       },
       "weight": 1
     },

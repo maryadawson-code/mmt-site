@@ -90,6 +90,45 @@ chart.
   and `current_read` carry the same grading; `lastUpdated` 2026-11-08.
 - Corpus and graph snapshot regenerated.
 
+## Third pass: the revised territory map
+
+Mary's revised map (same day, "Prepared by Mission Meets Tech") added public
+sources and one new conflict. Applied:
+
+- Dr. Matthew G. Clark: the map cites a DHA article of 04 NOV 2026 for his
+  swearing-in on 21 SEP and the Senior Procurement Executive title. Carried
+  as reported until the page is read.
+- TRICARE Health Plan: Dan Gall, Director since JUL 2026, and Curt Prichard,
+  Deputy (LinkedIn); Dr. David Krulak left in MAY 2026 (VA OIG biography).
+  New card link and key-people row, all pending official confirmation.
+- Sordillo's Deputy SPE seat dated October 2026 (LinkedIn).
+- The DHA Governance Office moved to the HA/MHS Governance Liaison Office
+  (20 APR 2026 chart), one line in the Lennen panel.
+
+Not applied:
+
+- **CUI-marked sources.** The revised map marks the 20 APR 2026 chart
+  briefing, the June and 28 JUL 2026 AD-RDA All Hands (PAE MDS and PAE MS
+  org charts) and a 2024 Salesforce Health Cloud portfolio brief as CUI.
+  The names that come only from those (Bradley Prindle, Angie Hester, Laura
+  Jo Tozzi, James West, Richard Morvatz, Perkins as Acting PAE MDS) and the
+  license counts stay off a published page until a public source carries
+  them. MMT's chart cites the 09 JUN 2026 All Hands as UNCLASSIFIED, and that
+  stays the line.
+- Perkins as Acting: the map cites a TEFCA release for the title. MMT
+  carries him confirmed in the PAE MDS seat from the July 2026 confirmations
+  Mary provided. Unresolved; not changed.
+- Chris Nichols leaving EIDS for Leidos (OrangeSlices, 05 NOV 2026) and a
+  successor named only as Kim: Nichols is not on the chart. Noted, not added.
+- ARMOR milestones now trace to the FY27 Campaign Order and framework; they
+  are tracker material, not chart material.
+- **Arena and Scheideman, again.** The revised map reverts to Arena as
+  Principal Deputy per the 21 SEP message, calls the TRICARE move
+  "not confirmed by any public source or DHA message", and leaves
+  Scheideman's seat open. That is the position the first pass held and the
+  position Mary overrode an hour earlier. The chart stays on Mary's last
+  explicit call (August decks) until she answers the question put to her.
+
 ## Open seats and questions
 
 - Who heads HIDI as a division. The chart shows the seat open.
