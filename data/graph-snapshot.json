@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-11-08T16:05:11.274Z",
-  "node_count": 519,
-  "edge_count": 779,
+  "generated_at": "2026-11-08T16:12:28.887Z",
+  "node_count": 520,
+  "edge_count": 780,
   "nodes": [
     {
       "id": "peo-dhms-deployment",
@@ -2248,11 +2248,19 @@
       }
     },
     {
+      "id": "mr-brett-scheideman",
+      "type": "Person",
+      "canonical_name": "Mr. Brett Scheideman",
+      "properties": {
+        "title": "Acting Principal Deputy, AD-RDA / Deputy Component Acquisition Executive"
+      }
+    },
+    {
       "id": "rear-adm-ivonne-arena",
       "type": "Person",
       "canonical_name": "Rear Adm. Ivonne Arena",
       "properties": {
-        "title": "Principal Deputy, AD-RDA/CAE"
+        "title": "Former Acting AD-RDA / Component Acquisition Executive; current seat not publicly posted"
       }
     },
     {
@@ -7147,11 +7155,20 @@
       "weight": 1
     },
     {
+      "from_id": "mr-brett-scheideman",
+      "to_id": "dha",
+      "relation": "leads",
+      "properties": {
+        "title": "Acting Principal Deputy, AD-RDA / Deputy Component Acquisition Executive"
+      },
+      "weight": 1
+    },
+    {
       "from_id": "rear-adm-ivonne-arena",
       "to_id": "dha",
       "relation": "leads",
       "properties": {
-        "title": "Principal Deputy, AD-RDA/CAE"
+        "title": "Former Acting AD-RDA / Component Acquisition Executive; current seat not publicly posted"
       },
       "weight": 1
     },

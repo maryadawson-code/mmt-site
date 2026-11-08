@@ -44,16 +44,18 @@ second pass changed:
 
 Not applied from the map, with the reason:
 
-- **Arena and Scheideman.** The map lists Brett Scheideman as Deputy CAE
-  and reports RDML Ivonne Arena moving to TRICARE Health Plan with no new
-  title posted. The DHITS decks (AUG 2026) do show Scheideman as Acting
-  Principal Deputy and Arena as Acting AD-RDA/CAE, but the DHA Director's
-  21 SEP 2026 leadership message, which Mary provided, names Arena
-  Principal Deputy AD-RDA/Deputy CAE after Clark took the CAE seat. The
-  September message is later and more authoritative than an August deck or
-  an unrefreshed dha.mil bio, so the chart keeps Arena as Principal Deputy.
-  If Arena has since moved to TRICARE, the source is a new Director message
-  or a dha.mil bio change, and that is Mary's call to confirm.
+- **Arena and Scheideman, applied after Mary's call.** The map lists Brett
+  Scheideman as Deputy CAE and reports RDML Ivonne Arena moving to TRICARE
+  Health Plan with no new title posted. The DHITS decks (AUG 2026) show
+  Scheideman as Acting Principal Deputy RDA / Deputy CAE and Arena as
+  Acting AD-RDA/CAE; the DHA Director's 21 SEP 2026 leadership message had
+  named Arena Principal Deputy. The first pass kept the September message.
+  Mary then said to default to the August decks (2026-11-08), so the chart,
+  key-people and agency profile now carry Scheideman as Acting Principal
+  Deputy / Deputy CAE and Arena as former Acting CAE with her current seat
+  not publicly posted; the TRICARE move stays a reported item pending
+  official confirmation. Both verification notes say the September line
+  was set aside and by whom.
 - ARMOR milestones (governance cell OCT 2026, workload capture 30 JAN 2027,
   DMHRSi retirement 31 MAR 2027, credentialing MAR to SEP 2027). The map
   does not name the deck or page they came from and the DHITS data MMT
@@ -96,7 +98,7 @@ chart.
 - Whether BID moved under OWHA or stayed in J-8.
 - Timothy Link's title.
 - Which office owns the ARMOR RFI.
-- Arena's current seat, if the reported TRICARE move is real.
+- Arena's current seat: the reported TRICARE move needs a dha.mil bio change or a Director message.
 
 Each closes only from a dha.mil or health.mil page, per the standing rule.
 The Monday `leadership-roster-snapshot` run will not catch these: the
