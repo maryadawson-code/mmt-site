@@ -126,8 +126,10 @@ Not applied:
   Principal Deputy per the 21 SEP message, calls the TRICARE move
   "not confirmed by any public source or DHA message", and leaves
   Scheideman's seat open. That is the position the first pass held and the
-  position Mary overrode an hour earlier. The chart stays on Mary's last
-  explicit call (August decks) until she answers the question put to her.
+  position Mary overrode an hour earlier. Asked directly, Mary confirmed
+  the August decks (2026-11-08): Scheideman stays Acting Principal Deputy /
+  Deputy CAE on the chart and Arena stays former Acting CAE with her seat
+  not posted. A dha.mil bio change or a new Director message reopens it.
 
 ## Open seats and questions
 
