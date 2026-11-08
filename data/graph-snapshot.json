@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-11-08T15:49:27.776Z",
-  "node_count": 518,
-  "edge_count": 778,
+  "generated_at": "2026-11-08T16:05:11.274Z",
+  "node_count": 519,
+  "edge_count": 779,
   "nodes": [
     {
       "id": "peo-dhms-deployment",
@@ -2328,11 +2328,19 @@
       }
     },
     {
-      "id": "dr-john-de-geus",
+      "id": "cdr-john-de-geus-md-usn",
       "type": "Person",
-      "canonical_name": "Dr. John de Geus",
+      "canonical_name": "CDR John de Geus, MD, USN",
       "properties": {
-        "title": "Information and Innovation Lead, OWHA (reported)"
+        "title": "Information and Innovation Lead, OWHA"
+      }
+    },
+    {
+      "id": "ms-dawn-herman",
+      "type": "Person",
+      "canonical_name": "Ms. Dawn Herman",
+      "properties": {
+        "title": "Chief, Readiness, Strategy and Business Innovation (Data and Analytics)"
       }
     },
     {
@@ -2340,7 +2348,7 @@
       "type": "Person",
       "canonical_name": "Mr. Matthew Motley",
       "properties": {
-        "title": "Performance to Plan (P2P) Lead, OWHA (reported)"
+        "title": "Performance to Plan (P2P) Lead, OWHA"
       }
     },
     {
@@ -2352,9 +2360,9 @@
       }
     },
     {
-      "id": "mr-zachary-sonnier",
+      "id": "lt-col-zachary-sonnier",
       "type": "Person",
-      "canonical_name": "Mr. Zachary Sonnier",
+      "canonical_name": "Lt Col Zachary Sonnier",
       "properties": {
         "title": "Chief Health Informatics Officer (reported)"
       }
@@ -4303,6 +4311,17 @@
       }
     },
     {
+      "id": "article-where-the-lost-days-go",
+      "type": "Article",
+      "canonical_name": "Where the Lost Days Go",
+      "properties": {
+        "slug": "where-the-lost-days-go",
+        "type": "article",
+        "url": "/newsletter/where-the-lost-days-go/",
+        "published": "2026-11-06"
+      }
+    },
+    {
       "id": "article-capture-corner-2026-04-29",
       "type": "Article",
       "canonical_name": "DHA Reorganization: Sixteen Changes, Five That Move Your Pipeline",
@@ -4787,6 +4806,17 @@
       }
     },
     {
+      "id": "article-capture-corner-2026-11-06",
+      "type": "Article",
+      "canonical_name": "Who Owns the Handoff",
+      "properties": {
+        "slug": "capture-corner-2026-11-06",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-11-06.html",
+        "published": "2026-11-06"
+      }
+    },
+    {
       "id": "article-premium-briefs-2026-03-21",
       "type": "Article",
       "canonical_name": "Week of March 21, 2026",
@@ -4883,28 +4913,6 @@
         "type": "monthly_brief",
         "url": "/premium/monthly/2026-04",
         "published": "2026-04"
-      }
-    },
-    {
-      "id": "article-premium-monthly-2026-05",
-      "type": "Article",
-      "canonical_name": "VA Enterprise Imaging: Procurement Map, Action Windows, Capture Priorities",
-      "properties": {
-        "slug": "/premium/monthly/2026-05",
-        "type": "monthly_brief",
-        "url": "/premium/monthly/2026-05",
-        "published": "2026-05"
-      }
-    },
-    {
-      "id": "article-community-care-network-next-gen-ccn-ng",
-      "type": "Article",
-      "canonical_name": "Community Care Network Next Gen (CCN NG)",
-      "properties": {
-        "slug": "community-care-network-next-gen-ccn-ng-",
-        "type": "contract_intel",
-        "url": "/contracts/community-care-network-next-gen-ccn-ng/",
-        "published": "2026-08-17"
       }
     }
   ],
@@ -7229,11 +7237,20 @@
       "weight": 1
     },
     {
-      "from_id": "dr-john-de-geus",
+      "from_id": "cdr-john-de-geus-md-usn",
       "to_id": "dha",
       "relation": "leads",
       "properties": {
-        "title": "Information and Innovation Lead, OWHA (reported)"
+        "title": "Information and Innovation Lead, OWHA"
+      },
+      "weight": 1
+    },
+    {
+      "from_id": "ms-dawn-herman",
+      "to_id": "dha",
+      "relation": "leads",
+      "properties": {
+        "title": "Chief, Readiness, Strategy and Business Innovation (Data and Analytics)"
       },
       "weight": 1
     },
@@ -7242,7 +7259,7 @@
       "to_id": "dha",
       "relation": "leads",
       "properties": {
-        "title": "Performance to Plan (P2P) Lead, OWHA (reported)"
+        "title": "Performance to Plan (P2P) Lead, OWHA"
       },
       "weight": 1
     },
@@ -7256,7 +7273,7 @@
       "weight": 1
     },
     {
-      "from_id": "mr-zachary-sonnier",
+      "from_id": "lt-col-zachary-sonnier",
       "to_id": "dha",
       "relation": "leads",
       "properties": {
@@ -8712,6 +8729,27 @@
       "weight": 1
     },
     {
+      "from_id": "article-where-the-lost-days-go",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-where-the-lost-days-go",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-where-the-lost-days-go",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-capture-corner-2026-04-29",
       "to_id": "dhmsm",
       "relation": "mentions",
@@ -9678,6 +9716,20 @@
       "weight": 1
     },
     {
+      "from_id": "article-capture-corner-2026-11-06",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-11-06",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-premium-briefs-2026-03-21",
       "to_id": "federal-ehr",
       "relation": "mentions",
@@ -9953,41 +10005,6 @@
     {
       "from_id": "article-premium-monthly-2026-04",
       "to_id": "va-ehrm",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-05",
-      "to_id": "fedramp",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-05",
-      "to_id": "t4ng2",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-05",
-      "to_id": "vista",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-community-care-network-next-gen-ccn-ng",
-      "to_id": "community-care-network-next-gen-ccn-ng",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-community-care-network-next-gen-ccn-ng",
-      "to_id": "mosa",
       "relation": "mentions",
       "properties": {},
       "weight": 1
