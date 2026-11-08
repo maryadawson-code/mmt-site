@@ -4,7 +4,7 @@
     "abbrev": "DHA",
     "name": "Defense Health Agency",
     "type": "Combat Support Agency (DoD)",
-    "lastUpdated": "2026-10-19",
+    "lastUpdated": "2026-11-08",
     "description": "DoD's combat support agency for the Military Health System. Buys MHS GENESIS, PEO DHMS, OPMED (operational medicine systems including JOMIS and MHS GENESIS-Theater), EIDS, HCDS, enterprise imaging, and the cyber and data modernization layer beneath them. Reorganized April 20, 2026; the three Portfolio Acquisition Executive seats under AD-RDA/CAE are staffed as of September 2026. The Office of Warfighter Health Advantage (OWHA) consolidates data, analytics, AI, and digital health.",
     "mmtRead": "DHA reorganized April 20, 2026 and the acquisition side has settled into three portfolios under the Component Acquisition Executive: PAE Medical Systems, PAE Medical Products, and PAE Medical Digital Solutions (the seat that absorbed PEO DHMS and PEO Medical Systems). PEO DHMS still holds MHS GENESIS, OPMED (JOMIS, MHS GENESIS-Theater, deployable Role 1-2-3 medical C2, blood inventory, theater data movement) and EIDS, and health.mil still describes it as reporting directly to the Under Secretary for Acquisition and Sustainment while administratively attached to DHA. OWHA changed hands in September 2026: RDML Tracy Farrill is retiring and Brig. Gen. Jason Lennen now directs it. HCDS (the MHS GENESIS follow-on) is still pre-solicitation and Leidos holds the reported bridge through about 2028. FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026, so a slipped DHA award this quarter is a program decision, not a funding excuse.",
     "officialSources": [
@@ -57,7 +57,7 @@
         "DHP RDT&E request falls from $2.47B to $1.02B in the FY2027 submission"
       ]
     },
-    "current_read": "The reorganization is past the stand-up phase. Dr. Matthew G. Clark is the confirmed AD-RDA / Component Acquisition Executive with RDML Ivonne Arena as Principal Deputy; James Perkins holds PAE Medical Digital Solutions, Caitlyn Felkoski is Acting PAE Medical Products and Madeleine Friedman is Acting PAE Medical Services, all per the DHA Director's 21 SEP 2026 leadership message (tracked in MMT's key-people file). OWHA moved from RDML Tracy Farrill (retiring) to Brig. Gen. Jason Lennen. DHA targeted full operating capability for July 19, 2026; I have not found a public DHA statement that declares FOC reached, so treat the PAE workforce map as still settling. The dha.mil organization page (read Oct 19, 2026) lists Mr. William Walker as Assistant Director, Healthcare Administration and Operations. HCDS stays pre-solicitation and the Leidos bridge runs to about 2028. FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026.",
+    "current_read": "The reorganization is past the stand-up phase. Dr. Matthew G. Clark is the confirmed AD-RDA / Component Acquisition Executive with RDML Ivonne Arena as Principal Deputy; James Perkins holds PAE Medical Digital Solutions, Caitlyn Felkoski is Acting PAE Medical Products and Madeleine Friedman is Acting PAE Medical Services, all per the DHA Director's 21 SEP 2026 leadership message (tracked in MMT's key-people file). OWHA moved from RDML Tracy Farrill (retiring) to Brig. Gen. Jason Lennen. Under him, the CDAO (Dr. Jesus Caban, per dha.mil) is the one OWHA seat with an official page; the Performance to Plan, Information and Innovation and Health Informatics and Digital Integration leads are reported on LinkedIn and in trade press as of Nov 8, 2026 and wait on official confirmation. DHA targeted full operating capability for July 19, 2026; I have not found a public DHA statement that declares FOC reached, so treat the PAE workforce map as still settling. The dha.mil organization page (read Oct 19, 2026) lists Mr. William Walker as Assistant Director, Healthcare Administration and Operations. HCDS stays pre-solicitation and the Leidos bridge runs to about 2028. FY2027 opened October 1, 2026 under a continuing resolution (P.L. 119-103) that runs through December 11, 2026.",
     "key_vehicles": [
       "DHITUC",
       "MHS EITS",
@@ -70,7 +70,7 @@
       "PAE Medical Digital Solutions: James Perkins (the seat succeeding PEO DHMS and PEO Medical Systems)",
       "PAE Medical Products: Caitlyn Felkoski (Acting); PAE Medical Services: Madeleine Friedman (Acting)",
       "PEO DHMS (Defense Healthcare Management Systems): DHMSM, JOMIS, EIDS",
-      "OWHA (Office of Warfighter Health Advantage): Brig. Gen. Jason Lennen, Director (RDML Tracy Farrill retiring, Sept 2026)",
+      "OWHA (Office of Warfighter Health Advantage): Brig. Gen. Jason Lennen, Director (RDML Tracy Farrill retiring, Sept 2026). Inside OWHA: CDAO Dr. Jesus Caban (dha.mil CDAO page); Information and Innovation Lead Dr. John de Geus, Performance to Plan Lead Matthew Motley, and the Health Informatics and Digital Integration office (chief unidentified), all reported on LinkedIn and in trade press and pending official confirmation; BID's placement under OWHA is unconfirmed",
       "DHACA (Defense Health Agency Contracting Activity): James Watkins, Director",
       "CIO / J-6: Pat Flanders (CIO only; acquisition authority moved to the PAE line)"
     ],

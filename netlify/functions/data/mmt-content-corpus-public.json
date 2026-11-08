@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-11-06T01:07:04.734Z",
-  "total": 289,
+  "generated_at": "2026-11-08T15:50:14.125Z",
+  "total": 290,
   "note": "Public subset of mmt-content-corpus.json (premium=false items only). For unauthenticated endpoints. Per Sprint C 2026-05-14.",
   "counts": {
-    "articles": 145,
+    "articles": 146,
     "contracts": 67,
     "glossary": 42,
     "idiq_vehicles": 35
@@ -2589,6 +2589,30 @@
       "premium": false
     },
     {
+      "id": "article-where-the-lost-days-go",
+      "type": "article",
+      "title": "Where the Lost Days Go",
+      "slug": "where-the-lost-days-go",
+      "date": "2026-11-06",
+      "description": "A Guard sergeant hurt his knee at annual training in July. Over the past year that knee has moved through six stops in the Military Health System: the readiness exam, the duty profile, the appointment line, the surgeon, the record, and, when he separates, VA. An active-duty soldier with the same knee goes through the same six, on a shorter path through the hospital on post. DHA buys or runs each one separately and times it on its own clock. Its FY27 campaign plan now grades the whole trip by one number, lost warrior days. This issue walks both soldiers through all six and finds where the days leak out: at the handoffs, which the government already has the tools to fix.",
+      "tags": [
+        "lost warrior days",
+        "DHA campaign plan",
+        "PARATUS",
+        "medical readiness",
+        "service treatment records",
+        "STR Zero Day",
+        "Executive Order 14426",
+        "referral management",
+        "Reserve Component",
+        "VA transition",
+        "FY27 NDAA"
+      ],
+      "url": "/newsletter/where-the-lost-days-go/",
+      "excerpt": "Where the Lost Days Go A Guard sergeant hurt his knee at annual training in July. Over the past year that knee has moved through six stops in the Military Health System: the readiness exam, the duty profile, the appointment line, the surgeon, the record, and, when he separates, VA. An active-duty soldier with the same knee goes through the same six, on a shorter path through the hospital on post. DHA buys or runs each one separately and times it on its own clock. Its FY27 campaign plan now grades the whole trip by one number, lost warrior days. This issue walks both soldiers through all six and finds where the days leak out: at the handoffs, which the government already has the tools to fix. Friends, On Tuesday I followed a Guard staff sergeant through a request for a copy of his own health record. He is a figure I built from the regulations and GAO's reports. He tore his knee in July, under a section of bridge decking, in the second week of annual training. The Army hospital on post saw him that afternoon, X-rayed the knee, braced it, and referred him to orthopedics. Two days later he was home. Ninety miles from the post, he waited on a line-of-duty determination and on his file. [1] The records desk was one stop. The knee did not start there and it will not end there. This issue walks the rest of the way. It started last September, at the readiness exam that cleared him to train. It runs through the profile that took him off the deployable roster, the call that booked him with a surgeon, the surgeon's clinic in the TRICARE network, the record that had to follow him from each place to the next, and the day he hands that record to the Department of Veterans Affairs. An active-duty soldier with the same knee goes through the same six on a shorter path, inside the hospital on post. The Guard sergeant goes the long way: a civilian exam network, a private surgeon, a DEERS code. The Defense Health Agency buys or runs each of them separately. Each has its own system and its own standard. Both soldiers live them as one trip, and so do their commanders, who want one date: when they get their squad leaders back. My read, and the argument of this issue, is that the cheapest readiness gains left in DHA's plan sit at the handoffs between them. DHA already owns most of what it would take to fix those handoffs. DHA's campaign plan for this fiscal year already grades the trip the commander's way. The North Star for its first line of effort is to reduce \"90% of lost warrior days outside standard physiologic healing timelines\" by 2028, with active-duty access targets of 1, 7, and 15 days underneath it. [2] Matt Clark, sworn in on September 21 as DHA's acquisition executive, told his workforce it would be \"judged on mission outcomes and speed,\" and that if work is \"not supporting readiness or resilience, then it doesn't belong with us.\" [3] That is a whole-trip yardstick laid over a piece-by-piece buy. The pieces can stay separate. The handoffs need an owner, a clock, and a measure. The exam and the profile Every service member takes a periodic health assessment every twelve months. [4] An active-duty soldier takes his at the clinic on post. The sergeant took his last September at a Guard readiness event, where a civilian provider under the Remote Health Readiness Program worked through his labs, immunizations, and questionnaire. [5] Either way, the exam counted as complete the moment someone recorded the date in MEDPROS, the Army's readiness tracking system. Each service keeps its own. [6][7] His status went green. He was one of the 91.1 percent of the total force the Military Health System reported medically ready at the end of fiscal 2025, against a goal of 90. [8] That number counts whether the exam was done on time. It says nothing about how many days a soldier on profile sits past his expected healing time, which is what the campaign plan now counts. The plan calls \"seamless data exchange with service readiness systems\" unfinished work. DHA's answer is PARATUS, a readiness platform it is buying through a commercial solutions opening posted in July. PARATUS is meant to replace \"six Service-specific legacy systems with a unified, governed data platform\" in three phases: the exam, then profiles and individual medical readiness, then waivers. [2][9] DHA describes it as a single system that gives commanders one view of medical risk to readiness. [10] The first phase covers the exam. The second and third are still ahead. In July the knee put the sergeant on a profile. Each service writes profiles in its own system, and every profile carries a duration. [11] The active-duty soldier's profile and his care run inside one hospital. The sergeant's run ninety miles apart. Under the campaign plan's MEND effort, DHA will load standard durations for a first set of 196 musculoskeletal conditions into the services' readiness systems by January 31, 2027. The ACL pathway is among the first three. [2][11] In The Waiting Days I found what that pathway looks like now. A reservist's ACL profile ran ten months: about four from the injury to the operating room, some of it the knee settling before reconstruction and some of it the system, and about six healing. [11] The profile clock ran through all of it without a mark between the two. The readiness system records the profile, the referral system records the appointment, and the lost-warrior-day count will inherit whichever clock it is wired to. The first call His referral went into the appointing system the same week. For an active-duty soldier, the first call goes to a door. In Count the Doors I found at least six of them at one base, inside what DHA itself describes as care \"fragmented across over 110 separate contracts and call centers.\" [12] For the sergeant, the Guard could not authorize the surgery until his commander's line-of-duty determination cleared. His first stretch of waiting ran on paperwork before it ran on a schedule. [1][13] DHA has set the standard it wants at the door: 1, 7, and 15 days. [2] It is also buying the door. A request for information on an enterprise referral and care coordination center, posted October 30, asks industry to comment on a draft work statement for \"appointing, referral management, and care coordination across all DHA Military Treatment Facilities.\" It names \"first-call resolution\" as a goal and takes responses through November 13. [14] I looked in the public PARATUS and appointing documents for a requirement that the appointing system know a caller's readiness status, or that the readiness system know the caller's place in the queue. I did not find one. Internal links may exist. In the documents, the door and the roster do not know each other. The surgeon in the network The active-duty soldier is seen first inside the hospital. GAO's review of fiscal 2022 referrals found first specialty visits there averaging about 16 days against DHA's 15-day goal. When the hospital is full, he goes to the TRICARE network. The sergeant's surgery happened in the network from the start, at a civilian orthopedic practice an hour from his house. Network first specialty visits averaged about 30 days from referral approval against a 28-day standard, and DHA had \"not established a separate time frame\" for urgent network referrals at all. [15] The department concurred. The data is four years old, so I treat it as a baseline. The missing clock here has a name next door. VA sends veterans to the same kind of civilian practice through its community care program. When I followed one of those referrals in The Day a Doctor Said Yes, usable provider-acceptance dates existed on 3 percent of the sampled referrals, 673 of 20,463. [16] The date a surgeon's office agrees to see the patient is the handoff. Without it, the 28-day standard measures a span whose start and end are known while the middle is a guess. Whatever waiting happened there gets booked to the sergeant's profile as healing. The file he carries out All of it ",
+      "premium": false
+    },
+    {
       "id": "contract-community-care-network-next-gen-ccn-ng-",
       "type": "contract_intel",
       "title": "Community Care Network Next Gen (CCN NG)",
@@ -2644,7 +2668,7 @@
       "type": "contract_intel",
       "title": "DHA Data Governance / Data Methods and Strategy (HT001126CE015)",
       "slug": "dha-data-governance-data-methods-and-strategy-ht001126ce015-",
-      "date": "2026-11-04",
+      "date": "2026-11-07",
       "description": "Update Oct 19, 2026: awarded. USASpending carries contract HT001126CE015 to Taurian Consulting 2 LLC (the Guidehouse and ReefPoint joint venture I reported in the Sep 11, 2026 brief) at $8,466,696, period Feb 25, 2026 to Jun 28, 2027, NAICS",
       "tags": [
         "Defense Health Agency (DHA)",
@@ -2797,7 +2821,7 @@
       "type": "contract_intel",
       "title": "VA IE&O (TISTA, task order 36C10B26F0468)",
       "slug": "va-ie-o-tista-task-order-36c10b26f0468-",
-      "date": "2026-11-04",
+      "date": "2026-11-07",
       "description": "Update Oct 5, 2026: OrangeSlices reported on Oct 2, 2026 that TISTA Science and Technology won a 5-year VA IE&O award, task order 36C10B26F0468 at about $164.1M, over 14 other bidders, alongside a separate SCM DSO award (36C10B26F0452, abou",
       "tags": [
         "Department of Veterans Affairs / VA TAC",
@@ -2948,7 +2972,7 @@
       "type": "contract_intel",
       "title": "VA Health Connect / IHT 2.0",
       "slug": "va-health-connect-iht-2-0",
-      "date": "2026-11-04",
+      "date": "2026-11-07",
       "description": "Update Oct 5, 2026: OrangeSlices reports that the IHT 2.0 protest forced VHA to award sole-source bridges for continuity, including a health informatics professional and technical services bridge to SDVOSB Rock Ferry dba MD Informatix and a",
       "tags": [
         "Department of Veterans Affairs / VHA",
@@ -3305,7 +3329,7 @@
       "type": "contract_intel",
       "title": "Swingtide — Market Intelligence Support",
       "slug": "swingtide-market-intelligence-support",
-      "date": "2026-11-04",
+      "date": "2026-11-07",
       "description": "Update Aug 17, 2026: Swingtide Inc awarded a 10-month DHA PEO DHMS Market Intelligence Support Services contract, HT003826CE001, $745,000, single bidder, posted January 2026. Market intelligence support, ~$745K, awarded Jan 2026. Solicitati",
       "tags": [
         "Defense Health Agency",
@@ -3424,7 +3448,7 @@
       "type": "contract_intel",
       "title": "IHS Four Directions Warehouse (4DW) — Clinical Data Repository",
       "slug": "ihs-four-directions-warehouse-4dw-clinical-data-repository",
-      "date": "2026-11-04",
+      "date": "2026-11-07",
       "description": "Update Aug 17, 2026: Cherokee Nation Integrated Health, LLC won the IHS 4DW modernization contract (140D0424C0039), $36,367,134.84, PoP Sept 24, 2024 to Sept 23, 2029; ISBEE set-aside. IHS Health IT Modernization program contract for develo",
       "tags": [
         "Indian Health Service (IHS) / HHS",

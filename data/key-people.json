@@ -1,7 +1,7 @@
 {
   "_schema": {
     "version": "1.0",
-    "last_updated": "2026-10-20",
+    "last_updated": "2026-11-08",
     "source_note": "Profiles sourced from official agency leadership pages. Each profile cites its source URL. Quarterly refresh cadence per PAYWALL-ENRICHMENT.md item 4. Per-person verified_date/verification_note override the block date when a name was last confirmed on an older page pull."
   },
   "agencies": [
@@ -10,7 +10,7 @@
       "agency_name": "Defense Health Agency",
       "source_url": "https://dha.mil/About-DHA/Organizational-Structure",
       "verified_date": "2026-10-19",
-      "note": "The dha.mil Organizational Structure page (read 2026-10-19, undated) lists six principals: Director, Deputy Director, Command Senior Enlisted Leader and the three Assistant Directors. Everyone else in this block comes from DHA briefings and the Director's 21 SEP 2026 leadership message and carries a per-person date.",
+      "note": "The dha.mil Organizational Structure page (read 2026-10-19, undated) lists six principals: Director, Deputy Director, Command Senior Enlisted Leader and the three Assistant Directors. Everyone else in this block comes from DHA briefings and the Director's 21 SEP 2026 leadership message and carries a per-person date. The OWHA staff entries added 2026-11-08 come from research Mary Womack handed MMT, sourced to the dha.mil CDAO page, DHA news articles, LinkedIn profiles and OrangeSlices AI; no page was reachable from the session that applied them, so each LinkedIn- or trade-press-sourced entry carries pending official confirmation until a dha.mil or health.mil page names the seat.",
       "people": [
         {
           "name": "Vice Adm. Darin K. Via, MC, USN",
@@ -111,10 +111,10 @@
         {
           "name": "Brig. Gen. Jason Lennen",
           "title": "Director, Office of Warfighter Health Advantage (OWHA)",
-          "scope": "Leads OWHA, created in the April 2026 reorg, which consolidated the former DIG, CDAO, BID, Digital Health Integration Office and SIG functions: data, analytics, AI and machine learning, and digital health. Came from the Air Force Surgeon General's office, where he was Director of Policy and Resources. Succeeds Rear Adm. Tracy Farrill. Not yet reflected on dha.mil as of 2026-09-25; pending official confirmation.",
-          "why_watch": "The DHA Director describes OWHA as setting strategy and determining what technologies and tools execute it, so this office frames the requirement before acquisition sees it. A policy and resources background points at funding lines and requirements rather than tooling.",
-          "verified_date": "2026-09-25",
-          "verification_note": "DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. His af.mil biography confirms the Air Force seat he leaves (Director of Policy and Resources, Office of the Surgeon General; the Air Force Medical Service renders it Director, Medical Policy and Resources). No public source places him at DHA yet."
+          "scope": "Leads OWHA, created in the April 2026 reorg, which consolidated the former DIG, CDAO, BID, Digital Health Integration Office and SIG functions: data, analytics, AI and machine learning, and digital health. Came from the Air Force Surgeon General's office, where he was Director of Policy and Resources. His own LinkedIn profile (read in research dated 2026-11-08) shows a Deputy Assistant Director, Support, Personnel and Financial Operations stint at DHA from August to September 2026 before the OWHA seat, which it dates to October 2026. Succeeds Rear Adm. Tracy Farrill. Not reflected on dha.mil as of 2026-11-08; pending official confirmation.",
+          "why_watch": "The DHA Director describes OWHA as setting strategy and determining what technologies and tools execute it, so this office frames the requirement before acquisition sees it. A policy, resources and personnel background points at funding lines, workforce readiness and requirements rather than tooling. His Executive Officer is Jillian Kozub (LinkedIn, pending official confirmation).",
+          "verified_date": "2026-11-08",
+          "verification_note": "DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. His af.mil biography confirms the Air Force seat he leaves (Director of Policy and Resources, Office of the Surgeon General). The SPFO deputy stint and the October 2026 OWHA start are from his LinkedIn profile (https://www.linkedin.com/in/jason-lennen-a87452230) as reported in research Mary provided 2026-11-08; MMT did not reach the page. No dha.mil page places him at OWHA yet."
         },
         {
           "name": "Rear Adm. Tracy Farrill",
@@ -123,6 +123,54 @@
           "why_watch": "If your digital health or AI relationship at DHA ran through her, it now runs through Brig. Gen. Jason Lennen. Re-introduce before the next requirement cycle.",
           "verified_date": "2026-09-25",
           "verification_note": "DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. MMT does not characterize her service branch: public sources are inconsistent about whether she is U.S. Public Health Service Commissioned Corps or Navy."
+        },
+        {
+          "name": "Dr. Jesus Caban",
+          "title": "Chief Data and Artificial Intelligence Officer (CDAO); inside OWHA",
+          "scope": "Runs the DHA Chief Data and Artificial Intelligence Office, the office that consolidated into OWHA in the April 2026 reorg. The dha.mil CDAO page describes him as principal advisor to the DHA Deputy Director on data and AI. Launched the DHA Data and Innovation Strategy in March 2026.",
+          "why_watch": "Data governance gate for any data-platform, analytics or AI deal at DHA. His office publishes the Authoritative Data Source designations and the strategy that every DHA data buy will be scored against. Junayd Park leads Application Prototyping and Integration for AI under him (dha.mil CDAO page), the fastest route to a prototype.",
+          "verified_date": "2026-11-08",
+          "verification_note": "Named on the dha.mil CDAO page (https://dha.mil/Offices-and-Programs/CDAO), the same page MMT cited for him on 2026-11-03 in \"The desk after the clinic\". Research Mary provided 2026-11-08 reads the same page for the principal-advisor language and for Junayd Park's title; the page was not reachable from the session that applied this entry, so treat the page read date as 2026-11-03."
+        },
+        {
+          "name": "Dr. John de Geus",
+          "title": "Information and Innovation Lead, OWHA (reported)",
+          "scope": "Reported as OWHA's Information and Innovation Lead. Former Navy Chief Medical Informatics Officer; OrangeSlices AI reported him joining DHA as a Senior Advisor. Whether he runs the functions of the former Digital Integration Group (DIG) is not established.",
+          "why_watch": "The innovation intake inside OWHA. An AI-agent or clinical-informatics pilot that wants an OWHA sponsor starts here, with the CDAO as the data gate.",
+          "verified_date": "2026-11-08",
+          "verification_note": "Research Mary provided 2026-11-08 cites DHA's 14 AUG 2026 article \"Data, technology, people vital for warfighter health advantage\" (https://www.dha.mil/News/2026/08/14/14/56/Data-technology-people-vital-for-warfighter), his LinkedIn profile (https://www.linkedin.com/in/john-de-geus-9914867b) and OrangeSlices AI (https://orangeslices.ai/nacy-cmio-john-de-geus-joins-dha-as-senior-advisor/). MMT's own 18 AUG 2026 read of that DHA article did not record his title, and no page was reachable from the session that applied this entry. Pending official confirmation."
+        },
+        {
+          "name": "Mr. Matthew Motley",
+          "title": "Performance to Plan (P2P) Lead, OWHA (reported)",
+          "scope": "Reported as OWHA's Performance to Plan lead, the execution-tracking function. Came from DHA's Strategic Integration Group (SIG), not the Business Integration Division.",
+          "why_watch": "Owns the performance dashboards OWHA reports against, including the access dashboard OWHA owed on 31 OCT 2026 under the FY2027 operational framework. Execution tracking and reporting tools land here.",
+          "verified_date": "2026-11-08",
+          "verification_note": "OrangeSlices AI, \"DHA taps Strategic Integration Group Chief as Performance to Plan (P2P) Lead for Office of Warfighter Health Advantage (OWHA)\" (https://orangeslices.ai/dha-taps-performance-to-plan-p2p-lead-for-office-of-warfighter-health-advantage-owha/) and his LinkedIn profile (https://www.linkedin.com/in/matt-motley1988), as reported in research Mary provided 2026-11-08. Trade press and LinkedIn only; no dha.mil page names the seat. Pending official confirmation."
+        },
+        {
+          "name": "Mr. Erick Vines",
+          "title": "Chief, Business Integration Division (BID) (reported)",
+          "scope": "Reported as BID Chief since January 2024, with Tari Rangel as Deputy Chief. BID covers purchased-care recapture and health-services delivery planning. Both LinkedIn profiles still place BID under J-8 Financial Management; the April 2026 reorg slide lists BID among the functions consolidated into OWHA. MMT carries BID's placement as unresolved.",
+          "why_watch": "If BID sits in OWHA, purchased-care recapture analytics report to the same director as the CDAO. If it stayed in J-8, the buyer for that work is AD-SPFO. Confirm the reporting line before building a capture plan around it.",
+          "verified_date": "2026-11-08",
+          "verification_note": "LinkedIn profiles of Erick Vines (https://www.linkedin.com/in/erick-vines-97886280) and Tari Rangel (https://www.linkedin.com/in/tari-rangel-74ab6a66), as reported in research Mary provided 2026-11-08. LinkedIn only; no dha.mil page names either seat or BID's current parent. Pending official confirmation."
+        },
+        {
+          "name": "Mr. Zachary Sonnier",
+          "title": "Chief Health Informatics Officer (reported)",
+          "scope": "Reported as DHA's Chief Health Informatics Officer from September 2026. Reporting line not published; health informatics functions moved into OWHA's Health Informatics and Digital Integration (HIDI) office, the successor to the Digital Health Integration Office, whose chief is unidentified.",
+          "why_watch": "Clinical informatics and MHS GENESIS integration requirements route through the CHIO. Pair with HIDI when the chief is named.",
+          "verified_date": "2026-11-08",
+          "verification_note": "OrangeSlices AI, \"DHA taps Zachary Sonnier to be Chief Health Informatics Officer\" (https://orangeslices.ai/dha-taps-zachary-sonnier-to-be-chief-health-informatics-officer/), as reported in research Mary provided 2026-11-08. Trade press only; no dha.mil page names the seat. Pending official confirmation."
+        },
+        {
+          "name": "Ms. Christine Sordillo",
+          "title": "Deputy Senior Procurement Executive (reported)",
+          "scope": "Reported as DHA's Deputy Senior Procurement Executive after serving as OWHA's strategic acquisition advisor. Where the seat sits relative to DHACA and the Component Acquisition Executive is not published.",
+          "why_watch": "She carried OWHA's requirements into acquisition and now sits on the procurement policy side. A useful read on how OWHA-framed requirements get bought.",
+          "verified_date": "2026-11-08",
+          "verification_note": "Her LinkedIn profile (https://www.linkedin.com/in/christine-sordillo), as reported in research Mary provided 2026-11-08. LinkedIn only; no dha.mil page names the seat. Pending official confirmation."
         },
         {
           "name": "Mr. Pat Flanders",
