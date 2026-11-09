@@ -10,9 +10,10 @@ Code: `netlify/functions/lib/team-plan.js` (the only place that writes seat
 rows), `netlify/functions/team-seats.js` (member seat page API),
 `premium/team.html` (the page), `scripts/stripe-setup-team.js` (Stripe
 product, price, webhook event), `scripts/team-invoice.js` (start a team),
-`scripts/team-mark-paid.js` (a team that paid outside Stripe).
+`scripts/team-mark-paid.js` (a team that paid outside Stripe),
+`scripts/team-billing-contact.js` (invoices to an AP inbox).
 Tests: `tests/unit/team-plan.test.js`, `tests/unit/stripe-webhook-team.test.js`,
-`tests/unit/team-mark-paid.test.js`.
+`tests/unit/team-mark-paid.test.js`, `tests/unit/team-invoice-notice.test.js`.
 
 ## Where a team lives
 
@@ -84,6 +85,20 @@ netlify dev:exec -- node scripts/team-invoice.js --company "Acme" --billing-emai
 It prints the hosted invoice link to send. The billing email is always a seat
 so the billing contact can sign in and manage seats at `/premium/team/`.
 
+Invoices to an accounts-payable inbox: Stripe mails only the customer's own
+address and its API cannot add recipients, so a team carries
+`metadata.ap_email`. Pass `--ap-email` when starting the team, or later:
+
+```
+netlify dev:exec -- node scripts/team-billing-contact.js --subscription sub_xxx --ap-email ap@acme.com --apply
+```
+
+It emails the open invoice there now (`lib/team-plan.js sendInvoiceNotice`,
+once per invoice, `customer_events invoice_sent / mmt_team`) and the
+webhook's `invoice.finalized` handler sends every later invoice. To have
+Stripe's own emails copy AP as well, add the address under the customer's
+"Emails to CC" in the Stripe dashboard (dashboard only).
+
 Paid by check, ACH or purchase order (no card on the hosted invoice):
 
 ```
@@ -97,7 +112,9 @@ are live before it exits, and cancels a replaced personal plan. Re-run it with
 more `--seat-emails` to add seats from the command line; an already paid
 invoice is left alone. Marking the invoice paid in the Stripe dashboard
 ("Mark as paid", out of band) does the same thing through the webhook, an
-hour later at worst through the hourly sync.
+hour later at worst through the hourly sync. The hosted invoice page takes
+cards, Link and wallets; ACH debit on the page is a Stripe account setting,
+Mary's call. Never hand edit `mp_users` to let a team in early.
 
 Add or remove a seat: the billing contact does it on `/premium/team/`, or
 Mary edits `mmt_seats` on the subscription in the Stripe dashboard (the
@@ -120,4 +137,5 @@ monthly allowance in `agent-pricing.json` unless listed in
 
 `TEAM_SEATS_SYNCED` (every sync, with activated/deactivated/failed lists),
 `TEAM_SYNC_FAILED` (webhook path threw; the hourly sync repairs),
-`TEAM_REPLACED_SUBSCRIPTION_CANCELED`.
+`TEAM_REPLACED_SUBSCRIPTION_CANCELED`, `TEAM_INVOICE_NOTICE_FAILED` (the AP copy of an
+invoice did not send; rerun `scripts/team-billing-contact.js --resend`).

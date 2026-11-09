@@ -5,7 +5,8 @@
 //
 //   netlify dev:exec -- node scripts/team-invoice.js \
 //     --company "<company>" --billing-email <billing contact> --seats 4 \
-//     [--seat-emails <email>,<email>] [--credit-from <email of a member already paying>] [--apply]
+//     [--seat-emails <email>,<email>] [--credit-from <email of a member already paying>]
+//     [--ap-email <accounts payable address>] [--apply]
 //
 // What --apply does, in order:
 //   1. finds or creates the Stripe customer for the billing email
@@ -18,6 +19,9 @@
 //      invoice sent on 30-day terms, seat list in metadata.mmt_seats
 //      (billing email is always a seat so the billing contact can sign in)
 //   4. finalizes the first invoice and prints its hosted link and PDF
+//   5. with --ap-email: records it on the subscription and emails the invoice
+//      there too (Stripe only mails the customer's own address); later
+//      invoices reach it through the webhook's invoice.finalized handler
 //
 // Nothing activates until Stripe reports that invoice paid: the webhook's
 // invoice.paid handler (and the hourly sync backstop) turn the seats on.
@@ -25,6 +29,7 @@
 // ============================================================================
 
 const Stripe = require("stripe");
+const { createClient } = require("@supabase/supabase-js");
 const team = require("../netlify/functions/lib/team-plan");
 const { classifySubscription } = require("../netlify/functions/lib/stripe-price-classification");
 
@@ -37,6 +42,7 @@ function parseArgs(argv) {
     else if (k === "--seats") a.seats = parseInt(argv[++i], 10);
     else if (k === "--seat-emails") a.seatEmails = team.parseSeats(argv[++i]);
     else if (k === "--credit-from") a.creditFrom = team.normalizeEmail(argv[++i]);
+    else if (k === "--ap-email") a.apEmail = team.normalizeEmail(argv[++i]);
     else if (k === "--days-until-due") a.daysUntilDue = parseInt(argv[++i], 10);
     else if (k === "--apply") a.apply = true;
     else if (k === "--help" || k === "-h") { console.log("see the header of scripts/team-invoice.js"); process.exit(0); }
@@ -44,6 +50,7 @@ function parseArgs(argv) {
   }
   if (!a.company) throw new Error("--company required");
   if (!a.billingEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a.billingEmail)) throw new Error("--billing-email must be a valid email");
+  if (a.apEmail !== undefined && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a.apEmail)) throw new Error("--ap-email must be a valid email");
   const p = team.pricing;
   if (!Number.isFinite(a.seats) || a.seats < p.min_seats || a.seats > p.max_seats) throw new Error(`--seats must be between ${p.min_seats} and ${p.max_seats}`);
   a.seatEmails = team.parseSeats([a.billingEmail, ...a.seatEmails].join(","));
@@ -100,7 +107,7 @@ async function creditPlan(stripe, email, now) {
 
   const price = await seatPrice(stripe);
   const total = price.unit_amount * args.seats;
-  console.log(`team: ${args.company} | billing ${args.billingEmail} | ${args.seats} seats x ${usd(price.unit_amount)} = ${usd(total)} a year | due in ${args.daysUntilDue} days`);
+  console.log(`team: ${args.company} | billing ${args.billingEmail}${args.apEmail ? ` | invoices also to ${args.apEmail}` : ""} | ${args.seats} seats x ${usd(price.unit_amount)} = ${usd(total)} a year | due in ${args.daysUntilDue} days`);
   console.log(`seats listed now: ${args.seatEmails.join(", ")}${args.seatEmails.length < args.seats ? ` (${args.seats - args.seatEmails.length} to add later on /premium/team/ or in Stripe metadata mmt_seats)` : ""}`);
 
   let credit = null;
@@ -131,6 +138,7 @@ async function creditPlan(stripe, email, now) {
     mmt_seats: team.serializeSeats(args.seatEmails),
     created_by: "scripts/team-invoice.js",
   };
+  if (args.apEmail) metadata.ap_email = args.apEmail;
   const discounts = [];
   if (credit && credit.creditCents > 0) {
     const coupon = await stripe.coupons.create({
@@ -160,4 +168,10 @@ async function creditPlan(stripe, email, now) {
   console.log(`invoice: ${invoice.id} ${invoice.status} | amount due ${usd(invoice.amount_due)} | due ${invoice.due_date ? day(new Date(invoice.due_date * 1000).toISOString()) : "-"}`);
   console.log(`PAY LINK: ${invoice.hosted_invoice_url}`);
   console.log(`PDF:      ${invoice.invoice_pdf}`);
+  if (args.apEmail) {
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) { console.log("ap email: SUPABASE env missing, not sent; run scripts/team-billing-contact.js"); return; }
+    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+    const notice = await team.sendInvoiceNotice(supabase, stripe, sub, invoice, { source: "scripts/team-invoice.js" });
+    console.log(notice.sent ? `ap email: invoice sent to ${notice.to}` : `ap email: not sent (${notice.reason}); run scripts/team-billing-contact.js`);
+  }
 })().catch((e) => { console.error("failed:", String(e.message).slice(0, 400)); process.exit(1); });
