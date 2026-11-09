@@ -9,8 +9,11 @@ the same script, and activation, renewal and cancellation are automatic.
 Code: `netlify/functions/lib/team-plan.js` (the only place that writes seat
 rows), `netlify/functions/team-seats.js` (member seat page API),
 `premium/team.html` (the page), `scripts/stripe-setup-team.js` (Stripe
-product, price, webhook event), `scripts/team-invoice.js` (start a team).
-Tests: `tests/unit/team-plan.test.js`, `tests/unit/stripe-webhook-team.test.js`.
+product, price, webhook event), `scripts/team-invoice.js` (start a team),
+`scripts/team-mark-paid.js` (a team that paid outside Stripe),
+`scripts/team-billing-contact.js` (invoices to an AP inbox).
+Tests: `tests/unit/team-plan.test.js`, `tests/unit/stripe-webhook-team.test.js`,
+`tests/unit/team-mark-paid.test.js`, `tests/unit/team-invoice-notice.test.js`.
 
 ## Where a team lives
 
@@ -96,18 +99,22 @@ webhook's `invoice.finalized` handler sends every later invoice. To have
 Stripe's own emails copy AP as well, add the address under the customer's
 "Emails to CC" in the Stripe dashboard (dashboard only).
 
-Paid by ACH, wire or check: Stripe never sees the money, and seats only turn
-on when Stripe holds a paid invoice. Once the bank shows it:
+Paid by check, ACH or purchase order (no card on the hosted invoice):
 
 ```
-netlify dev:exec -- node scripts/team-invoice-paid.js --invoice in_xxx --reference "ACH trace 123" --apply
+netlify dev:exec -- node scripts/team-mark-paid.js --billing-email ap@acme.com --method check --reference "check 1042" --seat-emails a@acme.com,b@acme.com --apply
 ```
 
-That marks the invoice paid out of band, which fires `invoice.paid`; the
-webhook activates the seats and cancels a replaced personal plan. Never hand
-edit `mp_users` to let a team in early. The hosted invoice page takes cards,
-Link and wallets; ACH debit on the page is a Stripe account setting, Mary's
-call.
+It marks the open invoice paid out of band in Stripe (the invoice stays the
+record and the renewal invoice still goes out on the same terms), writes the
+method and reference on the invoice, runs the seat sync at once so the seats
+are live before it exits, and cancels a replaced personal plan. Re-run it with
+more `--seat-emails` to add seats from the command line; an already paid
+invoice is left alone. Marking the invoice paid in the Stripe dashboard
+("Mark as paid", out of band) does the same thing through the webhook, an
+hour later at worst through the hourly sync. The hosted invoice page takes
+cards, Link and wallets; ACH debit on the page is a Stripe account setting,
+Mary's call. Never hand edit `mp_users` to let a team in early.
 
 Add or remove a seat: the billing contact does it on `/premium/team/`, or
 Mary edits `mmt_seats` on the subscription in the Stripe dashboard (the

@@ -1,7 +1,7 @@
 // Team plan invoices and accounts payable (2026-10-27): Stripe mails only the
 // customer's own address and its API cannot add recipients, so a team's
 // metadata.ap_email gets our own copy of every finalized invoice, once per
-// invoice, and a bank payment is recorded with scripts/team-invoice-paid.js.
+// invoice, and a bank payment is recorded with scripts/team-mark-paid.js.
 import { describe, it, expect, beforeAll } from "vitest";
 import { createRequire } from "node:module";
 
