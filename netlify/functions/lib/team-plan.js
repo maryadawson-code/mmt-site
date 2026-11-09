@@ -367,7 +367,24 @@ async function cancelReplacedSubscription(stripe, supabase, sub, source = "team-
   if (meta.replaced_canceled_at) return { skipped: "already_canceled" };
   if (!(await teamIsPaid(stripe, sub))) return { skipped: "unpaid" };
   const old = await stripe.subscriptions.retrieve(replaced);
-  if (old.status !== "canceled") await stripe.subscriptions.cancel(replaced, { prorate: false, invoice_now: false });
+  if (old.status !== "canceled") {
+    try {
+      await stripe.subscriptions.cancel(replaced, { prorate: false, invoice_now: false });
+    } catch (err) {
+      // The webhook's invoice.paid handler cancels the same plan, and a script
+      // run lands in the same second (FHAS, 2026-11-09). Stripe answers
+      // resource_missing for a cancel of a subscription that is already
+      // canceled: re-read before calling it a failure.
+      const again = await stripe.subscriptions.retrieve(replaced).catch(() => null);
+      if (!again || again.status !== "canceled") throw err;
+    }
+  }
+  // If the other path already stamped the team subscription, it also wrote
+  // the ops event: record nothing twice.
+  const fresh = await stripe.subscriptions.retrieve(sub.id).catch(() => null);
+  if (fresh && fresh.metadata && fresh.metadata.replaced_canceled_at) {
+    return { skipped: "already_canceled", canceled: replaced, was_status: old.status, by: "concurrent" };
+  }
   const canceledAt = new Date().toISOString();
   await stripe.subscriptions.update(sub.id, { metadata: { replaced_canceled_at: canceledAt } });
   const { error } = await supabase.from("ops_events").insert({

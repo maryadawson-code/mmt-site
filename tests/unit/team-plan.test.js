@@ -202,6 +202,25 @@ describe("team-plan: replacing a personal plan", () => {
   it("does nothing without a replaced subscription", async () => {
     expect(await team.cancelReplacedSubscription(fakeStripe(), fakeDb(), teamSub())).toEqual({ skipped: "none" });
   });
+  it("treats a plan the webhook canceled in the same second as done, not as a failure (FHAS, 2026-11-09)", async () => {
+    // Stripe says resource_missing when you cancel an already-canceled
+    // subscription; by then the webhook has also stamped the team sub.
+    const db = fakeDb();
+    const stripe = fakeStripe({ paidInvoices: { sub_team: true }, subs: { sub_old: { id: "sub_old", status: "active" } } });
+    stripe.subscriptions.cancel = async () => {
+      stripe.subscriptions.retrieve = async (id) => (id === "sub_old" ? { id, status: "canceled" } : { id, status: "active", metadata: { replaced_canceled_at: "2026-11-09T16:57:00Z" } });
+      const err = new Error("No such subscription: 'sub_old'"); err.code = "resource_missing"; throw err;
+    };
+    const r = await team.cancelReplacedSubscription(stripe, db, teamSub({ metadata: { replaces_subscription: "sub_old" } }));
+    expect(r).toEqual({ skipped: "already_canceled", canceled: "sub_old", was_status: "active", by: "concurrent" });
+    expect(stripe.calls.update).toEqual([]);
+    expect(db.tables.ops_events).toEqual([]);
+
+    // A cancel that fails for any other reason still fails.
+    const broken = fakeStripe({ paidInvoices: { sub_team: true }, subs: { sub_old: { id: "sub_old", status: "active" } } });
+    broken.subscriptions.cancel = async () => { throw new Error("rate limited"); };
+    await expect(team.cancelReplacedSubscription(broken, fakeDb(), teamSub({ metadata: { replaces_subscription: "sub_old" } }))).rejects.toThrow("rate limited");
+  });
 });
 
 describe("team-plan: orphan scan for the hourly backstop", () => {
