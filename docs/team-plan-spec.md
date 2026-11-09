@@ -9,8 +9,10 @@ the same script, and activation, renewal and cancellation are automatic.
 Code: `netlify/functions/lib/team-plan.js` (the only place that writes seat
 rows), `netlify/functions/team-seats.js` (member seat page API),
 `premium/team.html` (the page), `scripts/stripe-setup-team.js` (Stripe
-product, price, webhook event), `scripts/team-invoice.js` (start a team).
-Tests: `tests/unit/team-plan.test.js`, `tests/unit/stripe-webhook-team.test.js`.
+product, price, webhook event), `scripts/team-invoice.js` (start a team),
+`scripts/team-mark-paid.js` (a team that paid outside Stripe).
+Tests: `tests/unit/team-plan.test.js`, `tests/unit/stripe-webhook-team.test.js`,
+`tests/unit/team-mark-paid.test.js`.
 
 ## Where a team lives
 
@@ -81,6 +83,21 @@ netlify dev:exec -- node scripts/team-invoice.js --company "Acme" --billing-emai
 
 It prints the hosted invoice link to send. The billing email is always a seat
 so the billing contact can sign in and manage seats at `/premium/team/`.
+
+Paid by check, ACH or purchase order (no card on the hosted invoice):
+
+```
+netlify dev:exec -- node scripts/team-mark-paid.js --billing-email ap@acme.com --method check --reference "check 1042" --seat-emails a@acme.com,b@acme.com --apply
+```
+
+It marks the open invoice paid out of band in Stripe (the invoice stays the
+record and the renewal invoice still goes out on the same terms), writes the
+method and reference on the invoice, runs the seat sync at once so the seats
+are live before it exits, and cancels a replaced personal plan. Re-run it with
+more `--seat-emails` to add seats from the command line; an already paid
+invoice is left alone. Marking the invoice paid in the Stripe dashboard
+("Mark as paid", out of band) does the same thing through the webhook, an
+hour later at worst through the hourly sync.
 
 Add or remove a seat: the billing contact does it on `/premium/team/`, or
 Mary edits `mmt_seats` on the subscription in the Stripe dashboard (the
