@@ -1,7 +1,7 @@
 {
   "_schema": {
     "version": "1.0",
-    "last_updated": "2026-10-20",
+    "last_updated": "2026-11-08",
     "source_note": "Profiles sourced from official agency leadership pages. Each profile cites its source URL. Quarterly refresh cadence per PAYWALL-ENRICHMENT.md item 4. Per-person verified_date/verification_note override the block date when a name was last confirmed on an older page pull."
   },
   "agencies": [
@@ -10,7 +10,7 @@
       "agency_name": "Defense Health Agency",
       "source_url": "https://dha.mil/About-DHA/Organizational-Structure",
       "verified_date": "2026-10-19",
-      "note": "The dha.mil Organizational Structure page (read 2026-10-19, undated) lists six principals: Director, Deputy Director, Command Senior Enlisted Leader and the three Assistant Directors. Everyone else in this block comes from DHA briefings and the Director's 21 SEP 2026 leadership message and carries a per-person date.",
+      "note": "The dha.mil Organizational Structure page (read 2026-10-19, undated) lists six principals: Director, Deputy Director, Command Senior Enlisted Leader and the three Assistant Directors. Everyone else in this block comes from DHA briefings and the Director's 21 SEP 2026 leadership message and carries a per-person date. The OWHA staff entries added 2026-11-08 come from research Mary Womack handed MMT, sourced to the dha.mil CDAO page, DHA-authored DHITS 2026 decks (August 2026, held in MMT's DHITS library), DHA news articles, LinkedIn profiles and OrangeSlices AI; no page was reachable from the session that applied them, so each LinkedIn- or trade-press-sourced entry carries pending official confirmation until a dha.mil or health.mil page names the seat.",
       "people": [
         {
           "name": "Vice Adm. Darin K. Via, MC, USN",
@@ -46,19 +46,27 @@
         },
         {
           "name": "Dr. Matthew G. Clark",
-          "title": "Assistant Director, Research, Development & Acquisition; Component Acquisition Executive (Confirmed)",
-          "scope": "Component Acquisition Executive for DHA: final component-level acquisition authority over medical systems, medical products and medical digital solutions. Named AD-RDA/CAE by the DHA Director on 21 SEP 2026. The Director says he came from command of NATO's Supreme Headquarters Allied Powers Europe Healthcare Facility and the Brussels Army Health Clinic in Belgium, with a career across defense, global public health, science and technology.",
+          "title": "Assistant Director, Research, Development & Acquisition; Component Acquisition Executive (Confirmed); Senior Procurement Executive (reported)",
+          "scope": "Component Acquisition Executive for DHA: final component-level acquisition authority over medical systems, medical products and medical digital solutions. Named AD-RDA/CAE by the DHA Director on 21 SEP 2026. The Director says he came from command of NATO's Supreme Headquarters Allied Powers Europe Healthcare Facility and the Brussels Army Health Clinic in Belgium, with a career across defense, global public health, science and technology. Mary's OWHA territory map (2026-11-08) cites a DHA article of 04 NOV 2026, \"Strengthening acquisition, research efforts will support warfighter readiness\", reporting him sworn in on 21 SEP 2026 and naming him Senior Procurement Executive; MMT has not reached that page.",
           "why_watch": "Every component-level health IT and medical systems buy runs through this seat. It is no longer acting, so a commitment made here holds. He inherits the three portfolio acquisition executives stood up through FOC.",
           "verified_date": "2026-10-19",
-          "verification_note": "Listed on the dha.mil Organizational Structure page as Assistant Director, Research, Development & Acquisition/Component Acquisition Executive, read 2026-10-19 (no bio linked). Appointment first carried in the DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. Trade press reported the appointment separately (BioBuzz, OrangeSlices AI), rendering his experience as more than 26 years against the Director's 25, so MMT prints no year count."
+          "verification_note": "Listed on the dha.mil Organizational Structure page as Assistant Director, Research, Development & Acquisition/Component Acquisition Executive, read 2026-10-19 (no bio linked). Appointment first carried in the DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. Trade press reported the appointment separately (BioBuzz, OrangeSlices AI), rendering his experience as more than 26 years against the Director's 25, so MMT prints no year count. Senior Procurement Executive and swearing-in: DHA article of 04 NOV 2026 (https://www.dha.mil/News/2026/11/04/15/39/Strengthening-acquisition-research-efforts-support-warfighter-readiness) as cited in the territory map Mary provided 2026-11-08; not reached from the session, so carried as reported until read."
+        },
+        {
+          "name": "Mr. Brett Scheideman",
+          "title": "Acting Principal Deputy, AD-RDA / Deputy Component Acquisition Executive",
+          "scope": "Principal deputy to the Component Acquisition Executive: S&T, Chief Scientist, Research Support, Industry Engagement, Agreements and Partnerships, Category Management, Acquisition Workforce. Co-chairs the Warfighter Modernization and Support Integration Board with OWHA, the funding gate for new technology; finance attends and a leadership decision takes about two weeks.",
+          "why_watch": "Every OWHA-framed requirement crosses his board before acquisition buys it. He told DHITS 2026 that industry does not know what DHA will buy next year and promised better forecasts, industry days and reverse industry days.",
+          "verified_date": "2026-11-08",
+          "verification_note": "Presenter line on the DHA-authored DHITS 2026 Transforming Medical Acquisition deck (August 11-13, 2026; in MMT's DHITS library at /premium/dhits-2026): \"Mr. Brett Scheideman, Acting Principal Deputy, Research, Development, and Acquisition/Deputy Component Acquisition Executive\". The DHA Director leadership message of 21 SEP 2026 named RDML Ivonne Arena Principal Deputy; Mary Womack set that line aside on 2026-11-08 and MMT carries the August deck titles until a public posting settles the seat."
         },
         {
           "name": "Rear Adm. Ivonne Arena",
-          "title": "Principal Deputy, AD-RDA/CAE",
-          "scope": "Principal deputy to the Component Acquisition Executive, the seat MMT's chart carries as Deputy CAE. Held AD-RDA/CAE in an acting capacity through the IOC stand-up until Dr. Clark was named on 21 SEP 2026. Not yet reflected on dha.mil as of 2026-09-25; pending official confirmation.",
-          "why_watch": "She ran the acquisition shop through the reorg, so she carries how the three portfolio acquisition executives were actually built. The Deputy CAE co-chairs the Warfighter Modernization and Support Integration Board with OWHA.",
-          "verified_date": "2026-09-25",
-          "verification_note": "DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. Her dha.mil bio still reads Acting Assistant Director for Research, Development and Acquisition/Component Acquisition Executive, so the Principal Deputy move is single-source."
+          "title": "Former Acting AD-RDA / Component Acquisition Executive; current seat not publicly posted",
+          "scope": "Held AD-RDA/CAE in an acting capacity from IOC (20 APR 2026) through DHITS 2026 (August) until Dr. Matthew G. Clark was named CAE on 21 SEP 2026. Former DHA Deputy CIO. A move to TRICARE Health Plan is reported in Mary's OWHA territory map; no new title is posted and her dha.mil bio still reads Acting AD-RDA/CAE.",
+          "why_watch": "She ran the acquisition shop through the reorg, so she carries how the three portfolio acquisition executives were actually built. If the TRICARE move is real, she becomes a beneficiary-engagement contact rather than an acquisition one.",
+          "verified_date": "2026-11-08",
+          "verification_note": "DHITS 2026 presenter line and recording (August 11-13, 2026; in MMT's DHITS library): Acting Assistant Director for Research, Development & Acquisition / Component Acquisition Executive. Reported TRICARE move from the OWHA territory map Mary provided 2026-11-08; pending official confirmation. The 21 SEP 2026 Director message named her Principal Deputy AD-RDA/CAE; set aside per Mary, 2026-11-08."
         },
         {
           "name": "Mr. James Perkins",
@@ -111,10 +119,10 @@
         {
           "name": "Brig. Gen. Jason Lennen",
           "title": "Director, Office of Warfighter Health Advantage (OWHA)",
-          "scope": "Leads OWHA, created in the April 2026 reorg, which consolidated the former DIG, CDAO, BID, Digital Health Integration Office and SIG functions: data, analytics, AI and machine learning, and digital health. Came from the Air Force Surgeon General's office, where he was Director of Policy and Resources. Succeeds Rear Adm. Tracy Farrill. Not yet reflected on dha.mil as of 2026-09-25; pending official confirmation.",
-          "why_watch": "The DHA Director describes OWHA as setting strategy and determining what technologies and tools execute it, so this office frames the requirement before acquisition sees it. A policy and resources background points at funding lines and requirements rather than tooling.",
-          "verified_date": "2026-09-25",
-          "verification_note": "DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. His af.mil biography confirms the Air Force seat he leaves (Director of Policy and Resources, Office of the Surgeon General; the Air Force Medical Service renders it Director, Medical Policy and Resources). No public source places him at DHA yet."
+          "scope": "Leads OWHA, created in the April 2026 reorg, which consolidated the former DIG, CDAO, BID, Digital Health Integration Office and SIG functions: data, analytics, AI and machine learning, and digital health. Came from the Air Force Surgeon General's office, where he was Director of Policy and Resources. His own LinkedIn profile (read in research dated 2026-11-08) shows a Deputy Assistant Director, Support, Personnel and Financial Operations stint at DHA from August to September 2026 before the OWHA seat, which it dates to October 2026. Succeeds Rear Adm. Tracy Farrill. Not reflected on dha.mil as of 2026-11-08; pending official confirmation.",
+          "why_watch": "The DHA Director describes OWHA as setting strategy and determining what technologies and tools execute it, so this office frames the requirement before acquisition sees it. A policy, resources and personnel background points at funding lines, workforce readiness and requirements rather than tooling. His Executive Officer is Jillian Kozub (LinkedIn, pending official confirmation).",
+          "verified_date": "2026-11-08",
+          "verification_note": "DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. His af.mil biography confirms the Air Force seat he leaves (Director of Policy and Resources, Office of the Surgeon General). The SPFO deputy stint and the October 2026 OWHA start are from his LinkedIn profile (https://www.linkedin.com/in/jason-lennen-a87452230) as reported in research Mary provided 2026-11-08; MMT did not reach the page. No dha.mil page places him at OWHA yet."
         },
         {
           "name": "Rear Adm. Tracy Farrill",
@@ -123,6 +131,62 @@
           "why_watch": "If your digital health or AI relationship at DHA ran through her, it now runs through Brig. Gen. Jason Lennen. Re-introduce before the next requirement cycle.",
           "verified_date": "2026-09-25",
           "verification_note": "DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. MMT does not characterize her service branch: public sources are inconsistent about whether she is U.S. Public Health Service Commissioned Corps or Navy."
+        },
+        {
+          "name": "Dr. Jesus Caban",
+          "title": "Chief Data and Artificial Intelligence Officer (CDAO); inside OWHA",
+          "scope": "Runs the DHA Chief Data and Artificial Intelligence Office, the office that consolidated into OWHA in the April 2026 reorg. The dha.mil CDAO page describes him as principal advisor to the DHA Deputy Director on data and AI. Launched the DHA Data and Innovation Strategy in March 2026.",
+          "why_watch": "Data governance gate for any data-platform, analytics or AI deal at DHA. His office publishes the Authoritative Data Source designations and the strategy that every DHA data buy will be scored against. Junayd Park leads Application Prototyping and Integration for AI under him (dha.mil CDAO page), the fastest route to a prototype.",
+          "verified_date": "2026-11-08",
+          "verification_note": "Named on the dha.mil CDAO page (https://dha.mil/Offices-and-Programs/CDAO), the same page MMT cited for him on 2026-11-03 in \"The desk after the clinic\". Research Mary provided 2026-11-08 reads the same page for the principal-advisor language and for Junayd Park's title; the page was not reachable from the session that applied this entry, so treat the page read date as 2026-11-03."
+        },
+        {
+          "name": "CDR John de Geus, MD, USN",
+          "title": "Information and Innovation Lead, OWHA",
+          "scope": "OWHA Information and Innovation Lead: the innovation intake and the Innovation Engine (Scout, Build, Buy) of the Advantage Engine. The DHITS 2026 \"Fail Fast, Field Faster\" deck proposes OWHA as a standing test-and-fail cell using OTAs and CSOs, with the ARMOR initiative (workforce, qualification and medical-clearance data through 90-day prototypes) as the example. Navy Medical Corps commander and former Navy Chief Medical Informatics Officer; OrangeSlices AI reported him joining DHA as a Senior Advisor in February 2026. Holds the innovation function the former Digital Integration Group performed; the DIG name did not carry over. Division and branch chiefs under him are not publicly named.",
+          "why_watch": "The innovation front door inside OWHA. An AI-agent, readiness-data or clinical-informatics pilot that wants an OWHA sponsor starts here, with the CDAO as the data gate and the WMSIB as the funding gate. ARMOR sits in this pipeline.",
+          "verified_date": "2026-11-08",
+          "verification_note": "Presenter lines on two DHA-authored DHITS 2026 decks (August 11-13, 2026; in MMT's DHITS library at /premium/dhits-2026): \"CDR John de Geus, MD, DHA Office of Warfighter Health Advantage, Information & Innovation Lead\" (Advantage Engine) and \"CDR John de Geus, MD, OWHA\" (Fail Fast, Field Faster). Background from his LinkedIn profile (https://www.linkedin.com/in/john-de-geus-9914867b) and OrangeSlices AI (https://orangeslices.ai/nacy-cmio-john-de-geus-joins-dha-as-senior-advisor/), as reported in research Mary provided 2026-11-08. Not yet on a dha.mil page."
+        },
+        {
+          "name": "Ms. Dawn Herman",
+          "title": "Chief, Readiness, Strategy and Business Innovation (Data and Analytics)",
+          "scope": "Presented the DHITS 2026 \"Enterprise Dashboards for Real-Time Decision-Making\" session with Beatrice Collazo (Lead, Analytics and Insights). The deck credits both to DHA; Mary's territory map places them in OWHA's Data and Analytics line under the CDAO. The session documents dashboard sprawl (10,000 BITAB/Tableau workbooks and 23,000 MED365 Power Platform assets as of April 2026) and a 0 to 100 value assessment that drives keep, consolidate or retire decisions. The map also credits the team with two workforce tools, the Total Workforce Management Tool and the Integrated Manpower and Personnel Resourcing Tool; those names are not in the deck text MMT holds.",
+          "why_watch": "Any new dashboard or analytics product at DHA gets scored against the consolidation review her team runs. Workforce-readiness and manpower analytics (the ground ARMOR covers) start here.",
+          "verified_date": "2026-11-08",
+          "verification_note": "Presenter line on the DHA-authored DHITS 2026 Enterprise Dashboards deck (August 11-13, 2026; in MMT's DHITS library at /premium/dhits-2026): \"Ms. Dawn Herman, Chief, Readiness, Strategy, & Business Innovation, DHA\". OWHA placement and the TWMT and IMPRT tool names come from the OWHA territory map Mary provided 2026-11-08 and are pending official confirmation."
+        },
+        {
+          "name": "Mr. Matthew Motley",
+          "title": "Performance to Plan (P2P) Lead, OWHA",
+          "scope": "OWHA Performance to Plan lead, the execution-tracking function: the Performance Engine that cascades the Campaign Plan and four Lines of Effort into KPI boards and tiered huddles. Came from DHA Strategic Integration Group (SIG), where he was Chief, Strategy Management, not the Business Integration Division. In seat since August 2026 per OrangeSlices AI.",
+          "why_watch": "Owns the performance dashboards OWHA reports against, including the access dashboard OWHA owed on 31 OCT 2026 under the FY2027 operational framework. Execution tracking and reporting tools land here.",
+          "verified_date": "2026-11-08",
+          "verification_note": "Presenter line on the DHA-authored DHITS 2026 \"Advantage Engine\" deck (August 11-13, 2026; in MMT's DHITS library at /premium/dhits-2026): \"Mr. Matthew Motley, DHA Office of Warfighter Health Advantage, Performance to Plan Lead\". Start date and SIG background from OrangeSlices AI (07 AUG 2026) and his LinkedIn profile (https://www.linkedin.com/in/matt-motley1988), as reported in research Mary provided 2026-11-08. Not yet on a dha.mil page."
+        },
+        {
+          "name": "Mr. Erick Vines",
+          "title": "Chief, Business Integration Division (BID) (reported)",
+          "scope": "Reported as BID Chief since January 2024, with Tari Rangel as Deputy Chief. BID covers purchased-care recapture and health-services delivery planning. Both LinkedIn profiles still place BID under J-8 Financial Management; the April 2026 reorg slide lists BID among the functions consolidated into OWHA. MMT carries BID's placement as unresolved.",
+          "why_watch": "If BID sits in OWHA, purchased-care recapture analytics report to the same director as the CDAO. If it stayed in J-8, the buyer for that work is AD-SPFO. Mary's territory map reads the 20 APR 2026 chart as moving BID's divisions into OWHA; the LinkedIn titles still say J-8. Confirm the reporting line before building a capture plan around it.",
+          "verified_date": "2026-11-08",
+          "verification_note": "LinkedIn profiles of Erick Vines (https://www.linkedin.com/in/erick-vines-97886280) and Tari Rangel (https://www.linkedin.com/in/tari-rangel-74ab6a66), as reported in research Mary provided 2026-11-08. LinkedIn only; no dha.mil page names either seat or BID's current parent. Pending official confirmation."
+        },
+        {
+          "name": "Lt Col Zachary Sonnier",
+          "title": "Chief Health Informatics Officer (reported)",
+          "scope": "Presented at DHITS 2026 (August) as Deputy Chief Health Informatics Officer, DHA, on the MHS ambient-listening pilot. Reported as Chief Health Informatics Officer, Health Informatics and Digital Integration (HIDI), OWHA by September 2026 (OrangeSlices AI; FEHRM Annual Summit program per Mary's territory map). HIDI is the successor to the Digital Health Integration Office; its division head is not publicly named.",
+          "why_watch": "Clinical informatics and MHS GENESIS integration requirements route through the CHIO. Pair with HIDI when the chief is named.",
+          "verified_date": "2026-11-08",
+          "verification_note": "Deputy CHIO: presenter line on the DHA-authored DHITS 2026 ambient-listening pilot deck (August 11-13, 2026; in MMT's DHITS library). CHIO: OrangeSlices AI, \"DHA taps Zachary Sonnier to be Chief Health Informatics Officer\" (https://orangeslices.ai/dha-taps-zachary-sonnier-to-be-chief-health-informatics-officer/) and the FEHRM Annual Summit 2026 program, as reported in research and the OWHA territory map Mary provided 2026-11-08; neither reached by MMT. The CHIO title is pending official confirmation."
+        },
+        {
+          "name": "Ms. Christine Sordillo",
+          "title": "Deputy Senior Procurement Executive (reported)",
+          "scope": "Reported as DHA's Deputy Senior Procurement Executive since October 2026 after serving as OWHA's Strategic Acquisition Advisor, the title on her DHITS 2026 \"Fail Fast, Field Faster\" presenter line (August 2026). Where the seat sits relative to DHACA and the Component Acquisition Executive is not published.",
+          "why_watch": "She carried OWHA's requirements into acquisition and now sits on the procurement policy side. A useful read on how OWHA-framed requirements get bought.",
+          "verified_date": "2026-11-08",
+          "verification_note": "Strategic Acquisition Advisor: presenter line on the DHA-authored DHITS 2026 \"Fail Fast, Field Faster\" deck (in MMT's DHITS library). Deputy Senior Procurement Executive: her LinkedIn profile (https://www.linkedin.com/in/christine-sordillo), as reported in research Mary provided 2026-11-08. LinkedIn only for the new seat; no dha.mil page names it. Pending official confirmation."
         },
         {
           "name": "Mr. Pat Flanders",
@@ -147,6 +211,14 @@
           "why_watch": "Public health carries surveillance, environmental health and disease control requirements under Healthcare Administration and Operations. A promotion in seat reads as continuity in that portfolio, not a change of direction.",
           "verified_date": "2026-09-25",
           "verification_note": "DHA Director leadership message \"Key DHA HQ Personnel Updates\", VADM Darin K. Via, 21 SEP 2026 (milsuite Leadership Messages; not a public link). Provided to MMT by Mary Womack. Role and background confirmed by DHA, 30 JUL 2026: https://dha.mil/News/2026/07/30/13/12/Fitness-family-connection which renders her rank as Capt., U.S. Public Health Service. The flag-rank promotion has no public source as of 2026-09-25."
+        },
+        {
+          "name": "Mr. Dan Gall",
+          "title": "Director, TRICARE Health Plan (reported)",
+          "scope": "Reported as Director, TRICARE Health Plan since July 2026, with Curt Prichard as Deputy Director. Dr. David Krulak, the previous Director, left in May 2026 and is now at the VA Office of Inspector General per his biography there. TRICARE Health Plan sits under AD-HCAO.",
+          "why_watch": "The beneficiary-facing buyer. Contact center, CRM and engagement use cases land here. The FY27 Campaign Order's fourth line of effort targets 90% inpatient and outpatient satisfaction and every specialty patient seen within 28 days, which is this office's scorecard.",
+          "verified_date": "2026-11-08",
+          "verification_note": "LinkedIn profiles of Dan Gall and Curt Prichard and the VA OIG biography of David Krulak, as reported in the OWHA territory map Mary provided 2026-11-08; none reached from the session. No dha.mil page names the seat. Pending official confirmation."
         }
       ]
     },
