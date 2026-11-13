@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-11-13T01:10:19.720Z",
-  "total": 290,
+  "generated_at": "2026-11-13T16:53:18.856Z",
+  "total": 291,
   "note": "Public subset of mmt-content-corpus.json (premium=false items only). For unauthenticated endpoints. Per Sprint C 2026-05-14.",
   "counts": {
-    "articles": 146,
+    "articles": 147,
     "contracts": 67,
     "glossary": 42,
     "idiq_vehicles": 35
@@ -2613,6 +2613,29 @@
       "premium": false
     },
     {
+      "id": "article-the-fax-machine-knew-what-day-it-was",
+      "type": "article",
+      "title": "The Fax Machine Knew What Day It Was",
+      "slug": "the-fax-machine-knew-what-day-it-was",
+      "date": "2026-11-13",
+      "description": "Every few months, a veteran in Iowa needs VA's permission again to keep seeing his chiropractor. VA's auditors had to read fax cover sheets to learn how long requests like his really wait. Starting in 2027, as each site goes live, new contracts put a deadline on the contractor who will handle them and none on VA.",
+      "tags": [
+        "VA community care",
+        "CCN Next Gen",
+        "Request for Services",
+        "prior authorization",
+        "utilization management",
+        "VA OIG",
+        "FHIR",
+        "fax automation",
+        "AI",
+        "interoperability"
+      ],
+      "url": "/newsletter/the-fax-machine-knew-what-day-it-was/",
+      "excerpt": "The Fax Machine Knew What Day It Was Every few months, a veteran in Iowa needs VA's permission again to keep seeing his chiropractor. VA's auditors had to read fax cover sheets to learn how long requests like his really wait. Starting in 2027, as each site goes live, new contracts put a deadline on the contractor who will handle them and none on VA. Friends, Every few months, John-Paul Sager's permission to see his chiropractor runs out. Sager served in the Marine Corps and the Army and lives in Denver, Iowa. The pain in his back and shoulder goes back to his service. The local VA does not offer chiropractic care, so VA pays for his visits to the Vanderloo Chiropractic Clinic, about fifteen miles away in Waterloo. Then the approval lapses and he starts making phone calls, often several. \"It seems like it takes entirely too long,\" he told KFF Health News last year. He values the VA all the same. \"You just feel like you're being taken care of by your own,\" he said. [1] Linda Gill sees the other half of it. She manages the clinic's office, where about a dozen veterans come through the program. VA pays about $34 a visit, which she called comparable to private insurance, and the paperwork is heavier. The clinic's leaders thought about leaving the VA program and decided to stay. Gill had a plea for the department: \"After what they've done for us? Please.\" [1] KFF's reporting ends at the clinic door, and so does everything Sager and Gill can see. A request for more care goes into VA, and at some point an answer comes out. On September 24 the inspector general published what happens in between. [2] The auditors examined about 2.6 million requests for more care, filed from October 2024 through January 2026. The formal channel is VA Form 10-10172, the Request for Services, which a community provider files when a veteran needs more than the original referral covered: more visits, more time, another specialty, a procedure outside the episode VA approved. [3] I call it the second yes. VA's rule gives the department three business days to decide and to tell both the doctor and the veteran. Seventeen percent of the requests had a recorded decision notice within that window. [2] The detail I cannot put down is how the auditors learned what the real waits were. To check the dates in VA's tracking system, they opened veterans' medical records and read the fax cover sheets. The system had one request at 7 days. The date printed on the fax said 21. It had another at 13 days, and corrected, that one took 35. In a sample of 124 requests at four facilities, the system and the fax disagreed about one time in five. [2] In that sample, the fax machine kept better time than the tracking system. My argument is narrow. VA should start one clock the moment a request first arrives, stop it the moment the veteran is told, and publish what it reads. Starting in 2027, as each VA site goes live, ten-year contracts put a deadline on the contractor's stretch of that trip and none on VA's. On January 1, a federal rule requires Medicare Advantage and Medicaid plans to offer the whole thing electronically. After it leaves the clinic At the four facilities the auditors visited, staff said most requests arrive as an electronic fax, and from there the work is done by hand. Someone has to open the fax, sort it, and type it into a tool called the Consult Toolbox before a nurse can review it. The report says requests \"can remain in fax queues for up to two months\" before that happens. Two facilities each had more than 1,700 waiting to be logged. At a third, managers stopped entering new requests and moved the staff to other authorization work, and by September 2025 more than 3,700 sat unentered. [2] When a request is finally entered, a person types the date it arrived, because the tool, VHA officials told the auditors, \"cannot automatically capture the actual date.\" The auditors found staff typing one of three things: the date the doctor signed the form, the date the fax was sent, or the date they got to it. There is \"no established national procedure for verifying the correctness of receipt dates.\" [2] If the staff member types the day of entry, a request that sat six weeks in the queue and was decided in two days is a two-day request. My read is that the eight-day average in VA's own data is an estimate, and VA cannot presently say how far off it is. The people doing this work are short-handed and inventive. At one facility, thirty community care nurses each kept a spreadsheet of their own to track their requests. At another, managers told staff to \"close requests on the fourth day after the request was entered into the Consult Toolbox,\" whether or not a clinician had decided. The notification template was supposed to offer a \"needs more time\" option. Two staff members said it was gone, which left approval and denial. One of them chose denial and typed a comment: \"still under provider review.\" The veteran was to be advised to follow up with primary care. The practice was still in effect in April. [2] The inspector general had said as much before. Leigh Ann Searight, a deputy assistant inspector general, told the Senate in February that these delays \"can hinder follow-up care for veterans.\" [4] The new audit added the count: 45 percent decided within three business days, about eight on average, and for 46 percent of requests, about 1.2 million, no record that anyone was told the answer. [2] That is the view from inside VA. From the clinic's side of the fax, it looks different. Meanwhile, at the clinic While the request sits, VA's guidebook tells the clinic what to do, which is nothing: \"no additional veteran care should be provided or paid for\" until VA sends its notice. A doctor who follows that rule waits, and so does the patient. A doctor who keeps treating is working without an authorization, and the report warns of \"potentially leaving the veteran or provider liable for the cost of the care.\" [2] Mental health requests waited longest among the specialties the audit broke out, ten days on average, with 68 percent late. Staff at most of the facilities the auditors visited described care delays of \"sometimes more than 60 days,\" and the audit team sent three cases of delayed care to the inspector general's health care inspectors. [2] Then the answer has to find its way back. A missing record is different from a missing phone call, and some of those 1.2 million doctors and veterans surely heard. But one nurse told the auditors that staff were told to \"fax notifications only to providers and not to notify veterans,\" and VA's own web page for community providers promises a notice to the provider and does not mention the veteran. [2][3] The provider side has stopped expecting three days. One national therapy network tells its clinicians to send renewals at least 30 days before an authorization expires, because VA \"requires a minimum of 30 days to review, approve, and issue a renewed authorization.\" [5] Some veterans stop asking. Marcus Lewis, a Navy veteran who runs the health center in Park River, North Dakota, put it to KFF this way: \"I think a lot of folks just don't want to fight the system.\" [1] Half a clock On August 27, John Figueroa, signing as Acting Under Secretary for Health, answered the audit in one sentence: \"VHA concurs with the recommendations made to the Under Secretary for Health.\" There are six, each due in July 2027. [2] Four days later VA signed the next generation of its Community Care Network contracts with four companies. The period of performance opens January 1, 2027 and runs through 2036. [6] I read the contract documents with the audit open beside them: the work statements, the contractor manual, the surveillance plans, and the incentive plan, as released during the competition. They are pre-award versions hosted by a third party, and the task orders could change them, so take what follows as the design on paper. [7][8][9] The change arrives one site at a time. The co",
+      "premium": false
+    },
+    {
       "id": "contract-community-care-network-next-gen-ccn-ng-",
       "type": "contract_intel",
       "title": "Community Care Network Next Gen (CCN NG)",
@@ -2668,7 +2691,7 @@
       "type": "contract_intel",
       "title": "DHA Data Governance / Data Methods and Strategy (HT001126CE015)",
       "slug": "dha-data-governance-data-methods-and-strategy-ht001126ce015-",
-      "date": "2026-11-11",
+      "date": "2026-11-12",
       "description": "Update Oct 19, 2026: awarded. USASpending carries contract HT001126CE015 to Taurian Consulting 2 LLC (the Guidehouse and ReefPoint joint venture I reported in the Sep 11, 2026 brief) at $8,466,696, period Feb 25, 2026 to Jun 28, 2027, NAICS",
       "tags": [
         "Defense Health Agency (DHA)",
@@ -2821,7 +2844,7 @@
       "type": "contract_intel",
       "title": "VA IE&O (TISTA, task order 36C10B26F0468)",
       "slug": "va-ie-o-tista-task-order-36c10b26f0468-",
-      "date": "2026-11-11",
+      "date": "2026-11-12",
       "description": "Update Oct 5, 2026: OrangeSlices reported on Oct 2, 2026 that TISTA Science and Technology won a 5-year VA IE&O award, task order 36C10B26F0468 at about $164.1M, over 14 other bidders, alongside a separate SCM DSO award (36C10B26F0452, abou",
       "tags": [
         "Department of Veterans Affairs / VA TAC",
@@ -2972,7 +2995,7 @@
       "type": "contract_intel",
       "title": "VA Health Connect / IHT 2.0",
       "slug": "va-health-connect-iht-2-0",
-      "date": "2026-11-11",
+      "date": "2026-11-12",
       "description": "Update Oct 5, 2026: OrangeSlices reports that the IHT 2.0 protest forced VHA to award sole-source bridges for continuity, including a health informatics professional and technical services bridge to SDVOSB Rock Ferry dba MD Informatix and a",
       "tags": [
         "Department of Veterans Affairs / VHA",
@@ -3329,7 +3352,7 @@
       "type": "contract_intel",
       "title": "Swingtide — Market Intelligence Support",
       "slug": "swingtide-market-intelligence-support",
-      "date": "2026-11-11",
+      "date": "2026-11-12",
       "description": "Update Aug 17, 2026: Swingtide Inc awarded a 10-month DHA PEO DHMS Market Intelligence Support Services contract, HT003826CE001, $745,000, single bidder, posted January 2026. Market intelligence support, ~$745K, awarded Jan 2026. Solicitati",
       "tags": [
         "Defense Health Agency",
@@ -3448,7 +3471,7 @@
       "type": "contract_intel",
       "title": "IHS Four Directions Warehouse (4DW) — Clinical Data Repository",
       "slug": "ihs-four-directions-warehouse-4dw-clinical-data-repository",
-      "date": "2026-11-11",
+      "date": "2026-11-12",
       "description": "Update Aug 17, 2026: Cherokee Nation Integrated Health, LLC won the IHS 4DW modernization contract (140D0424C0039), $36,367,134.84, PoP Sept 24, 2024 to Sept 23, 2029; ISBEE set-aside. IHS Health IT Modernization program contract for develo",
       "tags": [
         "Indian Health Service (IHS) / HHS",
