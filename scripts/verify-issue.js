@@ -16,14 +16,20 @@ if (!/^\d{4}-\d{2}-\d{2}$/.test(date || "")) { console.error("usage: node script
 const REPO = path.join(__dirname, "..");
 const logDir = process.env.CLAUDE_SCRATCHPAD || require("os").tmpdir();
 
+// Every step runs on a Node that meets lib/node-floor.js, as CI does. When
+// the Node on this machine does not, floorNodeCommand runs the floor release
+// through npx (three floor-sensitive unit tests failed on Node 25.6.1 on
+// 2026-11-12 while CI was green).
+const { floorNodeCommand } = require("./lib/issue-drop");
 const steps = [
-  ["build", "node", ["build.js"]],
-  ["validate-dist", "node", ["scripts/validate-dist.js"]],
-  ["validate-routes", "node", ["scripts/validate-routes.js"]],
-  ["capture-corner-inventory", "node", ["scripts/capture-corner-inventory.js"]],
-  ["scan-pii", "node", ["scripts/scan-pii.js"]],
-  ["unit-tests", "npx", ["vitest", "run", "tests/unit"]],
-];
+  ["build", ["build.js"]],
+  ["validate-dist", ["scripts/validate-dist.js"]],
+  ["validate-routes", ["scripts/validate-routes.js"]],
+  ["capture-corner-inventory", ["scripts/capture-corner-inventory.js"]],
+  ["scan-pii", ["scripts/scan-pii.js"]],
+  ["unit-tests", ["node_modules/vitest/vitest.mjs", "run", "tests/unit"]],
+].map(([name, nodeArgs]) => [name, ...floorNodeCommand(nodeArgs)]);
+if (steps[0][1] !== "node") console.log(`     local Node ${process.version} is off the floor; running every step on the floor release through npx`);
 
 const todayEt = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
 let failed = false;

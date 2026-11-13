@@ -130,9 +130,9 @@ function draftManifest(date) {
   const cc = mds.find((x) => /CaptureCorner/i.test(x.f));
   const art = mds.find((x) => !/CaptureCorner/i.test(x.f) && !/FactCheck|Fact-Check/i.test(x.f));
   if (!art || !cc) die("could not find an MMT_*.md article + CaptureCorner pair in ~/Downloads");
-  const sameDay = (t) => new Date(t).toDateString() === new Date(art.t).toDateString();
-  const pngs = recent(/^ChatGPT Image .*\.png$/).filter((x) => sameDay(x.t)).sort((a, b) => a.t - b.t);
-  const timelines = recent(/Timeline.*\.png$/i).filter((x) => sameDay(x.t));
+  const picked = require("./lib/issue-drop").pickIssueImages(recent(/\.(png|jpe?g|webp)$/i), art.t);
+  const pngs = picked.images;
+  const timelines = picked.timelines;
   const artSrc = fs.readFileSync(path.join(dl, art.f), "utf8");
   const ccSrc = fs.readFileSync(path.join(dl, cc.f), "utf8");
   const first = (src, re) => (src.match(re) || [, ""])[1].trim();
@@ -173,7 +173,7 @@ function draftManifest(date) {
   if (fs.existsSync(out) && !process.argv.includes("--force")) die(`${out} already exists (a filled manifest?); pass --force to overwrite it`);
   fs.writeFileSync(out, JSON.stringify(manifest, null, 2));
   console.log(`draft manifest: ${out}`);
-  console.log(`  article: ${art.f}\n  cc:      ${cc.f}\n  pngs (oldest first; first = cover): ${pngs.map((x) => x.f).join(" | ") || "none"}\n  timeline: ${timelines.map((x) => x.f).join(" | ") || "none"}`);
+  console.log(`  article: ${art.f}\n  cc:      ${cc.f}\n  pngs (oldest first; first = cover${picked.fallback ? "; none named ChatGPT Image, so these are every image saved that day: drop any that are not issue art" : ""}): ${pngs.map((x) => x.f).join(" | ") || "none"}\n  timeline: ${timelines.map((x) => x.f).join(" | ") || "none"}`);
   console.log(`  fill every TODO (alt text needs a look at each PNG; anchors come from Mary's placement note), then:\n  node scripts/stage-newsletter.js ${out}`);
   return out;
 }
