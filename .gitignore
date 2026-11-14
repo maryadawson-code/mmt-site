@@ -82,5 +82,8 @@ eval/reports/
 
 # Written by build.js on every build; bundled with the health function (netlify.toml)
 netlify/build-info.json
+# Written by scripts/build-site-index.js at the end of every build; bundled
+# with the support-agent function (netlify.toml). Generated, never committed.
+netlify/site-index/
 data/award-signals.json
 data/award-signals.md

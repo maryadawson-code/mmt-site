@@ -233,8 +233,18 @@ function anchorTerm(item, tokens, acronyms, phrase) {
  * @returns {Array} sorted by score desc, each with _score and _anchor
  */
 function searchCorpus(query, limit = 5, phrase = "", options = {}) {
-  const corpus = loadCorpus();
-  if (!corpus.items || corpus.items.length === 0) return [];
+  return searchItems(loadCorpus().items, query, limit, phrase, options);
+}
+
+/**
+ * The scorer behind searchCorpus, over any list of corpus-shaped items
+ * ({ type, title, description, tags, excerpt, url, date }). The site help
+ * widget ranks published pages and corpus items together through it, so the
+ * site has one tokenizer, one set of weights and one publish gate.
+ * Same parameters and return shape as searchCorpus.
+ */
+function searchItems(items, query, limit = 5, phrase = "", options = {}) {
+  if (!Array.isArray(items) || items.length === 0) return [];
   const tokens = tokenize(query);
   if (tokens.length === 0) return [];
   const acronyms = extractAcronyms(query);
@@ -243,7 +253,7 @@ function searchCorpus(query, limit = 5, phrase = "", options = {}) {
   const perTypeCap = Number.isFinite(opts.perTypeCap) ? opts.perTypeCap : DEFAULT_PER_TYPE_CAP;
   const topN = Number.isFinite(opts.topN) && opts.topN > 0 ? opts.topN : limit;
   const today = /^\d{4}-\d{2}-\d{2}$/.test(String(opts.today || "")) ? opts.today : todayET();
-  const scored = corpus.items
+  const scored = items
     .filter((item) => !isUnpublished(item, today))
     .map((item) => ({ item, score: scoreItem(item, tokens, acronyms, cleanPhrase) }))
     .filter((s) => s.score > 0)
@@ -341,6 +351,7 @@ function corpusMeta() {
 module.exports = {
   loadCorpus,
   searchCorpus,
+  searchItems,
   formatCorpusContext,
   corpusMeta,
   excerptWindow,
