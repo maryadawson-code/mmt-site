@@ -52,31 +52,9 @@ const FEEDBACK_TO = "mary@missionmeetstech.com";
 const FEEDBACK_VERDICTS = new Set(["up", "down", "wrong"]);
 const FEEDBACK_NOTE_MAX = 500;
 
-// Dollars per million tokens, matched on the model id. An unknown model
-// records null rather than a guess; the table is extended, never inferred.
-const PRICE_PER_MTOK = [
-  { match: "haiku-4-5", input: 1, output: 5 },
-  { match: "sonnet-5", input: 2, output: 10 },
-  { match: "opus-5", input: 15, output: 75 },
-];
-
-/** Pure: USD for a turn from the price table, or null for an unknown model. */
-function costEstimate(model, usage) {
-  const id = String(model || "").toLowerCase();
-  const row = PRICE_PER_MTOK.find((r) => id.includes(r.match));
-  if (!row) return null;
-  const inTok = Number(usage && usage.input_tokens) || 0;
-  const outTok = Number(usage && usage.output_tokens) || 0;
-  return Number(((inTok * row.input + outTok * row.output) / 1e6).toFixed(6));
-}
-
-/** Pure: input + output tokens, or null when the model reported no usage. */
-function tokensUsed(usage) {
-  if (!usage || typeof usage !== "object") return null;
-  const inTok = Number(usage.input_tokens) || 0;
-  const outTok = Number(usage.output_tokens) || 0;
-  return inTok + outTok;
-}
+// The price table and the two pure helpers live in lib/model-cost.js so the
+// site help widget records cost the same way. Re-exported below.
+const { PRICE_PER_MTOK, costEstimate, tokensUsed } = require("./lib/model-cost");
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "https://missionmeetstech.com",

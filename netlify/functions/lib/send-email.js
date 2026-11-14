@@ -53,9 +53,12 @@ function adminBccList() {
  *   the MissionPulse webhook's foreign-event filter to short-circuit cleanly
  *   on non-MP streams (e.g. tags=[{name:'app',value:'mmt'},{name:'stream',
  *   value:'friday_brief'}]). Default undefined — existing callers unchanged.
+ * @param {string} [opts.replyTo] - Optional Reply-To address. The site help
+ *   widget sets it to the reader's address so a reply from the support
+ *   inbox goes to the reader, not to noreply.
  * @returns {Promise<{success: boolean, error?: string, id?: string}>}
  */
-async function sendEmail({ to, subject, html, from, attachments, bcc, adminCopy, tags }) {
+async function sendEmail({ to, subject, html, from, attachments, bcc, adminCopy, tags, replyTo }) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.warn("RESEND_API_KEY not set — skipping email send");
@@ -84,6 +87,7 @@ async function sendEmail({ to, subject, html, from, attachments, bcc, adminCopy,
         to: [to],
         subject,
         html,
+        ...(replyTo && { reply_to: replyTo }),
         ...(bccList.length > 0 && { bcc: bccList }),
         ...(attachments && attachments.length > 0 && { attachments }),
         ...(Array.isArray(tags) && tags.length > 0 && { tags }),
