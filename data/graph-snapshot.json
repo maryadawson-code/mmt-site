@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-10-22T13:04:11.213Z",
-  "node_count": 512,
-  "edge_count": 776,
+  "generated_at": "2026-11-15T19:59:53.737Z",
+  "node_count": 518,
+  "edge_count": 766,
   "nodes": [
     {
       "id": "peo-dhms-deployment",
@@ -663,7 +663,7 @@
         "classification": "Solicitation",
         "status": "awarded",
         "naics": "541512",
-        "last_verified": "2026-10-21"
+        "last_verified": "2026-11-14"
       }
     },
     {
@@ -774,7 +774,7 @@
         "classification": "Vendor-Announced",
         "status": "awarded",
         "naics": "541512",
-        "last_verified": "2026-10-21"
+        "last_verified": "2026-11-14"
       }
     },
     {
@@ -961,7 +961,7 @@
         "classification": "IDIQ",
         "status": "awarded",
         "naics": "621999",
-        "last_verified": "2026-10-21"
+        "last_verified": "2026-11-14"
       }
     },
     {
@@ -1378,7 +1378,7 @@
         "classification": "Award",
         "status": "awarded",
         "naics": "541618",
-        "last_verified": "2026-10-21"
+        "last_verified": "2026-11-14"
       }
     },
     {
@@ -1473,7 +1473,7 @@
         "classification": "Award",
         "status": "awarded",
         "naics": "541519",
-        "last_verified": "2026-10-21"
+        "last_verified": "2026-11-14"
       }
     },
     {
@@ -1853,6 +1853,57 @@
       "id": "optimal-strategix-group-bcg-federal-holds-94-of-obligations",
       "type": "Contractor",
       "canonical_name": "Optimal Strategix Group. BCG Federal holds ~94% of obligations .",
+      "properties": {}
+    },
+    {
+      "id": "cms-fraud-defense-contracts-upic-successor",
+      "type": "Program",
+      "canonical_name": "CMS Fraud Defense Contracts (UPIC successor)",
+      "properties": {
+        "classification": "Program Watch",
+        "status": "upcoming",
+        "naics": "",
+        "last_verified": "2026-11-13"
+      }
+    },
+    {
+      "id": "cms-supplemental-medical-review-contract-smrc",
+      "type": "Solicitation",
+      "canonical_name": "CMS Supplemental Medical Review Contract (SMRC)",
+      "properties": {
+        "classification": "Solicitation",
+        "status": "upcoming",
+        "naics": "",
+        "last_verified": "2026-11-13"
+      }
+    },
+    {
+      "id": "incumbent-not-stated-in-the-forecast-line",
+      "type": "Contractor",
+      "canonical_name": "Incumbent not stated in the forecast line",
+      "properties": {}
+    },
+    {
+      "id": "pending-official-confirmation",
+      "type": "Contractor",
+      "canonical_name": "pending official confirmation.",
+      "properties": {}
+    },
+    {
+      "id": "va-payment-integrity-validation-and-oversight-tool-pivot",
+      "type": "Program",
+      "canonical_name": "VA Payment Integrity Validation and Oversight Tool (PIVOT)",
+      "properties": {
+        "classification": "Program Watch",
+        "status": "upcoming",
+        "naics": "",
+        "last_verified": "2026-11-13"
+      }
+    },
+    {
+      "id": "not-yet-competed-rfi-stage",
+      "type": "Contractor",
+      "canonical_name": "Not yet competed. RFI stage .",
       "properties": {}
     },
     {
@@ -4222,6 +4273,61 @@
       }
     },
     {
+      "id": "article-count-the-doors",
+      "type": "Article",
+      "canonical_name": "Count the Doors",
+      "properties": {
+        "slug": "count-the-doors",
+        "type": "article",
+        "url": "/newsletter/count-the-doors/",
+        "published": "2026-10-23"
+      }
+    },
+    {
+      "id": "article-the-day-a-doctor-said-yes",
+      "type": "Article",
+      "canonical_name": "The Day a Doctor Said Yes",
+      "properties": {
+        "slug": "the-day-a-doctor-said-yes",
+        "type": "article",
+        "url": "/newsletter/the-day-a-doctor-said-yes/",
+        "published": "2026-10-27"
+      }
+    },
+    {
+      "id": "article-the-desk-after-the-clinic",
+      "type": "Article",
+      "canonical_name": "The Desk After the Clinic",
+      "properties": {
+        "slug": "the-desk-after-the-clinic",
+        "type": "article",
+        "url": "/newsletter/the-desk-after-the-clinic/",
+        "published": "2026-11-03"
+      }
+    },
+    {
+      "id": "article-where-the-lost-days-go",
+      "type": "Article",
+      "canonical_name": "Where the Lost Days Go",
+      "properties": {
+        "slug": "where-the-lost-days-go",
+        "type": "article",
+        "url": "/newsletter/where-the-lost-days-go/",
+        "published": "2026-11-06"
+      }
+    },
+    {
+      "id": "article-the-fax-machine-knew-what-day-it-was",
+      "type": "Article",
+      "canonical_name": "The Fax Machine Knew What Day It Was",
+      "properties": {
+        "slug": "the-fax-machine-knew-what-day-it-was",
+        "type": "article",
+        "url": "/newsletter/the-fax-machine-knew-what-day-it-was/",
+        "published": "2026-11-13"
+      }
+    },
+    {
       "id": "article-capture-corner-2026-04-29",
       "type": "Article",
       "canonical_name": "DHA Reorganization: Sixteen Changes, Five That Move Your Pipeline",
@@ -4673,6 +4779,61 @@
       }
     },
     {
+      "id": "article-capture-corner-2026-10-23",
+      "type": "Article",
+      "canonical_name": "Who Builds the Door",
+      "properties": {
+        "slug": "capture-corner-2026-10-23",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-10-23.html",
+        "published": "2026-10-23"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-10-27",
+      "type": "Article",
+      "canonical_name": "Who Owns the Referral",
+      "properties": {
+        "slug": "capture-corner-2026-10-27",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-10-27.html",
+        "published": "2026-10-27"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-11-03",
+      "type": "Article",
+      "canonical_name": "Who Builds the Desk",
+      "properties": {
+        "slug": "capture-corner-2026-11-03",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-11-03.html",
+        "published": "2026-11-03"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-11-06",
+      "type": "Article",
+      "canonical_name": "Who Owns the Handoff",
+      "properties": {
+        "slug": "capture-corner-2026-11-06",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-11-06.html",
+        "published": "2026-11-06"
+      }
+    },
+    {
+      "id": "article-capture-corner-2026-11-13",
+      "type": "Article",
+      "canonical_name": "Who Times the Second Yes",
+      "properties": {
+        "slug": "capture-corner-2026-11-13",
+        "type": "premium_brief",
+        "url": "/premium/briefs/capture-corner-2026-11-13.html",
+        "published": "2026-11-13"
+      }
+    },
+    {
       "id": "article-premium-briefs-2026-03-21",
       "type": "Article",
       "canonical_name": "Week of March 21, 2026",
@@ -4747,116 +4908,6 @@
         "type": "monthly_brief",
         "url": "/premium/monthly/2026-02",
         "published": "2026-02"
-      }
-    },
-    {
-      "id": "article-premium-monthly-2026-03",
-      "type": "Article",
-      "canonical_name": "March 2026 — Q2 Pipeline Forecast",
-      "properties": {
-        "slug": "/premium/monthly/2026-03",
-        "type": "monthly_brief",
-        "url": "/premium/monthly/2026-03",
-        "published": "2026-03"
-      }
-    },
-    {
-      "id": "article-premium-monthly-2026-04",
-      "type": "Article",
-      "canonical_name": "April 2026: The DHA Reorg Quarter",
-      "properties": {
-        "slug": "/premium/monthly/2026-04",
-        "type": "monthly_brief",
-        "url": "/premium/monthly/2026-04",
-        "published": "2026-04"
-      }
-    },
-    {
-      "id": "article-premium-monthly-2026-05",
-      "type": "Article",
-      "canonical_name": "VA Enterprise Imaging: Procurement Map, Action Windows, Capture Priorities",
-      "properties": {
-        "slug": "/premium/monthly/2026-05",
-        "type": "monthly_brief",
-        "url": "/premium/monthly/2026-05",
-        "published": "2026-05"
-      }
-    },
-    {
-      "id": "article-community-care-network-next-gen-ccn-ng",
-      "type": "Article",
-      "canonical_name": "Community Care Network Next Gen (CCN NG)",
-      "properties": {
-        "slug": "community-care-network-next-gen-ccn-ng-",
-        "type": "contract_intel",
-        "url": "/contracts/community-care-network-next-gen-ccn-ng/",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-ccn-next-gen-dental-36c10g26r0004",
-      "type": "Article",
-      "canonical_name": "CCN Next Gen Dental (36C10G26R0004)",
-      "properties": {
-        "slug": "ccn-next-gen-dental-36c10g26r0004-",
-        "type": "contract_intel",
-        "url": "/contracts/ccn-dental-36c10g26r0004/",
-        "published": "2026-10-05"
-      }
-    },
-    {
-      "id": "article-va-ambient-scribe-idiq-36c10b26r0006",
-      "type": "Article",
-      "canonical_name": "VA Ambient Scribe IDIQ (36C10B26R0006)",
-      "properties": {
-        "slug": "va-ambient-scribe-idiq-36c10b26r0006-",
-        "type": "contract_intel",
-        "url": "/contracts/va-ambient-scribe-idiq-36c10b26r0006/",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-dha-data-governance-data-methods-and-strategy-ht001126ce015",
-      "type": "Article",
-      "canonical_name": "DHA Data Governance / Data Methods and Strategy (HT001126CE015)",
-      "properties": {
-        "slug": "dha-data-governance-data-methods-and-strategy-ht001126ce015-",
-        "type": "contract_intel",
-        "url": "/contracts/dha-data-governance-wosb-set-aside/",
-        "published": "2026-10-19"
-      }
-    },
-    {
-      "id": "article-peo-dhms-deployment-solutions-new-idiq",
-      "type": "Article",
-      "canonical_name": "PEO DHMS Deployment Solutions (New IDIQ)",
-      "properties": {
-        "slug": "peo-dhms-deployment-solutions-new-idiq-",
-        "type": "contract_intel",
-        "url": "/contracts/peo-dhms-deployment-solutions-new-idiq/",
-        "published": "2026-08-17"
-      }
-    },
-    {
-      "id": "article-va-enterprise-imaging-neis-multi-visn-pacs-bi-directional",
-      "type": "Article",
-      "canonical_name": "VA Enterprise Imaging (NEIS + Multi-VISN PACS + Bi-Directional)",
-      "properties": {
-        "slug": "va-enterprise-imaging-neis-multi-visn-pacs-bi-directional-",
-        "type": "contract_intel",
-        "url": "/contracts/va-enterprise-imaging-neis-multi-visn-pacs-bi-directional/",
-        "published": "2026-09-25"
-      }
-    },
-    {
-      "id": "article-hhs-hopss-hhs-one-professional-services-solutions",
-      "type": "Article",
-      "canonical_name": "HHS HOPSS - HHS One Professional Services Solutions",
-      "properties": {
-        "slug": "hhs-hopss-hhs-one-professional-services-solutions",
-        "type": "contract_intel",
-        "url": "/contracts/hhs-hopss-hhs-one-professional-services-solutions/",
-        "published": "2026-10-05"
       }
     }
   ],
@@ -7046,6 +7097,69 @@
       "weight": 1
     },
     {
+      "from_id": "cms",
+      "to_id": "cms-fraud-defense-contracts-upic-successor",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms",
+      "to_id": "cms-supplemental-medical-review-contract-smrc",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "incumbent-not-stated-in-the-forecast-line",
+      "to_id": "cms-supplemental-medical-review-contract-smrc",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms-supplemental-medical-review-contract-smrc",
+      "to_id": "incumbent-not-stated-in-the-forecast-line",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "pending-official-confirmation",
+      "to_id": "cms-supplemental-medical-review-contract-smrc",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "cms-supplemental-medical-review-contract-smrc",
+      "to_id": "pending-official-confirmation",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va",
+      "to_id": "va-payment-integrity-validation-and-oversight-tool-pivot",
+      "relation": "manages",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "not-yet-competed-rfi-stage",
+      "to_id": "va-payment-integrity-validation-and-oversight-tool-pivot",
+      "relation": "incumbent_of",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "va-payment-integrity-validation-and-oversight-tool-pivot",
+      "to_id": "not-yet-competed-rfi-stage",
+      "relation": "awarded_to",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "vice-adm-darin-k-via-mc-usn",
       "to_id": "dha",
       "relation": "leads",
@@ -8589,6 +8703,62 @@
       "weight": 1
     },
     {
+      "from_id": "article-the-desk-after-the-clinic",
+      "to_id": "chcs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-desk-after-the-clinic",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-desk-after-the-clinic",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-where-the-lost-days-go",
+      "to_id": "defense-health-agency",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-where-the-lost-days-go",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-where-the-lost-days-go",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-fax-machine-knew-what-day-it-was",
+      "to_id": "far",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-the-fax-machine-knew-what-day-it-was",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-capture-corner-2026-04-29",
       "to_id": "dhmsm",
       "relation": "mentions",
@@ -9492,6 +9662,90 @@
       "weight": 1
     },
     {
+      "from_id": "article-capture-corner-2026-10-23",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-10-23",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-10-27",
+      "to_id": "vista",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-11-03",
+      "to_id": "asw-ha",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-11-03",
+      "to_id": "chcs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-11-03",
+      "to_id": "dha-director",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-11-03",
+      "to_id": "dha-j-6",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-11-03",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-11-03",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-11-06",
+      "to_id": "mhs",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-11-06",
+      "to_id": "mhs-genesis",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
+      "from_id": "article-capture-corner-2026-11-13",
+      "to_id": "ota",
+      "relation": "mentions",
+      "properties": {},
+      "weight": 1
+    },
+    {
       "from_id": "article-premium-briefs-2026-03-21",
       "to_id": "federal-ehr",
       "relation": "mentions",
@@ -9620,300 +9874,6 @@
     {
       "from_id": "article-premium-monthly-2026-02",
       "to_id": "va-oit",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-03",
-      "to_id": "dhmsm",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-03",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-03",
-      "to_id": "peo-dhms-deployment",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-03",
-      "to_id": "jomis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-03",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-03",
-      "to_id": "mhs-genesis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-03",
-      "to_id": "ota",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-03",
-      "to_id": "peo-dhms",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-03",
-      "to_id": "va-ehrm",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-03",
-      "to_id": "va-oit",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-04",
-      "to_id": "nitaac-cio-sp4",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-04",
-      "to_id": "cio-sp4",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-04",
-      "to_id": "dhmsm",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-04",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-04",
-      "to_id": "far",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-04",
-      "to_id": "peo-dhms-deployment",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-04",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-04",
-      "to_id": "mhs-genesis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-04",
-      "to_id": "peo-dhms",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-04",
-      "to_id": "t4ng2",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-04",
-      "to_id": "va-ehrm",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-05",
-      "to_id": "fedramp",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-05",
-      "to_id": "t4ng2",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-premium-monthly-2026-05",
-      "to_id": "vista",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-community-care-network-next-gen-ccn-ng",
-      "to_id": "community-care-network-next-gen-ccn-ng",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-community-care-network-next-gen-ccn-ng",
-      "to_id": "mosa",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-va-ambient-scribe-idiq-36c10b26r0006",
-      "to_id": "va-ambient-scribe-idiq-36c10b26r0006",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dha-data-governance-data-methods-and-strategy-ht001126ce015",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-dha-data-governance-data-methods-and-strategy-ht001126ce015",
-      "to_id": "ota",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-peo-dhms-deployment-solutions-new-idiq",
-      "to_id": "defense-health-agency",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-peo-dhms-deployment-solutions-new-idiq",
-      "to_id": "federal-ehr",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-peo-dhms-deployment-solutions-new-idiq",
-      "to_id": "hcds",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-peo-dhms-deployment-solutions-new-idiq",
-      "to_id": "peo-dhms-deployment",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-peo-dhms-deployment-solutions-new-idiq",
-      "to_id": "mhs",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-peo-dhms-deployment-solutions-new-idiq",
-      "to_id": "mhs-genesis",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-peo-dhms-deployment-solutions-new-idiq",
-      "to_id": "ota",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-peo-dhms-deployment-solutions-new-idiq",
-      "to_id": "peo-dhms",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-peo-dhms-deployment-solutions-new-idiq",
-      "to_id": "peo-dhms-deployment-solutions-new-idiq",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-va-enterprise-imaging-neis-multi-visn-pacs-bi-directional",
-      "to_id": "va-enterprise-imaging-neis-multi-visn-pacs-bi-directional",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-hhs-hopss-hhs-one-professional-services-solutions",
-      "to_id": "department-of-health-and-human-services",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-hhs-hopss-hhs-one-professional-services-solutions",
-      "to_id": "hhs-hopss-hhs-one-professional-services-solutions",
-      "relation": "mentions",
-      "properties": {},
-      "weight": 1
-    },
-    {
-      "from_id": "article-hhs-hopss-hhs-one-professional-services-solutions",
-      "to_id": "hopss",
       "relation": "mentions",
       "properties": {},
       "weight": 1
@@ -10399,6 +10359,16 @@
       "weight": 0.8
     },
     {
+      "from_id": "va",
+      "to_id": "not-yet-competed-rfi-stage",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "va-payment-integrity-validation-and-oversight-tool-pivot",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
       "from_id": "hhs",
       "to_id": "general-dynamics-it-platform-oracle-cerner",
       "relation": "incumbent_of",
@@ -10624,6 +10594,26 @@
       "relation": "incumbent_of",
       "properties": {
         "via_contract": "cms-rmada-3-research-measurement-assessment-design-analysis",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cms",
+      "to_id": "incumbent-not-stated-in-the-forecast-line",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cms-supplemental-medical-review-contract-smrc",
+        "derived": true
+      },
+      "weight": 0.8
+    },
+    {
+      "from_id": "cms",
+      "to_id": "pending-official-confirmation",
+      "relation": "incumbent_of",
+      "properties": {
+        "via_contract": "cms-supplemental-medical-review-contract-smrc",
         "derived": true
       },
       "weight": 0.8

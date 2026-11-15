@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Who Proves the Decision Was Right &middot; MMT Premium</title>
+  <meta name="description" content="November 13, 2026. How federal health agencies are redesigning evidence-heavy review and adjudication as AI and automation advance, what buyers will need to stand behind automated decisions, and whether decision assurance is becoming its own market. A Founding Member brief from Ask MMT.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; --ci-gold-bg:#FEF9E7; --mmt-red:#E63946; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .brief-body { font-size:15px; line-height:1.75; color:#314155; }
+    .brief-body h2 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:40px 0 14px; letter-spacing:-0.02em; }
+    .brief-body h3 { font-size:17px; font-weight:700; color:var(--mmt-navy); margin:28px 0 10px; }
+    .brief-body h4 { font-size:15px; font-weight:700; color:var(--mmt-navy); margin:20px 0 8px; }
+    .brief-body p { margin-bottom:16px; max-width:65ch; }
+    .brief-body ul { margin-bottom:16px; padding-left:1.25rem; }
+    .brief-body ol { margin-bottom:16px; padding-left:1.5rem; }
+    .brief-body li { margin-bottom:8px; }
+    .brief-body a { color:var(--mmt-teal); text-decoration:underline; text-underline-offset:3px; }
+    .brief-body strong { color:var(--mmt-navy); }
+    .brief-body em { color:var(--mmt-text-secondary); }
+    .brief-body hr { border:none; border-top:1px solid var(--mmt-border); margin:36px 0; }
+    .brief-body blockquote { border-left:3px solid var(--mmt-teal); padding:8px 16px; margin:16px 0; color:var(--mmt-text-secondary); background:rgba(69,123,157,0.04); border-radius:0 6px 6px 0; }
+    .brief-body img { max-width:100%; height:auto; display:block; margin:24px 0; border:1px solid var(--mmt-border); border-radius:8px; }
+    .brief-body table { width:100%; border-collapse:collapse; margin:16px 0 24px; font-size:14px; }
+    .brief-body th, .brief-body td { border:1px solid var(--mmt-border); padding:10px 12px; text-align:left; vertical-align:top; }
+    .brief-body th { background:var(--mmt-soft); color:var(--mmt-navy); font-weight:700; }
+    .pills { margin:8px 0 24px; }
+    .pill { display:inline-block; padding:4px 10px; background:rgba(69,123,157,0.08); color:var(--mmt-teal); border-radius:14px; font-size:11px; font-weight:600; margin:2px 4px 2px 0; }
+    .pill-red { background:rgba(230,57,70,0.08); color:var(--mmt-red); }
+    .pill-gold { background:var(--ci-gold-bg); color:var(--ci-gold); }
+    .back-link { font-size:13px; font-weight:600; color:var(--mmt-teal); text-decoration:none; }
+    .back-link:hover { opacity:0.7; }
+    .gate-notice { background:linear-gradient(180deg,#FFFFFF 0%,#F3F4F6 100%); border:1px solid var(--mmt-border); border-radius:12px; padding:32px 28px; text-align:center; margin:32px auto; max-width:540px; }
+    .gate-notice h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin-bottom:10px; }
+    .gate-notice p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:16px; line-height:1.55; }
+    .gate-cta { display:inline-block; padding:12px 24px; background:var(--mmt-navy); color:var(--mmt-white); font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; }
+    .section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ci-gold); }
+    .deep-dive-card { margin:48px 0 16px; padding:32px 28px; border:2px solid var(--ci-gold); border-radius:12px; background:linear-gradient(180deg,#FFFFFF 0%,var(--ci-gold-bg) 100%); }
+    .deep-dive-card h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:0 0 12px; letter-spacing:-0.01em; }
+    .deep-dive-card p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:14px; line-height:1.6; max-width:none; }
+    .deep-dive-price { display:inline-flex; align-items:baseline; gap:8px; margin:4px 0 16px; font-weight:800; color:var(--mmt-navy); }
+    .deep-dive-price .amount { font-size:28px; }
+    .deep-dive-price .unit { font-size:13px; font-weight:600; color:var(--mmt-text-secondary); text-transform:uppercase; letter-spacing:0.06em; }
+    .brief-body a.deep-dive-cta,
+    a.deep-dive-cta { display:inline-block; padding:14px 26px; background:var(--ci-gold); color:#FFFFFF; font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; letter-spacing:0.02em; }
+    .brief-body a.deep-dive-cta:hover,
+    a.deep-dive-cta:hover { opacity:0.92; color:#FFFFFF; }
+    .deep-dive-examples { font-size:13px; color:var(--mmt-text-secondary); font-style:italic; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <main class="wrap" style="padding:48px 0 80px; max-width:820px;">
+    <a href="/premium/ask-mmt.html" class="back-link">&larr; Ask MMT</a>
+
+    <div style="margin-top:20px; margin-bottom:8px;">
+      <div class="section-label">MMT Premium &middot; Founding Member Brief &middot; November 13, 2026</div>
+    </div>
+    <h1 style="font-size:clamp(26px,3.2vw,38px);line-height:1.1;letter-spacing:-0.03em;margin-bottom:10px;">Who Proves the Decision Was Right</h1>
+    <p style="font-size:15px;color:var(--mmt-text-secondary);margin-bottom:20px;"><em>How federal health agencies are redesigning evidence-heavy review and adjudication, what buyers will need to stand behind automated decisions, and whether &quot;decision assurance&quot; is becoming its own market.</em></p>
+
+    <div class="pills">
+      <span class="pill pill-gold">Founding Member Brief</span>
+      <span class="pill">CMS &middot; VA &middot; DHA &middot; SSA</span>
+      <span class="pill pill-red">Risk: the proof runs behind the automation</span>
+    </div>
+
+    <div data-gate="free" style="display:block;">
+      <div class="gate-notice">
+        <h3>&#9733; Premium Founding Member Brief</h3>
+        <p>A Founding Member asked how federal health agencies are redesigning medical review, appeals, program integrity, payment review and eligibility as AI moves in, and whether a &quot;decision assurance&quot; market is forming. This brief answers with the three moves agencies are making, a capability map for the five things a buyer has to be able to prove, a read on where the money sits, twelve signals to watch, and the dates that matter through 2027. Sixty-three sources, every one named.</p>
+        <a class="gate-cta" href="/pricing">See premium plans</a>
+      </div>
+    </div>
+
+    <div data-access="premium" data-gate="premium" class="brief-body">
+
+<p><em>Ask MMT Founding Member briefs answer one member&#39;s question in depth. This one is published with the member&#39;s name removed. Independent analysis. Not a recommendation, not vendor advocacy, not capture material.</em></p>
+
+<h2>The question</h2>
+<blockquote>How are federal healthcare agencies redesigning evidence-intensive review and adjudication as AI and automation advance? Assess medical review, appeals, program integrity, payment review, and eligibility. What capabilities will buyers need to ensure decisions remain accurate, measurable, traceable, defensible, and cost-effective? Is a distinct &quot;decision assurance&quot; market emerging, or will these capabilities remain embedded in existing contracts and technology platforms?</blockquote>
+<p><em>Asked by a Founding Member.</em></p>
+
+<h2>The short answer</h2>
+<p>The redesign is real and follows three moves. Agencies are acting earlier (before the service or the payment), letting software assemble and read the evidence while a named human signs the adverse decision, and pulling case selection back inside government.</p>
+<p>The proof is running behind the automation. Most of the programs I reviewed cannot yet show, from public records, how often an automated step was wrong, in which direction, or whether a person or a model made the error. The strongest federal requirement applies only to systems an agency labels high-impact, and HHS gave that label to 2 of its 447 reported AI uses [1].</p>
+<p>&quot;Decision assurance&quot; is not a procurement category today. I found no federal health solicitation that uses the label. The work is bought in two forms: clauses and features embedded in operating contracts and platforms, and a small set of independent validation, error-measurement, and appeals contracts.</p>
+<p>My read: it stays mostly embedded through FY2027 and FY2028. A distinct, independent segment is most likely to grow in one place: wherever the party making the decision also has money riding on the outcome. The first buyers there are likely to be oversight bodies, not program offices.</p>
+
+<hr>
+<h2>1. How the work is being redesigned</h2>
+<p>The common thread across all five functions is a change in who does what, and when. Software now does the reading. The human role is narrowing to the adverse decision. The intervention point is moving ahead of the payment. The table shows what that looks like in each function and where the supporting proof is still thin.</p>
+<table>
+<thead><tr><th>Function</th><th>What is changing</th><th>Where the proof is thin</th></tr></thead>
+<tbody>
+<tr><td>Medical review</td><td>CMS&#39;s WISeR model has technology vendors review prior authorization requests in six states, with a clinician required before any non-affirmation [2, 3]. The vendor is paid 25% of averted spending, adjusted by a quality score, and loses the payment if the denial is overturned on appeal [2]. On the measurement side, the new CERT (Comprehensive Error Rate Testing) review contractor (Serco, $109M over seven years) pairs independent medical reviewers with AI document processing [4].</td><td>As of mid-August CMS had released no WISeR denial, appeal, or overturn rates [5]. Letters released October 27 through a public-records lawsuit show CMS confronting four of six vendors in the first quarter over backlogs, missing decision letters, or denial patterns it questioned [6].</td></tr>
+<tr><td>Appeals</td><td>I found no public evidence that Medicare appeals bodies use AI to decide cases, and the February 2026 privacy assessment for the Medicare hearings case system answers no to the AI question [7]. What has changed is the job appeals are being asked to do: they are becoming the accuracy check on automated first decisions. CMS has proposed adding &quot;approved after appeal&quot; counts to payers&#39; public prior authorization metrics [8]. SSA plans AI to support drafting dispositions, and its hearings adjudicators already use a tool that flags quality problems in draft decisions [9, 10]. CMS issued a QIC program RFI on October 15 and moved the Part C independent review work to C2C effective May 1 [11, 12].</td><td>Overturn rates only measure the cases that get appealed. HHS OIG found Medicare Advantage plans overturned 95% of appealed nursing-facility denials, but only 18% of denials were appealed [13]. At VA, higher-level reviewers returned about 35% of decisions in FY2026, up from 23% in FY2021 [14].</td></tr>
+<tr><td>Program integrity</td><td>CMS runs more than 300 models that watch provider billing and can suspend payment during an investigation [15]. Its October 5 RFI proposes that CMS, not contractors, drive lead generation and prioritization. Contractors would build the cases, and would need CMS approval to use AI or other automation [16, 17].</td><td>GAO found CMS does not track the primary source of leads or whether prepayment denials are tied to its Fraud Prevention System [18]. Public statements give savings totals, not model accuracy or false-positive rates [15].</td></tr>
+<tr><td>Payment review</td><td>Treasury screened 1.1 billion payments worth about $3.7 trillion before disbursement in FY2026 [19]. DHA is setting up Do Not Pay matching for the TRICARE Overseas Program [20]. VA&#39;s PIVOT RFI seeks a SaaS tool that scores community care claims before payment [21]. CMS has HealthEdge and Peraton competing to replace its legacy claims system with real-time payment and fraud review [22].</td><td>TRICARE&#39;s improper payment measurement still does not examine the underlying medical record, an open GAO priority recommendation [23]. An outside commentary reports that DHA pilot record reviews found documentation error rates of 28% and 67% in the two regions, against a reported rate under 1% [24]. Governmentwide improper payments rose to about $186 billion in FY2025; Medicare fee-for-service was 6.55% [25, 26].</td></tr>
+<tr><td>Eligibility</td><td>Medicaid work requirements start by January 1, 2027, with CMS routing verification data through its Federal Data Services Hub [27, 28]. VA plans to apply Automated Decision Support to 90% of disability claims by the end of 2027 [14]. SSA set a 93% target for electronically acquired medical evidence in FY2026, up from 60% actual in FY2025; the FY2026 measure also counts faxed evidence routed to the electronic folder [9].</td><td>There is no good data source for medical frailty, likely the largest work-requirement exemption [28]. VA OIG found nearly all sampled automated death-benefit decisions or letters had a legal or procedural deficiency [29]. VA does not separate automated from human errors in its statistics [14]. GAO found CMS does not analyze state Medicaid eligibility errors and fixes across states and years [30]. The SSA inspector general says SSA still needs to evaluate whether its automation is working as intended [31].</td></tr>
+</tbody>
+</table>
+
+<h3>Three things stand out</h3>
+<ul>
+<li><strong>The human is being kept on the denial, not on the file.</strong> WISeR requires clinician review before a non-affirmation, Medicare Advantage rules require a health professional on medical-necessity denials, and VA says a claims processor reviews every claim before it is final [2, 32, 33]. That protects the adverse decision. It does not, by itself, tell anyone whether the approvals were right or whether the evidence summary the human relied on was complete.</li>
+<li><strong>Government is taking back the judgment calls and leaving contractors the labor.</strong> The CMS fraud RFI is the clearest case: CMS picks the targets, contractors do claims analysis, medical review, and evidence collection. CMS also asked how to price that work so it does not reward the volume of investigations or referrals over their quality [17].</li>
+<li><strong>Incentive design is doing the work that measurement should be doing.</strong> WISeR relies on a quality multiplier and appeal recoupment to keep a vendor paid on averted spending honest [2]. CMS says it will audit vendors against coverage criteria, feed the results into quality scores, and may remove a vendor with a high inaccuracy rate [34]. I found no published audit method, sample size, or result, and no separate validation contract. The older recovery audit program took a different path: a separate validation contractor and a first-level appeal overturn limit below 10% [35, 36].</li>
+</ul>
+
+<hr>
+<h2>2. What buyers will need</h2>
+<p>OMB already sets the floor. Its April 2025 guidance treats AI as high-impact when its output is a principal basis for decisions on benefits, public insurance care allocation, continued eligibility, or fraud detection, and requires testing before deployment, an impact assessment, ongoing monitoring, human oversight, and a working remedy or appeal path [37]. The companion acquisition memo requires contracts to let the agency evaluate performance on a regular schedule using agency-held data the vendor cannot see [38]. The five attributes in the question map onto requirements as follows. The middle column is my analysis; the right column shows where each requirement has already appeared.</p>
+<table>
+<thead><tr><th>Attribute</th><th>Capability the buyer needs</th><th>Where it already shows up</th></tr></thead>
+<tbody>
+<tr><td>Accurate</td><td>Test cases the government owns and the vendor has not seen. Error measured in both directions: wrongful denials and wrongful approvals. Results split by case difficulty, so easy cases do not flatter the tool.</td><td>OMB M-25-22 independent evaluation terms [38]. VA describes independent logic-accuracy checks before deployment and reports 97.8% extraction accuracy for AI evidence gathering [33]. VA&#39;s comparison of automated and traditional claim quality has no published method that matches case complexity [39].</td></tr>
+<tr><td>Measurable</td><td>A tag on every decision showing which steps were automated. Overturn rates reported next to appeal rates. Timeliness that counts extensions and re-submissions.</td><td>CMS-0062-P would add counts for extended, denied, and approved-after-appeal requests [8]. The gap is visible at VA and CMS, where automated and human errors or model-linked denials are not tracked separately [14, 18].</td></tr>
+<tr><td>Traceable</td><td>A per-decision record: the evidence used, the rule and model version, the reviewer, and every change. A flag when a record in the file was itself AI-generated.</td><td>VA&#39;s PIVOT RFI asks for audit trails, rule version control and rollback, explainable outputs with confidence scores, and claim-to-payment traceability [21]. SSA workshop speakers called for provenance and metadata on AI-touched records [40].</td></tr>
+<tr><td>Defensible</td><td>A named, qualified person on each adverse decision. Notices that state the reasons and the favorable findings. Records that hold up in an appeal, an inspector general review, or a public-records request.</td><td>OMB M-25-21 oversight and remedy practices [37]. VA OIG estimated at least 7,000 automated notices omitted favorable findings [29]. WISeR vendor letters became public through litigation [6]. GAO warned that opaque AI can limit error detection and complicate veterans&#39; appeals [41].</td></tr>
+<tr><td>Cost-effective</td><td>Price tied to correct decisions, not to denials, referrals, or recoveries. Downstream appeal and rework cost counted. Portability and transparent pricing so the agency can switch.</td><td>CMS asked industry for pricing that avoids rewarding volume [17]. M-25-22 lock-in and data-rights terms [38]. GAO lists AI pricing and continuous evaluation among recurring acquisition challenges [42].</td></tr>
+</tbody>
+</table>
+
+<h3>The floor covers fewer systems than it appears to</h3>
+<p>OMB&#39;s requirements attach only when an agency designates a use as high-impact, and agencies are applying that label very differently. In the FY2025 inventories, VA reported 215 of the 445 high-impact uses governmentwide [43]. HHS reported 447 uses and designated two as high-impact, one of them a CMS identity verification tool used in Medicaid eligibility. Another 13 were presumed high-impact and then reclassified, in at least one case because a human verifies the output [1]. SSA lists nine high-impact uses, including its medical-record reading tool and its models that select claims for quality review, each marked as independently reviewed by the agency&#39;s chief AI officer or another internal office [10].</p>
+<p>Two consequences follow. First, keeping a human on the decision can serve both as a safeguard and as a reason not to apply the stricter rules. Second, where agencies do apply the rules, the independent review is mostly being done inside government. VA describes its own as a two-party review by its chief AI officer team and does not say whether results are published [44].</p>
+<p>One practical point for buyers: the government already holds the answer key. Years of adjudicated claims, appeal outcomes, and error-rate samples are a ready test set. A Stanford brief published this week makes the same argument and recommends third-party evaluation as a condition of procurement [45]. The agencies that organize those records first will be able to write measurable accuracy terms. The rest will fall back on vendor attestations, which is what VA&#39;s contract templates use today [33].</p>
+
+<hr>
+<h2>3. Is a distinct market emerging?</h2>
+<p>Not as a named category. The spending exists, but it sits in three places, and most of it is inside something else.</p>
+<table>
+<thead><tr><th>Where it sits</th><th>Examples</th><th>What it tells us</th></tr></thead>
+<tbody>
+<tr><td>Independent line items</td><td>Recovery Auditor Validation Contract: J29, $17.2M over five years, total small business set-aside [35]. CERT review contractor: Serco, $109M over seven years [4]. Independent appeals: Part C review entity to C2C; QIC program RFI [12, 11].</td><td>Small next to the operating contracts they check, but structurally protected. Each exists because the checker cannot be the operator.</td></tr>
+<tr><td>Embedded in operating contracts</td><td>WISeR quality multiplier and appeal recoupment [2]. VA work statements with contractor attestations to OMB AI requirements [33]. Proposed CMS fraud contracts with quality-based pricing [17].</td><td>This is where most of the requirement lands. The operator produces the proof as a deliverable.</td></tr>
+<tr><td>Embedded in platforms</td><td>VA PIVOT requires explainability, audit logging, and rule versioning from the tool itself [21]. VA&#39;s CuraClaims automates intake through audit with a human confirming [46]. Commercial vendors now market a claim-level decision trace [47].</td><td>The trace is becoming a product feature. Recovery audit work is also consolidating: Performant now operates as a Machinify company [48].</td></tr>
+<tr><td>Inside government</td><td>VA&#39;s Automation Quality Program and a pre-deployment &quot;Claims Processing Automation Quality Auditor&quot; use case [33, 49]. HHS OIG audit of HHS AI governance, announced July 2 [50].</td><td>Agencies are building some of this themselves, which limits what gets contracted out.</td></tr>
+</tbody>
+</table>
+
+<h3>How large the lines are</h3>
+<p>The operating side is an order of magnitude larger than the checking side. The current CMS fraud-investigation vehicle has a $2.5 billion ceiling and about $1.83 billion obligated since 2016, with ordering through May 9, 2027 [51]. A trade analysis counts three firms holding five regional task orders, all cost-plus-award-fee [52]. CMS forecasts a new Supplemental Medical Review Contract at $100 million or more, with a solicitation planned for December 15, 2026 and award in May 2027, plus several Medicare Advantage audit lines in the $20 million to $50 million range as it expands those audits from 60 plan contracts to about 590 per payment year [53]. By contrast, the two independent measurement and validation awards I could price come to roughly $19 million a year combined [4, 35]. In my review of the November forecast I did not find a line labeled as validation or assurance of automated decisions [53]. One commercial research firm puts government agencies at about $2.5 billion of an $18.3 billion global payment integrity market in 2026. That figure is a vendor estimate whose method I have not reviewed, and it measures payment integrity work, not assurance [54].</p>
+
+<h3>Why it stays mostly embedded</h3>
+<ul>
+<li>OMB&#39;s rules attach the obligation to the AI use case and its contract, so the default path is a clause in the operating award, not a separate buy [37, 38].</li>
+<li>CMS is moving judgment in-house, and its budget justification says its contract review is reducing overall contract spending [17, 55]. That is not an environment for new stand-alone categories.</li>
+<li>The one attempt to build a stand-alone, third-party testing layer for health AI did not hold. The Coalition for Health AI dropped its national assurance lab network in February 2026 after HHS leadership opposed it, and moved toward helping health systems monitor tools after deployment [56]. That is a commercial precedent, not a federal procurement, but it shows the current posture toward outside certifiers.</li>
+<li>Platform vendors are bundling the decision record into the system that makes the decision, and the largest pending buy, the Medicare claims system replacement, includes real-time fraud review in the core platform [22].</li>
+</ul>
+
+<h3>Where a distinct segment can grow</h3>
+<p>The exception is independence. Where the decision-maker is paid from the result, the buyer eventually needs someone else to check the work. Medicare has done this before with the recovery audit validation contractor. WISeR vendors are paid a share of averted spending. CMS says it will audit them, but I found no separate validator and no published results [2, 34]. Medicaid eligibility vendors, according to an interim report by Senate Finance Committee Democrats, did not provide meaningful detail on accuracy testing [57]. Those are the two most likely openings.</p>
+<p>The earliest buyer may not be the program office. On October 16 the Ohio Auditor of State sought a vendor to test the accuracy of eligibility determinations made through the state benefits system, with one scenario covering 487,427 determinations and work due April 1, 2027 [58]. That is decision assurance in everything but name, bought by an oversight body. On the plan side, a House bill introduced in July would require Medicare Advantage plans to keep a signed physician attestation and ten years of records for each AI-based denial, report every 90 days, and submit to audits that compare AI outputs with denials [59]. It has only been introduced. Expect the federal openings to arrive as task orders on existing program integrity, quality, or verification-and-validation vehicles rather than under a new name.</p>
+
+<blockquote><strong>The strongest case against my read.</strong> A separate market could form faster than I expect. The conditions are in place: OMB already requires independent evaluation using data the vendor cannot access; Congress has pressed on WISeR, with a House committee amendment to block FY2027 funding and a 46 to 50 Senate vote that fell short of ending it; inspectors general at VA and HHS are auditing automated decisions and AI governance; at least one federal court has allowed discovery into an insurer&#39;s use of AI in claim denials; and a federal court in Idaho held that an unreliable Medicaid budget tool violated due process [38, 5, 29, 50, 60, 61]. A state auditor is already buying independent testing of eligibility decisions, and a pending House bill would write audit rights over AI denials into Medicare Advantage [58, 59]. If one high-profile program is ordered to add an outside validator, other programs may copy the structure quickly. What I do not see yet is the funding line or the solicitation. Until one appears, this remains a requirement set, not a market.</blockquote>
+
+<hr>
+<h2>4. Signals to watch</h2>
+<table>
+<thead><tr><th>Signal</th><th>Status as of November 13, 2026</th></tr></thead>
+<tbody>
+<tr><td>A solicitation that separates the validator from the operator for an AI-assisted review program</td><td>Not seen. CMS says it audits WISeR vendors itself; no validator contract or results published [34].</td></tr>
+<tr><td>CMS Fraud Defense Contracts move from RFI to draft solicitation with quality-based pricing</td><td>RFI closed November 4. No solicitation yet [16].</td></tr>
+<tr><td>CMS publishes WISeR denial, appeal, and overturn rates by vendor</td><td>Not published as of mid-August; vendor letters released through a lawsuit [5, 6].</td></tr>
+<tr><td>CMS-0062-P finalized with after-appeal metrics</td><td>Proposed [8].</td></tr>
+<tr><td>VA reports automated and manual errors separately; the Quality Auditor use case deploys</td><td>Not separated today; use case listed as pre-deployment [14, 49].</td></tr>
+<tr><td>DHA adds medical record review to TRICARE improper payment measurement</td><td>Open GAO priority recommendation; an outside commentary has urged Congress to require it [23, 24].</td></tr>
+<tr><td>State Medicaid work-requirement contracts with published accuracy standards</td><td>Not evident; requirement takes effect January 1, 2027 [57, 27].</td></tr>
+<tr><td>Supplemental Medical Review Contract solicitation includes accuracy or evaluation terms for AI-assisted review</td><td>Solicitation forecast for December 15, 2026; award May 2027 [53].</td></tr>
+<tr><td>HHS designates more review, payment, or eligibility systems as high-impact in its next inventory</td><td>Two of 447 in FY2025 [1].</td></tr>
+<tr><td>H.R. 9734 or similar audit language advances</td><td>Introduced July 16, 2026 [59].</td></tr>
+<tr><td>More state auditors or inspectors general contract for independent testing of automated eligibility decisions</td><td>One found: Ohio, October 16, 2026 [58].</td></tr>
+<tr><td>HHS OIG reports on HHS AI governance</td><td>Audit announced July 2, 2026; no issue date posted [50].</td></tr>
+</tbody>
+</table>
+
+<h2>5. Dates that matter</h2>
+<table>
+<thead><tr><th>Date</th><th>Event</th></tr></thead>
+<tbody>
+<tr><td>December 15, 2026</td><td>Forecast solicitation release, Supplemental Medical Review Contract [53].</td></tr>
+<tr><td>January 1, 2027</td><td>Medicaid work requirements take effect; prior authorization API compliance date for Medicare Advantage, Medicaid, and exchange payers, which already post annual prior authorization metrics [27, 62].</td></tr>
+<tr><td>March to May 2027</td><td>Forecast solicitations for Medicare Advantage audit analytics and audit-appeal support, and for the equipment appeals contractor [53].</td></tr>
+<tr><td>April 1, 2027</td><td>Ohio eligibility audit work product due [58].</td></tr>
+<tr><td>May 9, 2027</td><td>Ordering period ends on the current CMS fraud-investigation vehicle [51].</td></tr>
+<tr><td>End of 2027</td><td>VA target to apply Automated Decision Support to 90% of disability claims [14].</td></tr>
+</tbody>
+</table>
+
+<h2>6. What this means for industry</h2>
+<ul>
+<li><strong>If you operate the decision</strong> (review contractor, administrator, eligibility vendor): plan to deliver the decision record as a contract deliverable, and expect pricing tied to denials or recoveries to draw scrutiny. The CMS fraud RFI and the WISeR record both point that way [17, 6].</li>
+<li><strong>If you are independent of operations:</strong> the validation, error-measurement, and appeals lines are small but durable, and one of them was a total small business set-aside [35]. The opening is to bring measurement methods for AI-assisted work to those existing lines before the recompetes, not to wait for a new category.</li>
+<li><strong>If you sell the platform:</strong> explainable outputs, audit logging, and rule versioning are already written into a VA requirement [21]. The differentiator will be letting the agency test the system with its own data and take the record with it [38].</li>
+<li><strong>Know who signs the check.</strong> The buyers most likely to pay for independent testing first are auditors, inspectors general, and error-measurement offices. Program offices are more likely to ask the operator for the evidence [58, 4].</li>
+<li><strong>For everyone:</strong> describe the capability in the buyer&#39;s terms. Agencies are not asking for &quot;decision assurance.&quot; They are asking for accuracy they can verify, appeals that hold, and prices that do not reward volume.</li>
+</ul>
+
+<h3>Where this connects on MMT</h3>
+<ul>
+<li>Contract Tracker: <a href="/contracts/cms-fraud-defense-contracts-upic-successor/">CMS Fraud Defense Contracts (UPIC successor)</a>, <a href="/contracts/cms-supplemental-medical-review-contract-smrc/">CMS Supplemental Medical Review Contract</a>, <a href="/contracts/va-pivot-payment-integrity-validation-and-oversight-tool/">VA PIVOT</a>.</li>
+<li>Glossary: <a href="/glossary/wiser.html">WISeR</a>, <a href="/glossary/upic.html">UPIC</a>, <a href="/glossary/cert.html">CERT</a>, <a href="/glossary/qic.html">QIC</a>, <a href="/glossary/rac.html">RAC</a>, <a href="/glossary/do-not-pay.html">Do Not Pay</a>, <a href="/glossary/pivot.html">PIVOT</a>, <a href="/glossary/high-impact-ai.html">High-impact AI</a>, <a href="/glossary/decision-assurance.html">Decision assurance</a>, <a href="/glossary/smrc.html">SMRC</a>.</li>
+<li>Earlier reporting: <a href="/newsletter/the-floor-at-winston-salem/">The Floor at Winston-Salem</a> (September 29, 2026) on VA&#39;s automated and traditional claim quality comparison.</li>
+</ul>
+
+<h2>Method and limits</h2>
+<p>This brief draws on public agency documents, GAO and inspector general reports, solicitation notices, and trade and general press published through November 13, 2026, plus Mission Meets Tech reporting. Trade and press sources are named as such in the source list. I did not have the draft Statement of Objectives attached to the CMS fraud RFI and relied on the notice, a law firm summary, and a trade analysis. The WISeR measure definitions sit in a separate CMS reporting guide I did not review. The HHS high-impact count comes from a think tank analysis of the FY2025 inventory, the most recent available; the FY2026 inventory may differ. Contract values from HigherGov, GovConIC, and OrangeSlices are trade compilations of public award data. I did not query the Mission Meets Tech premium database for this brief. Public evidence on TRICARE and on AI inside appeals bodies is thinner than for CMS and VA, and absence of public evidence is not proof of absence. A 2020 CMS sources-sought notice shows the agency has considered AI payment recommendations &quot;without human review of the medical record&quot; before; I treat it as background, not a current plan [63]. The three-move framework, the capability map, the market read, and the signal list are my analysis.</p>
+
+<hr>
+<h2>Sources</h2>
+<p>[1] Bipartisan Policy Center, Tracking AI in Federal Health Agencies: Key Trends from HHS's FY2025 Inventory (May 29, 2026). Think tank analysis. <a href="https://bipartisanpolicy.org/article/tracking-ai-in-federal-health-agencies-key-trends-from-hhss-fy2025-inventory/" target="_blank" rel="noopener">https://bipartisanpolicy.org/article/tracking-ai-in-federal-health-agencies-key-trends-from-hhss-fy2025-inventory/</a></p>
+<p>[2] CMS, WISeR Participant Guide: Prior Authorization and Pre-Payment Medical Review Processes and Payment Methodology, Version 4.0 (May 1, 2026). <a href="https://www.cms.gov/priorities/innovation/files/wiser-participant-guide.pdf" target="_blank" rel="noopener">https://www.cms.gov/priorities/innovation/files/wiser-participant-guide.pdf</a></p>
+<p>[3] Congressional Research Service, Wasteful and Inappropriate Service Reduction (WISeR) Model, IF13133 (updated May 12, 2026). <a href="https://www.congress.gov/crs_external_products/IF/HTML/IF13133.html" target="_blank" rel="noopener">https://www.congress.gov/crs_external_products/IF/HTML/IF13133.html</a></p>
+<p>[4] Serco Inc. news release, Serco Awarded $109 Million CMS CERT Contract (June 29, 2026). Vendor release. <a href="https://www.globenewswire.com/news-release/2026/06/29/3318974/0/en/Serco-Awarded-109-Million-CMS-CERT-Contract-Extending-Support-of-Medicare-Program-Integrity.html" target="_blank" rel="noopener">https://www.globenewswire.com/news-release/2026/06/29/3318974/0/en/Serco-Awarded-109-Million-CMS-CERT-Contract-Extending-Support-of-Medicare-Program-Integrity.html</a></p>
+<p>[5] Becker's Hospital Review, WISeR's High-Stakes First Year, in 8 Questions (August 13, 2026). Trade press. <a href="https://www.beckershospitalreview.com/academic-medical-center/finance-academic-medical-center/wisers-high-stakes-first-year-in-8-questions" target="_blank" rel="noopener">https://www.beckershospitalreview.com/academic-medical-center/finance-academic-medical-center/wisers-high-stakes-first-year-in-8-questions</a></p>
+<p>[6] Newsweek, AI Companies Stand to Gain From Medicare Savings as Patients Fear Care Cuts (November 10, 2026). Press. <a href="https://www.newsweek.com/ai-companies-stand-to-gain-from-medicare-savings-as-patients-fear-care-cuts-12691335" target="_blank" rel="noopener">https://www.newsweek.com/ai-companies-stand-to-gain-from-medicare-savings-as-patients-fear-care-cuts-12691335</a></p>
+<p>[7] HHS, Privacy Impact Assessment: Electronic Case Adjudication and Processing Environment, Office of Medicare Hearings and Appeals (approved February 26, 2026). <a href="https://www.hhs.gov/sites/default/files/pia-os-electronic-case-adjudication-and-processing-environment.csv" target="_blank" rel="noopener">https://www.hhs.gov/sites/default/files/pia-os-electronic-case-adjudication-and-processing-environment.csv</a></p>
+<p>[8] CMS, Proposed Metrics in the 2026 CMS Interoperability Standards and Prior Authorization for Drugs Proposed Rule (CMS-0062-P). <a href="https://www.cms.gov/files/document/proposed-metrics-updates-rule-4-two-pager-10apr26-final-508-compliant.pdf" target="_blank" rel="noopener">https://www.cms.gov/files/document/proposed-metrics-updates-rule-4-two-pager-10apr26-final-508-compliant.pdf</a></p>
+<p>[9] Social Security Administration, FYs 2025-2027 Annual Performance Report. <a href="https://www.ssa.gov/agency/performance/materials/2026/SSA_FYs_2025-2027_Annual_Performance_Report.pdf" target="_blank" rel="noopener">https://www.ssa.gov/agency/performance/materials/2026/SSA_FYs_2025-2027_Annual_Performance_Report.pdf</a></p>
+<p>[10] Social Security Administration, Individual AI Use Case Inventory (file posted November 2026). <a href="https://www.ssa.gov/sites/default/files/2026-11/SSA-Individual-AI-Inventory.csv" target="_blank" rel="noopener">https://www.ssa.gov/sites/default/files/2026-11/SSA-Individual-AI-Inventory.csv</a></p>
+<p>[11] HigherGov listing, CMS Request for Information: Qualified Independent Contractor (QIC) Program, RFICMSQIC2026 (posted October 15, 2026). Trade compilation. <a href="https://www.highergov.com/contract-opportunity/request-for-information-cms-qualified-independe-rficmsqic2026-s-595d3/" target="_blank" rel="noopener">https://www.highergov.com/contract-opportunity/request-for-information-cms-qualified-independe-rficmsqic2026-s-595d3/</a></p>
+<p>[12] HME News, CMS Switches to C2C Innovative Solutions for Medicare Advantage Appeals (April 6, 2026). Trade press. <a href="https://www.hmenews.com/article/cms-switches-to-c2c-innovative-solutions-for-medicare-advantage-appeals" target="_blank" rel="noopener">https://www.hmenews.com/article/cms-switches-to-c2c-innovative-solutions-for-medicare-advantage-appeals</a></p>
+<p>[13] HHS Office of Inspector General, Medicare Advantage Organizations Overturned Nearly All Appealed Prior Authorization Denials for Skilled Nursing Facility Admission, OEI-09-24-00331 (June 2026). <a href="https://www.oig.hhs.gov/reports/all/2026/medicare-advantage-organizations-overturned-nearly-all-appealed-prior-authorization-denials-for-skilled-nursing-facility-admission-raising-concerns-about-initial-denials/" target="_blank" rel="noopener">https://www.oig.hhs.gov/reports/all/2026/medicare-advantage-organizations-overturned-nearly-all-appealed-prior-authorization-denials-for-skilled-nursing-facility-admission-raising-concerns-about-initial-denials/</a></p>
+<p>[14] Military Times, As the VA Leans on Automation, Errors in Veterans' Claims Soar (November 5, 2026). Press. <a href="https://www.militarytimes.com/news/2026/11/05/as-the-va-leans-on-automation-errors-in-veterans-claims-soar/" target="_blank" rel="noopener">https://www.militarytimes.com/news/2026/11/05/as-the-va-leans-on-automation-errors-in-veterans-claims-soar/</a></p>
+<p>[15] ExecutiveGov, Messick: CMS Fraud Prevention Yields $42B Annual Savings (November 9, 2026). Trade press. <a href="https://www.executivegov.com/articles/cms-messick-fraud-prevention-42b-annual-savings-ai" target="_blank" rel="noopener">https://www.executivegov.com/articles/cms-messick-fraud-prevention-42b-annual-savings-ai</a></p>
+<p>[16] SAM.gov, CMS Request for Information: Fraud Defense Contracts (posted October 5, 2026; responses due November 4, 2026). <a href="https://sam.gov/opp/70445cc63cdd4a25b0901d4905179d71/view" target="_blank" rel="noopener">https://sam.gov/opp/70445cc63cdd4a25b0901d4905179d71/view</a></p>
+<p>[17] McDermott Will &amp; Schulte, A UPIC Overhaul: CMS Takes the Wheel? (October 14, 2026). Law firm summary. <a href="https://www.mcdermottlaw.com/insights/a-upic-overhaul-cms-takes-the-wheel/" target="_blank" rel="noopener">https://www.mcdermottlaw.com/insights/a-upic-overhaul-cms-takes-the-wheel/</a></p>
+<p>[18] GAO, Medicare: CMS's Use of Data Analytics to Identify and Prevent Fraud, GAO-26-107799 (March 2026). <a href="https://www.gao.gov/assets/gao-26-107799.pdf" target="_blank" rel="noopener">https://www.gao.gov/assets/gao-26-107799.pdf</a></p>
+<p>[19] U.S. Treasury, Treasury Reports Major Progress in Preventing Fraud and Improper Payments (October 6, 2026). <a href="https://home.treasury.gov/news/press-releases/sb0651/" target="_blank" rel="noopener">https://home.treasury.gov/news/press-releases/sb0651/</a></p>
+<p>[20] Federal Register, DoD/DHA notice of a new matching program with Treasury's Do Not Pay Working System for the TRICARE Overseas Program (October 14, 2026). <a href="https://www.govinfo.gov/content/pkg/FR-2026-10-14/pdf/2026-20946.pdf" target="_blank" rel="noopener">https://www.govinfo.gov/content/pkg/FR-2026-10-14/pdf/2026-20946.pdf</a></p>
+<p>[21] SAM.gov, VA Payment Integrity Validation and Oversight Tool (PIVOT), RFI 3, Notice 36C10B26Q0121 (January 2026). <a href="https://sam.gov/opp/f9df025632db4b0a847a486b6c400d39/view" target="_blank" rel="noopener">https://sam.gov/opp/f9df025632db4b0a847a486b6c400d39/view</a></p>
+<p>[22] Nextgov/FCW, CMS Eyes New Technologies to Reduce Improper Payments and Fraud (September 28, 2026). Trade press. <a href="https://www.nextgov.com/digital-government/2026/09/cms-eyes-new-technologies-reduce-improper-payments-and-fraud/416286/" target="_blank" rel="noopener">https://www.nextgov.com/digital-government/2026/09/cms-eyes-new-technologies-reduce-improper-payments-and-fraud/416286/</a></p>
+<p>[23] GAO, Priority Open Recommendations: Department of Defense, GAO-25-108042. <a href="https://www.gao.gov/assets/gao-25-108042.pdf" target="_blank" rel="noopener">https://www.gao.gov/assets/gao-25-108042.pdf</a></p>
+<p>[24] Federal News Network commentary, Ravi Govind, TRICARE's New Budget Line Needs the Oversight Infrastructure It Never Got (September 2026). Commentary. <a href="https://federalnewsnetwork.com/commentary/2026/09/tricares-new-budget-line-needs-the-oversight-infrastructure-it-never-got" target="_blank" rel="noopener">https://federalnewsnetwork.com/commentary/2026/09/tricares-new-budget-line-needs-the-oversight-infrastructure-it-never-got</a></p>
+<p>[25] GAO, Payment Integrity: Agencies' Estimated Improper Payments Increased to $186 Billion, GAO-26-108694 (April 27, 2026). <a href="https://www.gao.gov/assets/gao-26-108694.pdf" target="_blank" rel="noopener">https://www.gao.gov/assets/gao-26-108694.pdf</a></p>
+<p>[26] CMS, Fiscal Year 2025 Improper Payments Fact Sheet (January 15, 2026). <a href="https://www.cms.gov/newsroom/fact-sheets/fiscal-year-2025-improper-payments-fact-sheet" target="_blank" rel="noopener">https://www.cms.gov/newsroom/fact-sheets/fiscal-year-2025-improper-payments-fact-sheet</a></p>
+<p>[27] CMS, CMS Launches Nationwide Framework to Implement Medicaid Work Requirements (June 1, 2026). <a href="https://www.cms.gov/newsroom/press-releases/cms-launches-nationwide-framework-implement-medicaid-work-requirements" target="_blank" rel="noopener">https://www.cms.gov/newsroom/press-releases/cms-launches-nationwide-framework-implement-medicaid-work-requirements</a></p>
+<p>[28] Nextgov/FCW, CMS Quietly Moved a Medicaid Technology Project to a Federal Data Hub (July 29, 2026). Trade press. <a href="https://www.nextgov.com/digital-government/2026/07/cms-quietly-moved-medicaid-technology-project-federal-data-hub-new-eligibility-requirements-approach/415106/" target="_blank" rel="noopener">https://www.nextgov.com/digital-government/2026/07/cms-quietly-moved-medicaid-technology-project-federal-data-hub-new-eligibility-requirements-approach/415106/</a></p>
+<p>[29] VA Office of Inspector General, Report 25-00153-47, review of automated service-connected death benefit decisions (April 30, 2026). <a href="https://www.vaoig.gov/sites/default/files/reports/2026-04/vaoig-25-00153-47_final.pdf" target="_blank" rel="noopener">https://www.vaoig.gov/sites/default/files/reports/2026-04/vaoig-25-00153-47_final.pdf</a></p>
+<p>[30] GAO, Medicaid: Improved Oversight Needed of State Eligibility Error Corrective Action Plans, GAO-26-108017 (released September 17, 2026). <a href="https://www.gao.gov/products/gao-26-108017" target="_blank" rel="noopener">https://www.gao.gov/products/gao-26-108017</a></p>
+<p>[31] SSA Office of the Inspector General, Major Management and Performance Challenges During Fiscal Year 2026, report 042638 (November 6, 2026). <a href="https://oig.ssa.gov/~assets/audits/full/042638.pdf" target="_blank" rel="noopener">https://oig.ssa.gov/~assets/audits/full/042638.pdf</a></p>
+<p>[32] KFF, Regulation of AI in Prior Authorization and Claims Review (May 6, 2026). Policy analysis. <a href="https://www.kff.org/patient-consumer-protections/regulation-of-ai-in-prior-authorization-and-claims-review-a-look-at-federal-and-state-consumer-protections/" target="_blank" rel="noopener">https://www.kff.org/patient-consumer-protections/regulation-of-ai-in-prior-authorization-and-claims-review-a-look-at-federal-and-state-consumer-protections/</a></p>
+<p>[33] VA responses to questions for the record, House Veterans' Affairs subcommittee hearing of July 13, 2026. <a href="https://docs.house.gov/meetings/VR/VR11/20260713/119443/HHRG-119-VR11-20260713-QFR002.pdf" target="_blank" rel="noopener">https://docs.house.gov/meetings/VR/VR11/20260713/119443/HHRG-119-VR11-20260713-QFR002.pdf</a></p>
+<p>[34] CMS, WISeR Model Frequently Asked Questions (page reviewed November 13, 2026). <a href="https://www.cms.gov/priorities/innovation/files/document/wiser-model-frequently-asked-questions" target="_blank" rel="noopener">https://www.cms.gov/priorities/innovation/files/document/wiser-model-frequently-asked-questions</a></p>
+<p>[35] OrangeSlices AI, J29 Wins $17M CMS Recovery Auditor Validation Contract (February 24, 2026). Trade compilation. <a href="https://orangeslices.ai/j29-wins-17m-cms-recovery-auditor-validation-contract-rvc-contract/" target="_blank" rel="noopener">https://orangeslices.ai/j29-wins-17m-cms-recovery-auditor-validation-contract-rvc-contract/</a></p>
+<p>[36] CMS, Recovery Audit Program Improvements. <a href="https://www.cms.gov/Research-Statistics-Data-and-Systems/Monitoring-Programs/Medicare-FFS-Compliance-Programs/Recovery-Audit-Program/Downloads/RAC-Program-Improvements.pdf" target="_blank" rel="noopener">https://www.cms.gov/Research-Statistics-Data-and-Systems/Monitoring-Programs/Medicare-FFS-Compliance-Programs/Recovery-Audit-Program/Downloads/RAC-Program-Improvements.pdf</a></p>
+<p>[37] Office of Management and Budget, Memorandum M-25-21, Accelerating Federal Use of AI through Innovation, Governance, and Public Trust (April 3, 2025). <a href="https://www.whitehouse.gov/wp-content/uploads/2025/02/M-25-21-Accelerating-Federal-Use-of-AI-through-Innovation-Governance-and-Public-Trust.pdf" target="_blank" rel="noopener">https://www.whitehouse.gov/wp-content/uploads/2025/02/M-25-21-Accelerating-Federal-Use-of-AI-through-Innovation-Governance-and-Public-Trust.pdf</a></p>
+<p>[38] Office of Management and Budget, Memorandum M-25-22, Driving Efficient Acquisition of Artificial Intelligence in Government (April 3, 2025). <a href="https://www.whitehouse.gov/wp-content/uploads/2025/02/M-25-22-Driving-Efficient-Acquisition-of-Artificial-Intelligence-in-Government.pdf" target="_blank" rel="noopener">https://www.whitehouse.gov/wp-content/uploads/2025/02/M-25-22-Driving-Efficient-Acquisition-of-Artificial-Intelligence-in-Government.pdf</a></p>
+<p>[39] Mission Meets Tech, The Floor at Winston-Salem (September 29, 2026). <a href="https://missionmeetstech.com/newsletter/the-floor-at-winston-salem/" target="_blank" rel="noopener">https://missionmeetstech.com/newsletter/the-floor-at-winston-salem/</a></p>
+<p>[40] National Academies, Artificial Intelligence and the Medical Record in the Context of Social Security Disability Evaluations: workshop proceedings (workshop April 6-7, 2026). <a href="https://www.nationalacademies.org/read/29549" target="_blank" rel="noopener">https://www.nationalacademies.org/read/29549</a></p>
+<p>[41] GAO, VA Disability Benefits: Opportunities and Challenges to Modernizing Technology and Adopting AI, GAO-26-109137 (July 2026). <a href="https://www.gao.gov/assets/gao-26-109137.pdf" target="_blank" rel="noopener">https://www.gao.gov/assets/gao-26-109137.pdf</a></p>
+<p>[42] GAO, Artificial Intelligence Acquisitions: Agencies Should Collect and Apply Lessons Learned, GAO-26-107859 (April 2026). <a href="https://www.gao.gov/assets/gao-26-107859.pdf" target="_blank" rel="noopener">https://www.gao.gov/assets/gao-26-107859.pdf</a></p>
+<p>[43] Office of Management and Budget, 2025 Federal Agency AI Use Case Inventory (repository summary as of April 13, 2026). <a href="https://github.com/ombegov/2025-Federal-Agency-AI-Use-Case-Inventory" target="_blank" rel="noopener">https://github.com/ombegov/2025-Federal-Agency-AI-Use-Case-Inventory</a></p>
+<p>[44] VA, Trustworthy AI at VA (August 27, 2026). <a href="https://department.va.gov/ai/trustworthy-ai/" target="_blank" rel="noopener">https://department.va.gov/ai/trustworthy-ai/</a></p>
+<p>[45] Stanford HAI, A Blueprint for Evaluating AI in Public Administration (November 11, 2026). Academic policy brief. <a href="https://hai.stanford.edu/policy/a-blueprint-for-evaluating-ai-in-public-administration" target="_blank" rel="noopener">https://hai.stanford.edu/policy/a-blueprint-for-evaluating-ai-in-public-administration</a></p>
+<p>[46] VA, Privacy Impact Assessment: CuraPatient (FY2026). <a href="https://department.va.gov/privacy/wp-content/uploads/sites/5/2026/10/FY26CuraPatientPIA.pdf" target="_blank" rel="noopener">https://department.va.gov/privacy/wp-content/uploads/sites/5/2026/10/FY26CuraPatientPIA.pdf</a></p>
+<p>[47] Machinify, Six Shifts That Will Reshape Health Plan Payments in the Age of AI (July 8, 2026). Vendor publication. <a href="https://www.machinify.com/resources/payment-integrity-to-payment-intelligence-six-shifts" target="_blank" rel="noopener">https://www.machinify.com/resources/payment-integrity-to-payment-intelligence-six-shifts</a></p>
+<p>[48] CMS, Medicare Fee for Service Recovery Audit Program (program page). <a href="https://www.cms.gov/data-research/monitoring-programs/medicare-fee-service-compliance-programs/medicare-fee-service-recovery-audit-program" target="_blank" rel="noopener">https://www.cms.gov/data-research/monitoring-programs/medicare-fee-service-compliance-programs/medicare-fee-service-recovery-audit-program</a></p>
+<p>[49] VA, AI Use Case Inventory 2025 (entry VA-25-1930, Claims Processing Automation Quality Auditor POC). <a href="https://department.va.gov/ai/wp-content/uploads/sites/26/2026/01/VA-AI-Use-Case-Inventory-2025-Web.xlsx" target="_blank" rel="noopener">https://department.va.gov/ai/wp-content/uploads/sites/26/2026/01/VA-AI-Use-Case-Inventory-2025-Web.xlsx</a></p>
+<p>[50] HHS Office of Inspector General Work Plan, Audit of HHS Governance of Artificial Intelligence, OAS-26-18-012 (announced July 2, 2026). <a href="https://www.oig.hhs.gov/reports/work-plan/browse-work-plan-projects/audit-of-hhs-governance-of-artificial-intelligence/" target="_blank" rel="noopener">https://www.oig.hhs.gov/reports/work-plan/browse-work-plan-projects/audit-of-hhs-governance-of-artificial-intelligence/</a></p>
+<p>[51] HigherGov listing, Unified Program Integrity Contract (UPIC) vehicle record. Trade compilation. <a href="https://www.highergov.com/vehicle/unified-program-integrity-contract-upic-1391/" target="_blank" rel="noopener">https://www.highergov.com/vehicle/unified-program-integrity-contract-upic-1391/</a></p>
+<p>[52] GovConIC, CMS Fraud Defense Contracts RFI: What Changes for UPICs (October 16, 2026). Trade analysis. <a href="https://govconic.com/2026/10/16/cms-fraud-defense-contracts-rfi-upic-successor/" target="_blank" rel="noopener">https://govconic.com/2026/10/16/cms-fraud-defense-contracts-rfi-upic-successor/</a></p>
+<p>[53] CMS, Fiscal Year Forecast of Contract Opportunities (November 1, 2026). <a href="https://www.cms.gov/files/document/800-002-cms-fiscal-year-forecast-opportunities-1november2026.xlsx" target="_blank" rel="noopener">https://www.cms.gov/files/document/800-002-cms-fiscal-year-forecast-opportunities-1november2026.xlsx</a></p>
+<p>[54] Precedence Research news release, Healthcare Payment Integrity Market (November 2, 2026). Vendor estimate. <a href="https://www.globenewswire.com/news-release/2026/11/02/3393345/0/en/healthcare-payment-integrity-market-grows-as-payers-and-governments-shift-from-recovery-to-prevention.html" target="_blank" rel="noopener">https://www.globenewswire.com/news-release/2026/11/02/3393345/0/en/healthcare-payment-integrity-market-grows-as-payers-and-governments-shift-from-recovery-to-prevention.html</a></p>
+<p>[55] CMS, FY 2026 Congressional Justification of Estimates for Appropriations Committees. <a href="https://www.cms.gov/files/document/fy2026-cms-congressional-justification-estimates-appropriations-committees.pdf" target="_blank" rel="noopener">https://www.cms.gov/files/document/fy2026-cms-congressional-justification-estimates-appropriations-committees.pdf</a></p>
+<p>[56] Fierce Healthcare, CHAI's AI Oversight Ambitions Falter With Scrapped AI Labs (February 19, 2026). Trade press. <a href="https://www.fiercehealthcare.com/ai-and-machine-learning/inside-chais-failed-assurance-labs" target="_blank" rel="noopener">https://www.fiercehealthcare.com/ai-and-machine-learning/inside-chais-failed-assurance-labs</a></p>
+<p>[57] Senate Finance Committee Democrats, interim report on Medicaid eligibility contractors (October 2026). <a href="https://www.finance.senate.gov/imo/media/doc/102026_medicaid_contractors_report.pdf" target="_blank" rel="noopener">https://www.finance.senate.gov/imo/media/doc/102026_medicaid_contractors_report.pdf</a></p>
+<p>[58] Ohio Auditor of State, Request for Proposals: Medicaid Eligibility Audit, AOS-2026-001 (October 16, 2026). <a href="https://www.ohioauditor.gov/Procurement/_docs/2026-001-RFP.pdf" target="_blank" rel="noopener">https://www.ohioauditor.gov/Procurement/_docs/2026-001-RFP.pdf</a></p>
+<p>[59] H.R. 9734, Protecting Patients from Automated Denials Act, as introduced (July 16, 2026). <a href="https://www.govinfo.gov/content/pkg/BILLS-119hr9734ih/xhtml/BILLS-119hr9734ih.html" target="_blank" rel="noopener">https://www.govinfo.gov/content/pkg/BILLS-119hr9734ih/xhtml/BILLS-119hr9734ih.html</a></p>
+<p>[60] Hunton, Court Allows Discovery Into Insurer's Use of AI to Deny Claims (Insurance Recovery Blog, on Estate of Lokken v. UnitedHealth Group). Law firm summary. <a href="https://www.hunton.com/hunton-insurance-recovery-blog/court-allows-discovery-into-insurers-use-of-ai-to-deny-claims" target="_blank" rel="noopener">https://www.hunton.com/hunton-insurance-recovery-blog/court-allows-discovery-into-insurers-use-of-ai-to-deny-claims</a></p>
+<p>[61] K.W. v. Armstrong, No. 1:12-cv-00022, Memorandum Decision and Order, Document 651 (D. Idaho 2025). <a href="https://law.justia.com/cases/federal/district-courts/idaho/iddce/1:2012cv00022/29058/651/" target="_blank" rel="noopener">https://law.justia.com/cases/federal/district-courts/idaho/iddce/1:2012cv00022/29058/651/</a></p>
+<p>[62] CMS, Improving Prior Authorization Processes: Frequently Asked Questions (CMS-0057-F). <a href="https://www.cms.gov/initiatives/burden-reduction/overview/interoperability/frequently-asked-questions/improving-prior-authorization-processes" target="_blank" rel="noopener">https://www.cms.gov/initiatives/burden-reduction/overview/interoperability/frequently-asked-questions/improving-prior-authorization-processes</a></p>
+<p>[63] SAM.gov, CMS Sources Sought Notice SSN210993, Using Advanced Technology in Medical Review (November 10, 2020). <a href="https://sam.gov/workspace/contract/opp/cb630fc46d0f42fea069ce8a461957bc/view" target="_blank" rel="noopener">https://sam.gov/workspace/contract/opp/cb630fc46d0f42fea069ce8a461957bc/view</a></p>
+<p>Sources verified as of November 13, 2026.</p>
+
+    <div class="deep-dive-card">
+  <div class="section-label" style="color:var(--ci-gold);margin-bottom:8px;">Ask MMT &middot; Founding Member Brief</div>
+  <h3>Have a question that needs this kind of answer?</h3>
+  <p>Founding Members get two Ask MMT questions a month with a personal reply; Premium members get one. Be specific: the agency, the function, the decision you have to make. The best questions become briefs like this one.</p>
+  <p style="margin-bottom:18px;"><a class="deep-dive-cta" href="/premium/ask-mmt.html">Ask your question &rarr;</a></p>
+</div>
+
+    </div>
+  </main>
+
+  <footer class="footer"></footer>
+</body>
+</html>
