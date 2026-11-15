@@ -64,6 +64,8 @@ function setup(overrides = {}) {
     callModel: async (model, opts) => { calls.model.push({ model, opts }); return modelReply({ answer: "The DHA org chart is a Premium page.", sources: [1], answered: true }); },
     sendEmail: async (msg) => { calls.email.push(msg); return { success: true, id: "re_1" }; },
     retrieve: (question, opts) => { calls.retrieve.push({ question, opts }); return SOURCES; },
+    // The page index, as far as these tests need it: one real page.
+    pageLink: (path) => (/^\/dashboard(\.html)?\/?$/.test(path) ? { title: "Premium Dashboard", url: "/dashboard", access: "public" } : null),
     ...overrides,
   };
   const handler = makeHandler(deps);
@@ -327,6 +329,24 @@ describe("answering", () => {
     expect(answer).not.toMatch(/https?:|evil\.example|missionmeetstech\.com\/|\*|!|—|comprehensive/i);
     expect(answer).toContain("support@missionmeetstech.com");
     expect(answer).toContain("full view");
+  });
+
+  it("links a real site page the model named by address, so 'the page linked below' is true", async () => {
+    // Seen on the deploy preview: "go to the page linked below and sign in"
+    // above a single link to the help guide. The help page says "sign in at
+    // missionmeetstech.com/dashboard" and the model repeats the address.
+    const { post } = setup({
+      retrieve: () => PUBLIC_SOURCES,
+      callModel: async () => modelReply({ answer: "Go to missionmeetstech.com/dashboard and sign in, or try https://missionmeetstech.com/made-up-page.", sources: [2], answered: true }),
+    });
+    const res = await post({ question: "Where do I sign in?" });
+    expect(res.body.answer).toBe("Go to the page linked below and sign in, or try the page linked below.");
+    // The dashboard is in the index, so it is linked. The invented address is not.
+    expect(res.body.links.map((l) => l.url)).toEqual(["/pricing", "/help", "/dashboard"]);
+    expect(res.body.links[2]).toEqual({ title: "Premium Dashboard", url: "/dashboard", access: "public" });
+    // The support address is not a page.
+    const mail = setup({ retrieve: () => PUBLIC_SOURCES, callModel: async () => modelReply({ answer: "Write to support@missionmeetstech.com.", sources: [2], answered: true }) });
+    expect((await mail.post({ question: "Where do I sign in?" })).body.links.map((l) => l.url)).toEqual(["/pricing", "/help"]);
   });
 
   it("returns the retrieved links when the model fails, times out or talks nonsense", async () => {

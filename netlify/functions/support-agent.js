@@ -41,7 +41,7 @@ const { enforceVoice, dollarGuard } = require("./lib/answer-guards");
 const { escapeHtml } = require("./lib/sanitize");
 const { sendEmail } = require("./lib/send-email");
 const { retrieve, linksFor, needsPerson } = require("./lib/support-retrieval");
-const { urlKey, indexSize } = require("./lib/site-index");
+const { urlKey, indexSize, pageLink } = require("./lib/site-index");
 
 const SOURCE_FN = "support-agent";
 const TURN_EVENT = "support_agent_turn";
@@ -131,6 +131,7 @@ const DEFAULT_DEPS = {
   callModel: callAnthropic,
   sendEmail,
   retrieve,
+  pageLink,
 };
 
 /** One line of visitor text: control characters out, whitespace collapsed. */
@@ -328,12 +329,30 @@ function linksForTurn(sources, cited, answered, member) {
   return links;
 }
 
+// A site address in the model's reply (the help page says "sign in at
+// missionmeetstech.com/dashboard", and the model repeats it).
+const SITE_URL_RE = /(?<![@\w.-])(?:https?:\/\/)?(?:www\.)?missionmeetstech\.com(\/[^\s)]*[^\s).,;:!?])/gi;
+
+/**
+ * cleanAnswer turns a site address the model wrote into "the page linked
+ * below". This makes that true: when the address is a real indexed page, the
+ * page joins the links. An address the index does not have adds nothing.
+ */
+function withNamedPages(links, answer, deps) {
+  const out = links.slice();
+  for (const match of String(answer || "").matchAll(SITE_URL_RE)) {
+    const page = deps.pageLink(match[1]);
+    if (page && out.length < MAX_LINKS && !out.some((l) => urlKey(l.url) === urlKey(page.url))) out.push(page);
+  }
+  return out;
+}
+
 function linksOnlyTurn(sources, member, reason, model = null, usage = null) {
   return { answer: LINKS_ONLY_TEXT, links: linksForTurn(sources, [], false, member), answered: true, source: "links_only", model, usage, fallback_reason: reason };
 }
 
 /** The model's parsed reply to a turn, after the guards this file owns. */
-function settleReply(parsed, sources, member, model, usage) {
+function settleReply(parsed, sources, member, model, usage, deps) {
   const figures = dollarGuard(parsed.answer, sources.map((s) => s.passage || "").join(" "));
   if (figures.unsupported_dollar_count > 0) {
     console.warn(`${SOURCE_FN}: answer carried a dollar figure no passage has (${figures.unsupported[0]}), returning links`);
@@ -345,7 +364,8 @@ function settleReply(parsed, sources, member, model, usage) {
   if (!parsed.answered && top.locked && top.nav > 0) {
     return { answer: lockedPageText(top.title), links: linksForTurn(sources, [top.n], true, member), answered: true, source: "locked_page", model, usage, fallback_reason: null };
   }
-  return { answer: cleanAnswer(parsed.answer), links: linksForTurn(sources, parsed.cited, parsed.answered, member), answered: parsed.answered, source: "model", model, usage, fallback_reason: null };
+  const links = withNamedPages(linksForTurn(sources, parsed.cited, parsed.answered, member), parsed.answer, deps);
+  return { answer: cleanAnswer(parsed.answer), links, answered: parsed.answered, source: "model", model, usage, fallback_reason: null };
 }
 
 async function answerFromSources({ sources, question, history, member, deps }) {
@@ -367,7 +387,7 @@ async function answerFromSources({ sources, question, history, member, deps }) {
     console.warn(`${SOURCE_FN}: model reply was not usable JSON, returning links`);
     return linksOnlyTurn(sources, member, "unparseable reply", model, result && result.usage);
   }
-  return settleReply(parsed, sources, member, model, result.usage);
+  return settleReply(parsed, sources, member, model, result.usage, deps);
 }
 
 // --------------------------------------------------------------

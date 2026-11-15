@@ -193,7 +193,10 @@ Ask:
   figure, or the hourly ceiling) or `none` (nothing retrieved).
 - `links` leads with the best match, then what the model cited. A signed-out
   reader pointed at a Premium page also gets the pricing page; the room for it
-  comes from a public page, never from the Premium page.
+  comes from a public page, never from the Premium page. When the model
+  repeats a site address from a passage ("sign in at
+  missionmeetstech.com/dashboard"), the text becomes "the page linked below"
+  and, if the index has that page, the page joins the links.
 - Limits: question 3 to 500 characters, history two turns of 1,200 characters
   on one line each, the model's reply 400 tokens, the printed answer 900
   characters, four links, a seven-second model timeout (a synchronous Netlify

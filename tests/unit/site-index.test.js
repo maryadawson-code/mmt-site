@@ -281,5 +281,16 @@ describe("site-index runtime", () => {
   it("reports an index that is not in the bundle as zero pages", () => {
     siteIndex._setSiteIndexForTests({ pages: [] });
     expect(siteIndex.indexSize()).toBe(0);
+    expect(siteIndex.pageLink("/dashboard")).toBeNull();
+  });
+
+  it("finds a page by any spelling of its URL and gives out only its title, URL and access", () => {
+    siteIndex._setSiteIndexForTests({
+      pages: [{ url: "/premium/org-charts/dha", title: "DHA Organizational Structure", description: "Names.", tags: [], access: "premium", kind: "page", public_text: "Pitch.", member_text: "Named person." }],
+    });
+    for (const url of ["/premium/org-charts/dha", "/premium/org-charts/dha.html", "/premium/org-charts/dha/", "https://missionmeetstech.com/premium/org-charts/dha#j6"]) {
+      expect(siteIndex.pageLink(url)).toEqual({ title: "DHA Organizational Structure", url: "/premium/org-charts/dha", access: "premium" });
+    }
+    expect(siteIndex.pageLink("/premium/org-charts/nope")).toBeNull();
   });
 });

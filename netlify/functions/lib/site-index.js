@@ -105,6 +105,17 @@ function pageItems(member) {
   });
 }
 
+/**
+ * The indexed page at a URL, as a widget link ({ title, url, access }), or
+ * null when the index has no such page. A title and a URL are all it gives
+ * out, which any caller may have.
+ */
+function pageLink(url) {
+  const key = urlKey(url);
+  const page = (loadSiteIndex().pages || []).find((p) => p.url === key);
+  return page ? { title: page.title, url: page.url, access: page.access } : null;
+}
+
 /** How many pages the loaded index holds (0 when the file is not in the bundle). */
 function indexSize() {
   return (loadSiteIndex().pages || []).length;
@@ -115,4 +126,4 @@ function _setSiteIndexForTests(index) {
   INDEX = index && typeof index === "object" ? index : null;
 }
 
-module.exports = { loadSiteIndex, pageItems, indexSize, urlKey, INDEX_FILE, _setSiteIndexForTests };
+module.exports = { loadSiteIndex, pageItems, pageLink, indexSize, urlKey, INDEX_FILE, _setSiteIndexForTests };
