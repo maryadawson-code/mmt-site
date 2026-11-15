@@ -94,6 +94,11 @@ const EXPECTED_SLUGS = [
   "va-omega-onboarding-mgmt-engineering-governance-assurance",
   "va-application-hosting-compute-and-storage",
   "dha-peo-dhms-workforce-3-0-wf3-idiq",
+  // 2026-11-15: three listings from the Founding Member brief "Who Proves
+  // the Decision Was Right" (2026-11-13).
+  "cms-fraud-defense-contracts-upic-successor",
+  "cms-supplemental-medical-review-contract-smrc",
+  "va-pivot-payment-integrity-validation-and-oversight-tool",
 ];
 
 const REQUIRED_FIELDS = ["slug", "name", "agency", "status", "description", "source_urls", "last_verified"];

@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-10-20T04:08:48.436Z",
+  "generated_at": "2026-11-15T20:00:30.675Z",
   "source_dir": "content/newsletter",
-  "source_count": 142,
+  "source_count": 148,
   "newest_in_source": {
-    "file": "2026-10-20-the-blood-clock.md",
-    "title": "The Blood Clock",
-    "date": "2026-10-20T00:00:00.000Z",
-    "slug": "the-blood-clock",
+    "file": "2026-11-13-the-fax-machine-knew-what-day-it-was.md",
+    "title": "The Fax Machine Knew What Day It Was",
+    "date": "2026-11-13T00:00:00.000Z",
+    "slug": "the-fax-machine-knew-what-day-it-was",
     "future_dated": false
   },
   "newest_in_dist_latest": {
-    "slug": "the-blood-clock",
-    "title": "The Blood Clock"
+    "slug": "the-fax-machine-knew-what-day-it-was",
+    "title": "The Fax Machine Knew What Day It Was"
   },
   "in_sync": true,
   "imported_in_this_run": [],
@@ -37,5 +37,11 @@
       "note": "Article body not present in content/newsletter/. See docs/newsletter-source-of-truth-gap.md for resolution paths."
     }
   ],
-  "held_future_articles": []
+  "held_future_articles": [
+    {
+      "file": "2026-11-17-the-help-is-already-wrapped.md",
+      "title": "The Help Is Already Wrapped",
+      "publish_date": "2026-11-17T00:00:00.000Z"
+    }
+  ]
 }

@@ -14,6 +14,7 @@ import {
   monthStartUtc,
   capFor,
   hashIp,
+  ipSalt,
   sanitizeHistory,
   newTurnId,
 } from "../../netlify/functions/lib/ask-mmt-access.js";
@@ -95,6 +96,34 @@ describe("helpers", () => {
     expect(a).not.toBe(hashIp("203.0.113.9", "other"));
     expect(a).not.toContain("203.0.113");
     expect(hashIp("", "salt")).toBe(null);
+    // No salt is not "empty salt": the caller treats null like a missing IP.
+    expect(hashIp("203.0.113.9", null)).toBe(null);
+    expect(hashIp("203.0.113.9", "")).toBe(null);
+  });
+});
+
+describe("ipSalt", () => {
+  // A Supabase service key is a JWT whose first segment is the header
+  // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9", identical for every project. The
+  // salt used to be key.slice(0, 16) (2026-11-15).
+  const jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIn0.secret-signature-segment";
+  it("prefers a dedicated ASK_MMT_IP_SALT", () => {
+    expect(ipSalt({ ASK_MMT_IP_SALT: "dedicated", SUPABASE_SERVICE_KEY: jwt })).toBe("dedicated");
+  });
+  it("otherwise derives from the whole key, never a prefix of it", () => {
+    const salt = ipSalt({ SUPABASE_SERVICE_KEY: jwt });
+    expect(salt).toMatch(/^[0-9a-f]{64}$/);
+    expect(jwt.includes(salt)).toBe(false);
+    expect(salt).not.toBe(jwt.slice(0, 16));
+    // Two keys that share the public JWT header get different salts.
+    const other = ipSalt({ SUPABASE_SERVICE_KEY: jwt.replace("secret-signature-segment", "another-signature") });
+    expect(other).not.toBe(salt);
+    // Same key, same salt: hashes stay stable across invocations.
+    expect(ipSalt({ SUPABASE_SERVICE_KEY: jwt })).toBe(salt);
+  });
+  it("is null with no key, so hashIp returns null instead of an unsalted hash", () => {
+    expect(ipSalt({})).toBe(null);
+    expect(hashIp("203.0.113.9", ipSalt({}))).toBe(null);
   });
   it("sanitizeHistory keeps the last two well-formed turns, bounded", () => {
     const long = "x".repeat(5000);

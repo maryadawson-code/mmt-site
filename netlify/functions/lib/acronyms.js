@@ -139,6 +139,12 @@ const ACRONYMS = {
   IT: "Information Technology", COTS: "Commercial Off-the-Shelf", SaaS: "Software as a Service", PaaS: "Platform as a Service",
   IaaS: "Infrastructure as a Service", MVP: "Minimum Viable Product", SLA: "Service Level Agreement", KPI: "Key Performance Indicator",
   TBD: "To Be Determined",
+  // Review, payment integrity and appeals (2026-11-13 Founding Member brief)
+  CERT: "Comprehensive Error Rate Testing (CMS)", UPIC: "Unified Program Integrity Contractor (CMS)",
+  QIC: "Qualified Independent Contractor (Medicare appeals, second level)", RAC: "Recovery Audit Contractor (Medicare)",
+  RVC: "Recovery Auditor Validation Contractor (CMS)", SMRC: "Supplemental Medical Review Contractor (CMS)",
+  PIVOT: "Payment Integrity Validation and Oversight Tool (VA)", DNP: "Do Not Pay (Treasury pre-payment screening)",
+  OMHA: "Office of Medicare Hearings and Appeals (HHS)",
 };
 
 const UPPER_INDEX = Object.fromEntries(Object.entries(ACRONYMS).map(([k, v]) => [k.toUpperCase(), v]));

@@ -93,10 +93,31 @@ function resolveCaller({ token, email, verifyToken }) {
   return { mode: "anonymous", email: null, hint: null };
 }
 
-/** Salted, one-way IP hash for anonymous rate limiting. Never store raw IPs. */
+/**
+ * The salt for anonymous IP hashing. Until 2026-11-15 premium-chat passed
+ * the first 16 characters of the Supabase service key, which is the JWT
+ * header ("eyJhbGciOiJIUzI1") and identical for every Supabase project, so
+ * anyone with a list of addresses could reproduce every stored hash. The
+ * salt is now a dedicated secret when one is set (ASK_MMT_IP_SALT), else an
+ * HMAC over the WHOLE service key, whose signature segment is secret. Either
+ * way the salt never equals a substring of any key. Changing the salt
+ * changed every hash, which reset the free tier's per-visitor counts once.
+ */
+function ipSalt(env) {
+  const e = env || process.env;
+  if (e.ASK_MMT_IP_SALT) return String(e.ASK_MMT_IP_SALT);
+  if (!e.SUPABASE_SERVICE_KEY) return null;
+  return crypto.createHmac("sha256", String(e.SUPABASE_SERVICE_KEY)).update("ask-mmt-ip-salt-v2").digest("hex");
+}
+
+/**
+ * Salted, one-way IP hash for anonymous rate limiting. Never store raw IPs.
+ * A missing salt yields null, and the caller treats null like a missing IP
+ * (asks for an email) rather than hashing with an empty salt.
+ */
 function hashIp(ip, salt) {
-  if (!ip) return null;
-  return crypto.createHash("sha256").update(`${salt || ""}:${ip}`).digest("hex").slice(0, 32);
+  if (!ip || !salt) return null;
+  return crypto.createHash("sha256").update(`${salt}:${ip}`).digest("hex").slice(0, 32);
 }
 
 function newTurnId() {
@@ -132,6 +153,7 @@ module.exports = {
   capFor,
   resolveCaller,
   hashIp,
+  ipSalt,
   newTurnId,
   sanitizeHistory,
 };
