@@ -2,36 +2,44 @@
 // support-retrieval.js: what the site help widget is allowed to read for
 // one question, ranked.
 //
-// Two sources, one scorer (content-index.searchItems):
-//   - the content corpus (articles, briefs, tracker entries, glossary ...)
-//   - the page index (every other published page; lib/site-index.js)
+// WHO READS WHAT (the paywall, decided here, before anything is scored)
+//   signed-out  the page index's public text and nothing else: what the
+//               published page shows a visitor with no account
+//               (lib/site-index.js, built from dist/). The content corpus is
+//               never read for a signed-out caller. It is built from source
+//               data and carries fields the pages withhold, such as a
+//               tracker entry's vendor and value or a recent article's body,
+//               even on rows it marks `premium: false`.
+//   member      the content corpus in full, plus every page the corpus does
+//               not already carry.
 //
-// The paywall is enforced HERE, before scoring, not after: a signed-out
-// caller's candidate list holds only text that caller may read, so neither
-// the passages nor the ranking can reveal what a premium page says.
-//
-// The shared scorer is tuned for research questions, where a passage that
-// mentions the topic is a hit. A help question is navigational ("where is
-// the DHA org chart"), so candidates are re-ranked by how much of the
-// question their title and URL carry, and a short routing table sends the
-// stock help questions (price, cancel, sign in, contact) to the page that
-// answers them.
+// The shared scorer (content-index.searchItems) is tuned for research
+// questions, where a passage that mentions the topic is a hit. A help
+// question is navigational ("where is the DHA org chart"), so candidates are
+// re-ranked by how much of the question their title and URL carry, and a
+// short routing table sends the stock help questions (price, cancel, sign
+// in, contact) to the page that answers them.
 // Spec: docs/support-widget-spec.md sections 3.1 and 3.3.
 // ============================================================
 
 const { loadCorpus, searchItems } = require("./content-index");
 const { pageItems, urlKey } = require("./site-index");
-const { AGENCY_ACRONYM_SET } = require("./federal-agencies");
+const { AGENCY_ACRONYM_SET, agencyFor } = require("./federal-agencies");
 
 const MAX_SOURCES = 6;
 const CANDIDATES = 40;
-// Pages are the help desk's main source; no other single type may crowd the
-// answer (the forecast pipeline alone is 195 rows).
+// No one corpus dataset may fill a member's candidates: the forecast
+// pipeline alone is 195 rows that all link one page.
+const CORPUS_TYPE_CAP = 3;
+// Plain pages are the help desk's main source; no other kind may crowd the
+// answer.
 const TYPE_CAPS = { page: 4 };
 const DEFAULT_TYPE_CAP = 2;
 // The passage the answer leans on gets room; the rest get enough to quote.
 const TOP_PASSAGE_CHARS = 1400;
 const PASSAGE_CHARS = 600;
+// What an intent's passage hint is worth, in question words (see bestPassage).
+const HINT_WEIGHT = 3;
 // A hit that shares one common word with the question is not a source.
 const MIN_SCORE = 6;
 const RELATIVE_FLOOR = 0.3;
@@ -39,38 +47,49 @@ const RELATIVE_FLOOR = 0.3;
 // the question the title and URL cover.
 const NAV_WEIGHT = 10;
 const INTENT_BONUS = 25;
+// On top of INTENT_BONUS for the page of the agency the question names.
+// Large enough to put that page first: "Who is the VA CIO?" is about the VA
+// chart, and no article that mentions a CIO should outrank it.
+const AGENCY_PAGE_BONUS = 100;
 const SITE_ORIGIN_RE = /^https?:\/\/(www\.)?missionmeetstech\.com/i;
 // The site's own name is in every question about the site and on no page
 // title; searched as an acronym it would bury every page that lacks it.
 const SITE_NAME_RE = /\b(mmt|mission meets tech|missionmeetstech(\.com)?)\b/gi;
 
-// Premium corpus items a signed-out caller may be told exist, and the fields
-// of each that are already public on the site. An article's card (title,
-// description, tags) is on the archive; a brief's headline is on the Capture
-// Corner page. Structured premium rows (key people, forecast rows, budget
-// lines, capture intel, CSO areas) are absent on purpose: their titles are
-// the data.
-const TEASER_FIELDS = {
-  article: ["title", "description", "tags"],
-  premium_brief: ["title"],
-  monthly_brief: ["title"],
-  capture_corner: ["title"],
-};
-
 // How readers ask the stock help questions, the page vocabulary each maps
-// to, and the page that answers it. scripts/validate-site-index.js fails the
-// build when a routed page leaves the index.
+// to, and the page that answers it.
+//   hint            what the answering passage looks like, when the words of
+//                   the question would not find it
+//   unless          the intent does not fire when this also matches
+//   notWithAgency   the intent does not fire when the question names a
+//                   federal agency ("how do I contact DHA" is not about MMT)
+//   person          a person is always offered for this kind of question
+// scripts/validate-site-index.js fails the build when a routed page leaves
+// the index.
 const INTENTS = [
   {
     name: "pricing",
-    re: /\b(cost|costs|price|prices|pricing|how much|plans?|tiers?|subscribe|founding)\b/i,
+    re: /\b(cost|costs|price|prices|pricing|how much|subscribe|founding)\b|\b(premium|membership|subscription)\b[^?]*\b(include[sd]?|included|benefits|features|comes? with)\b|\bwhat do (i|you) get\b/i,
+    unless: /\b(spend\w*|budget\w*|obligat\w*|ceiling|funding|appropriat\w*|worth)\b/i,
+    notWithAgency: true,
     words: "pricing premium founding annual monthly",
+    // A price is a dollar figure. The line that answers "how much is
+    // ProposalPulse" says "$19.99", not "cost".
+    hint: /\$\d/,
     pages: ["/pricing"],
   },
   {
     name: "billing",
     re: /\b(cancel\w*|refund\w*|unsubscribe|billing|invoice|charged?|switch(ing)? plans?)\b/i,
+    person: true,
     words: "subscription management canceling refunds switching plans",
+    pages: ["/help"],
+  },
+  {
+    name: "account",
+    re: /\b(my (account|subscription|scorecard|order|brief|report|payment|card|receipt)|(didn'?t|did not|never) (arrive|arrived|receive|received|get|got|come|came)|can'?t see (my|premium|the)|not showing up)\b/i,
+    person: true,
+    words: "subscription signing in contact product support",
     pages: ["/help"],
   },
   {
@@ -87,7 +106,9 @@ const INTENTS = [
   },
   {
     name: "people",
-    re: /\b(who (leads|runs|heads|owns|is the|are the)|leader(ship)?|director|deputy|chief|head of|program (manager|executive)|point of contact)\b/i,
+    re: /\b(who (leads|runs|heads|is the|are the)|leader(ship)?|director|deputy|chief|head of|program (manager|executive)|point of contact)\b/i,
+    // "Who is the vendor on the EHRM contract" asks about a company.
+    unless: /\b(vendor|prime|primes|incumbent|contractor|awardee|winner|company|holder)\b/i,
     words: "organizational structure leadership key people",
     prefix: "/premium/org-charts/",
     pages: ["/premium/key-people"],
@@ -107,6 +128,8 @@ const INTENTS = [
   {
     name: "contact",
     re: /\b(contact|reach (you|someone|out)|talk to|speak (to|with)|human|(real|a) person|support (team|email))\b/i,
+    notWithAgency: true,
+    person: true,
     words: "contact product support",
     pages: ["/help"],
   },
@@ -120,38 +143,7 @@ const NAV_STOPWORDS = new Set(
     "mmt missionmeetstech").split(" "),
 );
 
-function teaserOf(item) {
-  const fields = TEASER_FIELDS[item.type];
-  if (!fields) return null;
-  return {
-    id: item.id,
-    type: item.type,
-    date: item.date,
-    url: item.url,
-    premium: true,
-    locked: true,
-    title: item.title,
-    description: fields.includes("description") ? item.description : "",
-    tags: fields.includes("tags") ? item.tags : [],
-    excerpt: "",
-  };
-}
-
-/** Every item this caller may be answered from. */
-function visibleItems(member) {
-  const corpus = loadCorpus().items || [];
-  const pages = pageItems(member);
-  if (member) return corpus.concat(pages);
-  const out = [];
-  for (const item of corpus) {
-    if (!item.premium) out.push(item);
-    else {
-      const teaser = teaserOf(item);
-      if (teaser) out.push(teaser);
-    }
-  }
-  return out.concat(pages);
-}
+const isAgency = (word) => AGENCY_ACRONYM_SET.has(String(word).toLowerCase().replace(/[^a-z0-9-]/g, ""));
 
 function stem(word) {
   const s = word.replace(/(ing|es|s)$/, "");
@@ -184,60 +176,44 @@ function keyTerms(question) {
   return [...new Set(contentWords(question).map((w) => (w.length < 3 ? w.toLowerCase() : stem(w.toLowerCase()))))];
 }
 
-function titleWords(item) {
-  const words = new Set();
-  const text = `${item.title || ""} ${(item.tags || []).join(" ")} ${urlKey(item.url)}`.toLowerCase();
-  for (const w of text.match(/[a-z0-9][a-z0-9+&]*/g) || []) {
-    if (!NAV_STOPWORDS.has(w) || w.length < 3) words.add(w.length < 3 ? w : stem(w));
-  }
-  return words;
-}
-
-function termInWords(term, words) {
-  if (words.has(term)) return true;
-  if (term.length < 3) return false;
-  for (const w of words) if (w.length >= 3 && (w.startsWith(term) || term.startsWith(w))) return true;
-  return false;
+/** The federal agencies a question names, as lowercase acronyms. */
+function namedAgencies(text) {
+  return new Set(contentWords(text).filter(isAgency).map((w) => w.toLowerCase()));
 }
 
 function intentsOf(question) {
-  return INTENTS.filter((intent) => intent.re.test(question));
+  const q = String(question || "");
+  const agency = namedAgencies(q).size > 0;
+  return INTENTS.filter((intent) => intent.re.test(q) && !(intent.unless && intent.unless.test(q)) && !(intent.notWithAgency && agency));
 }
 
-function intentBonus(item, intents) {
-  const key = urlKey(item.url);
-  for (const intent of intents) {
-    if (intent.pages && intent.pages.includes(key)) return INTENT_BONUS;
-    if (intent.prefix && key.startsWith(intent.prefix)) return INTENT_BONUS;
-  }
-  return 0;
+/**
+ * Billing, account and "let me talk to someone" questions always get the
+ * offer of a person, whatever the answer says. Decided here from the
+ * question, not left to the model.
+ */
+function needsPerson(question) {
+  return intentsOf(question).some((intent) => intent.person);
 }
-
-function navBonus(item, terms) {
-  if (terms.length === 0) return 0;
-  const words = titleWords(item);
-  const matched = terms.filter((t) => termInWords(t, words)).length;
-  return matched ? NAV_WEIGHT * matched * (matched / terms.length) : 0;
-}
-
-const isAgency = (word) => AGENCY_ACRONYM_SET.has(String(word).toLowerCase().replace(/[^a-z0-9-]/g, ""));
 
 const FOLLOW_UP_START_RE = /^(and|or|but|also|then|what about|how about|same for)\b/i;
 // "it" in lower or sentence case; "IT" is the department.
 const ANAPHOR_RE = /\b(it|It|its|that|That|this|This|those|these|them|they)\b/;
 const FOLLOW_UP_MAX_WORDS = 7;
+const BARE_NAME_MAX_WORDS = 2;
 
 /**
  * Does this question lean on the one before it? Short, and either opens
  * with a connective ("and for VA?"), points back ("how much is it?"), or is
- * a bare name with no help intent of its own ("VA?"). "How do I cancel?"
- * and "How much does Premium cost?" are short too, and stand on their own.
+ * nothing but an agency's name ("VA?"). "Is there a podcast?" and "How do I
+ * cancel?" are short too, and stand on their own.
  */
 function isFollowUp(question) {
   const q = String(question || "").trim();
-  if (q.split(/\s+/).filter(Boolean).length > FOLLOW_UP_MAX_WORDS) return false;
+  const words = q.split(/\s+/).filter(Boolean).length;
+  if (words > FOLLOW_UP_MAX_WORDS) return false;
   if (FOLLOW_UP_START_RE.test(q) || ANAPHOR_RE.test(q)) return true;
-  return contentWords(q).length <= 1 && intentsOf(q).length === 0;
+  return words <= BARE_NAME_MAX_WORDS && namedAgencies(q).size > 0 && intentsOf(q).length === 0;
 }
 
 /**
@@ -256,62 +232,143 @@ function subjectOf(question, history) {
 }
 
 /**
- * The text handed to the shared scorer: the question's content words plus the
- * page vocabulary of its intents.
+ * The text handed to the shared scorer: the question's content words plus
+ * the page vocabulary of its intents.
  *
  * Question words go, or "where" ranks every page with "where" in its title
- * above the page asked for. Two-letter capitals are lowered: the scorer
- * treats them as acronyms it can never match (its tokens start at three
- * letters) and would quarter every item's score; navBonus() weighs them
- * instead.
+ * above the page asked for. The scorer's tokens start at three letters, so a
+ * two-letter agency is spelled out ("VA" becomes "veterans affairs"; a
+ * question about nothing but the VA used to find nothing), and any other
+ * two-letter capital is lowered so the scorer does not treat it as an
+ * acronym it can never match and quarter every score. navBonus() still
+ * weighs the two-letter word itself.
  */
 function searchText(subject, intents) {
-  const words = contentWords(subject).map((w) => (/^[A-Z]{2}$/.test(w) ? w.toLowerCase() : w));
+  const words = contentWords(subject).map((w) => {
+    if (!/^[A-Za-z]{2}$/.test(w)) return w;
+    const agency = isAgency(w) ? agencyFor(w) : null;
+    const names = agency && Array.isArray(agency.aliases) ? agency.aliases.slice().sort((a, b) => a.length - b.length) : [];
+    return names[0] || w.toLowerCase();
+  });
   return `${words.join(" ")} ${intents.map((i) => i.words).join(" ")}`.trim();
 }
 
-/**
- * The scorer's candidates, plus any page an intent routes to by name that
- * the scorer left out. "How do I talk to a person" shares no word with a
- * help page that says "Contact", and the routing table exists for exactly
- * that.
- */
-function withRoutedPages(candidates, items, intents) {
-  const routed = new Set(intents.flatMap((intent) => intent.pages || []));
-  if (routed.size === 0) return candidates;
-  const have = new Set(candidates.map((c) => urlKey(c.url)));
-  const missing = items.filter((item) => item.type === "page" && routed.has(urlKey(item.url)) && !have.has(urlKey(item.url)));
-  return candidates.concat(missing.map((item) => ({ ...item, _score: 0 })));
+function titleWords(item) {
+  const words = new Set();
+  const text = `${item.title || ""} ${(item.tags || []).join(" ")} ${urlKey(item.url)}`.toLowerCase();
+  for (const w of text.match(/[a-z0-9][a-z0-9+&]*/g) || []) {
+    if (!NAV_STOPWORDS.has(w) || w.length < 3) words.add(w.length < 3 ? w : stem(w));
+  }
+  return words;
+}
+
+function termInWords(term, words) {
+  if (words.has(term)) return true;
+  if (term.length < 3) return false;
+  for (const w of words) if (w.length >= 3 && (w.startsWith(term) || term.startsWith(w))) return true;
+  return false;
+}
+
+/** How many of `terms` an item's title and URL carry. */
+function navMatches(item, terms) {
+  if (terms.length === 0) return 0;
+  const words = titleWords(item);
+  return terms.filter((t) => termInWords(t, words)).length;
+}
+
+function navBonus(item, terms) {
+  const matched = navMatches(item, terms);
+  return matched ? NAV_WEIGHT * matched * (matched / terms.length) : 0;
+}
+
+/** Is this page, under an intent's prefix, the one for an agency the question names? */
+function isAgencyPage(key, prefix, agencies) {
+  const slug = key.slice(prefix.length);
+  return agencies.has(slug) || slug.split("-").some((part) => agencies.has(part));
+}
+
+function intentBonus(item, intents, agencies) {
+  const key = urlKey(item.url);
+  let bonus = 0;
+  for (const intent of intents) {
+    if (intent.pages && intent.pages.includes(key)) bonus = Math.max(bonus, INTENT_BONUS);
+    if (intent.prefix && key.startsWith(intent.prefix)) {
+      bonus = Math.max(bonus, INTENT_BONUS + (isAgencyPage(key, intent.prefix, agencies) ? AGENCY_PAGE_BONUS : 0));
+    }
+  }
+  return bonus;
 }
 
 /**
- * The stretch of `text` that carries the most of the question, `size` chars
- * long, cut at word boundaries and marked "..." where it was cut.
- *
- * content-index.excerptWindow opens on the first hit of one anchor word,
- * which for "how do I cancel my subscription" is the first "subscription" on
- * /help (the plan list), not the Canceling section further down. Here every
- * hit of every term is a candidate start and the window holding the most
- * distinct terms wins; the earliest wins a tie.
+ * The scorer's candidates, plus any page an intent routes to that the
+ * scorer left out: a page it names ("How do I talk to a person" shares no
+ * word with a help page that says "Contact"), and the named agency's page
+ * under its prefix (a locked org chart has almost no text to score on).
  */
-function bestPassage(text, terms, size) {
-  const body = String(text || "");
-  if (body.length <= size) return body;
-  const lower = body.toLowerCase();
-  const words = terms.filter((t) => t.length >= 3);
+function withRoutedPages(hits, pages, intents, agencies) {
+  const named = new Set(intents.flatMap((intent) => intent.pages || []));
+  const prefixes = intents.map((intent) => intent.prefix).filter(Boolean);
+  if (named.size === 0 && prefixes.length === 0) return hits;
+  const have = new Set(hits.map((c) => urlKey(c.url)));
+  const routed = pages.filter((page) => {
+    const key = urlKey(page.url);
+    if (have.has(key)) return false;
+    return named.has(key) || prefixes.some((prefix) => key.startsWith(prefix) && isAgencyPage(key, prefix, agencies));
+  });
+  return hits.concat(routed.map((page) => ({ ...page, _score: 0 })));
+}
+
+/** What this caller may be answered from: { pages, corpus }. */
+function readable(member) {
+  const pages = pageItems(member);
+  if (!member) return { pages, corpus: [] };
+  return { pages: pages.filter((p) => !p.inCorpus), corpus: loadCorpus().items || [] };
+}
+
+/** Every item this caller may be answered from, as one list. */
+function visibleItems(member) {
+  const { pages, corpus } = readable(member);
+  return corpus.concat(pages);
+}
+
+/**
+ * Candidates from the shared scorer. Plain pages are searched on their own
+ * and uncapped, so a page with little text (a locked org chart) is not
+ * pushed out by forty articles that mention its agency.
+ */
+function candidatesFor(member, text, today) {
+  const { pages, corpus } = readable(member);
+  const plain = pages.filter((p) => p.type === "page");
+  const content = pages.filter((p) => p.type !== "page");
+  const hits = searchItems(plain, text, CANDIDATES, "", { perTypeCap: 0, today })
+    .concat(searchItems(content, text, CANDIDATES, "", { perTypeCap: 0, today }))
+    .concat(searchItems(corpus, text, CANDIDATES, "", { perTypeCap: CORPUS_TYPE_CAP, today }));
+  return { pages, hits };
+}
+
+/**
+ * Where a passage might start: the top of the text, and a little before
+ * every hit of every term and every match of every hint.
+ */
+function passageStarts(body, lower, terms, hints, lead) {
   const starts = [0];
-  for (const term of words) {
+  for (const term of terms) {
     for (let at = lower.indexOf(term); at !== -1 && starts.length < 240; at = lower.indexOf(term, at + term.length)) {
-      starts.push(Math.max(0, at - Math.floor(size / 4)));
+      starts.push(Math.max(0, at - lead));
     }
   }
-  let best = { start: 0, score: -1 };
-  for (const start of starts.sort((a, b) => a - b)) {
-    const window = lower.slice(start, start + size);
-    const score = words.filter((term) => window.includes(term)).length;
-    if (score > best.score) best = { start, score };
+  for (const hint of hints) {
+    for (const m of body.matchAll(new RegExp(hint.source, "g"))) {
+      if (starts.length >= 300) break;
+      starts.push(Math.max(0, m.index - lead));
+    }
   }
-  let start = best.start;
+  return starts.sort((x, y) => x - y);
+}
+
+/** `size` characters of `body` from `from`, cut at word boundaries and marked "..." where it was cut. */
+function cutAtWords(body, from, size) {
+  let start = from;
   if (start > 0) {
     const space = body.indexOf(" ", start);
     if (space > -1 && space < start + 40) start = space + 1;
@@ -324,10 +381,73 @@ function bestPassage(text, terms, size) {
   return `${start > 0 ? "..." : ""}${body.slice(start, end).trim()}${end < body.length ? " ..." : ""}`;
 }
 
+/**
+ * The stretch of `text` that carries the most of the question, `size` chars
+ * long, cut at word boundaries and marked "..." where it was cut.
+ *
+ * content-index.excerptWindow opens on the first hit of one anchor word,
+ * which for "how do I cancel my subscription" is the first "subscription" on
+ * /help (the plan list), not the Canceling section further down. Here every
+ * hit of every term is a candidate start. The window holding the most of the
+ * question's own words wins, with an intent's `hint` (a dollar figure, for a
+ * price question) counting as three of them: a stretch that states a price
+ * and names nothing beats one that names the product twice and states no
+ * price. The intent's page vocabulary only breaks a tie, so "how much is
+ * ProposalPulse" lands on the ProposalPulse price and not on the densest run
+ * of plan words. The earliest window wins what is left.
+ */
+function bestPassage(text, questionTerms, intentTerms, size, hints = []) {
+  const body = String(text || "");
+  if (body.length <= size) return body;
+  const lower = body.toLowerCase();
+  const own = questionTerms.filter((t) => t.length >= 3);
+  const extra = (intentTerms || []).filter((t) => t.length >= 3 && !own.includes(t));
+  const count = (terms, window) => terms.filter((term) => window.includes(term)).length;
+  let best = { start: 0, own: -1, extra: -1 };
+  for (const start of passageStarts(body, lower, own.concat(extra), hints, Math.floor(size / 4))) {
+    const window = lower.slice(start, start + size);
+    const hinted = hints.filter((hint) => hint.test(body.slice(start, start + size))).length;
+    const score = { start, own: count(own, window) + HINT_WEIGHT * hinted, extra: count(extra, window) };
+    if (score.own > best.own || (score.own === best.own && score.extra > best.extra)) best = score;
+  }
+  return cutAtWords(body, best.start, size);
+}
+
 /** Site-relative path, or "" when the URL points anywhere else. */
 function sitePath(url) {
   const u = String(url || "").trim().replace(SITE_ORIGIN_RE, "");
   return u.startsWith("/") && !u.startsWith("//") ? u : "";
+}
+
+/** Ranked candidates to at most MAX_SOURCES sources: one per page, capped per kind. */
+function toSources(ranked, floor, terms, intentTerms, hints) {
+  const sources = [];
+  const perType = new Map();
+  const seenPages = new Set();
+  for (const { item, score } of ranked) {
+    if (sources.length >= MAX_SOURCES || score < floor) break;
+    const url = sitePath(item.url);
+    const page = urlKey(url);
+    const type = item.type || "page";
+    const used = perType.get(type) || 0;
+    if (!url || seenPages.has(page) || used >= (TYPE_CAPS[type] || DEFAULT_TYPE_CAP)) continue;
+    seenPages.add(page);
+    perType.set(type, used + 1);
+    // A locked item's excerpt is already only what a signed-out visitor is
+    // shown on that page (site-index pageItems), or empty.
+    sources.push({
+      n: sources.length + 1,
+      title: String(item.title || "").trim(),
+      url,
+      type,
+      access: item.premium ? "premium" : "public",
+      locked: Boolean(item.locked),
+      date: item.date || null,
+      nav: navMatches(item, terms),
+      passage: bestPassage(item.excerpt || item.description || "", terms, intentTerms, sources.length === 0 ? TOP_PASSAGE_CHARS : PASSAGE_CHARS, hints),
+    });
+  }
+  return sources;
 }
 
 /**
@@ -337,55 +457,28 @@ function sitePath(url) {
  * @param {Array}   [options.history] sanitized prior turns
  * @param {string}  [options.today] YYYY-MM-DD publish-gate date (tests pin it)
  * @returns {Array<{ n:number, title:string, url:string, type:string,
- *   access:'public'|'premium', locked:boolean, date:string|null, passage:string }>}
+ *   access:'public'|'premium', locked:boolean, date:string|null,
+ *   nav:number, passage:string }>} `nav` is how many of the question's own
+ *   words the source's title and URL carry.
  */
 function retrieve(question, { member = false, history = [], today } = {}) {
   const subject = subjectOf(question, history);
   const intents = intentsOf(subject);
+  const agencies = namedAgencies(subject);
   const terms = keyTerms(subject);
   // In a follow-up the new words outweigh the carried ones: "and for VA?"
   // after a DHA question is about VA.
   const focus = subject === String(question || "").trim() ? [] : keyTerms(question);
-  const items = visibleItems(member);
-  const candidates = withRoutedPages(
-    searchItems(items, searchText(subject, intents), CANDIDATES, "", { perTypeCap: 0, today }),
-    items,
-    intents,
-  );
+  const { pages, hits } = candidatesFor(member, searchText(subject, intents), today);
+  const candidates = withRoutedPages(hits, pages, intents, agencies);
   if (candidates.length === 0) return [];
 
   const ranked = candidates
-    .map((item) => ({ item, score: item._score + navBonus(item, terms) + navBonus(item, focus) + intentBonus(item, intents) }))
+    .map((item) => ({ item, score: item._score + navBonus(item, terms) + navBonus(item, focus) + intentBonus(item, intents, agencies) }))
     .sort((a, b) => b.score - a.score);
   const floor = Math.max(MIN_SCORE, ranked[0].score * RELATIVE_FLOOR);
-  // What a passage is chosen by: the question's own words plus the page
-  // vocabulary its intent maps to ("cost" finds the price table by "annual").
-  const passageTerms = [...new Set(terms.concat(keyTerms(intents.map((i) => i.words).join(" "))))];
-
-  const sources = [];
-  const perType = new Map();
-  for (const { item, score } of ranked) {
-    if (sources.length >= MAX_SOURCES || score < floor) break;
-    const url = sitePath(item.url);
-    if (!url) continue;
-    const type = item.type || "page";
-    const seen = perType.get(type) || 0;
-    if (seen >= (TYPE_CAPS[type] || DEFAULT_TYPE_CAP)) continue;
-    perType.set(type, seen + 1);
-    // A locked item's excerpt is already only what a signed-out visitor is
-    // shown on that page (visibleItems), or empty.
-    sources.push({
-      n: sources.length + 1,
-      title: String(item.title || "").trim(),
-      url,
-      type,
-      access: item.premium ? "premium" : "public",
-      locked: Boolean(item.locked),
-      date: item.date || null,
-      passage: bestPassage(item.excerpt || item.description || "", passageTerms, sources.length === 0 ? TOP_PASSAGE_CHARS : PASSAGE_CHARS),
-    });
-  }
-  return sources;
+  const hints = intents.map((i) => i.hint).filter(Boolean);
+  return toSources(ranked, floor, terms, keyTerms(intents.map((i) => i.words).join(" ")), hints);
 }
 
 /** Up to `max` distinct pages from `sources`, in rank order, as widget links. */
@@ -402,4 +495,4 @@ function linksFor(sources, max = 4) {
   return links;
 }
 
-module.exports = { retrieve, linksFor, visibleItems, keyTerms, bestPassage, sitePath, INTENTS, TEASER_FIELDS, MAX_SOURCES };
+module.exports = { retrieve, linksFor, visibleItems, needsPerson, keyTerms, bestPassage, sitePath, INTENTS };

@@ -1,7 +1,8 @@
 // support-widget.js: the site help widget.
 // Spec: docs/support-widget-spec.md.
 //
-// A floating button on every page. A reader asks where something is or what a
+// A floating button on every page that loads the site scripts (the spec
+// lists the few that do not). A reader asks where something is or what a
 // page covers, and /.netlify/functions/support-agent answers from what the
 // site has published, with links to the pages. The server attaches the links;
 // nothing it returns is parsed as HTML here.
@@ -95,7 +96,9 @@
 
   // A link is rendered only when it stays on this site.
   function isSitePath(url) {
-    return typeof url === 'string' && url.charAt(0) === '/' && url.charAt(1) !== '/' && url.indexOf('\\') === -1;
+    // No whitespace or control characters either: a browser strips a tab or a
+    // newline from a URL, which would turn "/<tab>/host" into "//host".
+    return typeof url === 'string' && /^\/(?![\/\\])[^\s\\\u0000-\u001f\u007f]*$/.test(url);
   }
 
   function addStyles() {
@@ -107,7 +110,10 @@
       '#support-fab{transition:transform .2s;}#support-fab:hover{transform:scale(1.06);}' +
       '#support-panel a{color:' + C.navy + ';}' +
       '@media (prefers-reduced-motion: reduce){#support-fab{transition:none;}#support-fab:hover{transform:none;}}' +
-      '@media (max-width:480px){#support-panel{left:12px !important;right:12px !important;width:auto !important;max-width:none !important;}}';
+      '@media (max-width:480px){#support-panel{left:12px !important;right:12px !important;width:auto !important;max-width:none !important;}}' +
+      // 200 percent zoom, a phone on its side: the panel uses the whole height
+      // and drops the starter questions so the input stays on screen.
+      '@media (max-height:480px){#support-panel{bottom:8px !important;max-height:calc(100vh - 16px) !important;}#support-starters{display:none !important;}}';
     document.head.appendChild(style);
   }
 
@@ -130,7 +136,7 @@
     fab.addEventListener('click', function () { setOpen(!state.open, true); });
 
     var panel = el('div', 'position:fixed;bottom:' + (hasDashNav ? '192px' : '92px') + ';' + side +
-      'width:380px;max-width:calc(100vw - 24px);max-height:min(560px, calc(100vh - 120px));background:' + C.white +
+      'width:380px;max-width:calc(100vw - 24px);max-height:min(560px, calc(100vh - ' + (hasDashNav ? '208px' : '108px') + '));background:' + C.white +
       ';border:1px solid ' + C.border + ';border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,0.12);z-index:9999;display:none;' +
       'flex-direction:column;overflow:hidden;font-family:Inter,-apple-system,sans-serif;color:' + C.navy + ';');
     panel.id = 'support-panel';
@@ -153,7 +159,7 @@
     header.appendChild(heading);
     header.appendChild(close);
 
-    var log = el('div', 'flex:1;overflow-y:auto;padding:16px 16px 4px;min-height:140px;');
+    var log = el('div', 'flex:1;overflow-y:auto;padding:16px 16px 4px;min-height:48px;');
     log.id = 'support-messages';
     log.setAttribute('role', 'log');
     log.setAttribute('aria-live', 'polite');
@@ -170,7 +176,7 @@
 
     var form = el('form', 'padding:12px 16px;border-top:1px solid ' + C.border + ';display:flex;gap:8px;margin:0;');
     form.setAttribute('novalidate', 'novalidate');
-    var input = el('input', 'flex:1;min-width:0;padding:10px 14px;height:44px;box-sizing:border-box;border:1px solid ' + C.border + ';border-radius:8px;font-size:16px;font-family:inherit;color:' + C.navy + ';background:' + C.white + ';');
+    var input = el('input', 'flex:1;min-width:0;padding:10px 14px;height:44px;box-sizing:border-box;border:1px solid ' + C.text2 + ';border-radius:8px;font-size:16px;font-family:inherit;color:' + C.navy + ';background:' + C.white + ';');
     input.id = 'support-input';
     input.type = 'text';
     input.maxLength = QUESTION_MAX;
@@ -196,7 +202,7 @@
     var person = el('button', 'background:none;border:none;padding:8px 4px;min-height:44px;font-size:13px;font-family:inherit;color:' + C.navy + ';text-decoration:underline;cursor:pointer;', 'Email a person instead');
     person.id = 'support-person';
     person.type = 'button';
-    person.addEventListener('click', showEscalation);
+    person.addEventListener('click', function () { showEscalation(null); });
     foot.appendChild(person);
 
     panel.appendChild(header);
@@ -254,10 +260,11 @@
       var links = renderLinks(message.links);
       if (links) bubble.appendChild(links);
       if (message.answered === false) {
-        var offer = el('button', 'margin-top:8px;background:' + C.white + ';border:1px solid ' + C.border + ';border-radius:8px;padding:8px 12px;min-height:44px;font-size:13px;font-weight:600;font-family:inherit;color:' + C.navy + ';cursor:pointer;', 'Email this to a person');
+        var offer = el('button', 'margin-top:8px;background:' + C.white + ';border:1px solid ' + C.text2 + ';border-radius:8px;padding:8px 12px;min-height:44px;font-size:13px;font-weight:600;font-family:inherit;color:' + C.navy + ';cursor:pointer;', 'Email this to a person');
         offer.type = 'button';
         offer.setAttribute('data-action', 'escalate');
-        offer.addEventListener('click', showEscalation);
+        // This button sends the exchange it sits under, not the latest one.
+        offer.addEventListener('click', function () { showEscalation(message); });
         bubble.appendChild(offer);
       }
     }
@@ -286,13 +293,20 @@
     scrollToEnd();
   }
 
+  // An agent message is an answer only when the server sent it as one
+  // (kind 'answer'). The welcome line, an error and a "sent" confirmation
+  // are notes: they are never history and never what gets escalated.
+  function isAnswer(message) {
+    return message.role === 'agent' && message.kind === 'answer';
+  }
+
   // The last two answered exchanges, so "and for VA?" has its question.
   function history() {
     var turns = [];
     for (var i = 0; i < state.messages.length - 1; i += 1) {
       var q = state.messages[i];
       var a = state.messages[i + 1];
-      if (q.role === 'user' && a.role === 'agent') turns.push({ question: q.text, answer: a.text });
+      if (q.role === 'user' && isAnswer(a)) turns.push({ question: q.text, answer: a.text });
     }
     return turns.slice(-HISTORY_TURNS);
   }
@@ -317,6 +331,9 @@
   function ask(question) {
     if (state.pending) return;
     var prior = history();
+    // A starter chip is about to be hidden. Move focus to the input first,
+    // or it falls to the page body and Escape stops closing the panel.
+    if (ui.starters.contains(document.activeElement)) ui.input.focus();
     addMessage({ role: 'user', text: question });
     setPending(true);
     post({ question: question, history: prior }).then(function (res) {
@@ -326,51 +343,70 @@
         addMessage({ role: 'agent', text: typeof data.error === 'string' && data.error ? data.error : FAILED });
         return;
       }
-      addMessage({ role: 'agent', text: data.answer, links: Array.isArray(data.links) ? data.links : [], answered: data.answered !== false });
+      addMessage({ role: 'agent', kind: 'answer', text: data.answer, links: Array.isArray(data.links) ? data.links : [], answered: data.answered !== false });
     }).catch(function () {
       setPending(false);
       addMessage({ role: 'agent', text: FAILED });
     });
   }
 
-  function lastOf(role) {
-    for (var i = state.messages.length - 1; i >= 0; i -= 1) if (state.messages[i].role === role) return state.messages[i];
+  // The question and answer to send to a person. `answer` is the agent
+  // message whose button was pressed; without one, the latest question and
+  // the answer it got. null when nothing has been asked.
+  function exchangeFor(answer) {
+    var end = answer ? state.messages.indexOf(answer) : state.messages.length;
+    for (var i = end - 1; i >= 0; i -= 1) {
+      if (state.messages[i].role !== 'user') continue;
+      var reply = answer || state.messages[i + 1];
+      return { question: state.messages[i].text, answer: reply && isAnswer(reply) ? reply.text : '' };
+    }
     return null;
   }
 
-  function showEscalation() {
-    if (document.getElementById('support-escalate')) {
-      document.getElementById('support-escalate-email').focus();
-      return;
-    }
-    var question = lastOf('user');
-    if (!question) {
+  function showEscalation(answer) {
+    // Mid-request the latest question has no answer yet to send with it.
+    if (state.pending) return;
+    var exchange = exchangeFor(answer);
+    if (!exchange) {
       addMessage({ role: 'agent', text: 'Type your question first, then you can send it to a person.' });
       ui.input.focus();
       return;
     }
-    var answer = lastOf('agent');
+    var open = document.getElementById('support-escalate');
+    if (open) open.remove();
+
     var form = el('form', 'background:' + C.white + ';border:1px solid ' + C.border + ';border-radius:12px;padding:12px;margin:0 0 10px;');
     form.id = 'support-escalate';
     form.setAttribute('novalidate', 'novalidate');
+    var sending = el('p', 'font-size:13px;margin:0 0 10px;overflow-wrap:anywhere;', 'Sending: ' + (exchange.question.length > 140 ? exchange.question.slice(0, 140) + '...' : exchange.question));
     var label = el('label', 'display:block;font-size:13px;font-weight:600;margin-bottom:6px;', 'Your email, so a person can reply');
     label.setAttribute('for', 'support-escalate-email');
-    var email = el('input', 'width:100%;box-sizing:border-box;height:44px;padding:10px 12px;border:1px solid ' + C.border + ';border-radius:8px;font-size:16px;font-family:inherit;color:' + C.navy + ';');
+    var email = el('input', 'width:100%;box-sizing:border-box;height:44px;padding:10px 12px;border:1px solid ' + C.text2 + ';border-radius:8px;font-size:16px;font-family:inherit;color:' + C.navy + ';');
     email.id = 'support-escalate-email';
     email.type = 'email';
     email.autocomplete = 'email';
     email.maxLength = 254;
     email.value = readStore('localStorage', EMAIL_KEY) || '';
-    var note = el('p', 'font-size:12px;color:' + C.text2 + ';margin:8px 0;', 'This sends your last question and the answer you got to MMT support.');
+    var note = el('p', 'font-size:12px;color:' + C.text2 + ';margin:8px 0;', 'This sends that question and the answer you got to MMT support.');
     var status = el('p', 'font-size:13px;margin:0 0 8px;display:none;');
     status.setAttribute('role', 'status');
     var submit = el('button', 'background:' + C.navy + ';color:#FFFFFF;border:none;border-radius:8px;padding:10px 16px;min-height:44px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;', 'Send to a person');
     submit.type = 'submit';
+    form.appendChild(sending);
     form.appendChild(label);
     form.appendChild(email);
     form.appendChild(note);
     form.appendChild(status);
     form.appendChild(submit);
+
+    // The form is about to leave the page with focus inside it. Put focus on
+    // the question box, where the reader's next action is.
+    function finish(text) {
+      form.remove();
+      addMessage({ role: 'agent', text: text });
+      ui.input.focus();
+    }
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var address = email.value.trim();
@@ -384,17 +420,17 @@
       }
       submit.disabled = true;
       submit.textContent = 'Sending';
-      post({ action: 'escalate', question: question.text, answer: answer ? answer.text : '', email: address }).then(function (res) {
-        form.remove();
-        addMessage({
-          role: 'agent',
-          text: res.data.sent === true
-            ? 'Sent to MMT support, with ' + address + ' as the address to reply to.'
-            : (typeof res.data.error === 'string' && res.data.error ? res.data.error : FAILED)
-        });
+      post({ action: 'escalate', question: exchange.question, answer: exchange.answer, email: address }).then(function (res) {
+        if (res.data.sent !== true) {
+          finish(typeof res.data.error === 'string' && res.data.error ? res.data.error : FAILED);
+          return;
+        }
+        // The server says where a reply will go. For a signed-in member that
+        // is the account's address, whatever was typed here.
+        var replyTo = typeof res.data.reply_to === 'string' && res.data.reply_to ? res.data.reply_to : address;
+        finish('Sent to MMT support, with ' + replyTo + ' as the address to reply to.');
       }).catch(function () {
-        form.remove();
-        addMessage({ role: 'agent', text: FAILED });
+        finish(FAILED);
       });
     });
     ui.log.appendChild(form);

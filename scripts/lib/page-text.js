@@ -2,9 +2,20 @@
 // split by who may see it.
 //
 // The page index (scripts/build-site-index.js) feeds the site help widget,
-// and the widget answers signed-out visitors. So the split is the contract:
-// text inside a [data-access="premium"] element is member text, everything
-// else on the page is public text, and page chrome is neither.
+// and the widget answers signed-out visitors from public text ONLY. So the
+// split is the contract: text inside an element the site shows to members
+// only is member text, everything else on the page is public text, and page
+// chrome is neither.
+//
+// The site marks a members-only element three ways (js/mmt-paywall.js):
+//   data-access="premium"   hidden by CSS until the tier is confirmed; on an
+//                           <article> shell it gates the article body
+//   data-gate="premium"     shown by script to premium only
+//   data-gate="subscriber"  shown by script to signed-in accounts only
+// data-access="free" / "email" and data-gate="public" / "anonymous" are
+// shown to everyone. A page that gates with script alone carries no marker
+// this file can see; build-site-index.js lists those pages by URL and
+// scripts/validate-site-index.js fails the build when a new one appears.
 //
 // No DOM library: the build has none in `dependencies`, and a tag walk with a
 // stack is enough for "which bucket is this text in". It tolerates the
@@ -16,16 +27,20 @@ const VOID_TAGS = new Set([
 ]);
 
 // Elements whose text is chrome or control labels, not page content.
-const SKIPPED_TAGS = new Set(["nav", "footer", "svg", "iframe", "select", "textarea", "button", "noscript", "template"]);
+const SKIPPED_TAGS = new Set(["nav", "header", "footer", "form", "svg", "iframe", "select", "textarea", "button", "noscript", "template"]);
 
 // Raw-text elements are removed before the walk: their bodies can hold "<".
 const RAW_TEXT_RE = /<(script|style)\b[^>]*>[\s\S]*?<\/\1\s*>/gi;
 const COMMENT_RE = /<!--[\s\S]*?-->/g;
 const TAG_RE = /<(\/?)([a-zA-Z][a-zA-Z0-9:-]*)((?:"[^"]*"|'[^']*'|[^'">])*)>/g;
 
-const PREMIUM_ATTR_RE = /\bdata-access\s*=\s*["']?premium\b/i;
-// The dashboard shell's side navigation is a <div>/<aside>, not a <nav>.
-const CHROME_CLASS_RE = /\bclass\s*=\s*["'][^"']*\b(dash-nav|skip-link|sr-only)\b/i;
+const ACCESS_ATTR_RE = /\bdata-access\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/i;
+const GATE_ATTR_RE = /\bdata-gate\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/i;
+// data-gate values the paywall script shows to a visitor with no account.
+const OPEN_GATES = new Set(["public", "anonymous"]);
+// The dashboard shell's side navigation and the premium pages' top link bar
+// are <div>s, not <nav>s.
+const CHROME_CLASS_RE = /\bclass\s*=\s*["'][^"']*\b(dash-nav|premium-topbar|skip-link|sr-only)\b/i;
 
 const NAMED_ENTITIES = {
   amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ", middot: "·", mdash: "—", ndash: "–",
@@ -48,14 +63,27 @@ function squash(text) {
   return decodeEntities(text).replace(/\s+/g, " ").trim();
 }
 
-function attr(html, re) {
+function firstMatch(html, re) {
   const m = re.exec(html);
   return m ? squash(m[1] !== undefined ? m[1] : m[2]) : "";
 }
 
-// " · MMT Premium", " | Mission Meets Tech" and the like say nothing about
-// the page and would make every premium page match the word "premium".
-const TITLE_SUFFIX_RE = /\s*[·|–—-]\s*(MMT Premium|MMT|Mission Meets Tech|Premium)\s*$/i;
+function attrValue(attrs, re) {
+  const m = re.exec(attrs);
+  return m ? String(m[1] || m[2] || m[3] || "").trim().toLowerCase() : null;
+}
+
+/** Does this opening tag mark an element the site shows to members only? */
+function isMemberOnly(attrs) {
+  if (attrValue(attrs, ACCESS_ATTR_RE) === "premium") return true;
+  const gate = attrValue(attrs, GATE_ATTR_RE);
+  return gate !== null && !OPEN_GATES.has(gate);
+}
+
+// " · MMT Premium", " | Mission Meets Tech", " — Contract Tracker" and the
+// like name the section, not the page. Left on, every premium page matches
+// the word "premium" and every contract page the word "tracker".
+const TITLE_SUFFIX_RE = /\s*[·|–—-]\s*(MMT Premium|MMT|Mission Meets Tech Glossary|Mission Meets Tech|Premium|Contract Tracker)\s*$/i;
 
 function cleanTitle(raw) {
   let title = squash(raw);
@@ -63,48 +91,28 @@ function cleanTitle(raw) {
   return title;
 }
 
-/**
- * @param {string} html one page from dist/
- * @returns {{
- *   title: string, description: string, isRedirect: boolean, hasGate: boolean,
- *   publicText: string, memberText: string,
- *   publicHeadings: string[], memberHeadings: string[]
- * }}
- */
-function extractPage(html) {
-  const source = String(html || "");
-  const head = source.slice(0, source.search(/<body\b/i) > -1 ? source.search(/<body\b/i) : source.length);
-  const title = cleanTitle(attr(head, /<title[^>]*>([\s\S]*?)<\/title>/i));
-  const description = attr(head, /<meta\s+name=["']description["']\s+content=(?:"([^"]*)"|'([^']*)')/i);
-  const isRedirect = /<meta\s+http-equiv=["']refresh["']/i.test(head);
+/** Close back to the nearest open `tag`; a stray closing tag is ignored. */
+function closeTag(stack, tag) {
+  for (let i = stack.length - 1; i >= 0; i -= 1) {
+    if (stack[i].tag === tag) {
+      stack.length = i;
+      return;
+    }
+  }
+}
 
-  const bodyStart = source.search(/<body\b/i);
-  const body = (bodyStart > -1 ? source.slice(bodyStart) : source).replace(COMMENT_RE, " ").replace(RAW_TEXT_RE, " ");
-
-  const stack = []; // { tag, skip, premium, heading }
+/** The page body's text in two buckets. `hasGate`: a members-only element was seen. */
+function splitBody(body) {
+  const stack = []; // { tag, skip, member }
   const buckets = { public: [], member: [] };
-  const headings = { public: [], member: [] };
-  let headingText = null; // text collected for the open h1-h3
   let hasGate = false;
   let cursor = 0;
 
-  const state = () => {
-    let skip = false;
-    let premium = false;
-    for (const el of stack) {
-      if (el.skip) skip = true;
-      if (el.premium) premium = true;
-    }
-    return { skip, premium };
-  };
   // Whitespace is kept (squash collapses it later): a <br> or a block
   // boundary is a word boundary, and dropping it glues two words together.
   const take = (text) => {
-    if (!text) return;
-    const { skip, premium } = state();
-    if (skip) return;
-    buckets[premium ? "member" : "public"].push(text);
-    if (headingText !== null) headingText.push(text);
+    if (!text || stack.some((el) => el.skip)) return;
+    buckets[stack.some((el) => el.member) ? "member" : "public"].push(text);
   };
 
   TAG_RE.lastIndex = 0;
@@ -112,50 +120,37 @@ function extractPage(html) {
   while ((m = TAG_RE.exec(body)) !== null) {
     take(body.slice(cursor, m.index));
     cursor = TAG_RE.lastIndex;
-    const closing = m[1] === "/";
     const tag = m[2].toLowerCase();
     const attrs = m[3] || "";
     if (tag === "body" || tag === "html") continue;
-
-    if (closing) {
-      let at = -1;
-      for (let i = stack.length - 1; i >= 0; i -= 1) if (stack[i].tag === tag) { at = i; break; }
-      if (at === -1) continue;
-      const closed = stack.splice(at);
-      if (closed.some((el) => el.heading) && headingText !== null) {
-        const text = squash(headingText.join(" "));
-        if (text) headings[state().premium || closed.some((el) => el.premium) ? "member" : "public"].push(text);
-        headingText = null;
-      }
-      take(" ");
-      continue;
+    if (m[1] === "/") closeTag(stack, tag);
+    else if (!VOID_TAGS.has(tag) && !/\/\s*$/.test(attrs)) {
+      const member = isMemberOnly(attrs);
+      if (member) hasGate = true;
+      stack.push({ tag, skip: SKIPPED_TAGS.has(tag) || CHROME_CLASS_RE.test(attrs), member });
     }
-
-    if (VOID_TAGS.has(tag)) {
-      take(" ");
-      continue;
-    }
-    if (/\/\s*$/.test(attrs)) continue; // self-closed
-    const premium = PREMIUM_ATTR_RE.test(attrs);
-    if (premium) hasGate = true;
-    const heading = /^h[1-3]$/.test(tag);
-    const before = state();
-    stack.push({ tag, skip: SKIPPED_TAGS.has(tag) || CHROME_CLASS_RE.test(attrs), premium, heading });
-    if (heading && !before.skip && !state().skip) headingText = [];
     take(" ");
   }
   take(body.slice(cursor));
+  return { publicText: squash(buckets.public.join("")), memberText: squash(buckets.member.join("")), hasGate };
+}
 
+/**
+ * @param {string} html one page from dist/
+ * @returns {{ title: string, description: string, isRedirect: boolean,
+ *   hasGate: boolean, publicText: string, memberText: string }}
+ */
+function extractPage(html) {
+  const source = String(html || "");
+  const bodyStart = source.search(/<body\b/i);
+  const head = bodyStart > -1 ? source.slice(0, bodyStart) : source;
+  const body = (bodyStart > -1 ? source.slice(bodyStart) : source).replace(COMMENT_RE, " ").replace(RAW_TEXT_RE, " ");
   return {
-    title,
-    description,
-    isRedirect,
-    hasGate,
-    publicText: squash(buckets.public.join("")),
-    memberText: squash(buckets.member.join("")),
-    publicHeadings: headings.public,
-    memberHeadings: headings.member,
+    title: cleanTitle(firstMatch(head, /<title[^>]*>([\s\S]*?)<\/title>/i)),
+    description: firstMatch(head, /<meta\s+name=["']description["']\s+content=(?:"([^"]*)"|'([^']*)')/i),
+    isRedirect: /<meta\s+http-equiv=["']refresh["']/i.test(head),
+    ...splitBody(body),
   };
 }
 
-module.exports = { extractPage, decodeEntities, cleanTitle };
+module.exports = { extractPage, isMemberOnly, decodeEntities, cleanTitle };

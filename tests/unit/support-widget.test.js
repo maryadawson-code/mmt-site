@@ -163,6 +163,11 @@ describe("asking", () => {
         { title: "Evil", url: "https://evil.example/x", access: "public" },
         { title: "Evil 2", url: "//evil.example/x", access: "public" },
         { title: "Evil 3", url: "javascript:alert(1)", access: "public" },
+        // A browser strips a tab or newline from a URL: "/<tab>/host" becomes "//host".
+        { title: "Evil 4", url: "/\t/evil.example/x", access: "public" },
+        { title: "Evil 5", url: "/\n/evil.example/x", access: "public" },
+        { title: "Evil 6", url: "/\\evil.example", access: "public" },
+        { title: "Evil 7", url: "/ok path", access: "public" },
         { title: "Help", url: "/help", access: "public" },
       ],
     }));
@@ -206,12 +211,39 @@ describe("asking", () => {
     expect(bubbles("agent").pop().textContent).toBe("Keep the question under 500 characters.");
   });
 
-  it("asks a starter question on click", async () => {
+  it("asks a starter question on click, and keeps keyboard focus in the panel", async () => {
     mount();
+    $("#support-fab").click();
     queue.push(jsonResponse(200, { answer: "ok", answered: true, links: [] }));
-    $("#support-starters button").click();
+    const chip = $("#support-starters button");
+    chip.focus();
+    chip.click();
+    // The chip is hidden as it is used. Focus moves to the input instead of
+    // falling to the page body, where Escape would no longer close the panel.
+    expect(document.activeElement).toBe($("#support-input"));
     await flush();
     expect(calls[0].body.question).toBe("Where is the DHA org chart?");
+    $("#support-input").dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    expect($("#support-panel").style.display).toBe("none");
+  });
+
+  it("outlines its inputs in a color that shows against white, and keeps the input on screen when the viewport is short", () => {
+    mount();
+    // #D8E0E8 on white is 1.33:1; the text-secondary token is 5.47:1 (WCAG 1.4.11 asks 3:1).
+    expect($("#support-input").style.border).toContain("--mmt-text-secondary");
+    expect($("#support-messages").style.minHeight).toBe("48px");
+    const css = $("#support-widget-style").textContent;
+    expect(css).toMatch(/@media \(max-height:480px\)\{#support-panel\{bottom:8px !important;max-height:calc\(100vh - 16px\) !important;\}#support-starters\{display:none !important;\}\}/);
+    expect($("#support-panel").style.maxHeight).toBe("min(560px, calc(100vh - 108px))");
+  });
+
+  it("leaves room for its own offset on a dash page on a phone", () => {
+    window.matchMedia = () => ({ matches: true, addEventListener() {}, removeEventListener() {} });
+    mount('<div class="dash-nav"></div>');
+    expect($("#support-panel").style.bottom).toBe("192px");
+    // The panel used to be allowed 100vh - 120px with a 192px offset: its
+    // header and close button sat above the top of the screen.
+    expect($("#support-panel").style.maxHeight).toBe("min(560px, calc(100vh - 208px))");
   });
 });
 
@@ -264,7 +296,8 @@ describe("emailing a person", () => {
     offer.click();
     expect(calls).toHaveLength(1); // opening the form sends nothing
     expect($("#support-escalate label").getAttribute("for")).toBe("support-escalate-email");
-    expect($("#support-escalate").textContent).toContain("This sends your last question and the answer you got to MMT support.");
+    expect($("#support-escalate").textContent).toContain("Sending: My scorecard never arrived");
+    expect($("#support-escalate").textContent).toContain("This sends that question and the answer you got to MMT support.");
 
     $("#support-escalate").dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
     await flush();
@@ -277,12 +310,15 @@ describe("emailing a person", () => {
     await unanswered();
     $("#support-person").click();
     $("#support-escalate-email").value = "reader@example.com";
-    queue.push(jsonResponse(200, { sent: true }));
+    queue.push(jsonResponse(200, { sent: true, reply_to: "reader@example.com" }));
     $("#support-escalate").dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
     await flush();
     expect(calls[1].body).toMatchObject({ action: "escalate", question: "My scorecard never arrived", answer: "The site does not have a page on that.", email: "reader@example.com" });
     expect(bubbles("agent").pop().textContent).toBe("Sent to MMT support, with reader@example.com as the address to reply to.");
     expect($("#support-escalate")).toBeNull();
+    // The form left the page with focus inside it. Focus is on the question
+    // box, not the page body, so Escape still closes the panel.
+    expect(document.activeElement).toBe($("#support-input"));
   });
 
   it("says it did not send when the server says so or the request dies", async () => {
@@ -297,6 +333,71 @@ describe("emailing a person", () => {
       expect(last).toMatch(/did not (send|go through)/);
       expect(last).not.toMatch(/^Sent/);
     }
+  });
+
+  it("sends the exchange the button sits under, not whatever was asked last", async () => {
+    // A reader got "not covered" on one question, asked another, then scrolled
+    // up and pressed the button on the first. Support used to get the second.
+    mount();
+    queue.push(jsonResponse(200, { answer: "The site does not cover that.", answered: false, links: [] }));
+    await ask("Why did my DHA report not arrive?");
+    queue.push(jsonResponse(200, { answer: "Annual is $249 a year.", answered: true, links: [] }));
+    await ask("How much does Premium cost?");
+
+    bubbles("agent").find((b) => b.textContent.includes("does not cover")).querySelector('[data-action="escalate"]').click();
+    expect($("#support-escalate").textContent).toContain("Sending: Why did my DHA report not arrive?");
+    $("#support-escalate-email").value = "reader@example.com";
+    queue.push(jsonResponse(200, { sent: true, reply_to: "reader@example.com" }));
+    $("#support-escalate").dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+    await flush();
+    expect(calls[2].body).toMatchObject({ action: "escalate", question: "Why did my DHA report not arrive?", answer: "The site does not cover that." });
+
+    // The footer button sends the latest question and the answer it got,
+    // skipping the "sent" note that now sits after it.
+    $("#support-person").click();
+    expect($("#support-escalate").textContent).toContain("Sending: How much does Premium cost?");
+    $("#support-escalate-email").value = "reader@example.com";
+    queue.push(jsonResponse(200, { sent: true, reply_to: "reader@example.com" }));
+    $("#support-escalate").dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+    await flush();
+    expect(calls[3].body).toMatchObject({ question: "How much does Premium cost?", answer: "Annual is $249 a year." });
+  });
+
+  it("names the address a reply will really go to, which for a member is the account's", async () => {
+    await unanswered();
+    $("#support-person").click();
+    $("#support-escalate-email").value = "work@company.example";
+    queue.push(jsonResponse(200, { sent: true, reply_to: "member@agency.example" }));
+    $("#support-escalate").dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+    await flush();
+    expect(bubbles("agent").pop().textContent).toBe("Sent to MMT support, with member@agency.example as the address to reply to.");
+  });
+
+  it("does not open while an answer is still on its way, and keeps one form at a time", async () => {
+    mount();
+    let release;
+    globalThis.fetch.mockImplementationOnce((url, init) => { calls.push({ url, body: JSON.parse(init.body) }); return new Promise((resolve) => { release = resolve; }); });
+    await ask("My scorecard never arrived");
+    $("#support-person").click();
+    expect($("#support-escalate")).toBeNull();
+    release(jsonResponse(200, { answer: "Check your spam folder.", answered: false, links: [] }));
+    await flush();
+    $("#support-person").click();
+    $("#support-person").click();
+    expect(document.querySelectorAll("#support-escalate")).toHaveLength(1);
+  });
+
+  it("never sends a note (an error, a confirmation) as the answer or as history", async () => {
+    mount();
+    queue.push(new Error("offline"));
+    await ask("Where is the DHA org chart?");
+    queue.push(jsonResponse(200, { answer: "It is a Premium page.", answered: true, links: [] }));
+    await ask("Where is the DHA org chart?");
+    // The failed attempt is not history: only a question the server answered is.
+    expect(calls[1].body.history).toEqual([]);
+    queue.push(jsonResponse(200, { answer: "Yes.", answered: true, links: [] }));
+    await ask("and for VA?");
+    expect(calls[2].body.history).toEqual([{ question: "Where is the DHA org chart?", answer: "It is a Premium page." }]);
   });
 
   it("asks for a question first when there is nothing to send", () => {

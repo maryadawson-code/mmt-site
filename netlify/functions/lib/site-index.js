@@ -2,14 +2,16 @@
 // site-index.js: the page index the site help widget answers from.
 //
 // scripts/build-site-index.js writes netlify/site-index/mmt-site-index.json
-// from dist/ at the end of every build: one record per published page the
-// content corpus does not already carry item by item (tools, pricing, help,
-// guides, org charts, agency profiles, premium features).
+// from dist/ at the end of every build: one record per published page a
+// reader can ask about.
 //
 // Each record keeps the text a signed-out visitor is shown (`public_text`)
-// apart from the text behind the gate (`member_text`). pageItems() is the
-// only reader, and it hands out member text only when told the caller is a
-// member. Spec: docs/support-widget-spec.md.
+// apart from the text behind a gate (`member_text`). pageItems() is the only
+// reader. For a signed-out caller it hands out public text only, and it is
+// the ONLY thing a signed-out caller's answer is built from: a premium page
+// can be named, linked and previewed from its own public pitch, never quoted
+// from member text or from its meta description.
+// Spec: docs/support-widget-spec.md.
 // ============================================================
 
 const fs = require("fs");
@@ -64,11 +66,17 @@ function urlKey(url) {
 }
 
 /**
- * The index as corpus-shaped items, so content-index's scorer ranks pages and
- * corpus items together.
+ * The index as corpus-shaped items, so content-index's scorer ranks them.
  *
- * A signed-out caller's item carries public text only, and a premium page is
- * marked `locked`: it can be named and linked, never quoted.
+ * Signed-out (`member` false): `excerpt` is the page's public text and
+ * nothing else, a premium page is `locked`, and a premium page's meta
+ * description is withheld (it is written for members; the org chart ones
+ * name leaders, and no signed-out visitor sees it rendered).
+ *
+ * `type` is the page's corpus kind ("article", "contract_intel", ...) when
+ * the page is also a corpus item, else "page". `inCorpus` marks those pages
+ * so a member, who is answered from the richer corpus item, is not handed
+ * the same page twice.
  *
  * @param {boolean} member the caller's token verified AND a paid tier is live
  */
@@ -83,16 +91,23 @@ function pageItems(member) {
     const memberView = premium && memberText ? memberText : `${publicText} ${memberText}`.trim();
     return {
       id: `page:${page.url}`,
-      type: "page",
+      type: page.kind || "page",
       title: page.title,
-      description: page.description || "",
+      description: member || !premium ? page.description || "" : "",
       tags: page.tags || [],
       url: page.url,
+      date: page.date || null,
       premium,
       locked: premium && !member,
+      inCorpus: Boolean(page.in_corpus),
       excerpt: member ? memberView : publicText,
     };
   });
+}
+
+/** How many pages the loaded index holds (0 when the file is not in the bundle). */
+function indexSize() {
+  return (loadSiteIndex().pages || []).length;
 }
 
 /** Test hook: inject a fixture index (pass null to reload from disk). */
@@ -100,4 +115,4 @@ function _setSiteIndexForTests(index) {
   INDEX = index && typeof index === "object" ? index : null;
 }
 
-module.exports = { loadSiteIndex, pageItems, urlKey, INDEX_FILE, _setSiteIndexForTests };
+module.exports = { loadSiteIndex, pageItems, indexSize, urlKey, INDEX_FILE, _setSiteIndexForTests };

@@ -8,29 +8,60 @@
  * reach it, or stops returning the right page for a golden question.
  * Spec: docs/support-widget-spec.md section 9.
  *
+ * The paywall checks here do not reuse the extractor's own verdict. They
+ * look at the built HTML and at the corpus a second way (a forward scan
+ * from each gate marker; the corpus text of a recent article; the inline
+ * scripts of a page), because a check that asks the extractor whether the
+ * extractor was right cannot fail.
+ *
  * Usage: node scripts/validate-site-index.js
  */
 
 const fs = require("fs");
 const path = require("path");
-const { extractPage } = require("./lib/page-text");
+const { decodeEntities } = require("./lib/page-text");
 const GOLDENS = require("./lib/support-goldens");
-const { isExcluded } = require("./build-site-index");
+const { isExcluded, isMemberPage, SCRIPT_GATED_PAGES, TITLE_ONLY_PAGES } = require("./build-site-index");
 const { loadSiteIndex, urlKey, INDEX_FILE } = require("../netlify/functions/lib/site-index");
 const { retrieve, visibleItems, INTENTS } = require("../netlify/functions/lib/support-retrieval");
+const { loadCorpus, todayET } = require("../netlify/functions/lib/content-index");
 
 const ROOT = path.join(__dirname, "..");
 const DIST_DIR = path.join(ROOT, "dist");
-// The index held 99 pages when this gate was written. Far fewer means the
+// The index held 421 pages when this floor was set. Far fewer means the
 // build wrote a partial dist or the extractor stopped finding titles.
-const MIN_PAGES = 60;
+const MIN_PAGES = 200;
 // Pages the function links to by name (NOT_FOUND_LINKS, PRICING_LINK).
 const LINKED_BY_NAME = ["/help", "/ask", "/pricing"];
-const LEAK_PROBE_CHARS = 120;
+const PROBE_CHARS = 60;
+// build.js gates an article's body for this many days after publication.
+const ARTICLE_GATE_DAYS = 90;
+
+// A page outside /premium/ whose inline script asks for the reader's tier
+// may be hiding content with script alone, which the extractor cannot see.
+// Each such page is in build-site-index's SCRIPT_GATED_PAGES or
+// TITLE_ONLY_PAGES, or here: reviewed, and its static HTML is exactly what a
+// signed-out visitor is shown.
+//   /idiq-tracker  the script fills member columns from idiq-fields; the
+//                  HTML ships "Premium" placeholders in their place.
+const TIER_SCRIPT_REVIEWED = new Set(["/idiq-tracker"]);
+const TIER_SCRIPT_RE = /\b(mmtGetTier|mmtIsPremium|isAtLeastPremium|getSubscriberStatus)\s*\(|mmt_premium/;
+const GATE_TAG_RE = /<[a-zA-Z][^>]*\b(?:data-access\s*=\s*["']?premium|data-gate\s*=\s*["']?(?!public|anonymous)[a-z]+)[^>]*>/gi;
+// Labels the corpus puts on fields the tracker pages withhold.
+const CORPUS_FIELD_RE = /MMT (Incumbent Vulnerability Score|burn status|forecast|note|verdict):/;
 
 function distFile(url) {
   const base = url === "/" ? "index" : url.replace(/^\//, "");
   return [path.join(DIST_DIR, `${base}.html`), path.join(DIST_DIR, base, "index.html")].find((f) => fs.existsSync(f));
+}
+
+/** Letters and digits only, so markup and spacing differences cannot hide a match. */
+function bare(text) {
+  return String(text || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+}
+
+function textOf(html) {
+  return decodeEntities(String(html).replace(/<script\b[\s\S]*?<\/script>/gi, " ").replace(/<style\b[\s\S]*?<\/style>/gi, " ").replace(/<[^>]*>/g, " "));
 }
 
 function checkShape(index, fail) {
@@ -47,29 +78,100 @@ function checkShape(index, fail) {
   return seen;
 }
 
+/**
+ * Text that follows a gate marker in the built HTML must not be in the
+ * page's public_text. A forward scan from each marker, not the extractor's
+ * tag walk. Returns how many markers yielded a probe.
+ */
+function probeGateMarkers(page, html, fail) {
+  const publicBare = bare(page.public_text);
+  let probes = 0;
+  GATE_TAG_RE.lastIndex = 0;
+  let m;
+  while ((m = GATE_TAG_RE.exec(html)) !== null) {
+    const probe = bare(textOf(html.slice(GATE_TAG_RE.lastIndex, GATE_TAG_RE.lastIndex + 1500))).slice(0, PROBE_CHARS);
+    if (probe.length < PROBE_CHARS) continue;
+    // An article repeats its title and summary inside the gated shell; the
+    // same lines are public in the header above it. Text that also sits
+    // before the marker proves nothing either way (checkRecentArticles
+    // probes the article body from the corpus instead).
+    if (bare(textOf(html.slice(0, m.index))).includes(probe)) continue;
+    probes += 1;
+    if (publicBare.includes(probe)) {
+      fail(`gated text is in public_text: ${page.url} (after ${m[0].slice(0, 70)})`);
+      return probes;
+    }
+  }
+  return probes;
+}
+
+/** A page outside /premium/ that asks for the reader's tier in an inline script must have been classified. */
+function checkTierScript(page, html, fail) {
+  if (isMemberPage(page.url) || !page.public_text) return;
+  if (SCRIPT_GATED_PAGES.has(page.url) || TITLE_ONLY_PAGES.has(page.url) || TIER_SCRIPT_REVIEWED.has(page.url)) return;
+  const inline = [...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi)].map((s) => s[1]).join("\n");
+  if (!TIER_SCRIPT_RE.test(inline)) return;
+  fail(
+    `${page.url} checks the reader's tier in an inline script and is not classified. If the script hides content from non-members, add the URL to SCRIPT_GATED_PAGES in scripts/build-site-index.js. If the static HTML is what a signed-out visitor is shown, add it to TIER_SCRIPT_REVIEWED in scripts/validate-site-index.js with the reason.`,
+  );
+}
+
 /** Gated text must be in member_text and nowhere a signed-out answer reads. */
 function checkPaywall(index, fail) {
-  let probed = 0;
+  let probes = 0;
   for (const page of index.pages || []) {
     const file = distFile(page.url);
     if (!file) {
       fail(`indexed page is not in dist: ${page.url}`);
       continue;
     }
-    const live = extractPage(fs.readFileSync(file, "utf8"));
-    if (page.access === "premium" && page.public_text && !live.hasGate) {
-      fail(`premium page with no gate element carries public text: ${page.url}`);
+    const html = fs.readFileSync(file, "utf8");
+    const body = html.slice(Math.max(html.search(/<body\b/i), 0));
+    if (isMemberPage(page.url) && page.public_text && !GATE_TAG_RE.test(body)) {
+      fail(`member page with no gate marker carries public text: ${page.url}`);
     }
-    const probe = live.memberText.slice(0, LEAK_PROBE_CHARS);
-    if (probe.length === LEAK_PROBE_CHARS) {
-      probed += 1;
-      if (page.public_text.includes(probe)) fail(`gated text is in public_text: ${page.url}`);
-    }
+    probes += probeGateMarkers(page, body, fail);
+    checkTierScript(page, body, fail);
   }
+  return probes;
+}
+
+/**
+ * The corpus holds every article's full body. For an article still inside
+ * the site's 90-day gate, a stretch from the middle of that body must not be
+ * in the page's public_text.
+ */
+function checkRecentArticles(index, fail) {
+  const byUrl = new Map((index.pages || []).map((p) => [p.url, p]));
+  const today = new Date(`${todayET()}T00:00:00Z`).getTime();
+  let checked = 0;
+  for (const item of loadCorpus().items || []) {
+    if (item.type !== "article" || !item.date) continue;
+    const ageDays = Math.floor((today - new Date(`${String(item.date).slice(0, 10)}T00:00:00Z`).getTime()) / 86400000);
+    if (ageDays < 0 || ageDays > ARTICLE_GATE_DAYS) continue;
+    const page = byUrl.get(urlKey(item.url));
+    if (!page) continue;
+    const body = bare(item.excerpt);
+    if (body.length < PROBE_CHARS * 4) continue;
+    checked += 1;
+    const probe = body.slice(Math.floor(body.length * 0.6), Math.floor(body.length * 0.6) + PROBE_CHARS);
+    if (bare(page.public_text).includes(probe)) fail(`a recent article's gated body is in public_text: ${page.url} (${item.date})`);
+  }
+  return checked;
+}
+
+/** What a signed-out caller's answer is built from is the index's public text and nothing else. */
+function checkSignedOutPool(index, fail) {
+  const byUrl = new Map((index.pages || []).map((p) => [p.url, p]));
   for (const item of visibleItems(false)) {
-    if (item.premium && !item.locked) fail(`signed-out retrieval can read a premium item: ${item.id}`);
+    const page = byUrl.get(item.url);
+    if (!String(item.id).startsWith("page:") || !page) {
+      fail(`signed-out retrieval can read something that is not an indexed page: ${item.id}`);
+      continue;
+    }
+    if (item.excerpt !== page.public_text) fail(`signed-out retrieval reads text that is not the page's public_text: ${item.url}`);
+    if (page.access === "premium" && (!item.locked || item.description)) fail(`signed-out retrieval can read a premium page's description or reads it unlocked: ${item.url}`);
   }
-  return probed;
 }
 
 function checkRoutes(urls, fail) {
@@ -82,23 +184,24 @@ function checkRoutes(urls, fail) {
   }
 }
 
-function checkGoldens(fail) {
-  for (const golden of GOLDENS) {
-    for (const member of [false, true]) {
-      const who = member ? "member" : "signed-out";
-      const sources = retrieve(golden.q, { member });
-      if (golden.expect.length === 0) {
-        if (sources.length) fail(`"${golden.q}" (${who}) should find nothing, found ${sources[0].url}`);
-        continue;
-      }
-      const top = sources.slice(0, golden.within || 1).map((s) => urlKey(s.url));
-      if (!golden.expect.some((url) => top.includes(url))) {
-        fail(`"${golden.q}" (${who}) expected ${golden.expect.join(" or ")}, got ${top.join(", ") || "nothing"}`);
-      }
-      if (!member && sources.some((s) => s.access === "premium" && !s.locked)) {
-        fail(`"${golden.q}" (signed-out) returned an unlocked premium source`);
-      }
-    }
+function checkGolden(golden, member, fail) {
+  const who = member ? "member" : "signed-out";
+  const sources = retrieve(golden.q, { member });
+  const keys = sources.map((s) => urlKey(s.url));
+  if (new Set(keys).size !== keys.length) fail(`"${golden.q}" (${who}) returned one page more than once`);
+  if (!member && sources.some((s) => (s.access === "premium" && !s.locked) || CORPUS_FIELD_RE.test(s.passage))) {
+    fail(`"${golden.q}" (signed-out) returned gated content`);
+  }
+  if (golden.expect && golden.expect.length === 0) {
+    if (sources.length) fail(`"${golden.q}" (${who}) should find nothing, found ${sources[0].url}`);
+    return;
+  }
+  if (golden.expect && !golden.expect.some((url) => keys.slice(0, golden.within || 1).includes(url))) {
+    fail(`"${golden.q}" (${who}) expected ${golden.expect.join(" or ")}, got ${keys.slice(0, golden.within || 1).join(", ") || "nothing"}`);
+  }
+  if (golden.not && golden.not.includes(keys[0])) fail(`"${golden.q}" (${who}) must not lead with ${keys[0]}`);
+  if (golden.passage && !member && !sources.some((s) => golden.passage.test(s.passage))) {
+    fail(`"${golden.q}" (signed-out) found the page but no passage matches ${golden.passage}`);
   }
 }
 
@@ -112,17 +215,20 @@ function main() {
   }
   const index = loadSiteIndex();
   const urls = checkShape(index, fail);
-  const probed = checkPaywall(index, fail);
+  const probes = checkPaywall(index, fail);
+  const articles = checkRecentArticles(index, fail);
+  checkSignedOutPool(index, fail);
   checkRoutes(urls, fail);
-  checkGoldens(fail);
+  for (const golden of GOLDENS) for (const member of [false, true]) checkGolden(golden, member, fail);
 
   if (failures.length) {
     console.error(`validate-site-index: FAIL (${failures.length})`);
-    for (const message of failures) console.error(`  - ${message}`);
+    for (const message of failures.slice(0, 40)) console.error(`  - ${message}`);
+    if (failures.length > 40) console.error(`  ... and ${failures.length - 40} more`);
     process.exit(1);
   }
   console.log(
-    `validate-site-index: OK ${index.pages.length} pages, ${probed} gated pages probed for leaks, ${GOLDENS.length} golden questions x 2 caller classes`,
+    `validate-site-index: OK ${index.pages.length} pages, ${probes} gate markers and ${articles} recent articles probed for leaks, ${GOLDENS.length} golden questions x 2 caller classes`,
   );
 }
 

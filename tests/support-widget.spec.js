@@ -6,9 +6,16 @@ const { makeHandler } = require('../netlify/functions/support-agent.js');
 // The widget's requests are answered in this process by the REAL
 // support-agent handler running the REAL retrieval over the page index and
 // corpus this build produced (run `node build.js` first, as for every spec
-// here). Only three things are doubles: the model (so the run is free and
-// deterministic), the email sender (so nothing reaches the support inbox),
-// and Supabase (so no row is written). Spec: docs/support-widget-spec.md.
+// here). What is doubled, and nothing else:
+//   the model            so the run is free and deterministic
+//   the email sender     so nothing reaches the support inbox
+//   Supabase             so no row is written
+//   the rate limiter     always allows (its own behavior is unit-tested)
+//   token verification   one fixed token counts as a signed-in member
+//   the entitlement      that member has a live paid tier
+// So the member test proves what a member is answered from, not that the
+// real token check works; tests/unit/support-agent-handler.test.js and
+// lib/subscriber-token cover that. Spec: docs/support-widget-spec.md.
 
 const MEMBER_TOKEN = 'e2e-member-token';
 const ENDPOINT = '**/.netlify/functions/support-agent';
@@ -32,7 +39,7 @@ function harness() {
     }),
     verifyToken: (token) => (token === MEMBER_TOKEN ? { ok: true, email: 'member@example.test' } : { ok: false, reason: 'bad_signature' }),
     loadEntitlement: async () => ({ ok: true, tier: 'premium' }),
-    checkRateLimit: async () => ({ allowed: true }),
+    reserveLimit: async () => ({ allowed: true }),
     callModel: async (_model, opts) => {
       seen.prompts.push(opts.messages[0].content);
       return { text: JSON.stringify({ answer: 'Stubbed wording for the first source.', sources: [1], answered: true }), usage: { input_tokens: 1, output_tokens: 1 } };
@@ -44,7 +51,10 @@ function harness() {
   });
   const attach = (page) => page.route(ENDPOINT, async (route) => {
     const request = route.request();
-    const res = await handler({ httpMethod: request.method(), headers: { 'x-nf-client-connection-ip': '198.51.100.9' }, body: request.postData() });
+    // The browser's own Origin and Host travel with the request, so the
+    // handler's same-site check runs for real.
+    const sent = request.headers();
+    const res = await handler({ httpMethod: request.method(), headers: { 'x-nf-client-connection-ip': '198.51.100.9', origin: sent.origin, host: new URL(request.url()).host }, body: request.postData() });
     await route.fulfill({ status: res.statusCode, contentType: 'application/json', body: res.body });
   });
   return { seen, state, attach };
@@ -114,7 +124,9 @@ test.describe('Site help widget', () => {
     await expect(answer.locator('a[href="/pricing"]')).toHaveCount(0);
     expect(seen.prompts[0]).toContain('[1] DHA Organizational Structure (Premium page');
     expect(seen.prompts[0]).not.toContain('LOCKED');
-    expect(seen.prompts[0]).toMatch(/Structure effective/);
+    // The page itself, not the "this page is Premium" pitch a signed-out reader gets.
+    expect(seen.prompts[0]).not.toContain('Org chart is Premium');
+    expect(seen.prompts[0].split('\n\n[2]')[0].length).toBeGreaterThan(800);
     expect(seen.rows[0]).toMatchObject({ user_email: 'member@example.test' });
     expect(seen.rows[0].details.mode).toBe('member');
   });
@@ -145,6 +157,33 @@ test.describe('Site help widget', () => {
     await page.getByRole('button', { name: 'Send to a person' }).click();
     await expect(answers(page).last()).toContainText('That did not send.');
     await expect(answers(page).last()).not.toContainText('Sent to MMT support');
+  });
+
+  test('a signed-out tracker question is answered from the page\'s placeholders, not the withheld fields', async ({ page }) => {
+    // The corpus row for a contract carries its vendor, value and MMT verdict.
+    // The page shows a signed-out visitor "Premium" in their place, and that is
+    // all the model may be given.
+    const { seen, attach } = harness();
+    await attach(page);
+    await page.goto('/contract-tracker.html');
+    await fab(page).click();
+    const answer = await ask(page, 'What have you written about T4NG2?');
+    await expect(answer.locator('a').first()).toHaveAttribute('href', /^\/contracts\/t4ng2/);
+    // The page's own placeholders, exactly as a signed-out visitor sees them.
+    expect(seen.prompts[0]).toMatch(/Vendor:? Premium/);
+    // Nothing the corpus row carries behind those placeholders.
+    expect(seen.prompts[0]).not.toMatch(/MMT (verdict|note|Incumbent Vulnerability Score|burn status):|Vendor: (?!locked|Premium)|Value: (?!locked|Premium)|NAICS: \d/);
+    expect(seen.prompts[0]).not.toContain('(Premium page');
+  });
+
+  test('a billing question always offers a person, whatever the model made of it', async ({ page }) => {
+    const { attach } = harness(); // the model double says answered: true
+    await attach(page);
+    await page.goto('/pricing.html');
+    await fab(page).click();
+    const answer = await ask(page, 'How do I cancel my subscription?');
+    await expect(answer.locator('a').first()).toHaveAttribute('href', '/help');
+    await expect(answer.getByRole('button', { name: 'Email this to a person' })).toBeVisible();
   });
 
   test('works by keyboard alone', async ({ page }) => {
@@ -184,6 +223,28 @@ test.describe('Site help widget', () => {
   // server) redirects it to /glossary and answers that with
   // dist/glossary/index.html, the term-page hub, which is a different page
   // from dist/glossary.html. Netlify serves glossary.html at both URLs.
+  test('keeps the question box on screen when the viewport is short', async ({ page }) => {
+    // 200 percent zoom on a laptop, or a phone on its side. The panel used
+    // to clip its own input out of view (WCAG 1.4.10).
+    const { attach } = harness();
+    await attach(page);
+    for (const size of [{ width: 640, height: 300 }, { width: 844, height: 390 }, { width: 320, height: 256 }]) {
+      await page.setViewportSize(size);
+      await page.goto('/');
+      await page.evaluate(() => window.sessionStorage.clear());
+      await page.reload();
+      await fab(page).click();
+      const input = await page.locator('#support-input').boundingBox();
+      const close = await page.getByRole('button', { name: 'Close help' }).boundingBox();
+      expect(input.y).toBeGreaterThanOrEqual(0);
+      expect(input.y + input.height).toBeLessThanOrEqual(size.height);
+      expect(close.y).toBeGreaterThanOrEqual(0);
+      await page.locator('#support-input').fill('Is there a podcast?');
+      await page.locator('#support-input').press('Enter');
+      await expect(answers(page).last().locator('a').first()).toHaveAttribute('href', '/podcast');
+    }
+  });
+
   const SWEEP = [
     '/', '/pricing.html', '/help.html', '/contract-tracker.html', '/idiq-tracker.html', '/newswire.html',
     '/agencies/', '/agencies/dha/', '/proposal-pulse.html', '/marketpulse.html', '/dashboard.html',
