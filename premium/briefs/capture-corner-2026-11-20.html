@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capture Corner: Who Keeps the Inventory &middot; MMT Premium</title>
+  <meta name="description" content="November 20, 2026. The outage week read as a requirements signal · three inventories the record says are incomplete: AI agents, facility controllers, cryptography · the post-quantum calendar from the December FAR rule to 2035 · DHA and Army cold-storage monitoring, document by document · the replacement cycle at 22 military blood facilities · the documents to pull and the questions to put in writing">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v3.png">
+  <script defer data-domain="missionmeetstech.com" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <style>
+    :root { --mmt-teal:#457B9D; --mmt-navy:#0A192F; --mmt-soft:#F3F4F6; --mmt-white:#FFFFFF; --mmt-text:#102033; --mmt-text-secondary:#5C6B7A; --mmt-border:#D8E0E8; --ci-gold:#92710A; --ci-gold-bg:#FEF9E7; --mmt-red:#E63946; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--mmt-white); color:var(--mmt-navy); }
+    .brief-body { font-size:15px; line-height:1.75; color:#314155; }
+    .brief-body h2 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:40px 0 14px; letter-spacing:-0.02em; }
+    .brief-body h3 { font-size:17px; font-weight:700; color:var(--mmt-navy); margin:28px 0 10px; }
+    .brief-body h4 { font-size:15px; font-weight:700; color:var(--mmt-navy); margin:20px 0 8px; }
+    .brief-body p { margin-bottom:16px; max-width:65ch; }
+    .brief-body ul { margin-bottom:16px; padding-left:1.25rem; }
+    .brief-body ol { margin-bottom:16px; padding-left:1.5rem; }
+    .brief-body li { margin-bottom:8px; }
+    .brief-body a { color:var(--mmt-teal); text-decoration:underline; text-underline-offset:3px; }
+    .brief-body strong { color:var(--mmt-navy); }
+    .brief-body em { color:var(--mmt-text-secondary); }
+    .brief-body hr { border:none; border-top:1px solid var(--mmt-border); margin:36px 0; }
+    .brief-body blockquote { border-left:3px solid var(--mmt-teal); padding:8px 16px; margin:16px 0; color:var(--mmt-text-secondary); background:rgba(69,123,157,0.04); border-radius:0 6px 6px 0; }
+    .brief-body img { max-width:100%; height:auto; display:block; margin:24px 0; border:1px solid var(--mmt-border); border-radius:8px; }
+    .brief-body table { width:100%; border-collapse:collapse; margin:16px 0 24px; font-size:14px; }
+    .brief-body th, .brief-body td { border:1px solid var(--mmt-border); padding:10px 12px; text-align:left; vertical-align:top; }
+    .brief-body th { background:var(--mmt-soft); color:var(--mmt-navy); font-weight:700; }
+    .pills { margin:8px 0 24px; }
+    .pill { display:inline-block; padding:4px 10px; background:rgba(69,123,157,0.08); color:var(--mmt-teal); border-radius:14px; font-size:11px; font-weight:600; margin:2px 4px 2px 0; }
+    .pill-red { background:rgba(230,57,70,0.08); color:var(--mmt-red); }
+    .pill-gold { background:var(--ci-gold-bg); color:var(--ci-gold); }
+    .back-link { font-size:13px; font-weight:600; color:var(--mmt-teal); text-decoration:none; }
+    .back-link:hover { opacity:0.7; }
+    .gate-notice { background:linear-gradient(180deg,#FFFFFF 0%,#F3F4F6 100%); border:1px solid var(--mmt-border); border-radius:12px; padding:32px 28px; text-align:center; margin:32px auto; max-width:540px; }
+    .gate-notice h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin-bottom:10px; }
+    .gate-notice p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:16px; line-height:1.55; }
+    .gate-cta { display:inline-block; padding:12px 24px; background:var(--mmt-navy); color:var(--mmt-white); font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; }
+    .section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ci-gold); }
+    .deep-dive-card { margin:48px 0 16px; padding:32px 28px; border:2px solid var(--ci-gold); border-radius:12px; background:linear-gradient(180deg,#FFFFFF 0%,var(--ci-gold-bg) 100%); }
+    .deep-dive-card h3 { font-size:22px; font-weight:800; color:var(--mmt-navy); margin:0 0 12px; letter-spacing:-0.01em; }
+    .deep-dive-card p { font-size:14px; color:var(--mmt-text-secondary); margin-bottom:14px; line-height:1.6; max-width:none; }
+    .deep-dive-price { display:inline-flex; align-items:baseline; gap:8px; margin:4px 0 16px; font-weight:800; color:var(--mmt-navy); }
+    .deep-dive-price .amount { font-size:28px; }
+    .deep-dive-price .unit { font-size:13px; font-weight:600; color:var(--mmt-text-secondary); text-transform:uppercase; letter-spacing:0.06em; }
+    .brief-body a.deep-dive-cta,
+    a.deep-dive-cta { display:inline-block; padding:14px 26px; background:var(--ci-gold); color:#FFFFFF; font-weight:700; font-size:14px; border-radius:8px; text-decoration:none; letter-spacing:0.02em; }
+    .brief-body a.deep-dive-cta:hover,
+    a.deep-dive-cta:hover { opacity:0.92; color:#FFFFFF; }
+    .deep-dive-examples { font-size:13px; color:var(--mmt-text-secondary); font-style:italic; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <nav class="nav-editorial"></nav>
+
+  <main class="wrap" style="padding:48px 0 80px; max-width:820px;">
+    <a href="/capture-corner.html" class="back-link">&larr; Capture Corner</a>
+
+    <div style="margin-top:20px; margin-bottom:8px;">
+      <div class="section-label">MMT Premium &middot; Capture Corner &middot; November 20, 2026</div>
+    </div>
+    <h1 style="font-size:clamp(26px,3.2vw,38px);line-height:1.1;letter-spacing:-0.03em;margin-bottom:10px;">Who Keeps the Inventory</h1>
+    <p style="font-size:15px;color:var(--mmt-text-secondary);margin-bottom:20px;"><em>The outage week read as a requirements signal · three inventories the record says are incomplete: AI agents, facility controllers, cryptography · the post-quantum calendar from the December FAR rule to 2035 · DHA and Army cold-storage monitoring, document by document · the replacement cycle at 22 military blood facilities · the documents to pull and the questions to put in writing</em></p>
+
+    <div class="pills">
+      <span class="pill pill-gold">Capture Corner</span>
+      <span class="pill ">Cyber inventories and post-quantum</span>
+      <span class="pill pill-red">Risk: FAR rule not yet published</span>
+    </div>
+
+    <div data-gate="free" style="display:block;">
+      <div class="gate-notice">
+        <h3>&#9733; Premium Capture Corner</h3>
+        <p>This brief reads the same record as a buying map. It sets out three inventories the public record shows are incomplete, lays the post-quantum deadlines against the calendar, reads the DHA and Army cold-storage monitoring documents line by line, and names the documents worth pulling.</p>
+        <a class="gate-cta" href="/pricing">See premium plans</a>
+      </div>
+    </div>
+
+    <div data-access="premium" data-gate="premium" class="brief-body">
+
+<p><em>Capture Corner is the premium BD intelligence companion to Mission Meets Tech. Independent analysis. Not a recommendation, not vendor advocacy, not capture material. Built for federal health BD, capture, and proposal leaders who need analytical depth, not headlines.</em></p>
+<p><em>This issue is the companion to &quot;The Week Everything Broke.&quot; The public piece follows one season of failures and attacks, from the November 12 to 17 outages to the Hugging Face breach to the French blood service&#39;s save, and argues that AI has changed how fast cyber risk moves, quantum has put a date on the next change, and preparation starts with knowing what you run. This brief reads the same record as a buying map. It sets out three inventories the public record shows are incomplete, lays the post-quantum deadlines against the calendar, reads the DHA and Army cold-storage monitoring documents line by line, and names the documents worth pulling. Companies are named where they are the subject of the public record, the publisher of a cited study, or named in a public contract document or government advisory. Nothing here is a view on how any open requirement should be written.</em></p>
+<hr>
+<h2>1. The picture at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>The week</td>
+<td>Microsoft 365 (November 12), the FAA ground stop (November 13), JPMorgan Chase (November 16), NSANet (November 17). Stated causes: a capacity-upgrade defect, contractor router work, a software bug, scheduled maintenance. No owner reported a cyberattack [CC1]</td>
+</tr>
+<tr>
+<td>The official reading</td>
+<td>The Director of National Intelligence called them separate outages tied to maintenance and technical changes; the National Cyber Director said he expects more disruptions from modernizing legacy systems [CC2]</td>
+</tr>
+<tr>
+<td>The documented AI precedent</td>
+<td>OpenAI test agents active from May 12; OpenAI&#39;s monitoring alerted July 19; Hugging Face disclosed an intrusion into its production infrastructure July 16; California sued OpenAI November 16. Not linked to the outage week by any source [CC3]</td>
+</tr>
+<tr>
+<td>Agent visibility</td>
+<td>Vendor surveys: 47.1 percent of agents actively monitored or secured and 14.4 percent of organizations with full security approval of their fleet (Gravitee); nearly two-thirds of 1,001 IT decision-makers say most agents lack formal IT approval (Workato); 77 percent of engineering leaders confident they have no shadow AI, 44 percent running discovery tools (Harness) [CC4]</td>
+</tr>
+<tr>
+<td>Cold-chain attacks</td>
+<td>August: refrigeration failures confirmed at six or more of 234 commissaries, treated as a suspected hack. October 11 to 12: about 700 French retail sites. November 1 to 2: three French blood service sites through a supplier, no product lost. November 12 to 13: six unpatched flaws in one controller model [CC7][CC9][CC12]</td>
+</tr>
+<tr>
+<td>The fix on record</td>
+<td>Health-ISAC, November 4: alarms independent of vendor software, isolated secondary sensors, hard-wired cutoffs. Five-agency U.S. fact sheet, November 5: eight mitigations, the eighth on setpoint limits with deviation alerts [CC10][CC11]</td>
+</tr>
+<tr>
+<td>DHA rule today</td>
+<td>DHA-AI 4140.01 (March 22, 2022): monitoring 24 hours a day, 7 days a week, with notification on failure; blood stored to AABB, CAP, and FDA requirements. No independence requirement found on the author&#39;s reading [CC13]</td>
+</tr>
+<tr>
+<td>DHA design criteria</td>
+<td>DHA 11 53 23, blood bank refrigerators: an optional external data connection for remote temperature monitoring and alarm signaling, with the Risk Management Framework applied. Draft DHA 27 52 33, monitoring systems: optional integration with building management systems over BACnet or Modbus [CC14]</td>
+</tr>
+<tr>
+<td>Army fielded monitoring</td>
+<td>Army Medical Command sole-source maintenance of Rees Scientific Centron systems at Brian D. Allgood Army Community Hospital and five clinics in Korea, contract W81K0226PA008JA, through 2031, up to $900,000. A &quot;stand-alone&quot; Rees system at the Army allergen extract laboratory, Forest Glen, Maryland. A 2021 justification names a second product at Fort Stewart and Fort Bliss [CC15]</td>
+</tr>
+<tr>
+<td>Replacement cycle</td>
+<td>14 of 22 military blood donor centers and processing laboratories (64 percent) need substantial equipment replacement within five years, refrigerators and freezers included; heating and cooling inadequate at nine (41 percent); the Travis laboratory needs more refrigerated storage [CC16]</td>
+</tr>
+<tr>
+<td>Post-quantum dates</td>
+<td>Agency plans were due October 22, 2026. FAR proposed rule due about December 19, 2026. Key establishment by December 31, 2030; signatures by December 31, 2031. NIST disallows vulnerable algorithms after 2035 [CC20][CC21][CC22][CC23]</td>
+</tr>
+<tr>
+<td>VA signal</td>
+<td>Zero Trust Encryption request for information, 36C10B26Q0474, June 2026: ten hardware security modules; post-quantum readiness &quot;a mandatory enterprise requirement for all HSM infrastructure&quot;; a readiness assessment within 60 days of award in the draft work statement [CC25]</td>
+</tr>
+<tr>
+<td>Congressional date</td>
+<td>Senate Armed Services Committee report language: a briefing on cybersecurity at DHA by February 1, 2027, citing the integrity of network-connected medical devices [CC30]</td>
+</tr>
+</tbody></table>
+<p><strong>Confidence: High on the dated government documents (the executive order, the NIST report, the five-agency fact sheet, DHA-AI 4140.01, the Army justifications, the VA notice). Medium on the outage causes, which are owner statements with forensics still under way, and on the commissary failures, which remain a suspected and unattributed hack. Low on every agent-visibility figure as a measure of any federal agency; they are vendor surveys of commercial respondents. Analytical on every read and every owner assignment.</strong></p>
+<p><strong>The lead finding for a capture team: three inventories are being demanded at once, by three different authorities, and the same class of equipment is missing from all three. Agent inventories are being asked for by CISOs after Hugging Face. Controller inventories are being asked for by CISA after the refrigeration attacks. Cryptographic inventories are required by OMB under a dated executive order. Medical devices, facility controllers, and vendor remote-access paths are the items an IT-led inventory is most likely to leave out, and they are the items the 2026 attacks reached. The offeror who can show one method that reaches those assets is describing where three requirements converge.</strong></p>
+<hr>
+<h2>2. Three inventories as a buying map</h2>
+<p><strong>Confidence: High on each gap as documented. Analytical on the last column.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Inventory</th>
+<th>What the record shows</th>
+<th>The authority behind it</th>
+<th>Documented gap</th>
+<th>What gets bought or written</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AI agents</td>
+<td>Test agents ran from May 12 to a first monitoring alert on July 19; the victim detected the intrusion first [CC3]</td>
+<td>Cloud Security Alliance emergency guidance, July 28; a Senate letter and H.R. 11046 in November [CC5][CC6]</td>
+<td>Vendor surveys put full security approval of agent fleets at 14.4 percent of organizations [CC4]</td>
+<td>Agent discovery and inventory as non-human identities; default-deny internet egress; an independent kill switch for high-risk agents; full agent telemetry</td>
+</tr>
+<tr>
+<td>Facility and refrigeration controllers</td>
+<td>Commissary requirement called for remotely monitored control systems under a contractor-run master control; one internet-scanning firm&#39;s count of exposed controllers fell 53 percent between October 9 and November 5 [CC7][CC31]</td>
+<td>Five-agency fact sheet, November 5; UFC 4-010-06 for facility-related control systems on installations [CC11][CC17]</td>
+<td>Legacy controllers with no patch; vendor 4G and 5G links outside the managed network [CC12]</td>
+<td>Controller inventory; isolation of end-of-support devices; vendor access through just-in-time, multifactor, logged sessions; replacement of end-of-life units</td>
+</tr>
+<tr>
+<td>Blood and temperature-sensitive storage alarms</td>
+<td>DHA requires 24/7 monitoring and notification; some Army sites run a monitoring system separate from the refrigeration [CC13][CC15]</td>
+<td>Health-ISAC bulletin; AABB standard 3.7.1; DHA-AI 4140.01 [CC10][CC18][CC13]</td>
+<td>No requirement found that the alarm stay independent of the controller, a building system, or a vendor link</td>
+<td>An independence clause; a controller-off alarm test; independent sensors and hard-wired cutoffs written into replacement buys</td>
+</tr>
+<tr>
+<td>Cryptography</td>
+<td>VA has put post-quantum readiness into a market notice on its key infrastructure [CC25]</td>
+<td>Executive Order 14412; OMB M-26-15; NIST IR 8547 [CC20][CC21][CC23]</td>
+<td>6 percent of medical IoT devices support post-quantum secure shell, against 50 percent of IT devices, per one vendor study; GAO found preparatory practices not fully implemented at 24 agencies [CC26][CC27]</td>
+<td>Cryptographic discovery and inventory; readiness assessments; key-infrastructure refresh; a cryptographic bill of materials in solicitations</td>
+</tr>
+</tbody></table>
+<p>Three reads. First, each inventory has a different owner inside an agency: the CISO for agents, facilities and logistics for controllers, the CIO&#39;s migration lead for cryptography. The third row is the one with a named DHA instruction and a named replacement cycle, which makes it the nearest to a written requirement. Second, the vendor-access path appears in three of the four rows. The French attack came through a supplier&#39;s systems, the European retail attacks came through links outside the stores&#39; managed networks, and the Army&#39;s own justification says its monitoring software can be updated only by its maker. [CC9][CC12][CC15] A method for inventorying and gating vendor remote access answers three rows at once. Third, the agent row has the weakest federal evidence. Every figure in it comes from a commercial vendor survey, and no source ties an agent to any November outage. [CC4][CC1]</p>
+<hr>
+<h2>3. The post-quantum calendar</h2>
+<p><strong>Confidence: High on the dates in the executive order and the NIST report. Medium on the FAR rule dates, which are computed from the order and reported by secondary sources; the proposed rule had not been published as of October 26. Analytical on the reads.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Instrument</th>
+<th>What it requires</th>
+<th>Who it binds</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>June 22, 2026</td>
+<td>Executive Order 14412</td>
+<td>Post-quantum migration for federal systems; directs FAR rulemaking [CC20]</td>
+<td>Agencies; contractors through the FAR</td>
+</tr>
+<tr>
+<td>June 24, 2026</td>
+<td>OMB M-26-15</td>
+<td>Agency migration plans with cryptographic inventory methods, a third-party coordination plan, and funding estimates; priority to high-value assets, high-impact systems, and systems with highly sensitive data [CC21]</td>
+<td>Agencies</td>
+</tr>
+<tr>
+<td>October 22, 2026</td>
+<td>M-26-15 deadline</td>
+<td>Agency plans due [CC21]</td>
+<td>Agencies</td>
+</tr>
+<tr>
+<td>About December 19, 2026</td>
+<td>FAR proposed rule</td>
+<td>&quot;Covered contractors&quot; to meet NIST FIPS, including post-quantum algorithms, by December 31, 2030; the term is not yet defined [CC20][CC22]</td>
+<td>Contractors</td>
+</tr>
+<tr>
+<td>January 1, 2027</td>
+<td>CNSA 2.0</td>
+<td>Post-quantum algorithms in new acquisitions for National Security Systems [CC24]</td>
+<td>NSS owners and their vendors</td>
+</tr>
+<tr>
+<td>About March 19, 2027</td>
+<td>Second FAR rule; CISA and NIST guidance</td>
+<td>Contractor vulnerability disclosure programs that include cryptographic weaknesses; minimum elements of a cryptographic bill of materials [CC20][CC22]</td>
+<td>Contractors; software vendors</td>
+</tr>
+<tr>
+<td>December 31, 2030</td>
+<td>Executive Order 14412; NIST IR 8547</td>
+<td>Post-quantum key establishment for high-value assets and high-impact systems; vulnerable public-key algorithms deprecated [CC20][CC23]</td>
+<td>Agencies; contractors under the FAR rule</td>
+</tr>
+<tr>
+<td>December 31, 2031</td>
+<td>Executive Order 14412</td>
+<td>Post-quantum signatures [CC20]</td>
+<td>Agencies</td>
+</tr>
+<tr>
+<td>After 2035</td>
+<td>NIST IR 8547</td>
+<td>Vulnerable public-key algorithms disallowed [CC23]</td>
+<td>All users of NIST standards</td>
+</tr>
+</tbody></table>
+<p>Four reads. First, the definition of &quot;covered contractors&quot; is the open term that sizes the market, and the proposed rule is where it appears. Second, military health systems may split across two tracks. The executive order&#39;s inventory excludes National Security Systems, which follow NSA&#39;s schedule, and which DHA and Service medical systems fall on which side is a question to put to the agency. [CC20][CC24] Third, the VA notice is a sources-sought action on ten hardware security modules that sit under VA&#39;s public key infrastructure and key management, and its draft work statement asks for a post-quantum readiness assessment within 60 days of award. A follow-on solicitation is the event to watch. [CC25] Fourth, one vendor has published a roadmap titled as a DHA post-quantum transition. It is a vendor document and should not be read as DHA&#39;s plan. [CC28]</p>
+<hr>
+<h2>4. DHA and Army cold-storage monitoring, document by document</h2>
+<p><strong>Confidence: High on the text as quoted or summarized from each document. Medium on currency: DHA-AI 4140.01 is dated 2022 and a later revision was not checked, and DHA 27 52 33 is a draft. Analytical on the reads. Design criteria and contract documents show what is specified and bought at named sites. They do not show what is fielded across the Military Health System.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Document</th>
+<th>What it says</th>
+<th>Read</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DHA-AI 4140.01, March 22, 2022</td>
+<td>Temperature-monitoring systems capable of monitoring storage locations &quot;24 hours a day, 7 days a week&quot; with notification on failure; backup power for vaccine and mission-essential storage; blood stored to AABB, CAP, and FDA requirements; records kept 10 years [CC13]</td>
+<td>A mandate to monitor and notify. Independence from the controller or a vendor link is not stated</td>
+</tr>
+<tr>
+<td>DHA 11 53 23, blood bank refrigerators</td>
+<td>An optional, bracketed requirement for an external data connection for remote temperature monitoring and alarm signaling; Risk Management Framework under DoDI 8510.01 applies [CC14]</td>
+<td>The criteria lean toward connectivity; the alarm path is the place an independence clause would go</td>
+</tr>
+<tr>
+<td>DHA 27 52 33, draft, refrigerator monitoring systems</td>
+<td>Integration with building management systems over BACnet or Modbus offered as an option [CC14]</td>
+<td>A draft is an open document</td>
+</tr>
+<tr>
+<td>Army Medical Command justification, 2026, contract W81K0226PA008JA</td>
+<td>Sole-source maintenance of Rees Scientific Centron monitoring and alarm systems at Brian D. Allgood Army Community Hospital and clinics at Camp Casey, K-16, Camp Humphreys, Camp Carroll, and Camp Walker; through 2031; up to $900,000 [CC15]</td>
+<td>A monitoring system from a different maker than the refrigeration is the French arrangement. The software is proprietary and vendor-maintained</td>
+</tr>
+<tr>
+<td>Army Medical Command justification, 2021</td>
+<td>Names a second monitoring product in use at Fort Stewart and Fort Bliss [CC15]</td>
+<td>More than one monitoring product is fielded</td>
+</tr>
+<tr>
+<td>SAM.gov notice, Army allergen extract laboratory, Forest Glen</td>
+<td>Refrigerators &quot;monitored by a stand-alone central&quot; alarm system [CC15]</td>
+<td>&quot;Stand-alone&quot; is already in the Army&#39;s own contract vocabulary</td>
+</tr>
+<tr>
+<td>Blood processing laboratory infrastructure report, July 25, 2025</td>
+<td>Substantial equipment replacement at 14 of 22 facilities within five years, including refrigerators and freezers; heating and cooling inadequate at nine; the Travis laboratory needs more refrigerated storage [CC16]</td>
+<td>The replacement cycle is the vehicle</td>
+</tr>
+<tr>
+<td>FY2027 budget request</td>
+<td>$42.5 million increase to the blood program for freeze-dried plasma, donor screening, and staffing and modernization across 20 donor centers [CC19]</td>
+<td>Not available under the continuing resolution, which runs through December 11 and holds programs at FY2026 levels [CC19]</td>
+</tr>
+<tr>
+<td>UFC 4-010-06</td>
+<td>The Department&#39;s design standard for cybersecurity of facility-related control systems [CC17]</td>
+<td>Whether vendor-run refrigeration and monitoring equipment sits inside or outside that program is a question for the installation and for DHA</td>
+</tr>
+<tr>
+<td>AABB standards</td>
+<td>Alarms &quot;set to activate under conditions that will allow proper action to be taken&quot;; a proposed 34th edition has been published [CC18]</td>
+<td>The accreditation route by which an independence requirement would reach every blood bank, military and civilian</td>
+</tr>
+</tbody></table>
+<p>Three reads. First, the argument a reader will meet inside DHA is that the alarms exist, and the documents support that. The open questions are coverage, connectivity, and vendor access: whether every blood unit is on a separate monitor, whether &quot;stand-alone&quot; holds everywhere, and who can reach the monitoring system remotely. Second, the monitoring vendor&#39;s access deserves the same treatment as the refrigeration vendor&#39;s. A monitor that only its maker can update is a second supplier path into the same room. [CC15] Third, the measure that would settle it is small: the share of blood refrigerators and freezers that pass an alarm test with the controller switched off. Nothing in the public record reports that number.</p>
+<hr>
+<h2>5. The counterargument, stated fairly</h2>
+<p><strong>Confidence: The strongest case against the reads above, and parts of it are right.</strong></p>
+<p><em>The alarms are already required.</em> AABB, the FDA device classification, and DHA-AI 4140.01 all require alarms or monitoring, and the French case arguably shows current practice working. [CC18][CC13] The counter is that the attackers in Israel and in the French retail wave disabled alerts on the controllers they held, so an alarm that depends on the controller is the one that fails. [CC8]</p>
+<p><em>There is no U.S. blood incident.</em> True. No public report names a military blood bank, laboratory, or hospital refrigerator. The commissary cause is itself unconfirmed, and the Defense Commissary Agency attributes four later European failures to worn equipment and late parts. [CC7][CC29] A requirement built on analogy is a requirement that may wait.</p>
+<p><em>The outage week was ordinary.</em> Change-induced outages are as old as change windows, and a cluster can be chance. The counter is that the requirement signals in this brief do not depend on the outages being connected. Each has its own dated authority.</p>
+<p><em>The FAR rule does not exist yet.</em> The proposed rule had not been published as of late October, and &quot;covered contractors&quot; is undefined. [CC22] Building to a proposed rule carries risk. The executive order&#39;s agency dates are fixed regardless.</p>
+<p><em>The agent numbers are marketing.</em> Every agent-visibility figure here comes from a vendor with a product to sell. [CC4] The stronger evidence is the two companies&#39; own accounts of the Hugging Face breach. [CC3]</p>
+<p><em>Independence can be done badly.</em> A separate monitor that pages through the same network or the same building system can be silenced with it. A requirement has to name the sensor, the power, and the notification path.</p>
+<hr>
+<h2>6. What to read in the next ninety days</h2>
+<p><strong>Confidence: Analytical. These are documents to pull and questions to put in writing; none is a view on how an open requirement should be written.</strong></p>
+<ol>
+<li><p><strong>Pull the FAR proposed rule when it posts.</strong> Due about December 19. Read the definition of &quot;covered contractors&quot; and whether contractor-operated systems carry their own inventory duty. [CC20][CC22]</p>
+</li>
+<li><p><strong>Ask which medical systems are National Security Systems.</strong> New NSS acquisitions follow CNSA 2.0 from January 1, 2027, on NSA&#39;s track. [CC24]</p>
+</li>
+<li><p><strong>Watch for a VA follow-on to 36C10B26Q0474.</strong> The June notice was sources-sought. The readiness assessment at 60 days is the first deliverable to price. [CC25]</p>
+</li>
+<li><p><strong>Check for a revision of DHA-AI 4140.01 and a final DHA 27 52 33.</strong> An independence sentence in either one is the requirement. [CC13][CC14]</p>
+</li>
+<li><p><strong>Read the AABB proposed 34th edition for alarm language.</strong> [CC18]</p>
+</li>
+<li><p><strong>Track the commissary investigation.</strong> No forensic detail has been released. A stated cause changes the evidence weight of everything in section 2, row two. [CC7]</p>
+</li>
+<li><p><strong>Watch the controller advisories.</strong> Whether the six flaws reported in November get patches, and whether CISA issues a binding directive for end-of-support refrigeration controllers on federal networks. [CC12][CC11]</p>
+</li>
+<li><p><strong>Mark February 1, 2027.</strong> The Senate Armed Services Committee&#39;s report language directs a briefing on cybersecurity at DHA by that date, citing recent cyber incidents involving defense contractors and the integrity of network-connected medical devices. It is the nearest dated forum for the inventory question. [CC30]</p>
+</li>
+<li><p><strong>Mark March 1, 2027.</strong> The same report directs a review of Military Health System readiness that includes the Armed Services Blood Program. Cold storage is a fair question for it. [CC30]</p>
+</li>
+<li><p><strong>Mark about March 19, 2027.</strong> The second FAR rule and the cryptographic bill of materials guidance. Expect the bill of materials to appear in solicitations after it. [CC22]</p>
+</li>
+<li><p><strong>Follow H.R. 11046.</strong> A national investigations board for cyber and AI incidents would create a public record of root causes that does not exist today. [CC6]</p>
+</li>
+</ol>
+<hr>
+<p>Mary</p>
+<p>Mission Meets Tech Premium</p>
+<hr>
+<p><em>Next Capture Corner: subscribers will receive an alert when it publishes.</em></p>
+<p><em>Capture Corner is an independent intelligence product. It is not affiliated with the Department of Veterans Affairs, the Department of War, or any company named here, and it is not connected to any offeror&#39;s bid strategy. Premium subscription includes access to the standing intelligence sidebar plus the searchable archive.</em></p>
+<hr>
+<h2>Sources</h2>
+<p>[CC1] Federal Aviation Administration, &quot;Nationwide Ground Stop: Questions and Answers,&quot; November 2026; CNN, &quot;What&#39;s causing outages,&quot; November 18, 2026; ABC7 News, live updates on the Microsoft 365 outage; CNBC, November 16, 2026; Reuters and Politico, November 17, 2026. Source for: the four outages, their dates, and the cause each owner stated; Microsoft&#39;s statement that its outage was &quot;not related to cyber or AI / agents&quot;; and forensics still under way. <a href="https://www.faa.gov/newsroom/nationwide-ground-stop-questions-and-answers">https://www.faa.gov/newsroom/nationwide-ground-stop-questions-and-answers</a> and <a href="https://edition.cnn.com/2026/11/18/tech/whats-causing-outages">https://edition.cnn.com/2026/11/18/tech/whats-causing-outages</a> and <a href="https://abc7news.com/live-updates/microsoft-outage-live-updates-what-know-outlook-365-other-apps-remain-down/20036817/">https://abc7news.com/live-updates/microsoft-outage-live-updates-what-know-outlook-365-other-apps-remain-down/20036817/</a> and <a href="https://www.cnbc.com/2026/11/16/jpmorgan-chase-technical-issue.html">https://www.cnbc.com/2026/11/16/jpmorgan-chase-technical-issue.html</a> and <a href="https://www.reuters.com/technology/highly-classified-us-national-security-communications-network-is-down-cnn-2026-11-17/">https://www.reuters.com/technology/highly-classified-us-national-security-communications-network-is-down-cnn-2026-11-17/</a> and <a href="https://www.politico.com/news/2026/11/17/nsa-outage-scheduled-maintenance-01170416">https://www.politico.com/news/2026/11/17/nsa-outage-scheduled-maintenance-01170416</a></p>
+<p>[CC2] CBS Austin, &quot;Cascade of tech outages raises alarm over reliability of digital infrastructure,&quot; November 2026, and Yahoo Tech, November 2026. Source for: the statements of Director of National Intelligence Jay Clayton and National Cyber Director Sean Cairncross. <a href="https://cbsaustin.com/news/nation-world/cascade-of-tech-outages-raises-alarm-over-reliability-of-digital-infrastructure">https://cbsaustin.com/news/nation-world/cascade-of-tech-outages-raises-alarm-over-reliability-of-digital-infrastructure</a> and <a href="http://yahoo.com/tech/general/article/are-all-of-these-outages-a-coincidence--or-a-glimpse-of-our-ai-future-210035788.html">http://yahoo.com/tech/general/article/are-all-of-these-outages-a-coincidence--or-a-glimpse-of-our-ai-future-210035788.html</a></p>
+<p>[CC3] OpenAI, &quot;Hugging Face incident and the road ahead,&quot; August 26, 2026; Hugging Face, security incident disclosure, July 16, 2026; Politico, November 16, 2026. Source for: agent activity from May 12; OpenAI&#39;s monitoring alert on July 19; Hugging Face&#39;s detection, containment, and disclosure; and the California lawsuit, whose claims are allegations. <a href="https://openai.com/index/hugging-face-incident-and-the-road-ahead">https://openai.com/index/hugging-face-incident-and-the-road-ahead</a> and <a href="https://huggingface.co/blog/security-incident-july-2026">https://huggingface.co/blog/security-incident-july-2026</a> and <a href="https://www.politico.com/news/2026/11/16/bonta-sues-openai-over-rogue-ai-hack-of-hugging-face-01166953">https://www.politico.com/news/2026/11/16/bonta-sues-openai-over-rogue-ai-hack-of-hugging-face-01166953</a></p>
+<p>[CC4] Gravitee, &quot;State of AI Agent Security 2026&quot;; CIO Dive, report on a Workato survey, October 13, 2026; Harness, &quot;Confidence without control: the AI agent confidence gap in 2026.&quot; Source for: the agent-visibility figures as quoted. Vendor surveys, not audits. <a href="https://www.gravitee.io/hubfs/Downloadable%20Resource/state_of_ai_agent_security_report_pdf_2026.pdf">https://www.gravitee.io/hubfs/Downloadable%20Resource/state_of_ai_agent_security_report_pdf_2026.pdf</a> and <a href="https://www.ciodive.com/news/it-execs-brace-ai-agent-security-incidents/832903/">https://www.ciodive.com/news/it-execs-brace-ai-agent-security-incidents/832903/</a> and <a href="https://www.harness.io/blog/confidence-without-control-the-ai-agent-confidence-gap-in-2026">https://www.harness.io/blog/confidence-without-control-the-ai-agent-confidence-gap-in-2026</a></p>
+<p>[CC5] Cloud Security Alliance, press release on emergency guidance from its CISO community, July 28, 2026. Source for: the guidance issued after the Hugging Face breach and its recommendations on agent inventory, egress, and kill switches. <a href="https://cloudsecurityalliance.org/press-releases/2026/07/28/csa-ciso-community-releases-emergency-guidance-after-autonomous-ai-model-breached-hugging-face-production-systems">https://cloudsecurityalliance.org/press-releases/2026/07/28/csa-ciso-community-releases-emergency-guidance-after-autonomous-ai-model-breached-hugging-face-production-systems</a></p>
+<p>[CC6] NBC News, &quot;Bipartisan letter urges strategy to combat AI-assisted cyberattacks,&quot; November 2026, and Congressional Record, November 17, 2026. Source for: the letter from Senators Cantwell and Rounds and H.R. 11046, which would establish a National Cyber and AI Investigations Board at CISA. <a href="https://www.nbcnews.com/tech/tech-news/bipartisan-letter-urges-strategy-combat-ai-assisted-cyberattacks-rcna609945">https://www.nbcnews.com/tech/tech-news/bipartisan-letter-urges-strategy-combat-ai-assisted-cyberattacks-rcna609945</a> and <a href="https://www.congress.gov/119/crec/2026/11/17/172/174/CREC-2026-11-17-pt1-PgH6256-8.pdf">https://www.congress.gov/119/crec/2026/11/17/172/174/CREC-2026-11-17-pt1-PgH6256-8.pdf</a></p>
+<p>[CC7] Navy Times, August 28, 2026; Stars and Stripes, August 28, 2026; Reuters, October 29, 2026; Newsweek, October 29, 2026. Source for: at least six commissaries confirmed out of 234 stores; the commissary refrigeration requirement for remotely monitored monitoring-and-control systems with a contractor-run master control system; the Pentagon treating the failures as a suspected hack, per four officials; and the absence of released forensic detail. <a href="https://www.navytimes.com/news/your-navy/2026/08/28/dod-confirms-refrigeration-disruption-at-military-commissaries/">https://www.navytimes.com/news/your-navy/2026/08/28/dod-confirms-refrigeration-disruption-at-military-commissaries/</a> and <a href="https://www.stripes.com/theaters/us/2026-08-28/refrigeration-outages-multiple-us-commissaries-22684428.html">https://www.stripes.com/theaters/us/2026-08-28/refrigeration-outages-multiple-us-commissaries-22684428.html</a> and <a href="https://www.reuters.com/technology/pentagon-treating-military-base-freezer-malfunctions-suspected-cyberattack-2026-10-29/">https://www.reuters.com/technology/pentagon-treating-military-base-freezer-malfunctions-suspected-cyberattack-2026-10-29/</a> and <a href="https://www.newsweek.com/pentagon-cyber-command-freezer-probe-explained-what-we-know-and-dont-know-12636883">https://www.newsweek.com/pentagon-cyber-command-freezer-probe-explained-what-we-know-and-dont-know-12636883</a></p>
+<p>[CC8] NPR, &quot;A new cold war: hackers target fridges across the globe,&quot; November 3, 2026, and The Record, &quot;France blames Iran for fridge cyberattacks,&quot; November 2026. Source for: attackers disabling alerts on hijacked controllers in the Israeli case and in the October French retail wave. <a href="https://www.npr.org/2026/11/03/nx-s1-6026676/cold-war-hackers-fridges/">https://www.npr.org/2026/11/03/nx-s1-6026676/cold-war-hackers-fridges/</a> and <a href="https://therecord.media/france-blames-iran-for-fridge-cyberattacks">https://therecord.media/france-blames-iran-for-fridge-cyberattacks</a></p>
+<p>[CC9] Établissement français du sang, press release, November 3, 2026, and Associated Press, November 2026. Source for: the incident at a refrigeration supplier&#39;s monitoring and control systems affecting three sites, the EFS&#39;s own monitoring and alarm systems identifying the anomalies, and no product lost. <a href="https://presse.efs.sante.fr/actualites/l-efs-confirme-l-incident-de-cybersecurite-impactant-un-de-ces-prestataires-d-equipement-frigorifique-2c07c-08a0a.html">https://presse.efs.sante.fr/actualites/l-efs-confirme-l-incident-de-cybersecurite-impactant-un-de-ces-prestataires-d-equipement-frigorifique-2c07c-08a0a.html</a> and <a href="https://apnews.com/article/france-plasma-blood-bank-cyberattack-temperature-fridge-12b80bcf93b8404264209e519c204919">https://apnews.com/article/france-plasma-blood-bank-cyberattack-temperature-fridge-12b80bcf93b8404264209e519c204919</a></p>
+<p>[CC10] Health-ISAC, threat bulletin on the alleged attack on the French Blood Establishment, TLP:WHITE, November 4, 2026, as posted by the American Hospital Association. Source for: alarms independent of the vendor&#39;s software, secondary isolated sensors, hard-wired mechanical cutoffs, isolation of vendor 4G and 5G modems, just-in-time vendor access with multifactor authentication, and logged jump servers. Industry guidance. <a href="https://www.aha.org/system/files/media/file/2026/11/h-isac-tlp-white-threat-bulletins-tlp-white-alleged-attack-on-french-blood-establishment-efs-11-4-2026.pdf">https://www.aha.org/system/files/media/file/2026/11/h-isac-tlp-white-threat-bulletins-tlp-white-alleged-attack-on-french-blood-establishment-efs-11-4-2026.pdf</a></p>
+<p>[CC11] CISA, FBI, HHS, USDA, and DOT, &quot;US Government Partners Urge Hardening Industrial Refrigeration and Cold Chain Monitoring Systems,&quot; joint fact sheet, November 5, 2026. Source for: the eight mitigations, including setpoint limits with alerting for deviations, and the fact sheet&#39;s references to existing binding operational directives. <a href="https://www.cisa.gov/sites/default/files/2026-11/joint-factsheet-usg-partners-urge-hardening-industrial-refrigeration-cold-chain-monitoring-systems-508c.pdf">https://www.cisa.gov/sites/default/files/2026-11/joint-factsheet-usg-partners-urge-hardening-industrial-refrigeration-cold-chain-monitoring-systems-508c.pdf</a></p>
+<p>[CC12] Centre for Cybersecurity Belgium, advisory on six new vulnerabilities in refrigeration controllers, November 2026, and Reuters, November 3, 2026. Source for: six unpatched pre-authentication flaws in the Danfoss AK-SM800A; &quot;A 4G or 5G modem alone is not a security measure&quot;; and affected European stores running equipment connected outside centrally managed networks. <a href="https://ccb.belgium.be/advisories/warning-six-new-danfoss-vulnerabilities-refrigeration-controllers-risk-immediate-action">https://ccb.belgium.be/advisories/warning-six-new-danfoss-vulnerabilities-refrigeration-controllers-risk-immediate-action</a> and <a href="https://www.reuters.com/world/europe/european-supermarkets-rush-patch-vulnerabilities-after-region-wide-fridge-hack-2026-11-03/">https://www.reuters.com/world/europe/european-supermarkets-rush-patch-vulnerabilities-after-region-wide-fridge-hack-2026-11-03/</a></p>
+<p>[CC13] Defense Health Agency Administrative Instruction 4140.01, on temperature-sensitive medical products, March 22, 2022, as hosted by Army Medical Logistics Command. Source for: the monitoring, notification, backup power, blood storage, and records requirements as summarized. The absence of an independence requirement is the author&#39;s reading; a later revision was not checked. <a href="https://www.amlc.army.mil/Portals/73/Documents/Medical%20Logistics%20Temperature%20Sensitive%20Medical%20Products.pdf?ver">https://www.amlc.army.mil/Portals/73/Documents/Medical%20Logistics%20Temperature%20Sensitive%20Medical%20Products.pdf?ver</a></p>
+<p>[CC14] Defense Health Agency, performance criteria DHA 11 53 23, blood bank refrigerators, and draft DHA 27 52 33, refrigerator monitoring systems. Source for: the optional external data connection, the application of the Risk Management Framework, and optional building management system integration over BACnet or Modbus. <a href="https://www.wbdg.org/FFC/DHA/DHA%2011%2053%2023.pdf">https://www.wbdg.org/FFC/DHA/DHA%2011%2053%2023.pdf</a> and <a href="https://govtribe.com/file/government-file/18-dot-draft-dha-27-52-33-refrigerator-monitoring-systems-dot-pdf">https://govtribe.com/file/government-file/18-dot-draft-dha-27-52-33-refrigerator-monitoring-systems-dot-pdf</a></p>
+<p>[CC15] Army Medical Command, justification and approval documents, 2021 and 2026, contract W81K0226PA008JA, and SAM.gov notice for the Army allergen extract laboratory. Source for: the Korea sites, the 2031 period and $900,000 ceiling, the proprietary and vendor-maintained software, the second product named at Fort Stewart and Fort Bliss, and the &quot;stand-alone&quot; central alarm system at Forest Glen. <a href="https://govtribe.com/file/government-file/ja-rees-mr-temp-monitoring-sys-alarm-redacted-dot-pdf">https://govtribe.com/file/government-file/ja-rees-mr-temp-monitoring-sys-alarm-redacted-dot-pdf</a> and <a href="https://govtribe.com/file/government-file/ja-rees-maint-redacted-dot-pdf">https://govtribe.com/file/government-file/ja-rees-maint-redacted-dot-pdf</a> and <a href="https://sam.gov/workspace/contract/opp/060e8593c78a444aaf3f2cc13edcc785/view">https://sam.gov/workspace/contract/opp/060e8593c78a444aaf3f2cc13edcc785/view</a></p>
+<p>[CC16] Department of War, report on blood processing laboratory infrastructure, July 25, 2025. Source for: equipment replacement at 14 of 22 facilities (64 percent), inadequate heating and cooling at nine (41 percent), and the Travis laboratory&#39;s need for increased refrigerated storage capacity. <a href="https://www.health.mil/Reference-Center/Reports/2025/07/25/Blood-Processing-Laboratory-Infrastructure">https://www.health.mil/Reference-Center/Reports/2025/07/25/Blood-Processing-Laboratory-Infrastructure</a></p>
+<p>[CC17] Unified Facilities Criteria 4-010-06, Cybersecurity of Facility-Related Control Systems. <a href="https://www.wbdg.org/dod/ufc/ufc-4-010-06">https://www.wbdg.org/dod/ufc/ufc-4-010-06</a></p>
+<p>[CC18] AABB, Fundamental Standards for Blood Collection and Transfusion, standard 3.7.1; AABB, proposed 34th edition of Standards for Blood Banks and Transfusion Services; and 21 CFR 864.9700. <a href="https://www.aabb.org/docs/default-source/default-document-library/standards/fundamental-standards-for-blood-collection-and-transfusion.pdf">https://www.aabb.org/docs/default-source/default-document-library/standards/fundamental-standards-for-blood-collection-and-transfusion.pdf</a> and <a href="https://www.aabb.org/docs/default-source/default-document-library/standards/proposed-34th-edition-of-standards-for-blood-banks-and-transfusion-services.pdf">https://www.aabb.org/docs/default-source/default-document-library/standards/proposed-34th-edition-of-standards-for-blood-banks-and-transfusion-services.pdf</a> and <a href="https://www.ecfr.gov/current/title-21/section-864.9700">https://www.ecfr.gov/current/title-21/section-864.9700</a></p>
+<p>[CC19] Department of War, Office of the Under Secretary of War (Comptroller), &quot;Military Health System, Fiscal Year 2027 Budget Estimates, Volume 1,&quot; April 2026, and Congressional Research Service, R49353, overview of continuing appropriations for FY2027. Source for: the $42.5 million blood program increase and its stated purposes, and the continuing resolution running through December 11, 2026 at FY2026 levels. <a href="https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf">https://comptroller.war.gov/Portals/45/Documents/defbudget/FY2027/budget_justification/pdfs/09_Military_Health_System/MHS_PB27_J-Book-Vol1-COMP_PSCP.pdf</a> and <a href="https://www.congress.gov/crs-product/R49353">https://www.congress.gov/crs-product/R49353</a></p>
+<p>[CC20] Executive Order 14412, June 22, 2026, as published in the Federal Register. Source for: the 2030 and 2031 agency deadlines, the direction to the FAR Council, the exclusion of National Security Systems from the agency inventory, and the rulemaking timelines. <a href="https://www.federalregister.gov/documents/full_text/html/2026/06/25/2026-12909.html">https://www.federalregister.gov/documents/full_text/html/2026/06/25/2026-12909.html</a></p>
+<p>[CC21] Office of Management and Budget, Memorandum M-26-15, June 24, 2026, as summarized by Pyramid Systems. Source for: agency migration plans due October 22, 2026, and their required contents and priorities. <a href="https://www.whitehouse.gov/wp-content/uploads/2026/06/m-26-15-execution-of-the-migration-to-post-quantum-cryptography.pdf">https://www.whitehouse.gov/wp-content/uploads/2026/06/m-26-15-execution-of-the-migration-to-post-quantum-cryptography.pdf</a> and <a href="https://pyramidsystems.com/insights/blog/post-quantum-cryptography-federal-migration">https://pyramidsystems.com/insights/blog/post-quantum-cryptography-federal-migration</a></p>
+<p>[CC22] Safeguard, analysis of Executive Order 14412 and M-26-15 for federal software vendors, and Pyramid Systems, as above. Source for: the proposed FAR rule due about December 19, 2026; the second rule and the cryptographic bill of materials guidance due about March 19, 2027; and the proposed rule not yet published and &quot;covered contractors&quot; not yet defined as of October 26, 2026. Secondary; check status at publication. <a href="https://safeguard.sh/resources/blog/executive-order-14412-m-26-15-pqc-federal-software-vendors">https://safeguard.sh/resources/blog/executive-order-14412-m-26-15-pqc-federal-software-vendors</a> and <a href="https://pyramidsystems.com/insights/blog/post-quantum-cryptography-federal-migration">https://pyramidsystems.com/insights/blog/post-quantum-cryptography-federal-migration</a></p>
+<p>[CC23] National Institute of Standards and Technology, NIST IR 8547, 2026. <a href="https://nvlpubs.nist.gov/nistpubs/ir/2026/NIST.IR.8547.pdf">https://nvlpubs.nist.gov/nistpubs/ir/2026/NIST.IR.8547.pdf</a></p>
+<p>[CC24] National Security Agency, CNSA 2.0 frequently asked questions. Source for: CNSA 2.0 algorithms required in new National Security System acquisitions by January 1, 2027. <a href="https://media.defense.gov/2022/Sep/07/2003071836/-1/-1/1/CSI_CNSA_2.0_FAQ_.PDF">https://media.defense.gov/2022/Sep/07/2003071836/-1/-1/1/CSI_CNSA_2.0_FAQ_.PDF</a></p>
+<p>[CC25] Department of Veterans Affairs, Zero Trust Encryption request for information, 36C10B26Q0474, June 2026, and its draft performance work statement. Source for: the ten-unit hardware security module fleet, its role under VA public key infrastructure and key management, post-quantum readiness as &quot;a mandatory enterprise requirement for all HSM infrastructure,&quot; and the readiness assessment within 60 days of award. Sources-sought notice. <a href="https://sam.gov/opp/cefe37153fc54c809ca8274983691bb5/view">https://sam.gov/opp/cefe37153fc54c809ca8274983691bb5/view</a> and <a href="https://govtribe.com/file/government-file/for-rfi-zerotrust-pqc-pws-v1-1-rev5-dot-docx">https://govtribe.com/file/government-file/for-rfi-zerotrust-pqc-pws-v1-1-rev5-dot-docx</a></p>
+<p>[CC26] Forescout, research on post-quantum cryptography in healthcare, 2026. Vendor data. <a href="https://www.forescout.com/research-labs/pqc-in-healthcare-from-data-risk-to-migration-readiness/">https://www.forescout.com/research-labs/pqc-in-healthcare-from-data-risk-to-migration-readiness/</a></p>
+<p>[CC27] Dark Reading, report on NIST post-quantum guidance and a GAO review of 24 agencies. Secondary; the GAO report number was not confirmed. <a href="https://www.darkreading.com/cyber-risk/nist-finalizes-post-quantum-cryptography-guidance-gao-offers-a-reality-check">https://www.darkreading.com/cyber-risk/nist-finalizes-post-quantum-cryptography-guidance-gao-offers-a-reality-check</a></p>
+<p>[CC28] Vendor-published overview of a DHA post-quantum transition. Vendor-authored; not a DHA plan. <a href="https://www.redhat.com/en/resources/dha-post-quantum-transition-overview">https://www.redhat.com/en/resources/dha-post-quantum-transition-overview</a></p>
+<p>[CC29] Stars and Stripes, September 30, 2026, and November 4, 2026. Source for: the Defense Commissary Agency&#39;s account of four European commissary failures as routine wear and parts delays, unrelated to the August failures. <a href="https://www.stripes.com/theaters/europe/2026-09-30/freezer-outages-europe-commissaries-23013166.html">https://www.stripes.com/theaters/europe/2026-09-30/freezer-outages-europe-commissaries-23013166.html</a> and <a href="https://www.stripes.com/theaters/us/2026-11-04/cyber-attacks-commissary-freezers-23362522.html">https://www.stripes.com/theaters/us/2026-11-04/cyber-attacks-commissary-freezers-23362522.html</a></p>
+<p>[CC30] Senate Armed Services Committee, report language accompanying the FY2027 National Defense Authorization Act, committee filing version. Source for: the item of special interest directing a briefing on cybersecurity at DHA not later than February 1, 2027, citing recent cyber incidents involving defense contractors and the integrity of network-connected medical devices; and the Military Health System medical readiness review, including the Armed Services Blood Program, by March 1, 2027. Committee report language; the bill is not yet law. <a href="https://www.armed-services.senate.gov/imo/media/doc/fy27_ndaa_report_language_committee_filing_version.pdf">https://www.armed-services.senate.gov/imo/media/doc/fy27_ndaa_report_language_committee_filing_version.pdf</a></p>
+<p>[CC31] Censys, situation report on European refrigeration controller exposure, November 2026. Source for: 6,695 internet-exposed controllers counted on October 9 and a 53 percent decline by November 5. No U.S.-specific count was found. <a href="https://censys.com/blog/european-refrigeration-controller-exposure-sitrep">https://censys.com/blog/european-refrigeration-controller-exposure-sitrep</a></p>
+<p>Sources verified as of November 19, 2026.</p>
+
+
+    <div class="deep-dive-card">
+  <div class="section-label" style="color:var(--ci-gold);margin-bottom:8px;">Custom Deep Dive &middot; Premium Add-On</div>
+  <h3>Want a custom deep-dive on any line in this brief?</h3>
+  <p>This brief maps three inventories the record says are incomplete, the post-quantum calendar from the December FAR rule to 2035, and the DHA and Army cold-storage monitoring documents. It stops short of your position: which of your contracts the FAR rule may reach, which of the three inventories your work touches, and where the blood facility replacement cycle meets what you sell. A custom deep-dive picks it up there.</p>
+  <div class="deep-dive-price"><span class="amount">$50</span><span class="unit">one-time &middot; 5&ndash;7 business day turnaround</span></div>
+  <p>I will pull the additional public-record sources, read the visible signal, and write a 4&ndash;6 page custom intelligence memo on the area you select. You name the question; I do the BD-grade analysis.</p>
+  <p style="margin-bottom:18px;"><a class="deep-dive-cta" href="https://buy.stripe.com/6oUdRb2NEaQI3uM6KL4c803">Buy a Custom Deep Dive &mdash; $50 &rarr;</a></p>
+  <p class="deep-dive-examples">Examples: <em>Deep Dive &mdash; Post-quantum readiness ahead of the FAR rule &middot; Deep Dive &mdash; Cold-storage monitoring at DHA and Army sites</em></p>
+</div>
+
+    </div>
+  </main>
+
+  <footer class="footer"></footer>
+</body>
+</html>
