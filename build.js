@@ -4505,11 +4505,18 @@ ${innerHtml}
         </div>
       </div>`;
         // Insert before the "Back to Glossary" link
-        html = html.replace(
-          '<div class="pt-6" style="border-top:1px solid var(--mmt-soft);">',
-          sourcesSection + '\n      <div class="pt-6" style="border-top:1px solid var(--mmt-soft);">'
-        );
-        glossarySourceCount++;
+        // The back-link divider is the anchor. Source pages wrote it with
+        // rgba(0,229,250,0.1) (the strip to var(--mmt-border) runs later in
+        // the pipeline), so an anchor that only knew var(--mmt-soft)
+        // matched nothing and every page shipped without its sources while
+        // the counter reported 67 (2026-11-15). Count a real match only.
+        const backLinkDivider = /<div class="pt-6" style="border-top:1px solid (?:var\(--mmt-(?:soft|border)\)|rgba\(0,229,250,0\.1\));">/;
+        if (backLinkDivider.test(html)) {
+          html = html.replace(backLinkDivider, (m) => sourcesSection + '\n      ' + m);
+          glossarySourceCount++;
+        } else {
+          console.warn(`  glossary/${file}: sources exist but the back-link divider anchor was not found; no Official Sources injected`);
+        }
       }
       // Inject related terms cross-links
       const related = glossaryRelated[slug];

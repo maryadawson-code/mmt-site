@@ -122,7 +122,7 @@
       "https://www.usaspending.gov/award/CONT_AWD_HT001126CE015_9700_-NONE-_-NONE-",
       "https://sam.gov/opp/6a8b861b0848469bb559821d678f760e/view"
     ],
-    "last_verified": "2026-11-12",
+    "last_verified": "2026-11-18",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Awarded to Taurian Consulting 2 LLC, $8.47M, Feb 25, 2026 to Jun 28, 2027; the sub and teaming play is with the JV",
@@ -384,7 +384,7 @@
     "source_urls": [
       "https://orangeslices.ai/tista-beats-out-5-to-win-210m-va-scmdso-contract/"
     ],
-    "last_verified": "2026-11-12",
+    "last_verified": "2026-11-18",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Awarded to TISTA per trade press; subcontracting watch only",
@@ -742,7 +742,7 @@
       "https://orangeslices.ai/protest-forces-vha-to-award-health-information-hi-professional-and-technical-services-bridge/",
       "https://orangeslices.ai/ongoing-14b-iht-2-0-protest-forces-va-to-award-digital-health-office-health-informatics-bridge-contract/"
     ],
-    "last_verified": "2026-11-12",
+    "last_verified": "2026-11-18",
     "pursuit_score": {
       "verdict": "WATCH",
       "headline": "Active IDIQ — task orders competing across 9 holders",
@@ -1293,7 +1293,7 @@
     "source_urls": [
       "https://orangeslices.ai/swingtide-awarded-defense-health-agency-peo-dhms-market-intelligence-support-services-contract/"
     ],
-    "last_verified": "2026-11-12",
+    "last_verified": "2026-11-18",
     "pursuit_score": {
       "verdict": "AWARDED",
       "headline": "Market intelligence — awarded Jan 2026",
@@ -1586,7 +1586,7 @@
       "https://orangeslices.ai/cherokee-nation-subsidiary-wins-hhs-ihs-four-directions-warehouse-4dw-health-it-modernization-and-development/",
       "https://www.highergov.com/contract-opportunity/d-indian-health-ser-140d0424r0069-award-140d0424c0039-cherokee-nation-integrated-health-l-l-c-fb4ef/"
     ],
-    "last_verified": "2026-11-12",
+    "last_verified": "2026-11-18",
     "pursuit_score": {
       "verdict": "AWARDED",
       "headline": "ISBEE CDR contract awarded to Cherokee Nation Integrated Health",
@@ -2415,5 +2415,156 @@
     },
     "slug": "dha-peo-dhms-workforce-3-0-wf3-idiq",
     "content_gap": false
+  },
+  {
+    "name": "CMS Fraud Defense Contracts (UPIC successor)",
+    "agency": "Centers for Medicare & Medicaid Services (CMS)",
+    "vendor": "Not yet competed. RFI stage. The current UPIC vehicle's five regional task orders are held by three firms, per a trade analysis (GovConIC, October 16, 2026).",
+    "value": "Not stated in the RFI. The current UPIC vehicle carries a $2.5B ceiling with about $1.83B obligated since 2016, per a trade vehicle record (HigherGov).",
+    "status": "upcoming",
+    "classification": "Program Watch",
+    "naics": "",
+    "description": "CMS posted a Request for Information for Fraud Defense Contracts on October 5, 2026 (responses were due November 4, 2026) to shape the successor to the Unified Program Integrity Contractor (UPIC) vehicle, whose ordering period ends May 9, 2027. The RFI proposes that CMS, not contractors, drive lead generation and prioritization. Contractors would build the cases: claims analysis, medical review and evidence collection, with CMS approval required before a contractor uses AI or other automation. CMS also asked industry how to price the work so it does not reward the volume of investigations or referrals over their quality. No draft solicitation had been posted as of November 13, 2026. Analysis in the MMT Founding Member brief Who Proves the Decision Was Right (November 13, 2026).",
+    "link": "https://sam.gov/opp/70445cc63cdd4a25b0901d4905179d71/view",
+    "small_business_eligible": false,
+    "sb_note": "Set-aside not stated in the RFI.",
+    "source": "https://sam.gov/opp/70445cc63cdd4a25b0901d4905179d71/view",
+    "source_urls": [
+      "https://sam.gov/opp/70445cc63cdd4a25b0901d4905179d71/view",
+      "https://www.mcdermottlaw.com/insights/a-upic-overhaul-cms-takes-the-wheel/",
+      "https://govconic.com/2026/10/16/cms-fraud-defense-contracts-rfi-upic-successor/",
+      "https://www.highergov.com/vehicle/unified-program-integrity-contract-upic-1391/"
+    ],
+    "last_verified": "2026-11-13",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "UPIC successor: CMS keeps the judgment, contractors keep the labor, pricing moves off volume",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "RFI only. Vehicle structure and set-aside not yet stated; current UPIC task orders are cost-plus-award-fee per trade analysis."
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "CMS program integrity is a stated priority; the RFI is CMS-initiated and the current vehicle's ordering period ends May 9, 2027."
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "RFI closed November 4, 2026. No draft solicitation as of November 13, 2026. Ordering on the current vehicle ends May 9, 2027."
+        },
+        "competition": {
+          "score": "watch",
+          "note": "Three incumbent firms hold the five regional task orders. Quality-based pricing and CMS-held lead generation change the incumbents' advantage."
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "Claims analysis, medical review, evidence collection and case building; automation only with CMS approval."
+        }
+      }
+    },
+    "slug": "cms-fraud-defense-contracts-upic-successor",
+    "content_gap": false,
+    "signal_terms": [
+      "fraud defense contracts",
+      "unified program integrity"
+    ]
+  },
+  {
+    "name": "CMS Supplemental Medical Review Contract (SMRC)",
+    "agency": "Centers for Medicare & Medicaid Services (CMS)",
+    "vendor": "Incumbent not stated in the forecast line; pending official confirmation.",
+    "value": "$100M or more (CMS fiscal year forecast, November 1, 2026)",
+    "status": "upcoming",
+    "classification": "Solicitation",
+    "naics": "",
+    "description": "The CMS Fiscal Year Forecast of Contract Opportunities dated November 1, 2026 lists a new Supplemental Medical Review Contract at $100 million or more, with a solicitation planned for December 15, 2026 and award in May 2027. The SMRC performs medical reviews on topics CMS directs, outside the regional claims contractors' routine review. The signal to watch: whether the solicitation carries accuracy or evaluation terms for AI-assisted review, which would make it the first large CMS review buy to write the proof into the operating contract. Forecast dates are planning figures and can move. Analysis in the MMT Founding Member brief Who Proves the Decision Was Right (November 13, 2026).",
+    "link": "https://www.cms.gov/files/document/800-002-cms-fiscal-year-forecast-opportunities-1november2026.xlsx",
+    "small_business_eligible": false,
+    "sb_note": "Set-aside not stated in the forecast line I reviewed.",
+    "source": "https://www.cms.gov/files/document/800-002-cms-fiscal-year-forecast-opportunities-1november2026.xlsx",
+    "source_urls": [
+      "https://www.cms.gov/files/document/800-002-cms-fiscal-year-forecast-opportunities-1november2026.xlsx"
+    ],
+    "last_verified": "2026-11-13",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "Forecast solicitation December 15, 2026; watch for AI-review accuracy terms",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "Standalone CMS contract per the forecast; vehicle and set-aside to confirm at solicitation."
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "Medical review is a standing CMS program integrity function; the line is on the agency's own forecast."
+        },
+        "timeline": {
+          "score": "pass",
+          "note": "Solicitation forecast December 15, 2026; award May 2027."
+        },
+        "competition": {
+          "score": "watch",
+          "note": "Incumbent not stated in the forecast line; expect an established medical review contractor field."
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "CMS-directed medical review; independent medical reviewers with document processing is the current pattern at CERT."
+        }
+      }
+    },
+    "slug": "cms-supplemental-medical-review-contract-smrc",
+    "content_gap": false,
+    "signal_terms": [
+      "supplemental medical review"
+    ]
+  },
+  {
+    "name": "VA Payment Integrity Validation and Oversight Tool (PIVOT)",
+    "agency": "Department of Veterans Affairs",
+    "vendor": "Not yet competed. RFI stage (RFI 3).",
+    "value": "Not stated in the RFI.",
+    "status": "upcoming",
+    "classification": "Program Watch",
+    "naics": "",
+    "description": "VA's third Request for Information for the Payment Integrity Validation and Oversight Tool (PIVOT), notice 36C10B26Q0121 (January 2026), seeks a software-as-a-service tool that scores community care claims before payment. The RFI asks for audit trails, rule version control and rollback, explainable outputs with confidence scores, and claim-to-payment traceability. That writes the decision record into the platform requirement itself. No solicitation had been seen as of November 13, 2026. Analysis in the MMT Founding Member brief Who Proves the Decision Was Right (November 13, 2026).",
+    "link": "https://sam.gov/opp/f9df025632db4b0a847a486b6c400d39/view",
+    "small_business_eligible": false,
+    "sb_note": "Set-aside not stated in the RFI.",
+    "source": "https://sam.gov/opp/f9df025632db4b0a847a486b6c400d39/view",
+    "source_urls": [
+      "https://sam.gov/opp/f9df025632db4b0a847a486b6c400d39/view"
+    ],
+    "last_verified": "2026-11-13",
+    "pursuit_score": {
+      "verdict": "WATCH",
+      "headline": "Pre-payment claim scoring with the audit trail built into the tool",
+      "factors": {
+        "vehicle_fit": {
+          "score": "watch",
+          "note": "Three RFIs and no solicitation; vehicle not yet stated."
+        },
+        "agency_alignment": {
+          "score": "pass",
+          "note": "VA community care payment integrity; the RFI is VA-initiated and specific about traceability requirements."
+        },
+        "timeline": {
+          "score": "watch",
+          "note": "RFI 3 posted January 2026; no solicitation seen as of November 13, 2026."
+        },
+        "competition": {
+          "score": "watch",
+          "note": "Commercial payment integrity platforms already market a claim-level decision trace; expect a crowded field."
+        },
+        "scope_fit": {
+          "score": "pass",
+          "note": "SaaS claim scoring, explainability, audit logging, rule versioning and rollback."
+        }
+      }
+    },
+    "slug": "va-pivot-payment-integrity-validation-and-oversight-tool",
+    "content_gap": false,
+    "signal_terms": [
+      "payment integrity validation and oversight"
+    ]
   }
 ]

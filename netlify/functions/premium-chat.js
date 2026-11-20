@@ -340,7 +340,9 @@ function makeHandler(overrides = {}) {
   const supabase = deps.createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
   const now = deps.now();
   const ip = (event.headers && (event.headers["x-nf-client-connection-ip"] || event.headers["client-ip"] || "")) || "";
-  const ipHash = access.hashIp(ip, SUPABASE_SERVICE_KEY.slice(0, 16));
+  // Salt comes from access.ipSalt(): a dedicated secret or an HMAC over the
+  // whole service key, never a public prefix of it (2026-11-15).
+  const ipHash = access.hashIp(ip, access.ipSalt(process.env));
 
   if (body.action === "unlock") return handleUnlock({ supabase, body, ipHash, now, deps });
   if (body.action === "feedback") return handleFeedback({ supabase, body, ipHash, now, deps });

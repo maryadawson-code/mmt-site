@@ -458,6 +458,21 @@ if (fs.existsSync(corpusFile)) {
         `${premiumLeaks.length} items with premium=true; public corpus must be premium-free`
       );
     }
+    // 2026-11-15: a premium=false contract or vehicle item used to carry
+    // vendor, value, NAICS, pursuit score, ceiling, primes and MMT notes,
+    // the fields contract-fields.js and idiq-fields.js gate on
+    // loadEntitlement(). The public file may hold none of those lines.
+    const { GATED_LINE_RE } = require('./build-content-corpus.js');
+    const gatedLeaks = (corpus.items || []).filter(it => it
+      && (it.type === 'contract_intel' || it.type === 'idiq_vehicle')
+      && (GATED_LINE_RE.test(String(it.excerpt || '')) || (it.type === 'contract_intel' && it.source_url)));
+    if (gatedLeaks.length > 0) {
+      addFailure(
+        'public corpus carries entitlement-gated fields',
+        path.relative(path.resolve(__dirname, '..'), corpusFile),
+        `${gatedLeaks.length} contract/vehicle items carry gated field lines or a contract source link (first: ${gatedLeaks[0].id})`
+      );
+    }
   } catch (err) {
     addFailure('public corpus unreadable (Sprint C)', corpusFile, err.message);
   }

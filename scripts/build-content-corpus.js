@@ -292,6 +292,16 @@ function buildContracts() {
         score.verdict ? `MMT verdict: ${score.verdict} — ${score.headline || ""}` : "",
         factors ? `Factors: ${factors}` : "",
       ].filter(Boolean).join("\n");
+      // What a visitor sees on /contracts/<slug>/ before loadEntitlement():
+      // the first 30 words of the description, agency and status. Vendor,
+      // value, NAICS, the source link, the full description and the pursuit
+      // score are served by contract-fields.js after entitlement, so they
+      // stay out of the public corpus (2026-11-15).
+      const publicBody = [
+        (c.description || "").split(/\s+/).slice(0, 30).join(" "),
+        `Agency: ${c.agency || ""}`,
+        `Status: ${c.status || ""}`,
+      ].filter(Boolean).join("\n");
       return {
         id: `contract-${(c.name || "unknown").toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 60)}`,
         type: "contract_intel",
@@ -310,6 +320,12 @@ function buildContracts() {
         source_url: c.link || null,
         excerpt: body.substring(0, EXCERPT_CHARS),
         premium: false,
+        public_view: {
+          description: publicBody.split("\n")[0].substring(0, 240),
+          tags: [c.agency || "", c.status || ""].filter(Boolean),
+          source_url: null,
+          excerpt: publicBody.substring(0, EXCERPT_CHARS),
+        },
       };
     });
   } catch (err) {
@@ -428,6 +444,16 @@ function buildIdiqVehicles() {
         v.mmt_note ? `MMT note: ${v.mmt_note}` : "",
         v.primary_source_url ? `Primary source: ${v.primary_source_url}` : "",
       ].filter(Boolean).join("\n");
+      // The public IDIQ page shows name, agency, status and primary NAICS as
+      // a teaser shell; idiq-fields.js serves everything else (ceiling,
+      // primes, burn status, IVS, forecast, MMT note) after entitlement. The
+      // public corpus carries only the teaser (2026-11-15).
+      const publicBody = [
+        `Vehicle: ${v.name}`,
+        `Agency: ${v.agency} / ${v.sub_agency || ""}`.trim(),
+        v.status ? `Status: ${v.status}` : "",
+        v.naics_primary ? `NAICS primary: ${v.naics_primary}` : "",
+      ].filter(Boolean).join("\n");
       return {
         id: `idiq-${v.vehicle_id || (v.name || "unknown").toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
         type: "idiq_vehicle",
@@ -446,6 +472,11 @@ function buildIdiqVehicles() {
         source_url: v.primary_source_url || null,
         excerpt: body.substring(0, EXCERPT_CHARS),
         premium: false,
+        public_view: {
+          description: `${v.agency || ""} ${v.sub_agency || ""} — ${v.status || "IDIQ"}`.trim(),
+          tags: ["idiq", v.agency, v.sub_agency, v.status].filter(Boolean),
+          excerpt: publicBody.substring(0, EXCERPT_CHARS),
+        },
       };
     });
   } catch (err) {
@@ -786,10 +817,27 @@ function collectItems(today = todayET()) {
   };
 }
 
+// Field lines that only ship after loadEntitlement() passes. A public
+// corpus item whose excerpt starts a line with one of these is a leak.
+const GATED_LINE_RE = /^(Vendor|Value|NAICS|NAICS secondary|PSC|Contract number|Ceiling|Period of performance|Set-aside|Type|Primes|MMT verdict|Factors|MMT burn status|MMT Incumbent Vulnerability Score|MMT forecast|MMT note):/m;
+
+/** The full corpus item: same shape as before, without the public_view hint. */
+function fullView(item) {
+  const { public_view, ...rest } = item;
+  return rest;
+}
+
+/** The public corpus item: the full item with its gated fields replaced. */
+function publicView(item) {
+  const { public_view, ...rest } = item;
+  return public_view ? { ...rest, ...public_view } : rest;
+}
+
 function build(options = {}) {
   console.log("[corpus] building MMT content corpus...");
   const today = options.today || todayET();
-  const { allItems, counts } = collectItems(today);
+  const { allItems: rawItems, counts } = collectItems(today);
+  const allItems = rawItems.map(fullView);
   const corpus = {
     generated_at: new Date().toISOString(),
     total: allItems.length,
@@ -806,15 +854,18 @@ function build(options = {}) {
   console.log(`[corpus] breakdown:`, corpus.counts);
 
   // Sprint C 2026-05-14: emit public-only subset. Excludes every item
-  // with premium: true. Captures and counts MUST be a pure subset of
-  // the full corpus — no rewriting of fields, no different excerpt
-  // lengths, no different schema. scripts/validate-dist.js checks
-  // this file has zero `premium: true` entries.
-  const publicItems = allItems.filter((it) => !it.premium);
+  // with premium: true, and (2026-11-15) carries only the fields a visitor
+  // can already read: a premium=false contract or vehicle item still held
+  // vendor, value, NAICS, pursuit score, ceiling, primes, burn status and
+  // MMT notes, the same fields contract-fields.js and idiq-fields.js
+  // withhold until loadEntitlement() passes. Same schema as the full
+  // corpus; scripts/validate-dist.js checks for zero `premium: true`
+  // entries and zero gated field lines.
+  const publicItems = rawItems.filter((it) => !it.premium).map(publicView);
   const publicCorpus = {
     generated_at: corpus.generated_at,
     total: publicItems.length,
-    note: "Public subset of mmt-content-corpus.json (premium=false items only). For unauthenticated endpoints. Per Sprint C 2026-05-14.",
+    note: "Public subset of mmt-content-corpus.json (premium=false items only, entitlement-gated fields removed). For unauthenticated endpoints. Per Sprint C 2026-05-14 and 2026-11-15.",
     counts: {
       articles: publicItems.filter((i) => i.type === "article").length,
       contracts: publicItems.filter((i) => i.type === "contract_intel").length,
@@ -835,4 +886,5 @@ if (require.main === module) {
 module.exports = {
   build, collectItems, buildArticles, buildBriefs, buildMonthlyBriefs, buildIdiqVehicles,
   briefRegion, isoDate, slugify, fiscalYearOf, isHeld, scrubCorpusText,
+  fullView, publicView, GATED_LINE_RE,
 };

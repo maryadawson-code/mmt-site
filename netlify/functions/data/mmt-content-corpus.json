@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-11-13T01:10:19.720Z",
-  "total": 626,
+  "generated_at": "2026-11-15T20:02:57.502Z",
+  "total": 642,
   "counts": {
-    "articles": 146,
-    "friday_briefs": 51,
+    "articles": 147,
+    "friday_briefs": 53,
     "monthly_briefs": 4,
-    "contracts": 67,
+    "contracts": 70,
     "capture_intel": 30,
-    "glossary": 42,
+    "glossary": 52,
     "idiq_vehicles": 35,
     "forecast_rows": 195,
     "budget_lines": 32,
@@ -2621,6 +2621,29 @@
       "premium": false
     },
     {
+      "id": "article-the-fax-machine-knew-what-day-it-was",
+      "type": "article",
+      "title": "The Fax Machine Knew What Day It Was",
+      "slug": "the-fax-machine-knew-what-day-it-was",
+      "date": "2026-11-13",
+      "description": "Every few months, a veteran in Iowa needs VA's permission again to keep seeing his chiropractor. VA's auditors had to read fax cover sheets to learn how long requests like his really wait. Starting in 2027, as each site goes live, new contracts put a deadline on the contractor who will handle them and none on VA.",
+      "tags": [
+        "VA community care",
+        "CCN Next Gen",
+        "Request for Services",
+        "prior authorization",
+        "utilization management",
+        "VA OIG",
+        "FHIR",
+        "fax automation",
+        "AI",
+        "interoperability"
+      ],
+      "url": "/newsletter/the-fax-machine-knew-what-day-it-was/",
+      "excerpt": "The Fax Machine Knew What Day It Was Every few months, a veteran in Iowa needs VA's permission again to keep seeing his chiropractor. VA's auditors had to read fax cover sheets to learn how long requests like his really wait. Starting in 2027, as each site goes live, new contracts put a deadline on the contractor who will handle them and none on VA. Friends, Every few months, John-Paul Sager's permission to see his chiropractor runs out. Sager served in the Marine Corps and the Army and lives in Denver, Iowa. The pain in his back and shoulder goes back to his service. The local VA does not offer chiropractic care, so VA pays for his visits to the Vanderloo Chiropractic Clinic, about fifteen miles away in Waterloo. Then the approval lapses and he starts making phone calls, often several. \"It seems like it takes entirely too long,\" he told KFF Health News last year. He values the VA all the same. \"You just feel like you're being taken care of by your own,\" he said. [1] Linda Gill sees the other half of it. She manages the clinic's office, where about a dozen veterans come through the program. VA pays about $34 a visit, which she called comparable to private insurance, and the paperwork is heavier. The clinic's leaders thought about leaving the VA program and decided to stay. Gill had a plea for the department: \"After what they've done for us? Please.\" [1] KFF's reporting ends at the clinic door, and so does everything Sager and Gill can see. A request for more care goes into VA, and at some point an answer comes out. On September 24 the inspector general published what happens in between. [2] The auditors examined about 2.6 million requests for more care, filed from October 2024 through January 2026. The formal channel is VA Form 10-10172, the Request for Services, which a community provider files when a veteran needs more than the original referral covered: more visits, more time, another specialty, a procedure outside the episode VA approved. [3] I call it the second yes. VA's rule gives the department three business days to decide and to tell both the doctor and the veteran. Seventeen percent of the requests had a recorded decision notice within that window. [2] The detail I cannot put down is how the auditors learned what the real waits were. To check the dates in VA's tracking system, they opened veterans' medical records and read the fax cover sheets. The system had one request at 7 days. The date printed on the fax said 21. It had another at 13 days, and corrected, that one took 35. In a sample of 124 requests at four facilities, the system and the fax disagreed about one time in five. [2] In that sample, the fax machine kept better time than the tracking system. My argument is narrow. VA should start one clock the moment a request first arrives, stop it the moment the veteran is told, and publish what it reads. Starting in 2027, as each VA site goes live, ten-year contracts put a deadline on the contractor's stretch of that trip and none on VA's. On January 1, a federal rule requires Medicare Advantage and Medicaid plans to offer the whole thing electronically. After it leaves the clinic At the four facilities the auditors visited, staff said most requests arrive as an electronic fax, and from there the work is done by hand. Someone has to open the fax, sort it, and type it into a tool called the Consult Toolbox before a nurse can review it. The report says requests \"can remain in fax queues for up to two months\" before that happens. Two facilities each had more than 1,700 waiting to be logged. At a third, managers stopped entering new requests and moved the staff to other authorization work, and by September 2025 more than 3,700 sat unentered. [2] When a request is finally entered, a person types the date it arrived, because the tool, VHA officials told the auditors, \"cannot automatically capture the actual date.\" The auditors found staff typing one of three things: the date the doctor signed the form, the date the fax was sent, or the date they got to it. There is \"no established national procedure for verifying the correctness of receipt dates.\" [2] If the staff member types the day of entry, a request that sat six weeks in the queue and was decided in two days is a two-day request. My read is that the eight-day average in VA's own data is an estimate, and VA cannot presently say how far off it is. The people doing this work are short-handed and inventive. At one facility, thirty community care nurses each kept a spreadsheet of their own to track their requests. At another, managers told staff to \"close requests on the fourth day after the request was entered into the Consult Toolbox,\" whether or not a clinician had decided. The notification template was supposed to offer a \"needs more time\" option. Two staff members said it was gone, which left approval and denial. One of them chose denial and typed a comment: \"still under provider review.\" The veteran was to be advised to follow up with primary care. The practice was still in effect in April. [2] The inspector general had said as much before. Leigh Ann Searight, a deputy assistant inspector general, told the Senate in February that these delays \"can hinder follow-up care for veterans.\" [4] The new audit added the count: 45 percent decided within three business days, about eight on average, and for 46 percent of requests, about 1.2 million, no record that anyone was told the answer. [2] That is the view from inside VA. From the clinic's side of the fax, it looks different. Meanwhile, at the clinic While the request sits, VA's guidebook tells the clinic what to do, which is nothing: \"no additional veteran care should be provided or paid for\" until VA sends its notice. A doctor who follows that rule waits, and so does the patient. A doctor who keeps treating is working without an authorization, and the report warns of \"potentially leaving the veteran or provider liable for the cost of the care.\" [2] Mental health requests waited longest among the specialties the audit broke out, ten days on average, with 68 percent late. Staff at most of the facilities the auditors visited described care delays of \"sometimes more than 60 days,\" and the audit team sent three cases of delayed care to the inspector general's health care inspectors. [2] Then the answer has to find its way back. A missing record is different from a missing phone call, and some of those 1.2 million doctors and veterans surely heard. But one nurse told the auditors that staff were told to \"fax notifications only to providers and not to notify veterans,\" and VA's own web page for community providers promises a notice to the provider and does not mention the veteran. [2][3] The provider side has stopped expecting three days. One national therapy network tells its clinicians to send renewals at least 30 days before an authorization expires, because VA \"requires a minimum of 30 days to review, approve, and issue a renewed authorization.\" [5] Some veterans stop asking. Marcus Lewis, a Navy veteran who runs the health center in Park River, North Dakota, put it to KFF this way: \"I think a lot of folks just don't want to fight the system.\" [1] Half a clock On August 27, John Figueroa, signing as Acting Under Secretary for Health, answered the audit in one sentence: \"VHA concurs with the recommendations made to the Under Secretary for Health.\" There are six, each due in July 2027. [2] Four days later VA signed the next generation of its Community Care Network contracts with four companies. The period of performance opens January 1, 2027 and runs through 2036. [6] I read the contract documents with the audit open beside them: the work statements, the contractor manual, the surveillance plans, and the incentive plan, as released during the competition. They are pre-award versions hosted by a third party, and the task orders could change them, so take what follows as the design on paper. [7][8][9] The change arrives one site at a time. The co",
+      "premium": false
+    },
+    {
       "id": "brief-capture-corner-2026-04-29",
       "type": "premium_brief",
       "title": "DHA Reorganization: Sixteen Changes, Five That Move Your Pipeline",
@@ -3296,6 +3319,36 @@
       "premium": true
     },
     {
+      "id": "brief-capture-corner-2026-11-13",
+      "type": "premium_brief",
+      "title": "Who Times the Second Yes",
+      "slug": "capture-corner-2026-11-13",
+      "date": "2026-11-13",
+      "description": "Who Times the Second Yes The Request for Services read as a buying map · the CCN Next Gen utilization management terms, line by line · a timeliness measure with a baseline year and no money on it · si",
+      "tags": [
+        "premium",
+        "friday-brief"
+      ],
+      "url": "/premium/briefs/capture-corner-2026-11-13.html",
+      "excerpt": "Who Times the Second Yes The Request for Services read as a buying map · the CCN Next Gen utilization management terms, line by line · a timeliness measure with a baseline year and no money on it · six inspector general recommendations due July 2027, read as a requirement calendar · the fax-AI lines in VA's inventory · the standards stack from X12 278 to FHIR · the documents to pull and the questions to put in writing This brief reads the same trip as a buying map, sets out the utilization management terms in the CCN Next Gen documents as they were released during the competition, lays the inspector general's six recommendations against the calendar, lists the AI inventory lines that touch the fax queue, and names the documents worth pulling. No awardee or vendor is named, and nothing here is a view on how any contractor should perform or how any open requirement should be written. Capture Corner is the premium BD intelligence companion to Mission Meets Tech. Independent analysis. Not a recommendation, not vendor advocacy, not capture material. Built for federal health BD, capture, and proposal leaders who need analytical depth, not headlines. This issue is the companion to \"The Fax Machine Knew What Day It Was.\" The public piece reads the inspector general's September audit of Requests for Services against the CCN Next Gen contract documents and argues that VA should time the whole trip, from the provider's request to the veteran's notice, before the contracts that begin in 2027 fix a clock on one stretch of it. This brief reads the same trip as a buying map, sets out the utilization management terms in the CCN Next Gen documents as they were released during the competition, lays the inspector general's six recommendations against the calendar, lists the AI inventory lines that touch the fax queue, and names the documents worth pulling. No awardee or vendor is named, and nothing here is a view on how any contractor should perform or how any open requirement should be written. 1. The picture at a glance Field Detail The instrument VA Form 10-10172, Request for Services (RFS): required for care beyond an active referral, meaning more visits or time, a new specialty, or a procedure outside the Standardized Episode of Care; dental and IVF/ART are excepted [CC1] Volume About 2.6 million requests decided October 1, 2024 through January 31, 2026, at 132 facilities; about 203,000 a month in October 2024 and 229,000 in October 2025, up about 13 percent [CC2] VA's standard Decision made, documented, and communicated within three business days of the date the facility receives the request (Community Care Field Guidebook, chapter 3) [CC2] Measured performance About 45 percent decided within three business days; average about eight; about 54 percent with a recorded notification, average about 12 days; about 17 percent with a recorded notification within three business days; mental health about 68 percent late, cardiology 50, neurosurgery 49 [CC2] Intake today HealthShare Referral Manager, secure email, Direct messaging, fax, mail; staff at the four facilities the auditors visited said most requests arrive by e-fax and are entered by hand; fax queues of up to two months; backlogs of 1,700 to 3,700-plus at three sites [CC1][CC2] Route under Next Gen Provider submits through the contractor's portal; the contractor generates a unique RFS ID, checks completeness, conducts utilization review, and transmits to VA through EDI Gateway/DAS; VA makes the final decision [CC3][CC4] Contractor clock PWS 8.5: standard requests to VA within one business day and urgent within four hours \"of receipt of the complete RFS package\"; PWS 8.1.6: target above 90 percent, denial recommendations under 5 percent, \"Year one (1) - Establish Baseline\"; applies at each site \"beginning at the start of HCD\" (PWS 8.2.5) [CC3] VA clock None in the PWS; section 8.5, \"Timeliness of UM Recommendations,\" times the contractor only, and the manual's matching section is marked Reserved under its convention for sections with no added content; the three-business-day guidebook standard remains VA's internal rule [CC3][CC4][CC2] Money QASP performance objectives PO1.1 through PO5.1 carry nothing on RFS or utilization management; incentives and disincentives attach to PO2.7 and PO5.1 only [CC5][CC6] Reporting UM Quarterly Report by region, state, and catchment area, due 21 days after each quarter, \"beginning 12 months after full HCD\" [CC3] Provider planning assumption One national therapy network tells its clinicians to return renewal requests at least 30 days before an authorization expires, because VA \"requires a minimum of 30 days to review, approve, and issue a renewed authorization\" [CC25] Vehicle and dates Four IDVs signed August 31, 2026, period of performance January 1, 2027 through December 31, 2036; a shared ceiling of $1 trillion, \"neither divided nor multiplied by the number of awardees\"; no medical task orders posted as of October 11, per a third-party index; health care delivery starts station by station on contracting officer acceptance, \"no sooner than 90 days from contract award\"; VA told the House to expect full operation in 2028; six OIG recommendations carry July 2027 targets [CC7][CC14][CC3][CC8][CC2] Confidence: High on the audit figures, on the contract text as quoted from the April 2026 PWS, the February 2026 manual and QASP, and the January 2026 incentive plan, and on the $1 trillion ceiling, which the conformed solicitation states at section B.3(2). Medium on whether those terms carry into the task orders: the documents are pre-award versions hosted by a third party, and the performance requirements summary that holds the acceptable quality levels is not in the public set. Analytical on every read and every owner assignment. The lead finding for a capture team: the second yes is a requirement being written in three places at once, on three calendars that do not line up. VHA owes six fixes by July 2027, including an assessment of AI for request processing, an accurate receipt date, notices to veterans at key stages, and routine oversight of timeliness. The Next Gen work statement times one stretch, the contractor's hand-off of a complete package. That clock starts at each site only when health care delivery begins there, is measured against a baseline year, and feeds a quarterly report that starts twelve months after full delivery. HHS has proposed moving prior authorization transactions for HIPAA covered entities off the X12 278 and onto FHIR. The work underneath all three is the same short list: structured intake that replaces the fax, one timestamp chain from receipt to notice, automated notification, and a report. The fields from receipt to decision are already required of the contractor, counted from its own portal receipt; the notice timestamp is not. That field, the report, and the rule that assigns the total are unwritten, and whichever document writes them first sets the measure everything else is priced against. 2. The second yes as a buying map Confidence: High on each gap, tied to the audit or to contract text. Medium on the Next Gen column, which is the design as released. Analytical on the last column. Step Today Under Next Gen, as released Documented gap What gets bought or written 1. Provider submits HSRM, secure email, Direct, fax, mail; most by e-fax at the four sites visited [CC1][CC2] Contractor self-service portal; unique RFS ID; EDI 278 through DAS [CC3][CC4] Requests must be \"error-free and complete\"; incomplete ones go back to the provider with no time limit on the return [CC3] Structured electronic RFS that shows required documents up front; portal design; provider onboarding 2. Intake and entry Hand entry into the Consult Toolbox; queues up to two months; receipt dates wrong in about 22 percent of a 124-request sample [CC2] Contractor system records \"Request Received Date/Time\" at its own portal [CC3] The official receipt date (OIG recommendation 4) Intake ",
+      "premium": true
+    },
+    {
+      "id": "brief-decision-assurance-2026-11-13",
+      "type": "premium_brief",
+      "title": "Who Proves the Decision Was Right",
+      "slug": "decision-assurance-2026-11-13",
+      "date": "2026-11-13",
+      "description": "Who Proves the Decision Was Right How federal health agencies are redesigning evidence-heavy review and adjudication, what buyers will need to stand behind automated decisions, and whether \"decision a",
+      "tags": [
+        "premium",
+        "friday-brief"
+      ],
+      "url": "/premium/briefs/decision-assurance-2026-11-13.html",
+      "excerpt": "Who Proves the Decision Was Right How federal health agencies are redesigning evidence-heavy review and adjudication, what buyers will need to stand behind automated decisions, and whether \"decision assurance\" is becoming its own market. A Founding Member asked how federal health agencies are redesigning medical review, appeals, program integrity, payment review and eligibility as AI moves in, and whether a \"decision assurance\" market is forming. This brief answers with the three moves agencies are making, a capability map for the five things a buyer has to be able to prove, a read on where the money sits, twelve signals to watch, and the dates that matter through 2027. Sixty-three sources, every one named. Ask MMT Founding Member briefs answer one member's question in depth. This one is published with the member's name removed. Independent analysis. Not a recommendation, not vendor advocacy, not capture material. The question How are federal healthcare agencies redesigning evidence-intensive review and adjudication as AI and automation advance? Assess medical review, appeals, program integrity, payment review, and eligibility. What capabilities will buyers need to ensure decisions remain accurate, measurable, traceable, defensible, and cost-effective? Is a distinct \"decision assurance\" market emerging, or will these capabilities remain embedded in existing contracts and technology platforms? Asked by a Founding Member. The short answer The redesign is real and follows three moves. Agencies are acting earlier (before the service or the payment), letting software assemble and read the evidence while a named human signs the adverse decision, and pulling case selection back inside government. The proof is running behind the automation. Most of the programs I reviewed cannot yet show, from public records, how often an automated step was wrong, in which direction, or whether a person or a model made the error. The strongest federal requirement applies only to systems an agency labels high-impact, and HHS gave that label to 2 of its 447 reported AI uses [1]. \"Decision assurance\" is not a procurement category today. I found no federal health solicitation that uses the label. The work is bought in two forms: clauses and features embedded in operating contracts and platforms, and a small set of independent validation, error-measurement, and appeals contracts. My read: it stays mostly embedded through FY2027 and FY2028. A distinct, independent segment is most likely to grow in one place: wherever the party making the decision also has money riding on the outcome. The first buyers there are likely to be oversight bodies, not program offices. 1. How the work is being redesigned The common thread across all five functions is a change in who does what, and when. Software now does the reading. The human role is narrowing to the adverse decision. The intervention point is moving ahead of the payment. The table shows what that looks like in each function and where the supporting proof is still thin. Function What is changing Where the proof is thin Medical review CMS's WISeR model has technology vendors review prior authorization requests in six states, with a clinician required before any non-affirmation [2, 3]. The vendor is paid 25% of averted spending, adjusted by a quality score, and loses the payment if the denial is overturned on appeal [2]. On the measurement side, the new CERT (Comprehensive Error Rate Testing) review contractor (Serco, $109M over seven years) pairs independent medical reviewers with AI document processing [4]. As of mid-August CMS had released no WISeR denial, appeal, or overturn rates [5]. Letters released October 27 through a public-records lawsuit show CMS confronting four of six vendors in the first quarter over backlogs, missing decision letters, or denial patterns it questioned [6]. Appeals I found no public evidence that Medicare appeals bodies use AI to decide cases, and the February 2026 privacy assessment for the Medicare hearings case system answers no to the AI question [7]. What has changed is the job appeals are being asked to do: they are becoming the accuracy check on automated first decisions. CMS has proposed adding \"approved after appeal\" counts to payers' public prior authorization metrics [8]. SSA plans AI to support drafting dispositions, and its hearings adjudicators already use a tool that flags quality problems in draft decisions [9, 10]. CMS issued a QIC program RFI on October 15 and moved the Part C independent review work to C2C effective May 1 [11, 12]. Overturn rates only measure the cases that get appealed. HHS OIG found Medicare Advantage plans overturned 95% of appealed nursing-facility denials, but only 18% of denials were appealed [13]. At VA, higher-level reviewers returned about 35% of decisions in FY2026, up from 23% in FY2021 [14]. Program integrity CMS runs more than 300 models that watch provider billing and can suspend payment during an investigation [15]. Its October 5 RFI proposes that CMS, not contractors, drive lead generation and prioritization. Contractors would build the cases, and would need CMS approval to use AI or other automation [16, 17]. GAO found CMS does not track the primary source of leads or whether prepayment denials are tied to its Fraud Prevention System [18]. Public statements give savings totals, not model accuracy or false-positive rates [15]. Payment review Treasury screened 1.1 billion payments worth about $3.7 trillion before disbursement in FY2026 [19]. DHA is setting up Do Not Pay matching for the TRICARE Overseas Program [20]. VA's PIVOT RFI seeks a SaaS tool that scores community care claims before payment [21]. CMS has HealthEdge and Peraton competing to replace its legacy claims system with real-time payment and fraud review [22]. TRICARE's improper payment measurement still does not examine the underlying medical record, an open GAO priority recommendation [23]. An outside commentary reports that DHA pilot record reviews found documentation error rates of 28% and 67% in the two regions, against a reported rate under 1% [24]. Governmentwide improper payments rose to about $186 billion in FY2025; Medicare fee-for-service was 6.55% [25, 26]. Eligibility Medicaid work requirements start by January 1, 2027, with CMS routing verification data through its Federal Data Services Hub [27, 28]. VA plans to apply Automated Decision Support to 90% of disability claims by the end of 2027 [14]. SSA set a 93% target for electronically acquired medical evidence in FY2026, up from 60% actual in FY2025; the FY2026 measure also counts faxed evidence routed to the electronic folder [9]. There is no good data source for medical frailty, likely the largest work-requirement exemption [28]. VA OIG found nearly all sampled automated death-benefit decisions or letters had a legal or procedural deficiency [29]. VA does not separate automated from human errors in its statistics [14]. GAO found CMS does not analyze state Medicaid eligibility errors and fixes across states and years [30]. The SSA inspector general says SSA still needs to evaluate whether its automation is working as intended [31]. Three things stand out The human is being kept on the denial, not on the file. WISeR requires clinician review before a non-affirmation, Medicare Advantage rules require a health professional on medical-necessity denials, and VA says a claims processor reviews every claim before it is final [2, 32, 33]. That protects the adverse decision. It does not, by itself, tell anyone whether the approvals were right or whether the evidence summary the human relied on was complete. Government is taking back the judgment calls and leaving contractors the labor. The CMS fraud RFI is the clearest case: CMS picks the targets, contractors do claims analysis, medical review, and evidence collection. CMS also asked how to price that work so it does not reward the volume of investigations or referrals over their qualit",
+      "premium": true
+    },
+    {
       "id": "migrated--premium-briefs-2026-03-21",
       "type": "premium_brief",
       "title": "Week of March 21, 2026",
@@ -3501,7 +3554,7 @@
       "type": "contract_intel",
       "title": "DHA Data Governance / Data Methods and Strategy (HT001126CE015)",
       "slug": "dha-data-governance-data-methods-and-strategy-ht001126ce015-",
-      "date": "2026-11-11",
+      "date": "2026-11-14",
       "description": "Update Oct 19, 2026: awarded. USASpending carries contract HT001126CE015 to Taurian Consulting 2 LLC (the Guidehouse and ReefPoint joint venture I reported in the Sep 11, 2026 brief) at $8,466,696, period Feb 25, 2026 to Jun 28, 2027, NAICS",
       "tags": [
         "Defense Health Agency (DHA)",
@@ -3654,7 +3707,7 @@
       "type": "contract_intel",
       "title": "VA IE&O (TISTA, task order 36C10B26F0468)",
       "slug": "va-ie-o-tista-task-order-36c10b26f0468-",
-      "date": "2026-11-11",
+      "date": "2026-11-14",
       "description": "Update Oct 5, 2026: OrangeSlices reported on Oct 2, 2026 that TISTA Science and Technology won a 5-year VA IE&O award, task order 36C10B26F0468 at about $164.1M, over 14 other bidders, alongside a separate SCM DSO award (36C10B26F0452, abou",
       "tags": [
         "Department of Veterans Affairs / VA TAC",
@@ -3805,7 +3858,7 @@
       "type": "contract_intel",
       "title": "VA Health Connect / IHT 2.0",
       "slug": "va-health-connect-iht-2-0",
-      "date": "2026-11-11",
+      "date": "2026-11-14",
       "description": "Update Oct 5, 2026: OrangeSlices reports that the IHT 2.0 protest forced VHA to award sole-source bridges for continuity, including a health informatics professional and technical services bridge to SDVOSB Rock Ferry dba MD Informatix and a",
       "tags": [
         "Department of Veterans Affairs / VHA",
@@ -4162,7 +4215,7 @@
       "type": "contract_intel",
       "title": "Swingtide — Market Intelligence Support",
       "slug": "swingtide-market-intelligence-support",
-      "date": "2026-11-11",
+      "date": "2026-11-14",
       "description": "Update Aug 17, 2026: Swingtide Inc awarded a 10-month DHA PEO DHMS Market Intelligence Support Services contract, HT003826CE001, $745,000, single bidder, posted January 2026. Market intelligence support, ~$745K, awarded Jan 2026. Solicitati",
       "tags": [
         "Defense Health Agency",
@@ -4281,7 +4334,7 @@
       "type": "contract_intel",
       "title": "IHS Four Directions Warehouse (4DW) — Clinical Data Repository",
       "slug": "ihs-four-directions-warehouse-4dw-clinical-data-repository",
-      "date": "2026-11-11",
+      "date": "2026-11-14",
       "description": "Update Aug 17, 2026: Cherokee Nation Integrated Health, LLC won the IHS 4DW modernization contract (140D0424C0039), $36,367,134.84, PoP Sept 24, 2024 to Sept 23, 2029; ISBEE set-aside. IHS Health IT Modernization program contract for develo",
       "tags": [
         "Indian Health Service (IHS) / HHS",
@@ -4580,6 +4633,54 @@
       "url": "/contracts/dha-peo-dhms-workforce-3-0-wf3-idiq/",
       "source_url": "https://www.fedhealthit.com/2022/01/1-4b-dha-peo-dhmsm-workplace-3-0-idiq/",
       "excerpt": "Update Aug 17, 2026: Workforce 3.0 multiple-award IDIQ awarded early 2022, 6-year, $1.4B ceiling; task orders in execution. Vehicle active for ordering. The $1.425B DHA PEO DHMS managed-solution workforce transformation IDIQ (RFP HT003821R0001, awarded by DHMS-CD). Six-year multiple-award vehicle in its final ordering year: $752.2M obligated, 90% complete, ordering period ending January 26, 2027 (sooner than the widely cited January 2028 estimated completion). Structured in two Lots. Lot 1 (unrestricted, large business) runs a Design-to-Outcome (DTO) plus Core Task Order (CTO) pairing, where each year's CTO is justified as a logical follow-on of the prior DTO under Exception to Fair Opportunity FAR 16.505(b)(2)(i)(C). BCG Federal has held that core managed-solution stream continuously from CTO1 through CTO5, drawing a sole-source CTO5 justification posted July 31, 2026. BCG accounts for roughly 94% of all vehicle obligations ($709.3M) and about 99% of Lot 1 large-business dollars, a material protest surface if a CTO6 sole-source award is attempted (see GAO B-420535, Booz Allen Hamilton, denied on interested-party grounds, not the merits). Lot 2 is a small-business set-aside (Blue Clarity, Edera L3C, Optimal Strategix Group) with Accelerator and project-specific orders. Capgemini's Lot 1 prime (HT003822D0002) was released April 4, 2026 on OCI grounds. Notably, DHA is migrating discrete, project-scoped work off WF3 into two parallel DHMS-CD Commercial Solutions Openings (OTAs under 10 U.S.C. 4022 / 3458): HT003825SC001 (Innovative Healthcare IT Solutions, NAICS 541512, open through July 1, 2026, awards expected December 2026) and HT003826SC001 (PEO DHMS Innovation Solutions, NAICS 541618, responses through January 28, 2027). No DTO6/CTO6 pre-solicitation and no successor-IDIQ RFI has posted, so the CSO framework may be the de facto successor. OCI mitigation is a defined Phase 1a proposal element on the CSOs, not a bar to entry, making them the practical re-entry lane for large businesses that lost or exited a WF3 seat.\nAgency: Defense Health Agency / PEO DHMS (DHMS-CD)\nVendor: 6 primes. Lot 1 (large): BCG Federal (HT003822D0001), Capgemini Government Solutions (HT003822D0002, released 04/04/26 on OCI), Deloitte Consulting (HT003822D0003). Lot 2 (small business): Blue Clarity, Edera L3C, Optimal Strategix Group. BCG Federal holds ~94% of obligations ($709.3M).\nValue: $1.425B ceiling (6-year); $752.2M obligated, 90% complete\nStatus: active\nNAICS: 541611\nMMT verdict: WATCH — Final ordering year; CSO re-entry lane open, CTO6/successor unsignaled",
+      "premium": false
+    },
+    {
+      "id": "contract-cms-fraud-defense-contracts-upic-successor-",
+      "type": "contract_intel",
+      "title": "CMS Fraud Defense Contracts (UPIC successor)",
+      "slug": "cms-fraud-defense-contracts-upic-successor-",
+      "date": "2026-11-13",
+      "description": "CMS posted a Request for Information for Fraud Defense Contracts on October 5, 2026 (responses were due November 4, 2026) to shape the successor to the Unified Program Integrity Contractor (UPIC) vehicle, whose ordering period ends May 9, 2",
+      "tags": [
+        "Centers for Medicare & Medicaid Services (CMS)",
+        "upcoming"
+      ],
+      "url": "/contracts/cms-fraud-defense-contracts-upic-successor/",
+      "source_url": "https://sam.gov/opp/70445cc63cdd4a25b0901d4905179d71/view",
+      "excerpt": "CMS posted a Request for Information for Fraud Defense Contracts on October 5, 2026 (responses were due November 4, 2026) to shape the successor to the Unified Program Integrity Contractor (UPIC) vehicle, whose ordering period ends May 9, 2027. The RFI proposes that CMS, not contractors, drive lead generation and prioritization. Contractors would build the cases: claims analysis, medical review and evidence collection, with CMS approval required before a contractor uses AI or other automation. CMS also asked industry how to price the work so it does not reward the volume of investigations or referrals over their quality. No draft solicitation had been posted as of November 13, 2026. Analysis in the MMT Founding Member brief Who Proves the Decision Was Right (November 13, 2026).\nAgency: Centers for Medicare & Medicaid Services (CMS)\nVendor: Not yet competed. RFI stage. The current UPIC vehicle's five regional task orders are held by three firms, per a trade analysis (GovConIC, October 16, 2026).\nValue: Not stated in the RFI. The current UPIC vehicle carries a $2.5B ceiling with about $1.83B obligated since 2016, per a trade vehicle record (HigherGov).\nStatus: upcoming\nNAICS: \nMMT verdict: WATCH — UPIC successor: CMS keeps the judgment, contractors keep the labor, pricing moves off volume\nFactors: vehicle_fit: watch — RFI only. Vehicle structure and set-aside not yet stated; current UPIC task orders are cost-plus-award-fee per trade analysis. | agency_alignment: pass — CMS program integrity is a stated priority; the RFI is CMS-initiated and the current vehicle's ordering period ends May 9, 2027. | timeline: watch — RFI closed November 4, 2026. No draft solicitation as of November 13, 2026. Ordering on the current vehicle ends May 9, 2027. | competition: watch — Three incumbent firms hold the five regional task orders. Quality-based pricing and CMS-held lead generation change the incumbents' advantage. | scope_fit: pass — Claims analysis, medical review, evidence collection and case building; automation only with CMS approval.",
+      "premium": false
+    },
+    {
+      "id": "contract-cms-supplemental-medical-review-contract-smrc-",
+      "type": "contract_intel",
+      "title": "CMS Supplemental Medical Review Contract (SMRC)",
+      "slug": "cms-supplemental-medical-review-contract-smrc-",
+      "date": "2026-11-13",
+      "description": "The CMS Fiscal Year Forecast of Contract Opportunities dated November 1, 2026 lists a new Supplemental Medical Review Contract at $100 million or more, with a solicitation planned for December 15, 2026 and award in May 2027. The SMRC perfor",
+      "tags": [
+        "Centers for Medicare & Medicaid Services (CMS)",
+        "upcoming"
+      ],
+      "url": "/contracts/cms-supplemental-medical-review-contract-smrc/",
+      "source_url": "https://www.cms.gov/files/document/800-002-cms-fiscal-year-forecast-opportunities-1november2026.xlsx",
+      "excerpt": "The CMS Fiscal Year Forecast of Contract Opportunities dated November 1, 2026 lists a new Supplemental Medical Review Contract at $100 million or more, with a solicitation planned for December 15, 2026 and award in May 2027. The SMRC performs medical reviews on topics CMS directs, outside the regional claims contractors' routine review. The signal to watch: whether the solicitation carries accuracy or evaluation terms for AI-assisted review, which would make it the first large CMS review buy to write the proof into the operating contract. Forecast dates are planning figures and can move. Analysis in the MMT Founding Member brief Who Proves the Decision Was Right (November 13, 2026).\nAgency: Centers for Medicare & Medicaid Services (CMS)\nVendor: Incumbent not stated in the forecast line; pending official confirmation.\nValue: $100M or more (CMS fiscal year forecast, November 1, 2026)\nStatus: upcoming\nNAICS: \nMMT verdict: WATCH — Forecast solicitation December 15, 2026; watch for AI-review accuracy terms\nFactors: vehicle_fit: watch — Standalone CMS contract per the forecast; vehicle and set-aside to confirm at solicitation. | agency_alignment: pass — Medical review is a standing CMS program integrity function; the line is on the agency's own forecast. | timeline: pass — Solicitation forecast December 15, 2026; award May 2027. | competition: watch — Incumbent not stated in the forecast line; expect an established medical review contractor field. | scope_fit: pass — CMS-directed medical review; independent medical reviewers with document processing is the current pattern at CERT.",
+      "premium": false
+    },
+    {
+      "id": "contract-va-payment-integrity-validation-and-oversight-tool-pivot-",
+      "type": "contract_intel",
+      "title": "VA Payment Integrity Validation and Oversight Tool (PIVOT)",
+      "slug": "va-payment-integrity-validation-and-oversight-tool-pivot-",
+      "date": "2026-11-13",
+      "description": "VA's third Request for Information for the Payment Integrity Validation and Oversight Tool (PIVOT), notice 36C10B26Q0121 (January 2026), seeks a software-as-a-service tool that scores community care claims before payment. The RFI asks for a",
+      "tags": [
+        "Department of Veterans Affairs",
+        "upcoming"
+      ],
+      "url": "/contracts/va-pivot-payment-integrity-validation-and-oversight-tool/",
+      "source_url": "https://sam.gov/opp/f9df025632db4b0a847a486b6c400d39/view",
+      "excerpt": "VA's third Request for Information for the Payment Integrity Validation and Oversight Tool (PIVOT), notice 36C10B26Q0121 (January 2026), seeks a software-as-a-service tool that scores community care claims before payment. The RFI asks for audit trails, rule version control and rollback, explainable outputs with confidence scores, and claim-to-payment traceability. That writes the decision record into the platform requirement itself. No solicitation had been seen as of November 13, 2026. Analysis in the MMT Founding Member brief Who Proves the Decision Was Right (November 13, 2026).\nAgency: Department of Veterans Affairs\nVendor: Not yet competed. RFI stage (RFI 3).\nValue: Not stated in the RFI.\nStatus: upcoming\nNAICS: \nMMT verdict: WATCH — Pre-payment claim scoring with the audit trail built into the tool\nFactors: vehicle_fit: watch — Three RFIs and no solicitation; vehicle not yet stated. | agency_alignment: pass — VA community care payment integrity; the RFI is VA-initiated and specific about traceability requirements. | timeline: watch — RFI 3 posted January 2026; no solicitation seen as of November 13, 2026. | competition: watch — Commercial payment integrity platforms already market a claim-level decision trace; expect a crowded field. | scope_fit: pass — SaaS claim scoring, explainability, audit logging, rule versioning and rollback.",
       "premium": false
     },
     {
@@ -5145,6 +5246,22 @@
       "premium": false
     },
     {
+      "id": "glossary-cert",
+      "type": "glossary",
+      "title": "CERT",
+      "expansion": "Comprehensive Error Rate Testing",
+      "slug": "cert",
+      "date": "",
+      "description": "Comprehensive Error Rate Testing. CMS program that measures the Medicare fee-for-service improper payment rate by sampling paid claims and reviewing the medical record behind each one. The FY2025 rate was 6.55%. The review contractor awarde",
+      "tags": [
+        "glossary",
+        "federal-health"
+      ],
+      "url": "/glossary.html#term-cert",
+      "excerpt": "Term: CERT\nStands for: Comprehensive Error Rate Testing\nCMS program that measures the Medicare fee-for-service improper payment rate by sampling paid claims and reviewing the medical record behind each one. The FY2025 rate was 6.55%. The review contractor awarded in June 2026 (Serco, $109M over seven years) pairs independent medical reviewers with AI document processing.\nContractor note: One of the few independent measurement lines in federal health. Small next to the operating contracts it checks, but it exists because the checker cannot be the operator. Bring measurement methods for AI-assisted review to lines like this before the recompete, not after a new category appears.",
+      "premium": false
+    },
+    {
       "id": "glossary-defense-health-networks",
       "type": "glossary",
       "title": "Defense Health Networks",
@@ -5206,6 +5323,38 @@
       ],
       "url": "/glossary.html#term-dod-impact-levels",
       "excerpt": "Term: DoD Impact Levels\nStands for: Cloud Security Classification\nIL2 through IL6 classify what data DoD cloud systems can handle. IL4+ requires dedicated infrastructure.\nContractor note: Know your IL. It determines which cloud environments you can use and what data you can process.",
+      "premium": false
+    },
+    {
+      "id": "glossary-decision-assurance",
+      "type": "glossary",
+      "title": "Decision assurance",
+      "expansion": "Proving an automated decision was right",
+      "slug": "decision-assurance",
+      "date": "",
+      "description": "Proving an automated decision was right. The set of capabilities a buyer needs to show that an automated or AI-assisted review, payment or eligibility decision was accurate, measurable, traceable, defensible and cost-effective. Not a procur",
+      "tags": [
+        "glossary",
+        "contracting"
+      ],
+      "url": "/glossary.html#term-decision-assurance",
+      "excerpt": "Term: Decision assurance\nStands for: Proving an automated decision was right\nThe set of capabilities a buyer needs to show that an automated or AI-assisted review, payment or eligibility decision was accurate, measurable, traceable, defensible and cost-effective. Not a procurement category: as of November 2026 no federal health solicitation uses the label. The work is bought as clauses in operating contracts, as platform features, and through a small set of independent validation, error-measurement and appeals contracts.\nContractor note: Describe the capability in the buyer's terms. Agencies are not asking for decision assurance. They are asking for accuracy they can verify with their own data, appeals that hold, and prices that do not reward denials, referrals or recoveries. The first independent buyers are likely to be auditors and inspectors general, not program offices.",
+      "premium": false
+    },
+    {
+      "id": "glossary-do-not-pay",
+      "type": "glossary",
+      "title": "Do Not Pay",
+      "expansion": "Treasury's pre-payment screening service",
+      "slug": "do-not-pay",
+      "date": "",
+      "description": "Treasury's pre-payment screening service. The Treasury Do Not Pay Working System screens federal payments against death, debarment and other eligibility databases before the money goes out. Treasury reports it screened 1.1 billion payments ",
+      "tags": [
+        "glossary",
+        "federal-health"
+      ],
+      "url": "/glossary.html#term-do-not-pay",
+      "excerpt": "Term: Do Not Pay\nStands for: Treasury's pre-payment screening service\nThe Treasury Do Not Pay Working System screens federal payments against death, debarment and other eligibility databases before the money goes out. Treasury reports it screened 1.1 billion payments worth about $3.7 trillion in FY2026. DHA published a new matching program with Do Not Pay for the TRICARE Overseas Program in October 2026.\nContractor note: Do Not Pay checks identity and eligibility, not medical necessity. TRICARE's improper payment measurement still does not review the underlying medical record, an open GAO priority recommendation. The pre-payment screening and the record review are different buys.",
       "premium": false
     },
     {
@@ -5334,6 +5483,22 @@
       ],
       "url": "/glossary.html#term-hl7",
       "excerpt": "Term: HL7 v2\nStands for: Health Level Seven Version 2\nThe legacy healthcare messaging standard. Still dominant in hospital interfaces despite FHIR.\nContractor note: Most existing systems speak HL7 v2. Your integration layer needs both HL7 v2 and FHIR.",
+      "premium": false
+    },
+    {
+      "id": "glossary-high-impact-ai",
+      "type": "glossary",
+      "title": "High-impact AI",
+      "expansion": "OMB M-25-21 designation",
+      "slug": "high-impact-ai",
+      "date": "",
+      "description": "OMB M-25-21 designation. Under OMB Memorandum M-25-21 (April 2025), an AI use is high-impact when its output is a principal basis for decisions on benefits, allocation of care under public insurance, continued eligibility, or fraud detectio",
+      "tags": [
+        "glossary",
+        "contracting"
+      ],
+      "url": "/glossary.html#term-high-impact-ai",
+      "excerpt": "Term: High-impact AI\nStands for: OMB M-25-21 designation\nUnder OMB Memorandum M-25-21 (April 2025), an AI use is high-impact when its output is a principal basis for decisions on benefits, allocation of care under public insurance, continued eligibility, or fraud detection. The label triggers pre-deployment testing, an impact assessment, ongoing monitoring, human oversight and a working remedy or appeal path. Agencies apply it unevenly: in the FY2025 inventories VA reported 215 of the 445 high-impact uses governmentwide, while HHS designated 2 of its 447 reported uses.\nContractor note: The floor covers fewer systems than it appears to. Keeping a human on the decision can serve both as a safeguard and as a reason not to apply the stricter rules. Check the agency's AI use case inventory for the designation before assuming the M-25-21 requirements are in your contract.",
       "premium": false
     },
     {
@@ -5529,6 +5694,38 @@
       "premium": false
     },
     {
+      "id": "glossary-pivot",
+      "type": "glossary",
+      "title": "PIVOT",
+      "expansion": "Payment Integrity Validation and Oversight Tool (VA)",
+      "slug": "pivot",
+      "date": "",
+      "description": "Payment Integrity Validation and Oversight Tool (VA). A VA requirement, at the RFI stage (RFI 3, notice 36C10B26Q0121, January 2026), for a software-as-a-service tool that scores community care claims before payment. The RFI asks for audit ",
+      "tags": [
+        "glossary",
+        "va"
+      ],
+      "url": "/glossary.html#term-pivot",
+      "excerpt": "Term: PIVOT\nStands for: Payment Integrity Validation and Oversight Tool (VA)\nA VA requirement, at the RFI stage (RFI 3, notice 36C10B26Q0121, January 2026), for a software-as-a-service tool that scores community care claims before payment. The RFI asks for audit trails, rule version control and rollback, explainable outputs with confidence scores, and claim-to-payment traceability.\nContractor note: PIVOT writes the decision record into the platform requirement itself. The differentiator will be letting VA test the tool with its own adjudicated claims and take the record with it when the contract ends. No solicitation had been seen as of November 13, 2026.",
+      "premium": false
+    },
+    {
+      "id": "glossary-qic",
+      "type": "glossary",
+      "title": "QIC",
+      "expansion": "Qualified Independent Contractor",
+      "slug": "qic",
+      "date": "",
+      "description": "Qualified Independent Contractor. The contractor that handles the second level of Medicare fee-for-service appeals (reconsideration), independent of the Medicare Administrative Contractor that made the initial determination. CMS issued a QI",
+      "tags": [
+        "glossary",
+        "federal-health"
+      ],
+      "url": "/glossary.html#term-qic",
+      "excerpt": "Term: QIC\nStands for: Qualified Independent Contractor\nThe contractor that handles the second level of Medicare fee-for-service appeals (reconsideration), independent of the Medicare Administrative Contractor that made the initial determination. CMS issued a QIC program RFI (RFICMSQIC2026) on October 15, 2026. CMS separately moved the Medicare Advantage (Part C) independent review work to C2C Innovative Solutions effective May 1, 2026.\nContractor note: Appeals bodies are becoming the accuracy check on automated first decisions. I found no public evidence that Medicare appeals bodies use AI to decide cases; the February 2026 privacy assessment for the hearings case system answers no. The QIC RFI is the place to watch for measurement and reporting terms.",
+      "premium": false
+    },
+    {
       "id": "glossary-rmf",
       "type": "glossary",
       "title": "RMF",
@@ -5542,6 +5739,22 @@
       ],
       "url": "/glossary.html#term-rmf",
       "excerpt": "Term: RMF\nStands for: Risk Management Framework\nNIST's structured approach to security assessment: categorize, select, implement, assess, authorize, monitor.\nContractor note: RMF is the process that gets you to ATO. Know the six steps cold.",
+      "premium": false
+    },
+    {
+      "id": "glossary-rac",
+      "type": "glossary",
+      "title": "RAC",
+      "expansion": "Recovery Audit Contractor",
+      "slug": "rac",
+      "date": "",
+      "description": "Recovery Audit Contractor. Medicare fee-for-service post-payment review contractors paid a contingency fee on the improper payments they identify. CMS program improvements set a first-level appeal overturn limit below 10% and added a separa",
+      "tags": [
+        "glossary",
+        "federal-health"
+      ],
+      "url": "/glossary.html#term-rac",
+      "excerpt": "Term: RAC\nStands for: Recovery Audit Contractor\nMedicare fee-for-service post-payment review contractors paid a contingency fee on the improper payments they identify. CMS program improvements set a first-level appeal overturn limit below 10% and added a separate Recovery Auditor Validation Contractor that independently checks RAC accuracy. The validation contract was awarded to J29 in February 2026 at $17.2M over five years as a total small business set-aside, per a trade compilation.\nContractor note: The recovery audit program is the precedent for separating the validator from the operator when the operator is paid from the result. WISeR vendors are paid a share of averted spending with no separate validator; expect that structure to be questioned.",
       "premium": false
     },
     {
@@ -5574,6 +5787,22 @@
       ],
       "url": "/glossary.html#term-smart-on-fhir",
       "excerpt": "Term: SMART on FHIR\nStands for: Substitutable Medical Applications, Reusable Technologies\nApp launch and authorization framework built on FHIR. Enables third-party apps on EHR platforms.\nContractor note: SMART on FHIR is how you build apps that plug into MHS GENESIS and VA systems.",
+      "premium": false
+    },
+    {
+      "id": "glossary-smrc",
+      "type": "glossary",
+      "title": "SMRC",
+      "expansion": "Supplemental Medical Review Contractor",
+      "slug": "smrc",
+      "date": "",
+      "description": "Supplemental Medical Review Contractor. The CMS contractor that performs medical reviews on topics CMS directs, outside the regional claims contractors' routine review. The November 1, 2026 CMS forecast lists a new Supplemental Medical Revi",
+      "tags": [
+        "glossary",
+        "federal-health"
+      ],
+      "url": "/glossary.html#term-smrc",
+      "excerpt": "Term: SMRC\nStands for: Supplemental Medical Review Contractor\nThe CMS contractor that performs medical reviews on topics CMS directs, outside the regional claims contractors' routine review. The November 1, 2026 CMS forecast lists a new Supplemental Medical Review Contract at $100 million or more, with a solicitation planned for December 15, 2026 and award in May 2027.\nContractor note: Watch whether the solicitation includes accuracy or evaluation terms for AI-assisted review. If it does, that is the first large CMS review buy to write the proof into the operating contract.",
       "premium": false
     },
     {
@@ -5641,6 +5870,22 @@
       "premium": false
     },
     {
+      "id": "glossary-upic",
+      "type": "glossary",
+      "title": "UPIC",
+      "expansion": "Unified Program Integrity Contractor",
+      "slug": "upic",
+      "date": "",
+      "description": "Unified Program Integrity Contractor. The CMS regional contractors that investigate Medicare and Medicaid fraud, waste and abuse, build cases and refer them for action. The current vehicle has a $2.5 billion ceiling and about $1.83 billion ",
+      "tags": [
+        "glossary",
+        "federal-health"
+      ],
+      "url": "/glossary.html#term-upic",
+      "excerpt": "Term: UPIC\nStands for: Unified Program Integrity Contractor\nThe CMS regional contractors that investigate Medicare and Medicaid fraud, waste and abuse, build cases and refer them for action. The current vehicle has a $2.5 billion ceiling and about $1.83 billion obligated since 2016, with ordering through May 9, 2027, per a trade vehicle record. CMS's October 5, 2026 Fraud Defense Contracts RFI proposes a successor in which CMS, not the contractors, drives lead generation and prioritization.\nContractor note: Under the RFI, contractors would do claims analysis, medical review and evidence collection, and would need CMS approval to use AI or other automation. CMS also asked how to price the work so it does not reward the volume of investigations or referrals. RFI responses closed November 4, 2026; no solicitation yet.",
+      "premium": false
+    },
+    {
       "id": "glossary-va-ehrm",
       "type": "glossary",
       "title": "VA EHRM",
@@ -5686,6 +5931,22 @@
       ],
       "url": "/glossary.html#term-vista",
       "excerpt": "Term: VistA\nStands for: Veterans Health Information Systems and Technology Architecture\nVA's legacy EHR built in-house since the 1970s. Still running at most VA facilities.\nContractor note: VistA sustainment, migration, and modernization are active contract areas.",
+      "premium": false
+    },
+    {
+      "id": "glossary-wiser",
+      "type": "glossary",
+      "title": "WISeR",
+      "expansion": "Wasteful and Inappropriate Service Reduction model",
+      "slug": "wiser",
+      "date": "",
+      "description": "Wasteful and Inappropriate Service Reduction model. A CMS Innovation Center model in six states in which technology vendors review prior authorization requests for selected Medicare fee-for-service services, with a clinician required before",
+      "tags": [
+        "glossary",
+        "federal-health"
+      ],
+      "url": "/glossary.html#term-wiser",
+      "excerpt": "Term: WISeR\nStands for: Wasteful and Inappropriate Service Reduction model\nA CMS Innovation Center model in six states in which technology vendors review prior authorization requests for selected Medicare fee-for-service services, with a clinician required before any non-affirmation. The vendor is paid 25% of averted spending, adjusted by a quality score, and loses the payment if the denial is overturned on appeal.\nContractor note: As of mid-August 2026 CMS had released no denial, appeal or overturn rates. CMS says it audits vendors against coverage criteria and may remove one with a high inaccuracy rate, but I found no published audit method, sample size or result, and no separate validation contract. Congress has pressed on the model; a House committee amendment would block FY2027 funding.",
       "premium": false
     },
     {

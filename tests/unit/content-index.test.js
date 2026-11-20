@@ -54,6 +54,57 @@ function fixture(items) {
 afterEach(() => _setCorpusForTests(null));
 
 // ---------------------------------------------------------------------
+// Public corpus carries nothing contract-fields.js / idiq-fields.js gate
+// (2026-11-15: it held vendor, value, NAICS, pursuit score, ceiling,
+// primes and MMT notes on premium=false items; nothing read it yet)
+// ---------------------------------------------------------------------
+describe("public corpus strips entitlement-gated fields", () => {
+  const { GATED_LINE_RE, publicView, fullView } = builder;
+
+  it("the builder's own contract and vehicle items carry gated lines only in the full view", () => {
+    const contracts = builder.collectItems("2026-11-15").allItems.filter((i) => i.type === "contract_intel");
+    const vehicles = builder.buildIdiqVehicles();
+    expect(contracts.length).toBeGreaterThan(0);
+    expect(vehicles.length).toBeGreaterThan(0);
+    for (const it of [...contracts, ...vehicles]) {
+      const pub = publicView(it);
+      const full = fullView(it);
+      expect(pub.public_view).toBeUndefined();
+      expect(full.public_view).toBeUndefined();
+      expect(GATED_LINE_RE.test(pub.excerpt)).toBe(false);
+      // contract-fields.js gates the contract link; a vehicle's primary
+      // source (a SAM permalink) is not in the idiq-fields.js gated list.
+      if (it.type === "contract_intel") expect(pub.source_url || null).toBe(null);
+      expect(pub.id).toBe(full.id);
+      expect(pub.url).toBe(full.url);
+      expect(Object.keys(pub).sort()).toEqual(Object.keys(full).sort());
+    }
+    // The full view still carries what members get.
+    expect(contracts.some((c) => /^Vendor:/m.test(fullView(c).excerpt))).toBe(true);
+    expect(vehicles.some((v) => /^Ceiling:|^MMT note:/m.test(fullView(v).excerpt))).toBe(true);
+  });
+
+  it("the committed public corpus has no gated lines and no premium items", () => {
+    for (const it of publicCorpus.items) {
+      expect(it.premium).toBe(false);
+      if (it.type === "contract_intel" || it.type === "idiq_vehicle") {
+        expect(GATED_LINE_RE.test(it.excerpt), it.id).toBe(false);
+        if (it.type === "contract_intel") expect(it.source_url || null).toBe(null);
+      }
+    }
+  });
+
+  it("a public contract item keeps the public teaser: 30 words, agency, status", () => {
+    const c = fullCorpus.items.find((i) => i.type === "contract_intel");
+    const pub = publicCorpus.items.find((i) => i.id === c.id);
+    expect(pub).toBeTruthy();
+    expect(pub.excerpt).toMatch(/^Agency: /m);
+    expect(pub.excerpt).toMatch(/^Status: /m);
+    expect(pub.excerpt.split("\n")[0].split(/\s+/).length).toBeLessThanOrEqual(30);
+  });
+});
+
+// ---------------------------------------------------------------------
 // Per-type cap (fixture corpus)
 // ---------------------------------------------------------------------
 describe("searchCorpus per-type cap", () => {
