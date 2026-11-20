@@ -17,7 +17,7 @@
     "test:smoke": "npx vitest run --config vitest.smoke.config.mjs",
     "test:e2e": "npx playwright test",
     "test:links": "node scripts/validate-links.js",
-    "verify": "node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js && node scripts/validate-site-index.js && npx vitest run tests/unit",
+    "verify": "node build.js && node scripts/validate-dist.js && node scripts/validate-routes.js && node scripts/validate-site-index.js --strict && npx vitest run tests/unit",
     "lighthouse": "npx @lhci/cli autorun",
     "smoke": "bash scripts/smoke-test.sh",
     "dev": "npx netlify dev",

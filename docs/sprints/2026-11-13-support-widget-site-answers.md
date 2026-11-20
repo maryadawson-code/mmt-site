@@ -105,7 +105,7 @@ Everything else that was confirmed and fixed:
 | Security | Nothing capped total spend or total email | Hourly ceilings across all callers; past the model ceiling, links only |
 | Security | Another site's page could post to the endpoint | Same-site check on `Origin` |
 | Security | Reply-To accepted a display-name address | One plain address only |
-| Security | The IP hash was salted with a public constant | HMAC under the whole service key |
+| Security | The IP hash was salted with a public constant | A salt derived from the whole service key (now the shared `ipSalt()`) |
 | Widget | The question box was clipped off a short viewport | The log gives way; a short viewport gets the full height |
 | Widget | On a dash page on a phone the header sat above the screen | Max-height accounts for the offset |
 | Widget | Focus fell to the page body after escalating or using a starter | Focus moves to the question box |
@@ -120,6 +120,35 @@ fixed anyway, because the design was mine and the reviewer was right about it:
 the hourly ceilings and the same-site check. The checker's reasoning was that
 the spec said per-caller limits were the control. A per-caller limit does not
 bound an unauthenticated endpoint that calls a paid model.
+
+## What merging up to main found (2026-11-19, third commit)
+
+`main` had moved six days. The first build of the merged tree failed this
+branch's own gate: ten new glossary term pages had arrived, and "Where is the
+IDIQ tracker?" now led with the glossary entry for IDIQ. Had the branch merged
+as it stood on the 14th, every production deploy after the 15th would have
+stopped on that line, issue drops included. Two changes came out of it.
+
+- **Ranking.** Title matching compared openings, so "sign" matched "signal"
+  and a page that repeated a word could outrank the page named for it. It now
+  compares whole words after a light stem, counts "organization" as "org" and
+  "intelligence" as "intel", and puts a page whose title and URL carry the
+  whole question first, by a margin sized to the shared scorer's ceiling so
+  that more mentions elsewhere cannot overturn it. A question the routing
+  table recognized keeps its route. "How do I sign up?" had no route and was
+  answered with an article about a "digital signal"; it now goes to the
+  newsletter sign-up and the price page. Three goldens were added (34).
+  Ten rules were broken on purpose afterward; each was caught by a unit
+  test or by the gate.
+- **The gate no longer holds a deploy for a ranking.** Leak, shape and route
+  findings stop the build, as before. A golden question that stops leading
+  with its page prints a warning in the build command and fails only under
+  `--strict`, which `npm run verify` and a new CI job,
+  `help-widget-answers`, run. The job is red on the pull request that caused
+  the regression and nothing waits on it.
+
+The function's own IP hash was dropped for the shared `hashIp` and `ipSalt()`
+that `main` introduced on the 15th.
 
 ## Verified
 
@@ -149,14 +178,22 @@ bound an unauthenticated endpoint that calls a paid model.
 - Not verified: whether `support@missionmeetstech.com` is read. Escalations
   still go there.
 
-## Found along the way, left alone
+## Found along the way
 
-- `netlify/functions/data/mmt-content-corpus-public.json` is named public and
-  carries the same withheld fields. Nothing reads it.
-- Premium pages' meta descriptions are in public HTML; the org chart ones name
-  leaders.
-- `premium-chat.js` salts its anonymous IP hash with the same public constant.
-  Changing it resets the free tier's per-IP counts.
+Closed on `main` on 2026-11-15, before this merged
+(`docs/sprints/2026-11-15-decision-assurance-and-three-leaks.md`):
+
+- `mmt-content-corpus-public.json` was named public and carried the tracker
+  fields the pages gate.
+- Premium org chart pages named leaders in their meta descriptions.
+- `premium-chat.js` salted its anonymous IP hash with a public constant.
+
+This branch was merged up to that change on 2026-11-19 and re-verified. The
+widget's function now uses the shared `hashIp` and `ipSalt()` it introduced
+in place of its own copy.
+
+Still open:
+
 - `tests/navigation.spec.js` loads `/glossary.html`, which the local `serve`
   redirects to the term-page hub, a different file. The title check passes on
   the wrong page.

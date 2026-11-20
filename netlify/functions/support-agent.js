@@ -28,7 +28,6 @@
 // promised a follow-up either way.
 // ============================================================
 
-const crypto = require("crypto");
 const { createClient } = require("@supabase/supabase-js");
 const { verifySubscriberToken } = require("./lib/subscriber-token");
 const { loadEntitlement } = require("./lib/entitlement");
@@ -165,16 +164,6 @@ function isCrossSite(headers) {
   }
 }
 
-/**
- * The caller's rate-limit key: an HMAC of the IP under the whole service
- * key. (A hash salted with the key's first characters is not secret: for a
- * JWT-format key those characters are the public header.)
- */
-function callerHash(ip, key) {
-  if (!ip) return null;
-  return crypto.createHmac("sha256", String(key || SOURCE_FN)).update(String(ip)).digest("hex").slice(0, 32);
-}
-
 function buildContext(event, body, deps) {
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
@@ -183,7 +172,10 @@ function buildContext(event, body, deps) {
   const verified = typeof body.token === "string" && body.token ? deps.verifyToken(body.token) : null;
   return {
     supabase: url && key ? deps.createClient(url, key) : null,
-    ipHash: callerHash(ip, key),
+    // The same salted hash Ask MMT uses (lib/ask-mmt-access.js): the salt is
+    // derived from the whole service key, never from its public prefix. No
+    // raw IP is stored. null when there is no IP or no salt.
+    ipHash: access.hashIp(ip, access.ipSalt(process.env)),
     tokenEmail: verified && verified.ok ? verified.email : null,
   };
 }

@@ -2,10 +2,21 @@
 /**
  * validate-site-index.js: the build gate for the site help widget.
  *
- * Runs in the netlify.toml build command after build.js. Fails the build
- * when the page index the widget answers from is missing or thin, carries a
- * page it must not, puts gated text where a signed-out visitor's answer can
- * reach it, or stops returning the right page for a golden question.
+ * Runs in the netlify.toml build command after build.js. Two kinds of
+ * finding, and they are not treated alike:
+ *
+ *   Blocking, always: the page index is missing or thin, carries a page it
+ *   must not, routes to a page that is gone, or puts gated text where a
+ *   signed-out visitor's answer can reach it. The build stops.
+ *
+ *   Ranking: a golden question stopped leading with its page. New content
+ *   can do that on any day (ten glossary pages moved "Where is the IDIQ
+ *   tracker?" on 2026-11-15), and a worse first link must not hold an issue
+ *   drop out of production. Without --strict these print as warnings and
+ *   the build goes on. With --strict they fail: that is what `npm run
+ *   verify` and the help-widget-answers job in deploy-gate.yml run, so the
+ *   regression is red on the pull request that caused it.
+ *
  * Spec: docs/support-widget-spec.md section 9.
  *
  * The paywall checks here do not reuse the extractor's own verdict. They
@@ -14,7 +25,7 @@
  * scripts of a page), because a check that asks the extractor whether the
  * extractor was right cannot fail.
  *
- * Usage: node scripts/validate-site-index.js
+ * Usage: node scripts/validate-site-index.js [--strict]
  */
 
 const fs = require("fs");
@@ -184,30 +195,44 @@ function checkRoutes(urls, fail) {
   }
 }
 
-function checkGolden(golden, member, fail) {
+/**
+ * One golden question for one caller class. Gated content in a signed-out
+ * answer goes to `fail` (blocking); everything about which page came first
+ * goes to `rank`.
+ */
+function checkGolden(golden, member, fail, rank) {
   const who = member ? "member" : "signed-out";
   const sources = retrieve(golden.q, { member });
   const keys = sources.map((s) => urlKey(s.url));
-  if (new Set(keys).size !== keys.length) fail(`"${golden.q}" (${who}) returned one page more than once`);
   if (!member && sources.some((s) => (s.access === "premium" && !s.locked) || CORPUS_FIELD_RE.test(s.passage))) {
     fail(`"${golden.q}" (signed-out) returned gated content`);
   }
+  if (new Set(keys).size !== keys.length) rank(`"${golden.q}" (${who}) returned one page more than once`);
   if (golden.expect && golden.expect.length === 0) {
-    if (sources.length) fail(`"${golden.q}" (${who}) should find nothing, found ${sources[0].url}`);
+    if (sources.length) rank(`"${golden.q}" (${who}) should find nothing, found ${sources[0].url}`);
     return;
   }
   if (golden.expect && !golden.expect.some((url) => keys.slice(0, golden.within || 1).includes(url))) {
-    fail(`"${golden.q}" (${who}) expected ${golden.expect.join(" or ")}, got ${keys.slice(0, golden.within || 1).join(", ") || "nothing"}`);
+    rank(`"${golden.q}" (${who}) expected ${golden.expect.join(" or ")}, got ${keys.slice(0, golden.within || 1).join(", ") || "nothing"}`);
   }
-  if (golden.not && golden.not.includes(keys[0])) fail(`"${golden.q}" (${who}) must not lead with ${keys[0]}`);
+  if (golden.not && golden.not.includes(keys[0])) rank(`"${golden.q}" (${who}) must not lead with ${keys[0]}`);
   if (golden.passage && !member && !sources.some((s) => golden.passage.test(s.passage))) {
-    fail(`"${golden.q}" (signed-out) found the page but no passage matches ${golden.passage}`);
+    rank(`"${golden.q}" (signed-out) found the page but no passage matches ${golden.passage}`);
   }
 }
 
+function report(label, messages, print) {
+  print(`validate-site-index: ${label} (${messages.length})`);
+  for (const message of messages.slice(0, 40)) print(`  - ${message}`);
+  if (messages.length > 40) print(`  ... and ${messages.length - 40} more`);
+}
+
 function main() {
+  const strict = process.argv.includes("--strict");
   const failures = [];
+  const ranking = [];
   const fail = (message) => failures.push(message);
+  const rank = (message) => ranking.push(message);
 
   if (!fs.existsSync(path.join(ROOT, INDEX_FILE))) {
     console.error(`validate-site-index: FAIL ${INDEX_FILE} does not exist (scripts/build-site-index.js did not run or threw)`);
@@ -219,16 +244,13 @@ function main() {
   const articles = checkRecentArticles(index, fail);
   checkSignedOutPool(index, fail);
   checkRoutes(urls, fail);
-  for (const golden of GOLDENS) for (const member of [false, true]) checkGolden(golden, member, fail);
+  for (const golden of GOLDENS) for (const member of [false, true]) checkGolden(golden, member, fail, rank);
 
-  if (failures.length) {
-    console.error(`validate-site-index: FAIL (${failures.length})`);
-    for (const message of failures.slice(0, 40)) console.error(`  - ${message}`);
-    if (failures.length > 40) console.error(`  ... and ${failures.length - 40} more`);
-    process.exit(1);
-  }
+  if (failures.length) report("FAIL", failures, console.error);
+  if (ranking.length) report(strict ? "FAIL ranking" : "WARN ranking, build not stopped", ranking, console.error);
+  if (failures.length || (strict && ranking.length)) process.exit(1);
   console.log(
-    `validate-site-index: OK ${index.pages.length} pages, ${probes} gate markers and ${articles} recent articles probed for leaks, ${GOLDENS.length} golden questions x 2 caller classes`,
+    `validate-site-index: OK ${index.pages.length} pages, ${probes} gate markers and ${articles} recent articles probed for leaks, ${GOLDENS.length} golden questions x 2 caller classes${ranking.length ? ` (${ranking.length} ranking warning${ranking.length === 1 ? "" : "s"})` : ""}`,
   );
 }
 

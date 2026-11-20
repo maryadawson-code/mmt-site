@@ -49,6 +49,13 @@ module.exports = [
   { q: "How do I connect my AI assistant?", expect: ["/premium/ai-integrations", "/agent-access-guide"], within: 2 },
   { q: "What does the contract tracker cover?", expect: ["/contract-tracker"] },
   { q: "Where is the IDIQ tracker?", expect: ["/idiq-tracker"] },
+  // No word in common with the page that answers it; the scorer alone
+  // answered with an article about a "digital signal" (2026-11-19).
+  { q: "How do I sign up?", expect: ["/newsletter", "/pricing"] },
+  // The page is named by its section and its subject together. A brief
+  // titled for the calendar is as good a first link, so the top two count.
+  { q: "Is the calendar Premium?", expect: ["/premium/calendar"], within: 2 },
+  { q: "Where is the signal chain?", expect: ["/premium/signal-chain"] },
   { q: "Is there a podcast?", expect: ["/podcast"] },
   { q: "Where is the glossary?", expect: ["/glossary"] },
   { q: "Where is the newswire?", expect: ["/newswire"] },

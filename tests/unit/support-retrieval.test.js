@@ -21,7 +21,7 @@ const TODAY = "2026-11-13";
 const SECRET = "Zebulon Quartermain"; // appears only where a signed-out reader must not reach
 const VENDOR = "Oracle Health (Cerner)";
 
-const forecastRow = (n) => ({ id: `forecast-${n}`, type: "forecast_row", title: `CMS forecast row ${n}: agency profile support`, description: "CMS", tags: ["cms"], agency: "CMS", url: "/premium/forecast-delta", date: "2026-09-10", premium: true, excerpt: `CMS agency profile support services forecast row ${n}.` });
+const forecastRow = (n) => ({ id: `forecast-${n}`, type: "forecast_row", title: `CMS forecast row ${n}: enterprise support`, description: "CMS", tags: ["cms"], agency: "CMS", url: "/premium/forecast-delta", date: "2026-09-10", premium: true, excerpt: `CMS agency profile support services forecast row ${n}.` });
 
 const CORPUS = {
   items: [
@@ -237,6 +237,81 @@ describe("help questions reach the page that answers them", () => {
   });
 });
 
+// 2026-11-19: ten new glossary pages reached main and "Where is the IDIQ
+// tracker?" started leading with the glossary entry for IDIQ. The first fix
+// matched title words by their opening, which sent "Where do I sign in?" to
+// a page called Signal Chain. These pin what replaced both.
+describe("the page named by the question outranks a page that only repeats its words", () => {
+  const GLOSSARY_IDIQ = "IDIQ. Indefinite Delivery, Indefinite Quantity. " + "An IDIQ vehicle is tracked in the IDIQ tracker. Official sources for IDIQ. ".repeat(12);
+  const withPages = (...extra) => siteIndex._setSiteIndexForTests({ pages: [...INDEX.pages, ...extra] });
+
+  it("leads with the tracker, not the glossary entry that says its name twelve times", () => {
+    withPages(
+      pg("/idiq-tracker", "IDIQ Vehicle Tracker", "Every IDIQ vehicle MMT follows, with ceilings and ordering periods."),
+      pg("/glossary/idiq", "IDIQ", GLOSSARY_IDIQ, { kind: "glossary" }),
+    );
+    expect(anon("Where is the IDIQ tracker?")[0].url).toBe("/idiq-tracker");
+    expect(member("Where is the IDIQ tracker?")[0].url).toBe("/idiq-tracker");
+    // The glossary entry is still the answer to the question it is named for.
+    expect(anon("What does IDIQ mean?")[0].url).toBe("/glossary/idiq");
+  });
+
+  it("matches a title word in its own form: sign is not signal", () => {
+    withPages(pg("/premium/signal-chain", "Signal Chain", "Signal Chain is Premium. Signals in the order they arrived. A sign of what is coming."));
+    // The scorer finds "sign" inside "signal", so the page is a candidate.
+    // Its title does not carry the word, and it is not reported as a match.
+    const hit = anon("What is a good sign?").find((s) => s.url === "/premium/signal-chain");
+    expect(hit).toBeDefined();
+    expect(hit.nav).toBe(0);
+    // The page is found by its own name.
+    const [named] = anon("Where is the signal chain?");
+    expect(named.url).toBe("/premium/signal-chain");
+    expect(named.nav).toBe(2);
+  });
+
+  it("counts the section a page sits in: a question about a Premium page finds it", () => {
+    withPages(pg("/premium/calendar", "Pursuit Calendar", "Pursuit Calendar is Premium. Ninety days of deadlines."));
+    const [hit] = anon("Is the calendar Premium?");
+    expect(hit.url).toBe("/premium/calendar");
+    expect(hit.locked).toBe(true);
+    expect(hit.nav).toBe(2); // "calendar" from the title, "premium" from the URL
+  });
+
+  it("leaves a routed question to its route even when another title carries every word", () => {
+    // Titled with every word of the question; the price page is still the answer.
+    withPages(
+      pg("/newsletter/what-premium-cost-us", "What Premium Cost Us", "A story about what the premium on a bid cost us.", { kind: "article", date: "2026-03-01", tags: ["premium", "cost"] }),
+      pg("/premium/cost-realism", "Cost Realism Notes", "Cost Realism Notes is Premium. How evaluators read a cost volume."),
+    );
+    expect(anon("How much does Premium cost?")[0].url).toBe("/pricing");
+    expect(member("How much does Premium cost?")[0].url).toBe("/pricing");
+  });
+
+  it("routes a sign-up question, which shares no word with the page that answers it", () => {
+    withPages(
+      pg("/newsletter", "Subscribe", "Free. Subscribe now. Every Tuesday and Friday."),
+      pg("/newsletter/the-digital-signal", "The Silent Crisis and the Digital Signal", "A signal. Designed to be a signal. ".repeat(10), { kind: "article", date: "2026-02-01" }),
+    );
+    expect(["/newsletter", "/pricing"]).toContain(anon("How do I sign up?")[0].url);
+    expect(["/newsletter", "/pricing"]).toContain(anon("How do I join?")[0].url);
+    // A question about an agency is not about joining MMT.
+    expect(anon("How do I join the DHA vendor list?")[0].url).not.toBe("/pricing");
+  });
+
+  it("reads the two shortenings readers use, and no others", () => {
+    withPages(pg("/this-issue", "Capture Intelligence", "Capture intelligence: the signals in this issue."));
+    expect(anon("Where is capture intelligence?")[0]).toMatchObject({ url: "/this-issue", nav: 2 });
+    expect(anon("Where is capture intel?")[0]).toMatchObject({ url: "/this-issue", nav: 2 });
+    // "cap" is not a shortening anyone agreed on.
+    expect(anon("Where is the cap intel?")[0]).toMatchObject({ url: "/this-issue", nav: 1 });
+  });
+
+  it("reads a plural or an -ing form as the word it is", () => {
+    expect(keyTerms("pricing prices")).toEqual(["pric"]);
+    expect(keyTerms("signals")).not.toEqual(keyTerms("sign"));
+  });
+});
+
 describe("follow-ups", () => {
   const history = [{ question: "Where can I find the DHA org chart?", answer: "It is a Premium page." }];
 
@@ -306,7 +381,10 @@ describe("result hygiene", () => {
 describe("pure helpers", () => {
   it("keyTerms keeps what the question is about and drops how it was asked", () => {
     expect(keyTerms("Where can I find the DHA org chart on MMT?")).toEqual(["dha", "org", "chart"]);
-    expect(keyTerms("is it private")).toEqual(["private"]);
+    expect(keyTerms("is it private")).toEqual(["privat"]);
+    // Word forms meet, and a longer word that merely starts the same does not.
+    expect(keyTerms("pricing prices agencies includes")).toEqual(["pric", "agency", "includ"]);
+    expect(keyTerms("sign")).not.toEqual(keyTerms("signal"));
     expect(keyTerms("VA pricing")).toEqual(["va", "pric"]);
     expect(keyTerms("what does IT mean")).toContain("it");
     expect(keyTerms("what does it mean")).not.toContain("it");

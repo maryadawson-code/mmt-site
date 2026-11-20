@@ -51,6 +51,18 @@ const INTENT_BONUS = 25;
 // Large enough to put that page first: "Who is the VA CIO?" is about the VA
 // chart, and no article that mentions a CIO should outrank it.
 const AGENCY_PAGE_BONUS = 100;
+// On top of the per-term weight when an item's title and URL carry every
+// word of a question of two words or more. "Where is the IDIQ tracker?" is
+// about the page called IDIQ Tracker, not the glossary entry for IDIQ.
+//
+// Sized against the shared scorer, which is bounded: a word scores once each
+// in title, description and tags and at most five times in the body, and a
+// glossary entry gets 30 more for carrying one of the words as its term. A
+// page that only repeats the question can lead the page named for it by
+// that much and no more, so 60 on top of the per-term weight keeps the
+// named page first however often another page says the words (ten new
+// glossary pages moved this ranking at 30, on 2026-11-15).
+const WHOLE_QUESTION_BONUS = 60;
 const SITE_ORIGIN_RE = /^https?:\/\/(www\.)?missionmeetstech\.com/i;
 // The site's own name is in every question about the site and on no page
 // title; searched as an acronym it would bury every page that lacks it.
@@ -77,6 +89,15 @@ const INTENTS = [
     // ProposalPulse" says "$19.99", not "cost".
     hint: /\$\d/,
     pages: ["/pricing"],
+  },
+  {
+    // "How do I sign up?" shares no word with the page that answers it, and
+    // the shared scorer reads "sign" inside "signal" and "design".
+    name: "signup",
+    re: /\b(sign(ing)? ?up|join(ing)?|become a (member|subscriber)|get (premium|access|the newsletter)|upgrad(e|ing))\b/i,
+    notWithAgency: true,
+    words: "subscribe free newsletter premium founding",
+    pages: ["/newsletter", "/pricing"],
   },
   {
     name: "billing",
@@ -145,8 +166,14 @@ const NAV_STOPWORDS = new Set(
 
 const isAgency = (word) => AGENCY_ACRONYM_SET.has(String(word).toLowerCase().replace(/[^a-z0-9-]/g, ""));
 
+/**
+ * A word reduced so its forms meet: chart/charts, price/pricing,
+ * agency/agencies, include/includes. Matching is on this form exactly; a
+ * prefix test would call "sign" a match for "signal".
+ */
 function stem(word) {
-  const s = word.replace(/(ing|es|s)$/, "");
+  let s = word.endsWith("ies") && word.length > 4 ? `${word.slice(0, -3)}y` : word.replace(/(ing|es|s)$/, "");
+  if (s.endsWith("e") && s.length > 4) s = s.slice(0, -1);
   return s.length >= 3 ? s : word;
 }
 
@@ -255,30 +282,39 @@ function searchText(subject, intents) {
 
 function titleWords(item) {
   const words = new Set();
+  // The URL counts, "/premium/" included: "Is the calendar Premium?" is
+  // about /premium/calendar. A price question is routed and never gets the
+  // whole-question bonus, so a member page cannot take it from /pricing.
   const text = `${item.title || ""} ${(item.tags || []).join(" ")} ${urlKey(item.url)}`.toLowerCase();
   for (const w of text.match(/[a-z0-9][a-z0-9+&]*/g) || []) {
-    if (!NAV_STOPWORDS.has(w) || w.length < 3) words.add(w.length < 3 ? w : stem(w));
+    if (NAV_STOPWORDS.has(w) && w.length >= 3) continue;
+    words.add(w.length < 3 ? w : stem(w));
+    // Readers shorten these two ("org chart", "capture intel"). Nothing
+    // else is matched by its opening: "sign" is not "signal".
+    if (w.startsWith("organi")) words.add("org");
+    if (w.startsWith("intelligen")) words.add("intel");
   }
   return words;
-}
-
-function termInWords(term, words) {
-  if (words.has(term)) return true;
-  if (term.length < 3) return false;
-  for (const w of words) if (w.length >= 3 && (w.startsWith(term) || term.startsWith(w))) return true;
-  return false;
 }
 
 /** How many of `terms` an item's title and URL carry. */
 function navMatches(item, terms) {
   if (terms.length === 0) return 0;
   const words = titleWords(item);
-  return terms.filter((t) => termInWords(t, words)).length;
+  return terms.filter((t) => words.has(t)).length;
 }
 
-function navBonus(item, terms) {
+/**
+ * `wholeCounts` is false when the routing table already names the page for
+ * this question: "How much does Premium cost?" goes to /pricing, and a brief
+ * that happens to be tagged premium with "cost" in its title must not
+ * outrank it for carrying both words.
+ */
+function navBonus(item, terms, wholeCounts = false) {
   const matched = navMatches(item, terms);
-  return matched ? NAV_WEIGHT * matched * (matched / terms.length) : 0;
+  if (!matched) return 0;
+  const whole = wholeCounts && terms.length > 1 && matched === terms.length ? WHOLE_QUESTION_BONUS : 0;
+  return NAV_WEIGHT * matched * (matched / terms.length) + whole;
 }
 
 /** Is this page, under an intent's prefix, the one for an agency the question names? */
@@ -469,12 +505,15 @@ function retrieve(question, { member = false, history = [], today } = {}) {
   // In a follow-up the new words outweigh the carried ones: "and for VA?"
   // after a DHA question is about VA.
   const focus = subject === String(question || "").trim() ? [] : keyTerms(question);
+  // A question an intent recognized already has its page (a route, or the
+  // named agency's page). The whole-question bonus is for the rest.
+  const routed = intents.length > 0;
   const { pages, hits } = candidatesFor(member, searchText(subject, intents), today);
   const candidates = withRoutedPages(hits, pages, intents, agencies);
   if (candidates.length === 0) return [];
 
   const ranked = candidates
-    .map((item) => ({ item, score: item._score + navBonus(item, terms) + navBonus(item, focus) + intentBonus(item, intents, agencies) }))
+    .map((item) => ({ item, score: item._score + navBonus(item, terms, !routed) + navBonus(item, focus) + intentBonus(item, intents, agencies) }))
     .sort((a, b) => b.score - a.score);
   const floor = Math.max(MIN_SCORE, ranked[0].score * RELATIVE_FLOOR);
   const hints = intents.map((i) => i.hint).filter(Boolean);

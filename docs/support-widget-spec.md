@@ -95,10 +95,25 @@ research questions, where a passage that mentions the topic is a hit. A help
 question is navigational, so `support-retrieval.js` re-ranks the candidates:
 
 - by how much of the question an item's title and URL carry (so the DHA org
-  chart page outranks an article that mentions DHA and a chart);
+  chart page outranks an article that mentions DHA and a chart). A question
+  word matches a title word only when the two are the same word in the same
+  form after a light stem ("prices" and "pricing", "includes" and "include");
+  a shared opening is not a match, because "sign" is not "signal". Two
+  shortenings readers use are the exception: a title's "organization" also
+  counts as "org" and its "intelligence" as "intel". The URL counts,
+  `/premium/` included, so "Is the calendar Premium?" finds
+  `/premium/calendar`;
+- a page whose title and URL carry every word of a question of two words or
+  more is the page being asked for, and goes ahead of a page that only says
+  those words a lot ("Where is the IDIQ tracker?" is the IDIQ tracker, not
+  the glossary entry for IDIQ). The bonus is sized against the shared
+  scorer, which counts a word at most five times in a body, so more
+  mentions on another page cannot overturn it. It does not apply to a
+  question the routing table below recognized, which already has its page;
 - by a short routing table, `INTENTS`, that sends the stock help questions
-  (price, cancel, refund, account problems, sign in, privacy, contact, org
-  charts, who leads) to the page that answers them, even when the wording
+  (price, sign up, cancel, refund, account problems, sign in, privacy,
+  contact, org charts, who leads) to the page that answers them, even when
+  the wording
   shares no word with it. An intent that names an agency's page ("Who is the
   DHA CIO?") puts that agency's page first. The pricing and contact intents do
   not fire on a question about an agency ("How much does DHA spend on IT?");
@@ -274,8 +289,9 @@ correct on the next build.
   per hour across all callers. Past the model ceiling the widget still answers,
   with links and no model call. All fail open on a Supabase error, so a blip
   does not close the help desk; a missing Supabase means no limits and no log.
-- The caller key is an HMAC of the IP under the whole service key. No raw IP is
-  stored.
+- The caller key is the same salted hash Ask MMT uses (`hashIp` with
+  `ipSalt()` in `lib/ask-mmt-access.js`, a salt derived from the whole service
+  key). No raw IP is stored.
 - Every value placed in the escalation email is HTML-escaped. The subject is a
   fixed string plus a truncated, control-character-free question.
 - The widget renders answers with `textContent` and a link only when its URL is
@@ -334,7 +350,7 @@ order by created_at desc;
   entitlement lookup are doubles, so it proves what each caller class is
   answered from, not that the token check works.
 - `scripts/validate-site-index.js` runs in the `netlify.toml` build command
-  after `build.js` and fails the build when:
+  after `build.js`. It keeps two lists. The first always stops the build:
   - the index is missing, thin, or holds an excluded page;
   - text that follows a gate marker in the built HTML is in a page's
     `public_text` (a forward scan from the marker, not the extractor's verdict);
@@ -345,9 +361,20 @@ order by created_at desc;
   - a signed-out caller's candidates hold anything but indexed pages, any text
     but `public_text`, or a premium page's description;
   - a page an intent or the function links by name is not in the index;
-  - a golden question stops returning its page for either caller class, leads
-    with a page it must not, repeats a page, or (signed-out) shows a passage
-    without the answer. The DHA org chart question is the first golden.
+  - a golden question, asked signed-out, comes back with gated content.
+
+  The second is ranking: a golden question stops returning its page for
+  either caller class, leads with a page it must not, repeats a page, or
+  (signed-out) shows a passage without the answer. The DHA org chart question
+  is the first golden. New content can move a ranking on any day, and a worse
+  first link is not a reason to hold an issue out of production, so in the
+  build command these print as `WARN ranking` and the build goes on. With
+  `--strict` they fail. `npm run verify` runs strict, and so does the
+  `help-widget-answers` job in `.github/workflows/deploy-gate.yml`, which is
+  where a ranking regression shows red on the pull request that caused it.
+  Nothing depends on that job: it does not hold a deploy or an issue drop.
+  (`build-check` could not carry it. It pipes the build through `tee`, so a
+  validator that exits 1 there leaves the step green.)
 - Adding a page a reader should be able to find: add a golden for it in
   `scripts/lib/support-goldens.js`. Adding a page that hides content with
   script: the gate will stop the build and say which list to add it to.
@@ -381,16 +408,14 @@ archive pages 2 and up, which do not carry the site scripts.
   publishes. Whether that inbox is read daily is not verifiable from the repo.
 - The limits and ceilings in section 6 are starting values chosen for a site
   this size. They are constants at the top of `support-agent.js`.
-- Premium pages' meta descriptions sit in public HTML, and the org chart ones
-  name leaders. The widget withholds them from signed-out readers. Whether they
-  should be in the `<head>` of a gated page at all is a page question.
-- `netlify/functions/data/mmt-content-corpus-public.json` is named public and
-  carries the same withheld tracker and article fields as the full corpus. It
-  has no reader today. Anything that starts reading it for signed-out callers
-  repeats the mistake section 1 describes.
-- `premium-chat.js` salts its anonymous IP hash with the first 16 characters
-  of the service key, which for this key format is a public constant. Changing
-  it resets the free tier's per-IP counts, so it was left for a decision.
+- The widget still withholds a premium page's meta description from
+  signed-out readers. The org chart descriptions stopped naming people on
+  2026-11-15 (`docs/sprints/2026-11-15-decision-assurance-and-three-leaks.md`),
+  and the rule stays: a description is written for whoever can open the page.
+- `netlify/functions/data/mmt-content-corpus-public.json` no longer carries
+  the tracker fields the pages gate (same 2026-11-15 change). The widget does
+  not read it. For a signed-out reader `dist/` remains the only source,
+  because an article's body is still in that file whole.
 - The two client-side search indexes (`search-index.json`,
   `search-premium-index.json`) predate the page index and could be derived from
   it. Not done here: they feed the search modal, which this change does not
