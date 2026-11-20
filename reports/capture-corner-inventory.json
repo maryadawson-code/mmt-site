@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-11-15T20:00:30.719Z",
-  "candidate_count": 49,
+  "generated_at": "2026-11-20T00:40:02.713Z",
+  "candidate_count": 50,
   "newest_eligible": {
-    "id": "capture-corner-2026-11-13.html",
-    "path": "premium/briefs/capture-corner-2026-11-13.html",
-    "url": "/premium/briefs/capture-corner-2026-11-13.html",
-    "publish_date": "2026-11-13",
+    "id": "capture-corner-2026-11-20.html",
+    "path": "premium/briefs/capture-corner-2026-11-20.html",
+    "url": "/premium/briefs/capture-corner-2026-11-20.html",
+    "publish_date": "2026-11-20",
     "description": "Dated Capture Corner newsletter issue."
   },
-  "redirect_target_in_netlify_toml": "/premium/briefs/capture-corner-2026-11-13.html",
+  "redirect_target_in_netlify_toml": "/premium/briefs/capture-corner-2026-11-20.html",
   "redirect_target_is_pre_staged": false,
   "redirect_stale": false,
   "candidates": [
@@ -332,6 +332,13 @@
       "path": "premium/briefs/capture-corner-2026-11-13.html",
       "url": "/premium/briefs/capture-corner-2026-11-13.html",
       "publish_date": "2026-11-13",
+      "description": "Dated Capture Corner newsletter issue."
+    },
+    {
+      "id": "capture-corner-2026-11-20.html",
+      "path": "premium/briefs/capture-corner-2026-11-20.html",
+      "url": "/premium/briefs/capture-corner-2026-11-20.html",
+      "publish_date": "2026-11-20",
       "description": "Dated Capture Corner newsletter issue."
     },
     {
