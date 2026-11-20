@@ -90,6 +90,14 @@ const MODELS = {
     floor: "claude-sonnet-4-6",
     provider: "anthropic",
   },
+  // Site help widget: word a short answer from retrieved passages. Read
+  // directly by support-agent.js (no feedback-driven escalation: a wrong
+  // help answer is fixed on the page it was read from).
+  support_answer: {
+    default: "claude-haiku-4-5-20251001",
+    floor: "claude-haiku-4-5-20251001",
+    provider: "anthropic",
+  },
 };
 
 const ESCALATION_THRESHOLD = 3.0;

@@ -5238,6 +5238,7 @@ ${cards}
   <footer class="wrap"></footer>
   <script src="/js/mmt-paywall.js" defer></script>
   <script src="/js/nav-active.js"></script>
+  <script src="/js/support-widget.js" defer></script>
 </body>
 </html>`;
 }
@@ -5348,6 +5349,7 @@ function generateAgencyProfilePage(agency) {
   <footer class="wrap"></footer>
   <script src="/js/mmt-paywall.js" defer></script>
   <script src="/js/nav-active.js"></script>
+  <script src="/js/support-widget.js" defer></script>
 </body>
 </html>`;
 }
@@ -6289,6 +6291,17 @@ async function build() {
   }
 
   ensurePremiumGates();
+
+  // Page index for the site help widget. Last on purpose: it reads dist/ as
+  // it ships, after every step above that writes to it. A failure here is
+  // caught by scripts/validate-site-index.js in the netlify.toml chain.
+  try {
+    const { buildIndex: buildSiteIndex } = require('./scripts/build-site-index.js');
+    buildSiteIndex();
+  } catch (err) {
+    console.warn('Site index build failed:', err.message);
+  }
+
   console.log('\n=== Build complete! ===');
 
   // Summary

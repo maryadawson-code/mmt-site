@@ -4,7 +4,7 @@
   # validate-dist.js fails the build if dist/ contains any public-facing
   # drift pattern from docs/site-spec.md §14a. If it exits non-zero,
   # Netlify will refuse to deploy.
-  command = "node scripts/sync-newsletters.js; node scripts/sync-linkedin-newsletter.js; node scripts/validate-node-version.js && node build.js &&node scripts/validate-dist.js && node scripts/validate-routes.js && node scripts/newsletter-inventory.js && node scripts/capture-corner-inventory.js && node scripts/qa-contrast-scan.js && node scripts/validate-agency-parity.js && node scripts/validate-agency-profiles.js && node scripts/validate-contract-tracker.js && node scripts/validate-cso-aois.js && node scripts/validate-idiq-vehicles.js && node scripts/validate-capture-intelligence.js && node scripts/validate-gao-sustain.js && node scripts/validate-forecast-delta.js && node scripts/validate-data-freshness.js && node scripts/scan-pii.js && node scripts/validate-no-scrubbed-stubs.js && node scripts/validate-ask-mmt-coverage.js && node scripts/validate-reference-data.js && node scripts/validate-links.js"
+  command = "node scripts/sync-newsletters.js; node scripts/sync-linkedin-newsletter.js; node scripts/validate-node-version.js && node build.js &&node scripts/validate-dist.js && node scripts/validate-routes.js && node scripts/validate-site-index.js && node scripts/newsletter-inventory.js && node scripts/capture-corner-inventory.js && node scripts/qa-contrast-scan.js && node scripts/validate-agency-parity.js && node scripts/validate-agency-profiles.js && node scripts/validate-contract-tracker.js && node scripts/validate-cso-aois.js && node scripts/validate-idiq-vehicles.js && node scripts/validate-capture-intelligence.js && node scripts/validate-gao-sustain.js && node scripts/validate-forecast-delta.js && node scripts/validate-data-freshness.js && node scripts/scan-pii.js && node scripts/validate-no-scrubbed-stubs.js && node scripts/validate-ask-mmt-coverage.js && node scripts/validate-reference-data.js && node scripts/validate-links.js"
 
 [build.environment]
   # Pin the build Node to the security floor in lib/node-floor.js (same number
@@ -83,6 +83,14 @@
 # list it would change every function's bundle on every deploy.
 [functions."health"]
   included_files = ["netlify/build-info.json"]
+
+# The site help widget answers from the page index build.js writes at the end
+# of every build (scripts/build-site-index.js). Bundled with this function
+# only: the bundler concatenates this list with the global one above, so the
+# function also keeps the content corpus. scripts/validate-site-index.js in
+# the build command fails the deploy when the index is missing or thin.
+[functions."support-agent"]
+  included_files = ["netlify/site-index/mmt-site-index.json"]
 
 # Agent Access — nightly recommendation scoring (Phase 4). Feeds
 # recommended_cache. No-op until AGENT_SCORING_ENABLED=true AND provider keys

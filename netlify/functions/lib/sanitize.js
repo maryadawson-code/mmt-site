@@ -129,4 +129,18 @@ function sanitizeUserInput(input, { maxLength = 10000, fieldName = "input", logg
   return { text, blocked: false };
 }
 
-module.exports = { stripHtml, sanitizeFields, wrapUserContent, validateFile, truncate, checkPromptInjection, sanitizeUserInput };
+/**
+ * Escape a value for use in HTML text or a double- or single-quoted
+ * attribute. The exported copy: eight libs carry a private one, and new code
+ * should import this instead of adding a ninth.
+ */
+function escapeHtml(value) {
+  return String(value == null ? "" : value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+module.exports = { stripHtml, sanitizeFields, wrapUserContent, validateFile, truncate, checkPromptInjection, sanitizeUserInput, escapeHtml };

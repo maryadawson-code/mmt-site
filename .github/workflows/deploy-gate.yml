@@ -45,6 +45,24 @@ jobs:
           if [ $MISSING -gt 0 ]; then exit 1; fi
           echo "All critical files present"
 
+  # Ranking only. A paywall leak in the help widget's page index stops the
+  # build itself (validate-site-index.js in the netlify.toml command, no
+  # flag). This job is where a golden question that stopped finding its page
+  # shows up red on the pull request. It is its own job, and nothing needs
+  # it, so a worse first link never holds a production deploy or an issue
+  # drop. build-check cannot carry this: it pipes the build through tee and
+  # a validator that exits 1 there leaves the step green.
+  help-widget-answers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+      - run: npm ci
+      - run: node build.js
+      - run: node scripts/validate-site-index.js --strict
+
   post-deploy-smoke:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build-check
