@@ -228,7 +228,7 @@ function makeGraders({ expandAcronym }) {
       return hit.length ? `banned: ${hit.join(", ")}` : null;
     },
     no_trailing_sources_section: (r) => (SOURCES_HEADING_RE.test(r.result.answer || "") ? "answer ends with a Sources section" : null),
-    links_grounded: (r) => (r.unlistedLinks.length ? `${r.unlistedLinks.length} link(s) not in context or sources: ${r.unlistedLinks.slice(0, 3).join(" ")}` : null),
+    links_grounded: (r) => (r.unlistedLinks.length ? `${r.unlistedLinks.length} link(s) the model wrote that were not in context or sources (de-linked before return): ${r.unlistedLinks.slice(0, 3).join(" ")}` : null),
     acronyms_known: (r) => {
       const bad = [];
       for (const { tok, exp } of findExpansions(r.result.answer)) {
@@ -256,6 +256,30 @@ function allowedLinkSet(sources) {
     for (const l of s.links || []) set.add(l);
   }
   return set;
+}
+
+/**
+ * Pure: the links a trial could not account for. When the server reports
+ * its own count, its `unlisted_links` are the answer: it de-linked them
+ * before the answer returned, so the cleaned answer's own links are the
+ * grounded ones. Naming those instead sent the 2026-09-21 diagnosis after
+ * a real, retrieved URL. Without a server count, the sources, the prompt's
+ * own links and then the enrichment context account for a link.
+ */
+function unlistedLinksFor({ result, links, contextText, contextError }) {
+  if (typeof result.unlisted_link_count === "number") {
+    if (result.unlisted_link_count <= 0) return [];
+    return Array.isArray(result.unlisted_links) && result.unlisted_links.length
+      ? result.unlisted_links.slice()
+      : [`${result.unlisted_link_count} link(s) de-linked by the server, URLs not reported`];
+  }
+  if (!links.length) return [];
+  const allowed = allowedLinkSet(result.sources);
+  const pending = links.filter((l) => !allowed.has(l));
+  if (!pending.length) return [];
+  return contextText !== null
+    ? pending.filter((l) => !contextText.includes(l))
+    : pending.map((l) => `${l} (context unavailable: ${contextError || "not fetched"})`);
 }
 
 async function runOne({ row, history, assistant, expandAcronym }) {
@@ -290,20 +314,7 @@ async function runOne({ row, history, assistant, expandAcronym }) {
     }
   }
 
-  let unlistedLinks = [];
-  const links = extractLinks(result.answer);
-  if (typeof result.unlisted_link_count === "number") {
-    unlistedLinks = result.unlisted_link_count > 0 ? links.slice(0, result.unlisted_link_count) : [];
-  } else if (links.length) {
-    const allowed = allowedLinkSet(result.sources);
-    const pending = links.filter((l) => !allowed.has(l));
-    if (pending.length) {
-      unlistedLinks = contextText !== null
-        ? pending.filter((l) => !contextText.includes(l))
-        : pending.map((l) => `${l} (context unavailable: ${contextError || "not fetched"})`);
-    }
-  }
-
+  const unlistedLinks = unlistedLinksFor({ result, links: extractLinks(result.answer), contextText, contextError });
   return { row, history, result, elapsedMs, unlistedLinks, contextText };
 }
 
@@ -326,6 +337,7 @@ function retrievalFields(result) {
     sources: (result.sources || []).map((s) => s.id),
     unavailable: (result.unavailable || []).map((u) => `${u.id}: ${u.reason}`),
     carried: Boolean(result.carried),
+    unlisted: Array.isArray(result.unlisted_links) ? result.unlisted_links : [],
   };
 }
 
@@ -460,6 +472,7 @@ function writeReport({ label, summary, trials, args, elapsedTotalMs }) {
       lines.push(`- agency: ${rf.agency}; shapes: ${rf.shapes.join(", ") || "none"}; routed: ${rf.routed.join(", ") || "none"}; carried: ${rf.carried}`);
       lines.push(`- sources: ${rf.sources.join(", ") || "none"}`);
       lines.push(`- unavailable: ${rf.unavailable.join("; ") || "none"}`);
+      lines.push(`- de-linked by the server: ${rf.unlisted.join(", ") || "none"}`);
       if (t.failures.length) {
         lines.push("");
         lines.push("Failures:");
@@ -520,4 +533,4 @@ if (require.main === module) {
   main().catch((e) => { console.error("[eval] fatal:", e && e.stack || e); process.exit(2); });
 }
 
-module.exports = { findExpansions, judgeExpansion, extractLinks, makeGraders, readEnvKey, loadSet, summarize };
+module.exports = { findExpansions, judgeExpansion, extractLinks, makeGraders, readEnvKey, loadSet, summarize, unlistedLinksFor, PROMPT_LINKS };
