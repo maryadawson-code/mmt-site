@@ -32,8 +32,8 @@ const T4NG2_ROW = {
   generated_internal_id: "CONT_AWD_36C10B24N0001_3600",
 };
 
-// awards: "ok" answers one row, "503" fails, "hang" never answers.
-function stubFetch({ awards = "ok" } = {}) {
+// awards and totals: "ok" answers, "503" fails, "hang" never answers.
+function stubFetch({ awards = "ok", totals = "ok" } = {}) {
   return async (url, opts = {}) => {
     const u = String(url);
     calls.push({ url: u, body: opts.body ? JSON.parse(opts.body) : null });
@@ -42,6 +42,7 @@ function stubFetch({ awards = "ok" } = {}) {
       if (awards === "503") return jsonRes({ detail: "upstream" }, 503);
       return jsonRes({ results: [T4NG2_ROW], page_metadata: { page: 1, hasNext: false } });
     }
+    if (u.includes("budgetary_resources") && totals === "hang") return new Promise(() => {});
     if (u.includes("budgetary_resources")) return jsonRes({ agency_data_by_year: [{ fiscal_year: 2026, agency_budgetary_resources: 1e9, agency_total_obligated: 5e8, agency_total_outlayed: 4e8 }] });
     if (u.includes("api.sam.gov")) return jsonRes({ opportunitiesData: [], totalRecords: 0 });
     if (u.includes("gao.gov")) return { ok: true, status: 200, text: async () => "<rss><channel></channel></rss>" };
@@ -182,6 +183,67 @@ describe("nightly warm", () => {
   });
 });
 
+// Department totals (2026-09-15): the live call gets 3s, and USASpending
+// answered the same DoD request in 0.5s, 9.9s and 2.6s back to back. The
+// vehicle warm reached only departments a known vehicle belongs to, so DHS
+// and SSA totals were cold on every first ask of the day.
+describe("nightly warm of every department's totals", () => {
+  const reg = cjsRequire("../../netlify/functions/lib/federal-agencies.js");
+  const budgetCalls = () => calls.filter((c) => c.url.includes("budgetary_resources"));
+  const queryFor = (q) => ({ federalArgs: { ...assistant.federalQueryFor(q).federalArgs, today: DAY2 } });
+  const warmOnDay2 = (agency, opts) => api.warmAgencyTotals(agency, { ...opts, today: DAY2 });
+
+  it("covers each toptier code in the registry exactly once", () => {
+    const codes = reg.usaspendingDepartments().map((a) => reg.usaspendingToptierCode(a));
+    expect(codes.sort()).toEqual(["028", "036", "047", "070", "075", "080", "097"]);
+  });
+
+  it("after the vehicles, only DHS and SSA cost a request, and then a DHS or SSA question is answered from the saved copy while USASpending hangs", async () => {
+    globalThis.fetch = stubFetch();
+    await prewarm.warmAll({ queryFor, ms: 1000 });
+    calls = [];
+    const totals = await prewarm.warmTotals({ warm: warmOnDay2, ms: 1000 });
+    expect(totals.failed).toBe(0);
+    expect(budgetCalls().map((c) => new URL(c.url).pathname).sort()).toEqual(["/api/v2/agency/028/budgetary_resources/", "/api/v2/agency/070/budgetary_resources/"]);
+    expect(totals.results.filter((r) => r.agency_totals === "cached").map((r) => r.code).sort()).toEqual(["036", "047", "075", "080", "097"]);
+
+    globalThis.fetch = stubFetch({ totals: "hang" });
+    calls = [];
+    for (const [question, code] of [["How much has DHS obligated this year?", "070"], ["What is SSA spending on disability case processing?", "028"]]) {
+      const out = await api.enrichWithFederalData(argsFor(question, DAY2));
+      expect(out.agency_spending.cached, question).toBe(true);
+      expect(out.agency_spending.spending.agency_code).toBe(code);
+    }
+    expect(budgetCalls().length).toBe(0);
+  });
+
+  it("the nightly tick runs the department pass after the vehicles; a handoff tick does not", async () => {
+    const saved = { url: process.env.SUPABASE_URL, key: process.env.SUPABASE_SERVICE_KEY };
+    delete process.env.SUPABASE_URL; delete process.env.SUPABASE_SERVICE_KEY;
+    try {
+      globalThis.fetch = stubFetch();
+      const nightly = JSON.parse((await prewarm.handler({ body: JSON.stringify({ triggered_by: "schedule" }) })).body);
+      expect(nightly).toMatchObject({ mode: "nightly", failed: 0 });
+      const codes = new Set(budgetCalls().map((c) => new URL(c.url).pathname.split("/")[4]));
+      expect([...codes].sort()).toEqual(["028", "036", "047", "070", "075", "080", "097"]);
+      calls = [];
+      fetchCache._setStoreForTests(freshStore());
+      await prewarm.handler({ body: JSON.stringify({ questions: ["Who are the incumbents on T4NG2?"] }) });
+      expect([...new Set(budgetCalls().map((c) => new URL(c.url).pathname.split("/")[4]))]).toEqual(["036"]);
+    } finally {
+      if (saved.url !== undefined) process.env.SUPABASE_URL = saved.url;
+      if (saved.key !== undefined) process.env.SUPABASE_SERVICE_KEY = saved.key;
+    }
+  });
+
+  it("a department whose totals do not warm is counted, so a failed night reaches ops_events", async () => {
+    globalThis.fetch = stubFetch({ totals: "hang" });
+    const out = await prewarm.warmTotals({ departments: ["DHS"], warm: warmOnDay2, ms: 30 });
+    expect(out).toMatchObject({ departments: 1, failed: 1 });
+    expect(out.results[0]).toEqual({ agency: "DHS", code: "070", agency_totals: "error (timeout)" });
+  });
+});
+
 describe("handoff of a slow award search", () => {
   const handoff = cjsRequire("../../netlify/functions/lib/usaspending-handoff.js");
   const res202 = { status: 202 };
@@ -193,6 +255,13 @@ describe("handoff of a slow award search", () => {
     expect(handoff.needsHandoff({ usaspending_awards: { awards: [], error: "USASpending API 503" } })).toBe(false);
     expect(handoff.needsHandoff({ usaspending_awards: { awards: [{}], total: 1 } })).toBe(false);
     expect(handoff.needsHandoff({ usaspending_awards: { awards: [{}], cached: true } })).toBe(false);
+    // the department totals call: its timeout hands off too, unless the award
+    // search failed outright (the worker would retry that failure)
+    expect(handoff.needsHandoff({ usaspending_awards: { awards: [{}], total: 1 }, agency_spending: { spending: null, error: "timeout", timeout_ms: 3000 } })).toBe(true);
+    expect(handoff.needsHandoff({ usaspending_awards: { awards: [{}], cached: true }, agency_spending: { spending: {}, stale: true, live_error: "timeout" } })).toBe(true);
+    expect(handoff.needsHandoff({ usaspending_awards: { awards: [], error: "USASpending API 503" }, agency_spending: { spending: null, error: "timeout" } })).toBe(false);
+    expect(handoff.needsHandoff({ usaspending_awards: { awards: [{}], total: 1 }, agency_spending: { spending: null, error: "USASpending Agency API 503" } })).toBe(false);
+    expect(handoff.needsHandoff({ usaspending_awards: { awards: [{}], total: 1 }, agency_spending: { spending: null, skipped: "CGAC 021 is not a USASpending toptier agency" } })).toBe(false);
   });
 
   it("POSTs the question to the background worker and reports whether it was accepted (202)", async () => {
