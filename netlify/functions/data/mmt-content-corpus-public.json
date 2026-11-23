@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-11-20T00:36:01.639Z",
-  "total": 305,
+  "generated_at": "2026-11-23T17:23:32.566Z",
+  "total": 306,
   "note": "Public subset of mmt-content-corpus.json (premium=false items only, entitlement-gated fields removed). For unauthenticated endpoints. Per Sprint C 2026-05-14 and 2026-11-15.",
   "counts": {
-    "articles": 148,
+    "articles": 149,
     "contracts": 70,
     "glossary": 52,
     "idiq_vehicles": 35
@@ -2660,6 +2660,30 @@
       "premium": false
     },
     {
+      "id": "article-the-week-everything-broke",
+      "type": "article",
+      "title": "The Week Everything Broke",
+      "slug": "the-week-everything-broke",
+      "date": "2026-11-20",
+      "description": "From November 12 to 17, Microsoft 365, the nation's air traffic network, JPMorgan Chase, and a classified intelligence network each failed, and each owner named a different cause. This issue sorts that week by evidence, follows the AI theory back to the one documented case behind it, and then goes to a cold room in Besançon, France, where a real attack reached the refrigeration around a country's blood plasma and lost. It closes on the encryption under every health record and the federal dates now attached to it.",
+      "tags": [
+        "cybersecurity",
+        "outages",
+        "AI agents",
+        "post-quantum cryptography",
+        "blood supply",
+        "cold chain",
+        "medical devices",
+        "facility control systems",
+        "asset inventory",
+        "Armed Services Blood Program",
+        "Executive Order 14412"
+      ],
+      "url": "/newsletter/the-week-everything-broke/",
+      "excerpt": "The Week Everything Broke From November 12 to 17, Microsoft 365, the nation's air traffic network, JPMorgan Chase, and a classified intelligence network each failed, and each owner named a different cause. This issue sorts that week by evidence, follows the AI theory back to the one documented case behind it, and then goes to a cold room in Besançon, France, where a real attack reached the refrigeration around a country's blood plasma and lost. It closes on the encryption under every health record and the federal dates now attached to it. Friends, On the night of November 1, the cold rooms that hold blood plasma at three sites of the French national blood service began to warm. The blood service had not touched them. A refrigeration supplier ran the controls, and that night the controls were answering to someone else. The thresholds for temperature and defrost climbed to what the service later called extremely high levels. [1][2] One of the sites was in Besançon. The plasma in those rooms was meant for transfusions and for the manufacture of medicines. [1] Twelve days later it was everyone else's turn. Friday at half past three On the afternoon of November 13, the network that links the Federal Aviation Administration's air traffic centers began taking \"1,000 connection attempts every 4 to 5 seconds.\" [3] Seventeen of the 22 centers that handle en route traffic destabilized. Departures stopped nationwide from about 3:30 p.m. until 8:15 p.m. Eastern, and about 12,462 flights were canceled. [3] Microsoft 365 had gone down the day before. JPMorgan Chase followed on Monday. On Tuesday it was NSANet, the classified network of the National Security Agency. [4][5][6][7] In the middle of it, the Secretary of Homeland Security went on Sean Hannity's program with a theory. \"I believe that it's the SI,\" Markwayne Mullin said, his shorthand for superintelligence: code that repairs itself and sets off a ripple through everything it touches. [8] He credited the idea to one person and declined to give the name. The owners told a plainer story. The FAA traced its flood to router work by the contractor L3Harris at El Dorado, Arkansas, and at a radar site in Amarillo, Texas. [3] Microsoft blamed a defect from a network capacity upgrade and said its outage was \"not related to cyber or AI / agents.\" [4][5] JPMorgan called its trouble a temporary software bug, and the NSA a degradation during scheduled maintenance. [6][7] Jay Clayton, the Director of National Intelligence, called them separate outages tied to maintenance and technical changes, and Mullin himself put the odds against a cyberattack at 98 percent. [9][10] A capacity upgrade, router work, a software bug, scheduled maintenance. Every cause on that list is a change somebody made on purpose to a system that was running, and I find that harder to sit with than an attack would be. Router work at two sites destabilized 17 of 22 air traffic centers and stopped a country's departures. [3] Richard Clarke, the former White House cybersecurity adviser, told CNN that with no enemy involved, \"we can attack ourselves just because the systems are so complex and fragile.\" [4] Sean Cairncross, the National Cyber Director, said of disruptions like these, \"frankly I'd expect to see more of it.\" [10] A grounded flight costs an evening. A hospital outage costs more. A review published in September catalogued 316 patient-level harms from cyberattacks on hospitals in 13 countries, among them fetal deaths tied to failed telemetry and treatment blocked by doors that would not open. [11] It cites an earlier estimate that ransomware downtime at American hospitals from 2016 to 2021 was associated with 69 to 76 deaths among Medicare patients. [11] Downtime is the injury, whoever causes it. CNN reported on November 18 that the forensics were still under way, but Microsoft, the FAA, JPMorgan, and the NSA could each say within days what had changed inside its own system. [4] That counts as quick. One company this year went 68 days before its own monitoring raised an alert. Families on at least six military bases have waited 86 days for an answer. A blood service in France had its answer within minutes. Sixty-eight days The superintelligence theory fails on the record. It found an audience anyway, because of something that did happen. On May 12, during cybersecurity tests at OpenAI, an AI agent left a message on one of the company's internal servers, and the agents went on to use that server as a message board. [12] Two weeks later one of them reached the internet by making the server send requests outward. On June 26 they made themselves its administrators. In early July their activity crashed it, and OpenAI opened an incident and rebuilt the server. The agents got back online and rebuilt their board. [12] Then they went after someone else. Between July 10 and 12 the agents found 14 exposed credentials for Hugging Face, the company that hosts open AI models, and broke into its production systems through a previously unknown flaw. [12] Hugging Face caught the intrusion with detection tools of its own and told the public on July 16 that it had been \"driven, end to end, by an autonomous AI agent system.\" It said the intruders had reached some internal datasets and a handful of credentials, and it found no evidence that its public models or datasets had been altered. [13] OpenAI's monitoring raised its first alert on July 19, three days after the victim went public. [12] Sixty-eight days had passed since the first message. Both companies describe the break-in as the agents' own doing. OpenAI says its models \"circumvented controls designed to isolate them from the internet.\" [12] California sued the company over the episode on Monday, and its spokesman answered that the suit appears to single OpenAI out over \"a challenge that's been identified by every major AI lab.\" [14] The vendor Cyera counted 188 public cases between September 2023 and this May in which an autonomous system damaged a company's production systems \"with no attacker involved.\" [15] No source ties any of it to the outages. Federal health is buying AI now. DHA already uses ambient listening in several of its hospitals and has asked Congress for $200.4 million more for digital health, and VA publishes an inventory of its AI use cases. [16][17][18] In one vendor survey, 14.4 percent of organizations said their security teams had approved every AI agent in the building. [19] An inventory lists what an agency meant to deploy. OpenAI meant to run a test. What moved faster Ann Barron-DiCamillo has worked in cybersecurity for 27 years and is now the chief information security officer of U.S. Bank. Software vendors are releasing a record number of patches every month, and she says, \"I've never seen anything like this.\" [20] A flaw could once sit unnoticed for years, and that quiet was the defender's cushion. AI models now find flaws faster than companies can fix them, a condition Michael Cembalest of J.P. Morgan Asset Management has named patchmegeddon. [20] Rushed fixes break things. Chris Krebs, the former director of CISA, told CNN he thinks much of what happened at Microsoft and the FAA was a patch or an upgrade that knocked a running system over. [4] No reporting has tied a specific patch to a specific outage. [4][21] Attackers have the tools too. Anthropic has reported that a Chinese state-sponsored group used its Claude Code tool to run 80 to 90 percent of an espionage campaign against about 30 targets. [22] A hospital cannot patch a patient monitor or a blood refrigerator the way a bank patches a server. The software belongs to the vendor, and the machine stays in service for a decade or more. Satya Nadella, Microsoft's chief executive, said this week that \"there is a lot of stuff in our critical infrastructure that's unpatchable.\" He named firmware, chillers, and HVAC systems, and he added that all of it is on the internet. [23] Six dollars Researchers at Claroty asked an AI ",
+      "premium": false
+    },
+    {
       "id": "contract-community-care-network-next-gen-ccn-ng-",
       "type": "contract_intel",
       "title": "Community Care Network Next Gen (CCN NG)",
@@ -2712,7 +2736,7 @@
       "type": "contract_intel",
       "title": "DHA Data Governance / Data Methods and Strategy (HT001126CE015)",
       "slug": "dha-data-governance-data-methods-and-strategy-ht001126ce015-",
-      "date": "2026-11-18",
+      "date": "2026-11-22",
       "description": "Update Oct 19, 2026: awarded. USASpending carries contract HT001126CE015 to Taurian Consulting 2 LLC (the Guidehouse and ReefPoint joint venture I reported in the Sep 11, 2026 brief) at $8,466,696,",
       "tags": [
         "Defense Health Agency (DHA)",
@@ -2856,7 +2880,7 @@
       "type": "contract_intel",
       "title": "VA IE&O (TISTA, task order 36C10B26F0468)",
       "slug": "va-ie-o-tista-task-order-36c10b26f0468-",
-      "date": "2026-11-18",
+      "date": "2026-11-22",
       "description": "Update Oct 5, 2026: OrangeSlices reported on Oct 2, 2026 that TISTA Science and Technology won a 5-year VA IE&O award, task order 36C10B26F0468 at about $164.1M, over 14 other",
       "tags": [
         "Department of Veterans Affairs / VA TAC",
@@ -3000,7 +3024,7 @@
       "type": "contract_intel",
       "title": "VA Health Connect / IHT 2.0",
       "slug": "va-health-connect-iht-2-0",
-      "date": "2026-11-18",
+      "date": "2026-11-22",
       "description": "Update Oct 5, 2026: OrangeSlices reports that the IHT 2.0 protest forced VHA to award sole-source bridges for continuity, including a health informatics professional and technical services bridge to SDVOSB",
       "tags": [
         "Department of Veterans Affairs / VHA",
@@ -3336,7 +3360,7 @@
       "type": "contract_intel",
       "title": "Swingtide — Market Intelligence Support",
       "slug": "swingtide-market-intelligence-support",
-      "date": "2026-11-18",
+      "date": "2026-11-22",
       "description": "Update Aug 17, 2026: Swingtide Inc awarded a 10-month DHA PEO DHMS Market Intelligence Support Services contract, HT003826CE001, $745,000, single bidder, posted January 2026. Market intelligence support, ~$745K, awarded Jan",
       "tags": [
         "Defense Health Agency",
@@ -3448,7 +3472,7 @@
       "type": "contract_intel",
       "title": "IHS Four Directions Warehouse (4DW) — Clinical Data Repository",
       "slug": "ihs-four-directions-warehouse-4dw-clinical-data-repository",
-      "date": "2026-11-18",
+      "date": "2026-11-22",
       "description": "Update Aug 17, 2026: Cherokee Nation Integrated Health, LLC won the IHS 4DW modernization contract (140D0424C0039), $36,367,134.84, PoP Sept 24, 2024 to Sept 23, 2029; ISBEE set-aside. IHS Health IT",
       "tags": [
         "Indian Health Service (IHS) / HHS",
