@@ -35,6 +35,9 @@ const ALIASES = {
   "TRICARE Managed Care Support — T-5 (MCS)": "TRICARE Managed Care Support - T-5 (MCS)",
   "VA HELM / SCMDSO (Healthcare Environment and Logistics Management — Supply Chain Management DevSecOps and Integration)":
     "VA HELM / SCMDSO (Healthcare Environment and Logistics Management)",
+  // 2026-10-19 rename: SAM.gov lists the set-aside as SBA total small
+  // business, not WOSB, and the award (HT001126CE015) named the row.
+  "DHA Data Governance (WOSB Set-Aside)": "DHA Data Governance / Data Methods and Strategy (HT001126CE015)",
 };
 
 const ID_RE = /\b(?:[0-9]{2}[A-Z0-9]{2,}[0-9]{2}[A-Z][0-9]{4,}|HT[0-9]{4}-?[0-9]{2}-?[A-Z]-?[0-9]{4}|75[A-Z0-9]{8,}|140D[0-9A-Z]{6,})\b/g;
