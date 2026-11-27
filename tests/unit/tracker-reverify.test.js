@@ -218,6 +218,32 @@ describe("worker run()", () => {
     expect(gh.puts[0].message).toMatch(/re-verified 1 listing/);
   });
 
+  it("holds SAM calls back for the CSO pass so the listings cannot spend the whole day's budget (2026-11-27)", async () => {
+    // Four listings each need SAM; the day's scheduled budget is 4. Before
+    // the reserve the listings took all four and every CSO read "SAM.gov
+    // budget for scheduled work spent today".
+    const contracts = ["a", "b", "c", "d"].map((slug, i) => entry({ slug, description: `36C10G26R000${i}`, last_verified: `2026-0${i + 1}-01` }));
+    const registry = { csos: [{ parent_slug: "peo", cso_number: "HT0038-25-S-0001 / HT003825SC001", active_through: "2026-07-01", last_verified: "2026-08-17", aois: [{ aoi_id: "1b", status: "closed", last_verified: "2026-08-17" }] }] };
+    const d = deps({ sam: (args) => (args.solnum === "HT003825SC001"
+      ? { opportunities: [{ notice_id: HEX, solicitation_number: "HT003825SC001", ptype: "o", response_deadline: "2026-07-01T16:00:00-04:00", active: "Yes", url: `https://sam.gov/opp/${HEX}/view` }] }
+      : { opportunities: [] }) });
+    const gh = github({ "contracts.json": JSON.stringify(contracts), "data/cso-aois.json": JSON.stringify(registry) });
+    const summary = await worker.run({ env: { TRACKER_REVERIFY_MAX_SAM: "4" }, deps: d, github: gh, today: TODAY });
+    expect(summary.cso_sam_reserve).toBe(2);
+    expect(summary.unchecked).toEqual({ sam: 2 });
+    expect(summary.cso_checked).toBe(1);
+    expect(summary.cso_bumped).toBe(2);
+    expect(summary.sam_calls).toBe(4);
+    expect(gh.puts.map((p) => p.path)).toEqual(["data/cso-aois.json"]);
+  });
+
+  it("csoSamReserve is one call per CSO solicitation number, never more than half the budget", () => {
+    const registry = { csos: [{ cso_number: "HT0038-25-S-0001 / HT003825SC001" }, { cso_number: "HT003826SC005" }, { cso_number: "" }] };
+    expect(worker.csoSamReserve(registry, 12)).toBe(3);
+    expect(worker.csoSamReserve(registry, 4)).toBe(2);
+    expect(worker.csoSamReserve(null, 12)).toBe(0);
+  });
+
   it("writes nothing when no source answered", async () => {
     const d = deps({ sam: { opportunities: [], error: "SAM.gov API 401: API_KEY_INVALID" } });
     const gh = github({ "contracts.json": JSON.stringify([entry({ slug: "a", description: "36C10G26R0003" })]) });

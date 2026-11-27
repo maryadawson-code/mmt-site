@@ -41,7 +41,7 @@ const { claimOnce, finalizeClaim } = require("./lib/cron-claim");
 const fedApis = require("./lib/federal-data-apis");
 const { repoName, githubGetFile, githubPutFile, triggerNetlifyBuild } = require("./lib/github-contents");
 const { checkEntry, planQueue, applyResults, tallyUnchecked } = require("./lib/tracker-reverify");
-const { checkCso, applyCsoResults } = require("./lib/cso-reverify");
+const { checkCso, applyCsoResults, csoSolNums } = require("./lib/cso-reverify");
 
 const CONTRACTS_PATH = "contracts.json";
 const CSO_PATH = "data/cso-aois.json";
@@ -49,6 +49,13 @@ const RUN_BUDGET_MS = 11 * 60 * 1000;
 
 function todayEt() {
   return new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+}
+
+// Pure: SAM calls held back from the listing pass for the CSO pass, one per
+// CSO solicitation number, never more than half the day's scheduled budget.
+function csoSamReserve(registry, maxSam) {
+  const need = ((registry && registry.csos) || []).reduce((n, cso) => n + csoSolNums(cso).length, 0);
+  return Math.min(need, Math.floor(maxSam / 2));
 }
 
 function num(v, dflt) {
@@ -72,12 +79,22 @@ async function run({ env = process.env, deps, supabase, github, now = Date.now, 
   const contracts = JSON.parse(contractsFile.content);
   const queue = planQueue(contracts);
   summary.listings = queue.length;
+
+  // 2026-11-27: the CSO pass runs after the listings and used to find the
+  // SAM budget already spent every day ("0 CSO notice(s) read" on every
+  // Friday report since the registry went in; AoI 1b sat at 102d). Hold
+  // back one call per CSO solicitation number so both passes read SAM.
+  const csoFile = await github.get(CSO_PATH);
+  const registry = csoFile.content ? JSON.parse(csoFile.content) : null;
+  const csoReserve = csoSamReserve(registry, maxSam);
+  summary.cso_sam_reserve = csoReserve;
+
   const results = [];
   let samOpen = true;
   let usaCalls = 0;
   for (const c of queue) {
     if (now() - start > RUN_BUDGET_MS) { summary.budget_stopped = true; break; }
-    const allowSam = samOpen && summary.sam_calls < maxSam;
+    const allowSam = samOpen && summary.sam_calls < maxSam - csoReserve;
     const r = await checkEntry(c, deps, { today, allowSam, allowUsa: usaCalls < maxUsa });
     if (r.samCalled) summary.sam_calls += 1;
     if (r.usaCalled) usaCalls += 1;
@@ -100,9 +117,7 @@ async function run({ env = process.env, deps, supabase, github, now = Date.now, 
   }
 
   // --- CSO AoI registry ---
-  const csoFile = await github.get(CSO_PATH);
-  if (csoFile.content) {
-    const registry = JSON.parse(csoFile.content);
+  if (registry) {
     const csoResults = [];
     for (const cso of registry.csos || []) {
       if (now() - start > RUN_BUDGET_MS) { summary.budget_stopped = true; break; }
@@ -181,3 +196,4 @@ exports.handler = async (event) => {
 };
 
 exports.run = run;
+exports.csoSamReserve = csoSamReserve;

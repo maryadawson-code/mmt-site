@@ -7,7 +7,7 @@
     "status": "active",
     "classification": "Solicitation",
     "naics": "524292",
-    "description": "Update Oct 5, 2026: an industry contact reports that award notification letters went out in late September 2026. Nothing on SAM.gov, VA News or trade press confirmed an award as of Oct 5, so the status stays active (source selection) and the award is pending official confirmation; the companion Dental IDIQ was awarded to Optum Serve on September 30, 2026. Update Aug 17, 2026: VA released solicitation 36C10G26R0003 on March 6, 2026 for the CCN Next Gen Medical multiple-award IDIQ with a potential 10-year, $700B ceiling; proposals were due March 16, 2026 and no award had been announced as of August 2026, so it is in source selection. Next-generation VA community care MA-IDIQ (Solicitation 36C10G26R0003) for CCN Next Gen Medical, replacing current CCN regional contracts. Two new mechanisms enter that do not exist in current CCN: (1) value-based payments starting with lower-extremity joint replacement episodes, with at least three more VBP models added over the performance period; (2) utilization management requiring clinical decision support at the point of authorization. Corporate Experience gate is binary across three references: implementation, program management, and IT integration across multiple states — missing any one factor = Unacceptable. Forces teaming between healthcare payers and systems integrators. MOSA structure with No-Bid provision allows specialized firms to win bench positions and respond only to matching task orders.",
+    "description": "Update Nov 27, 2026: still no official award. A third-party document index I cited in my Nov 13 brief lists four indefinite-delivery contracts signed Aug 31, 2026, with performance Jan 1, 2027 through Dec 31, 2036, and no medical task orders on USASpending at its Oct 11 check. That is a lead, not a source: nothing on SAM.gov, VA News or USASpending confirms an award, so the status stays active (source selection) and the award is pending official confirmation. Update Oct 5, 2026: an industry contact reports that award notification letters went out in late September 2026. Nothing on SAM.gov, VA News or trade press confirmed an award as of Oct 5, so the status stays active (source selection) and the award is pending official confirmation; the companion Dental IDIQ was awarded to Optum Serve on September 30, 2026. Update Aug 17, 2026: VA released solicitation 36C10G26R0003 on March 6, 2026 for the CCN Next Gen Medical multiple-award IDIQ with a potential 10-year, $700B ceiling; proposals were due March 16, 2026 and no award had been announced as of August 2026, so it is in source selection. Next-generation VA community care MA-IDIQ (Solicitation 36C10G26R0003) for CCN Next Gen Medical, replacing current CCN regional contracts. Two new mechanisms enter that do not exist in current CCN: (1) value-based payments starting with lower-extremity joint replacement episodes, with at least three more VBP models added over the performance period; (2) utilization management requiring clinical decision support at the point of authorization. Corporate Experience gate is binary across three references: implementation, program management, and IT integration across multiple states — missing any one factor = Unacceptable. Forces teaming between healthcare payers and systems integrators. MOSA structure with No-Bid provision allows specialized firms to win bench positions and respond only to matching task orders.",
     "link": "https://sam.gov/opp/7b2734002e4048bfa2ac4cc5b0479930/view",
     "small_business_eligible": false,
     "source": "https://sam.gov/opp/7b2734002e4048bfa2ac4cc5b0479930/view",
@@ -243,7 +243,11 @@
       "factors": {}
     },
     "slug": "hcds-health-care-delivery-solutions-mhs-genesis-follow-on",
-    "content_gap": false
+    "content_gap": false,
+    "signal_terms": [
+      "Health Care Delivery Solutions",
+      "HCDS"
+    ]
   },
   {
     "name": "FDA Sentinel 3.0",
@@ -433,7 +437,10 @@
       }
     },
     "slug": "cio-cs-follow-on-the-store",
-    "content_gap": false
+    "content_gap": false,
+    "signal_terms": [
+      "CIO-CS"
+    ]
   },
   {
     "name": "VA EHRM (Electronic Health Record Modernization)",
@@ -487,7 +494,11 @@
       "factors": {}
     },
     "slug": "mhs-genesis-dhmsm-bridge",
-    "content_gap": false
+    "content_gap": false,
+    "signal_terms": [
+      "DHMSM",
+      "Defense Healthcare Management System Modernization"
+    ]
   },
   {
     "name": "Federal Electronic Health Record Modernization (FEHRM)",
@@ -782,7 +793,11 @@
       "factors": {}
     },
     "slug": "enterprise-intelligence-data-solutions-eids",
-    "content_gap": false
+    "content_gap": false,
+    "signal_terms": [
+      "Enterprise Intelligence and Data Solutions",
+      "EIDS"
+    ]
   },
   {
     "name": "DHA Enterprise Generative AI",
@@ -1102,7 +1117,11 @@
       "factors": {}
     },
     "slug": "mpsm-medicare-payment-systems-modernization",
-    "content_gap": false
+    "content_gap": false,
+    "signal_terms": [
+      "Medicare Payment System Modernization",
+      "MPSM"
+    ]
   },
   {
     "name": "TEFCA / RCE (Health Information Exchange)",
@@ -1127,7 +1146,11 @@
       "factors": {}
     },
     "slug": "tefca-rce-health-information-exchange",
-    "content_gap": false
+    "content_gap": false,
+    "signal_terms": [
+      "Recognized Coordinating Entity",
+      "TEFCA"
+    ]
   },
   {
     "name": "CDC DCIPHER (Disease Surveillance)",
@@ -1152,7 +1175,10 @@
       "factors": {}
     },
     "slug": "cdc-dcipher-disease-surveillance",
-    "content_gap": false
+    "content_gap": false,
+    "signal_terms": [
+      "DCIPHER"
+    ]
   },
   {
     "name": "SSA DCPS2 (Disability Claims Processing)",
@@ -1178,7 +1204,11 @@
     },
     "slug": "ssa-dcps2-disability-claims-processing",
     "content_gap": true,
-    "content_gap_note": "Needs Source: no discrete DCPS2 solicitation or award found as of Oct 5, 2026; the entry stays a watch item until SSA posts one. Premium fields gated."
+    "content_gap_note": "Needs Source: no discrete DCPS2 solicitation or award found as of Oct 5, 2026; the entry stays a watch item until SSA posts one. Premium fields gated.",
+    "signal_terms": [
+      "Disability Case Processing System",
+      "DCPS"
+    ]
   },
   {
     "name": "NIH STRIDES (Cloud for Biomedical Data)",
@@ -1203,7 +1233,11 @@
       "factors": {}
     },
     "slug": "nih-strides-cloud-for-biomedical-data",
-    "content_gap": false
+    "content_gap": false,
+    "signal_terms": [
+      "STRIDES Initiative",
+      "STRIDES"
+    ]
   },
   {
     "name": "CDC DIBBs (Data Integration Building Blocks)",
@@ -1228,7 +1262,11 @@
       "factors": {}
     },
     "slug": "cdc-dibbs-data-integration-building-blocks",
-    "content_gap": false
+    "content_gap": false,
+    "signal_terms": [
+      "Data Integration Building Blocks",
+      "DIBBs"
+    ]
   },
   {
     "name": "T6 Health Systems — AOI 2 (PEO DHMS CSO)",
@@ -1513,7 +1551,11 @@
       }
     },
     "content_gap": false,
-    "slug": "cms-sparc-ii-strategic-partners-acquisition-readiness-contract-recompete"
+    "slug": "cms-sparc-ii-strategic-partners-acquisition-readiness-contract-recompete",
+    "signal_terms": [
+      "Strategic Partners Acquisition Readiness Contract",
+      "SPARC"
+    ]
   },
   {
     "name": "CDC DMI Successor / NSSP Ecosystem Contracts",
@@ -2109,7 +2151,10 @@
       }
     },
     "slug": "va-cloud-broker-service",
-    "content_gap": false
+    "content_gap": false,
+    "signal_terms": [
+      "Cloud Broker Service"
+    ]
   },
   {
     "name": "VA Enterprise Resource Planning (ERP)",
@@ -2201,7 +2246,11 @@
       }
     },
     "slug": "va-htmss-health-services-portfolio-technical-mgmt",
-    "content_gap": false
+    "content_gap": false,
+    "signal_terms": [
+      "Health Services Portfolio Technical Management",
+      "HTMSS"
+    ]
   },
   {
     "name": "VA Transformation Support Services (TSS) 3.0",
@@ -2339,7 +2388,11 @@
       }
     },
     "slug": "va-omega-onboarding-mgmt-engineering-governance-assurance",
-    "content_gap": false
+    "content_gap": false,
+    "signal_terms": [
+      "Onboarding, Management, Engineering, Governance",
+      "OMEGA Services"
+    ]
   },
   {
     "name": "VA Application Hosting Compute and Storage",
@@ -2385,7 +2438,10 @@
       }
     },
     "slug": "va-application-hosting-compute-and-storage",
-    "content_gap": false
+    "content_gap": false,
+    "signal_terms": [
+      "Application Hosting Compute and Storage"
+    ]
   },
   {
     "name": "DHA PEO DHMS Workforce 3.0 (WF3) IDIQ",

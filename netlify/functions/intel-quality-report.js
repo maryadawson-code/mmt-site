@@ -65,6 +65,64 @@ function describeRun(run) {
   return run.age_hours > 48 ? `last ran ${when} (<strong style="color:#E63946;">${run.age_hours}h ago</strong>)` : `last ran ${when}`;
 }
 
+// 2026-11-27: contract-intel-refresh showed "last ran 239h ago" with nothing
+// in the ledger, because the worker's only trace was its completion log and
+// the platform kill leaves none. The worker now writes a start event and a
+// refused event; the trigger's wrapper already writes <FN>_RUN_OK. Reading
+// the three together names the failure instead of the symptom.
+async function _latest(supabase, table, eventType, sourceFunction) {
+  try {
+    const { data } = await supabase
+      .from(table)
+      .select("created_at, details, signature")
+      .eq("event_type", eventType)
+      .eq("source_function", sourceFunction)
+      .order("created_at", { ascending: false })
+      .limit(1);
+    return (data || [])[0] || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+async function _refreshTrace(supabase) {
+  const [triggered, started, refused] = await Promise.all([
+    _latest(supabase, "ops_ledger", "CONTRACT_INTEL_REFRESH_RUN_OK", "contract_intel_refresh"),
+    _latest(supabase, "ops_events", "contract_data_refresh_started", "contract-intel-refresh"),
+    _latest(supabase, "ops_events", "contract_data_refresh_refused", "contract-intel-refresh"),
+  ]);
+  return {
+    triggered_at: triggered ? triggered.created_at : null,
+    started_at: started ? started.created_at : null,
+    refused_at: refused ? refused.created_at : null,
+    refused_reason: refused ? refused.signature || (refused.details && refused.details.signature) || null : null,
+  };
+}
+
+/**
+ * Pure. Given the completion time the report already shows and the trace
+ * above, say what the ledger supports. Returns null when the completion is
+ * recent (nothing to explain) and a plain sentence otherwise.
+ */
+function diagnoseRefresh({ completed_at, triggered_at, started_at, refused_at, refused_reason }, now = Date.now()) {
+  const age = (iso) => (iso ? (now - new Date(iso).getTime()) / 3600000 : Infinity);
+  if (age(completed_at) <= 48) return null;
+  const after = (a, b) => a && (!b || new Date(a).getTime() > new Date(b).getTime());
+  if (after(refused_at, completed_at) && age(refused_at) <= 48) {
+    return `The worker refused to run (${refused_reason || "reason not recorded"}) at ${String(refused_at).slice(0, 16).replace("T", " ")} UTC: fix the configuration it names; no amount of re-triggering helps.`;
+  }
+  if (after(started_at, completed_at)) {
+    return `The worker started at ${String(started_at).slice(0, 16).replace("T", " ")} UTC and never wrote its completion log: the platform killed it mid-run. Each contract is time-boxed since 2026-11-27 (lib/run-budget.js); if this line persists, the box is still too wide.`;
+  }
+  if (after(triggered_at, completed_at)) {
+    return `The schedule fired (trigger accepted at ${String(triggered_at).slice(0, 16).replace("T", " ")} UTC) but the worker never recorded a start: Netlify accepted the background invocation and did not run it, or the bundle predates the start event (deployed 2026-11-27). Check the function log for that invocation.`;
+  }
+  if (!triggered_at || age(triggered_at) > 48) {
+    return "The schedule itself has not fired in 48h: check that netlify.toml still carries the contract-intel-refresh schedule and that the last deploy succeeded.";
+  }
+  return "The completion log is stale and the ledger does not say why.";
+}
+
 function esc(s) {
   return String(s || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 }
@@ -450,6 +508,7 @@ exports._csoAoiHealth = _csoAoiHealth;
 exports._trackerListingStale = _trackerListingStale;
 exports.describeRun = describeRun;
 exports.AUTOMATION = AUTOMATION;
+exports._diagnoseRefresh = diagnoseRefresh;
 
 exports.handler = async () => {
   const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -483,6 +542,11 @@ exports.handler = async () => {
   try { freshness = evaluateDataFreshness(); } catch (e) { console.warn("data freshness scan failed:", e.message); }
   let runs = {};
   try { runs = await _automationRuns(supabase); } catch (e) { console.warn("automation run lookup failed:", e.message); }
+  let refreshDiagnosis = null;
+  try {
+    const trace = await _refreshTrace(supabase);
+    refreshDiagnosis = diagnoseRefresh({ completed_at: (runs.intel_refresh || {}).last_run || null, ...trace });
+  } catch (e) { console.warn("refresh trace lookup failed:", e.message); }
   const reverify = runs.tracker_reverify || {};
   const reverifyDetails = reverify.details || {};
   const hygieneDetails = (runs.radar_hygiene && runs.radar_hygiene.details) || {};
@@ -504,7 +568,7 @@ exports.handler = async () => {
     <h2 style="margin:0 0 8px;">Intel quality report &middot; ${new Date().toISOString().slice(0,10)}</h2>
     <p style="color:#5C6B7A;font-size:13px;margin:0 0 16px;">Weekly Friday 06:00 ET. Nothing in this email is a task for Mary. Each section names the automation that owns it and when it last ran; what code cannot do (an editorial read, a profile re-verification) goes to the Friday Claude session, which opens and merges its own PR.</p>
     <h3 style="font-size:14px;margin:16px 0 6px;">What ran this week</h3>
-    <ul>${AUTOMATION.map((a) => `<li>${esc(a.label)}: ${describeRun(runs[a.id])}</li>`).join("")}</ul>
+    <ul>${AUTOMATION.map((a) => `<li>${esc(a.label)}: ${describeRun(runs[a.id])}${a.id === "intel_refresh" && refreshDiagnosis ? `<br><span style="color:#E63946;">${esc(refreshDiagnosis)}</span>` : ""}</li>`).join("")}</ul>
     <h3 style="font-size:14px;margin:16px 0 6px;">Stale contract_intel rows (>14d)</h3>
     ${stale.length === 0 ? "<p>None.</p>" : `<ul>${stale.map((r) => {
       const ageDays = Math.floor((Date.now() - new Date(r.last_updated).getTime()) / (24*3600*1000));

@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-11-23T17:23:32.566Z",
-  "total": 306,
+  "generated_at": "2026-11-27T15:52:14.463Z",
+  "total": 307,
   "note": "Public subset of mmt-content-corpus.json (premium=false items only, entitlement-gated fields removed). For unauthenticated endpoints. Per Sprint C 2026-05-14 and 2026-11-15.",
   "counts": {
-    "articles": 149,
+    "articles": 150,
     "contracts": 70,
     "glossary": 52,
     "idiq_vehicles": 35
@@ -2684,19 +2684,43 @@
       "premium": false
     },
     {
+      "id": "article-the-pencil-test",
+      "type": "article",
+      "title": "The Pencil Test",
+      "slug": "the-pencil-test",
+      "date": "2026-11-24",
+      "description": "A hospital executive in Las Vegas last week said he expected someone to hold up a pencil and call it AI-enabled. The software that writes the clinic note now sells itself for the order, the insurance form, the phone call, and the bill. VA, the Defense Health Agency, and HHS each have to decide which of those jobs it gets next, and a pencil turns out to be a hard act to follow.",
+      "tags": [
+        "ambient AI scribes",
+        "clinical AI agents",
+        "MHS GENESIS",
+        "Oracle Health",
+        "prior authorization",
+        "AI coding",
+        "community care",
+        "TRICARE",
+        "HIPAA access rule",
+        "patient safety reporting",
+        "HLTH 2026"
+      ],
+      "url": "/newsletter/the-pencil-test/",
+      "excerpt": "The Pencil Test A hospital executive in Las Vegas last week said he expected someone to hold up a pencil and call it AI-enabled. The software that writes the clinic note now sells itself for the order, the insurance form, the phone call, and the bill. VA, the Defense Health Agency, and HHS each have to decide which of those jobs it gets next, and a pencil turns out to be a hard act to follow. Friends, Dr. Darryl Elmouchi is the chief operating officer of Providence, and last week at HLTH, the health technology conference in Las Vegas, he said he \"expected someone to hold up a pencil and say it's AI-enabled.\" [1] A survey released at the same conference scored 72 health startups, found that 72 percent of them open their pitch by calling the product AI-powered, and reported that none of the investors it surveyed said the phrase raised their confidence. [2] Until about a year ago, a pencil was a fair description of the most successful AI product in medicine. The AI scribe listened to a visit and wrote the note. A clinician read the note and signed it, and nothing else in the hospital moved because of it. This year the same software began placing orders, proposing billing codes, filling in insurance forms, and answering the phone. A pencil, for the record, is in every drawer, has a few centuries of evidence behind it, and stops when the hand does. Very little of what was sold in Las Vegas can claim all three. Take a knee that has ached for a month. A clinician writes the note and orders an MRI. A staff member asks the insurer for permission, another calls the patient with a time, a coder sends the bill, and one day the patient asks for a copy of the record. That is six pieces of work from one visit, and this fall there is software on sale for every one of them. The note The note is the job the software has held longest, and the market for it has settled into something ordinary. A report from Menlo Ventures, released the week of the conference, sizes the scribe market at $950 million and says incumbents captured 68 percent of the new money this year, with Microsoft and Epic taking \"roughly two of every three new scribe dollars.\" Every major record vendor now sells a scribe of its own. [3] A product that comes bundled with the record system is a feature, and I expect it to be bought like one. The evidence for the feature is real and modest. The randomized trials were published in late 2025. In one, a scribe cut the time clinicians spent in notes by 9.5 percent, while a second product in the same trial showed no significant change. An editorial in the same journal put the best case at about 22 minutes a day and called the tools \"not productivity tools (yet).\" [4] The University of Wisconsin reports that its trial returned about 30 minutes a day and lowered burnout. [5] All of that work tested the product versions of 2024 and 2025, so the best evidence available is already a step behind what is on sale. The Defense Health Agency tried its tool with about 400 providers at four sites in late 2025, at Madigan, Camp Lejeune, Portsmouth, and Wilford Hall, and phased it into military hospitals and clinics worldwide this year. [6] Lt. Col. Matthew Royall, a pediatric gastroenterologist who is also the agency's deputy branch chief of ambulatory informatics, has described how a visit works with it: the provider asks the patient's consent, records the encounter, and then reviews and signs the note the software drafted. [6] By July, Dr. Jesus Caban of DHA was counting more than 30,000 providers and 500,000 notes. [7] The tool is Oracle's Clinical AI Agent, from the vendor behind the military's health record. [6][8] VA took a different road. It set up a five-year enterprise contract for ambient scribes with a ceiling of $775.72 million, a figure that caps what all the vendors on the contract can be paid together and says nothing about what has been spent. [9] Abridge says its product reaches VA medical centers through a distribution partner, and Knowtex, another company on the contract, says the scope extends past the note into coding and order entry. [9][10] Community health centers, the clinics HHS supports through its health center program, got their offer at the conference itself. Abridge announced that its assistant will be free to the 108,000 clinicians who work in them. [11] The same week Kyu Rhee, who leads the National Association of Community Health Centers, warned that Medicaid cuts could force as many as 1,800 of those centers to close. [1] Free software and a closure warning reached the same clinics in the same week. By Royall's description, nothing enters the record until a clinician has read it and signed. The hand is still on the pencil. The note is also the smallest thing the software can make from a visit it has just heard. The order In February, Oracle added order creation to its Clinical AI Agent. In August it added billing codes, dictation, and chart review, and in September a version for nurses. [12] Epic's answer, a product called Ergo Visit, prepares a summary before the appointment and then assembles the documentation, the orders, and the diagnoses while it listens, and as of August it was live at three organizations. [13] Abridge's platform, announced in June, generates orders and billing codes and adds decision support. [14] On November 17 Ambience launched software that follows inpatient rounds and tracks whether a patient is ready to go home, and its announcement names no controls for human approval. [15] The proof here is thinner than it was for the note. Most of what is known about these features comes from the companies selling them, the Epic sites are few, and Oracle's own roadmap still lists prior authorization and charge capture as work ahead. [12] The distance between a note and an order is the distance between a record and an act. A wrong sentence in a note waits in the chart until somebody corrects it. A wrong order travels to a pharmacy, a lab, or a scanner. At the conference Mark Kaplan of HCA described the price of a single visible error: once a physician sees an inaccuracy, he said, it is \"really hard to regain their trust.\" [16] In a report this year, VA's inspector general found that VA had no safety-event reporting designed for AI-written notes and recommended building AI risk monitoring into its patient safety programs, and VA agreed. [17] That finding concerned the note, and the order raises the stakes. Oracle's leaders spent two days on Capitol Hill last week explaining how VA's contract for its record system, the same one military hospitals run, grew from a $10 billion ceiling to $27 billion. [18] The AI came up in passing. Mike Sicilia, the company's co-CEO, told senators that the price VA pays includes access to clinical AI, and he told the House committee that Oracle wants VA using its clinical AI agent. [18][19] On the military side the tool has a budget line: the Defense Health Program's fiscal 2027 request includes a $200.4 million digital health increase that covers ambient listening implementation along with expanded video visits and tele-critical care. [20] Seema Verma, who runs Oracle's health business, answered a question about data terms by saying the company has \"zero access to the data of the veterans.\" [19] At DHA the next decisions will come as product updates, and a feature that arrives inside an upgrade is the easiest kind to switch on without deciding to. My read is that each feature Oracle ships is a separate choice for DHA's Medical Digital Solutions portfolio, to be made with its own test and its own safety review, and that a written yes or no for each one is the cheapest safeguard on offer. CMS is approaching the same line as a regulator. Dr. Mehmet Oz, who runs the agency, told the conference by video that state testing programs are a way to find the point where software stops assisting a clinician and starts making a decision that takes a license. [21] An order seldom travels alone. Before that ",
+      "premium": false
+    },
+    {
       "id": "contract-community-care-network-next-gen-ccn-ng-",
       "type": "contract_intel",
       "title": "Community Care Network Next Gen (CCN NG)",
       "slug": "community-care-network-next-gen-ccn-ng-",
       "date": "2026-08-17",
-      "description": "Update Oct 5, 2026: an industry contact reports that award notification letters went out in late September 2026. Nothing on SAM.gov, VA News or trade press confirmed an award as",
+      "description": "Update Nov 27, 2026: still no official award. A third-party document index I cited in my Nov 13 brief lists four indefinite-delivery contracts signed Aug 31, 2026, with performance Jan",
       "tags": [
         "Department of Veterans Affairs",
         "active"
       ],
       "url": "/contracts/community-care-network-next-gen-ccn-ng/",
       "source_url": null,
-      "excerpt": "Update Oct 5, 2026: an industry contact reports that award notification letters went out in late September 2026. Nothing on SAM.gov, VA News or trade press confirmed an award as\nAgency: Department of Veterans Affairs\nStatus: active",
+      "excerpt": "Update Nov 27, 2026: still no official award. A third-party document index I cited in my Nov 13 brief lists four indefinite-delivery contracts signed Aug 31, 2026, with performance Jan\nAgency: Department of Veterans Affairs\nStatus: active",
       "premium": false
     },
     {
@@ -2736,7 +2760,7 @@
       "type": "contract_intel",
       "title": "DHA Data Governance / Data Methods and Strategy (HT001126CE015)",
       "slug": "dha-data-governance-data-methods-and-strategy-ht001126ce015-",
-      "date": "2026-11-22",
+      "date": "2026-11-26",
       "description": "Update Oct 19, 2026: awarded. USASpending carries contract HT001126CE015 to Taurian Consulting 2 LLC (the Guidehouse and ReefPoint joint venture I reported in the Sep 11, 2026 brief) at $8,466,696,",
       "tags": [
         "Defense Health Agency (DHA)",
@@ -2880,7 +2904,7 @@
       "type": "contract_intel",
       "title": "VA IE&O (TISTA, task order 36C10B26F0468)",
       "slug": "va-ie-o-tista-task-order-36c10b26f0468-",
-      "date": "2026-11-22",
+      "date": "2026-11-26",
       "description": "Update Oct 5, 2026: OrangeSlices reported on Oct 2, 2026 that TISTA Science and Technology won a 5-year VA IE&O award, task order 36C10B26F0468 at about $164.1M, over 14 other",
       "tags": [
         "Department of Veterans Affairs / VA TAC",
@@ -3024,7 +3048,7 @@
       "type": "contract_intel",
       "title": "VA Health Connect / IHT 2.0",
       "slug": "va-health-connect-iht-2-0",
-      "date": "2026-11-22",
+      "date": "2026-11-26",
       "description": "Update Oct 5, 2026: OrangeSlices reports that the IHT 2.0 protest forced VHA to award sole-source bridges for continuity, including a health informatics professional and technical services bridge to SDVOSB",
       "tags": [
         "Department of Veterans Affairs / VHA",
@@ -3360,7 +3384,7 @@
       "type": "contract_intel",
       "title": "Swingtide — Market Intelligence Support",
       "slug": "swingtide-market-intelligence-support",
-      "date": "2026-11-22",
+      "date": "2026-11-26",
       "description": "Update Aug 17, 2026: Swingtide Inc awarded a 10-month DHA PEO DHMS Market Intelligence Support Services contract, HT003826CE001, $745,000, single bidder, posted January 2026. Market intelligence support, ~$745K, awarded Jan",
       "tags": [
         "Defense Health Agency",
@@ -3472,7 +3496,7 @@
       "type": "contract_intel",
       "title": "IHS Four Directions Warehouse (4DW) — Clinical Data Repository",
       "slug": "ihs-four-directions-warehouse-4dw-clinical-data-repository",
-      "date": "2026-11-22",
+      "date": "2026-11-26",
       "description": "Update Aug 17, 2026: Cherokee Nation Integrated Health, LLC won the IHS 4DW modernization contract (140D0424C0039), $36,367,134.84, PoP Sept 24, 2024 to Sept 23, 2029; ISBEE set-aside. IHS Health IT",
       "tags": [
         "Indian Health Service (IHS) / HHS",

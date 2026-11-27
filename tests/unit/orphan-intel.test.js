@@ -18,6 +18,13 @@ describe("resolveCanonical", () => {
     expect(resolveCanonical("CCN Dental (36C10G26R0004)", roster)).toEqual({ canonical: "CCN Next Gen Dental (36C10G26R0004)", via: "identifier" });
   });
 
+  it("resolves the 2026-10-19 Data Governance rename by alias against the live roster (orphaned 40d on 2026-11-27)", () => {
+    const live = new Set(getRefreshRoster().map((c) => c.name));
+    expect(resolveCanonical("DHA Data Governance (WOSB Set-Aside)", live)).toEqual({
+      canonical: "DHA Data Governance / Data Methods and Strategy (HT001126CE015)", via: "alias",
+    });
+  });
+
   it("resolves a dash variant by normalization and a known alias by the table", () => {
     expect(resolveCanonical("TRICARE Managed Care Support – T-5 (MCS)", roster)).toEqual({ canonical: "TRICARE Managed Care Support - T-5 (MCS)", via: "normalized" });
     expect(resolveCanonical("TRICARE Managed Care Support — T-5 (MCS)", roster)).toEqual({ canonical: "TRICARE Managed Care Support - T-5 (MCS)", via: "alias" });

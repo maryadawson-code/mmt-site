@@ -67,9 +67,9 @@ const VEHICLES = [
     naics: ["621498", "621999"],
     search_terms: ["Community Care Network", "CCN Next Gen"],
     owners: ["VA Veterans Health Administration", "VA Office of Community Care"],
-    notes: "VA's Community Care Network Next Gen is the successor to the original CCN regional contracts (TriWest, Optum). VA released solicitation 36C10G26R0003 on March 6 2026 for the CCN Next Gen Medical multiple-award IDIQ (potential 10-year, $700B ceiling); proposals were received April 17 2026 and no award had been announced as of the August 17 2026 verification, so the effort is in source selection (contracts.json community-care-network-next-gen-ccn-ng). Covers provider network management, claims processing and care coordination for Veterans receiving community care. Mission Meets Tech has detailed coverage of the acquisition timeline and protest history.",
-    verified: "2026-08-17",
-    source: "contracts.json (community-care-network-next-gen-ccn-ng, last_verified 2026-08-17; proposals-received date aligned to that row on 2026-10-19, no newer source)",
+    notes: "VA's Community Care Network Next Gen is the successor to the original CCN regional contracts (TriWest, Optum). VA released solicitation 36C10G26R0003 on March 6 2026 for the CCN Next Gen Medical multiple-award IDIQ (potential 10-year, $700B ceiling); proposals were received April 17 2026. No award had been announced on SAM.gov, VA News or USASpending as of November 13 2026, so the effort is carried in source selection (contracts.json community-care-network-next-gen-ccn-ng); a third-party document index cited in MMT's November 13 2026 brief lists four indefinite-delivery contracts signed August 31 2026 with performance January 1 2027 through December 31 2036, which is a lead pending official confirmation, not an award. The companion CCN Next Gen Dental IDIQ (36C10G26R0004) was awarded to Optum Serve on September 30 2026. Covers provider network management, claims processing and care coordination for Veterans receiving community care. Mission Meets Tech has detailed coverage of the acquisition timeline and protest history.",
+    verified: "2026-11-13",
+    source: "contracts.json (community-care-network-next-gen-ccn-ng, Nov 27 2026 note) and content/newsletter/2026-11-13-the-fax-machine-knew-what-day-it-was.md footnote 6 (third-party index, awardees not named); no official award source as of 2026-11-13",
   },
   {
     aliases: ["t4ng2", "t4ng 2", "t4ng two", "t4ng-2"],

@@ -25,13 +25,15 @@ const REPO = resolve(HERE, "..", "..");
 const DATASET = JSON.parse(readFileSync(join(REPO, "data", "idiq-vehicles.json"), "utf8"));
 const ROWS = DATASET.vehicles;
 const TODAY = "2026-10-19";
+// The newest re-verification pass; a `verified` after this is a typo, not a fact.
+const LATEST_VERIFIED = "2026-11-27";
 const BANNED = ["pivotal", "comprehensive", "robust", "transformative", "delve", "leverage", "synergy", "paradigm", "holistic", "streamline", "actionable", "ecosystem"];
 
 describe("baseline integrity", () => {
   it("every entry carries a verified date, a source, and a note with no em dash, exclamation point or banned word", () => {
     for (const v of VEHICLES) {
       expect(v.verified, v.canonical).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-      expect(v.verified <= TODAY, `${v.canonical} verified in the future`).toBe(true);
+      expect(v.verified <= LATEST_VERIFIED, `${v.canonical} verified in the future`).toBe(true);
       expect(typeof v.source, v.canonical).toBe("string");
       expect(v.notes, v.canonical).not.toMatch(/—|!/);
       for (const w of BANNED) expect(new RegExp(`\\b${w}\\b`, "i").test(v.notes), `${v.canonical}: banned word ${w}`).toBe(false);

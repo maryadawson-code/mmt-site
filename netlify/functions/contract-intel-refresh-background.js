@@ -28,6 +28,7 @@ const { planOrphans, applyOrphanPlan } = require("./lib/orphan-intel");
 const { computeCoverage } = require("./lib/refresh-coverage");
 const { validateSources } = require("./lib/url-validator");
 const { sanitizeNotes, strippedNotes } = require("./lib/intel-notes-sanitizer");
+const { planSlot, withDeadline } = require("./lib/run-budget");
 
 // --- Module-scoped state for cost tracking ---
 let _supabaseRef = null;
@@ -44,10 +45,15 @@ const NETLIFY_BUILD_HOOK_URL = process.env.NETLIFY_BUILD_HOOK_URL;
 // blow past that wall and get killed mid-pass — rows already upserted stay
 // fresh, but the end-of-run completion log (logOpsEvent contract_data_refresh)
 // never fires and, being a platform timeout, leaves NO exception in ops_events.
-// A self-imposed wall-clock budget lets the function break the loop cleanly and
-// reach its completion log every run; contracts not reached are picked up next
-// run via the 20h-fresh skip below (continuation is already designed for).
-const RUN_BUDGET_MS = 13 * 60 * 1000;
+// 2026-11-27: a 13-minute check between contracts was not enough. One
+// contract is two Perplexity calls of up to 120 s, three attempts each, so a
+// slow upstream let a single contract run past the wall and the worker died
+// silently for ten days (last completion 2026-11-17). Every contract now runs
+// inside its own time-box from lib/run-budget.js (planSlot / withDeadline):
+// the box ends before the wall, a contract that overruns it counts as an
+// error and the loop moves on, and the loop stops when the remainder cannot
+// hold a useful contract. Contracts not reached are picked up next run via
+// the 20h-fresh skip below (continuation is already designed for).
 
 // Refresh roster is derived from contracts.json at runtime via
 // getRefreshRoster() — see _UNUSED_LEGACY_CONTRACTS below for the old
@@ -300,7 +306,7 @@ Return ONLY valid JSON. No markdown code fences. No text before or after the JSO
 const PERPLEXITY_URL = "https://api.perplexity.ai/chat/completions";
 const PERPLEXITY_MODEL = "sonar-pro";
 
-async function callClaudeSearch(systemPrompt, userMessage, _maxSearches, model, maxTokens) {
+async function callClaudeSearch(systemPrompt, userMessage, _maxSearches, model, maxTokens, { signal } = {}) {
   const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
   if (!PERPLEXITY_API_KEY) {
     throw new Error("PERPLEXITY_API_KEY not configured (used by contract-intel-refresh after web_search migration)");
@@ -308,8 +314,12 @@ async function callClaudeSearch(systemPrompt, userMessage, _maxSearches, model, 
 
   const _costStart = Date.now();
   const response = await withRetry(() => {
+    // The contract's time-box (lib/run-budget.js) ends the call, and stops
+    // a retry, the moment the box closes; the 120 s timer bounds one attempt.
+    if (signal && signal.aborted) throw signal.reason || new Error("contract time-box closed");
     const ac = new AbortController();
     const timer = setTimeout(() => ac.abort(), 120000);
+    if (signal) signal.addEventListener("abort", () => ac.abort(signal.reason), { once: true });
     return fetch(PERPLEXITY_URL, {
       method: "POST",
       signal: ac.signal,
@@ -410,7 +420,7 @@ async function callClaudeSearch(systemPrompt, userMessage, _maxSearches, model, 
 // RESEARCH A SINGLE CONTRACT (Pass 1: Research + Pass 2: Verify)
 // ============================================================
 
-async function researchContract(contract) {
+async function researchContract(contract, { signal } = {}) {
   // --- Pass 1: Research ---
   const researchModel = await getModelConfig(null, "contract_research");
   console.log(`  [${contract.name}] Pass 1: Research (${researchModel.model})...`);
@@ -426,7 +436,7 @@ ${contract.research_focus ? `\nRESEARCH PRIORITIES (search for these FIRST):\n${
 Search SAM.gov (Contract Opportunities + Contract Awards API), USASpending.gov, Congress.gov, GovInfo.gov, FedScoop, Nextgov/FCW, MeriTalk, Healthcare IT News, GAO, and agency sites. NOTE: FPDS was decommissioned Feb 24 2026 and the ATOM feed retires permanently July 31 2026 — the canonical award source is now SAM.gov Contract Awards API. Do NOT cite fpds.gov. Include confidence percentages on every claim. Return JSON with "intel", "black_hat", and "sources" keys.`;
 
   const { parsed: research, searchSources: researchSources } = await callClaudeSearch(
-    RESEARCH_PROMPT, researchMessage, 5, researchModel.model, 8000
+    RESEARCH_PROMPT, researchMessage, 5, researchModel.model, 8000, { signal }
   );
 
   // Ensure confidence fields exist with defaults
@@ -472,7 +482,7 @@ ${JSON.stringify({ intel, black_hat: blackHat }, null, 2)}
 Use web search to spot-check the most important claims: dollar amounts, dates, contract actions, organizational roles, and any claims rated below 70% confidence. Return the verification JSON.`;
 
     const { parsed: verification, searchSources: verifySources } = await callClaudeSearch(
-      VERIFY_PROMPT, verifyMessage, 3, verifyModel.model, 4000
+      VERIFY_PROMPT, verifyMessage, 3, verifyModel.model, 4000, { signal }
     );
 
     // Apply verification adjustments
@@ -567,15 +577,44 @@ Use web search to spot-check the most important claims: dollar amounts, dates, c
 // MAIN HANDLER
 // ============================================================
 
+// 2026-11-27: the worker used to leave no trace until its completion log, so
+// a run the platform killed, a kill switch, and a missing env var all read
+// the same way in the Friday report ("last ran N days ago"). The start event
+// and the refused event let intel-quality-report say which it was.
+async function recordStart(supabase, details) {
+  try {
+    await logOpsEvent(supabase, { event_type: "contract_data_refresh_started", source_function: "contract-intel-refresh", severity: "info", details });
+  } catch (e) { console.warn("start event failed (refresh continues):", e.message); }
+}
+
+async function recordRefused(reason, details = {}) {
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) { console.error(`refresh refused (${reason}) and Supabase is not configured, nothing recorded`); return; }
+  try {
+    await logOpsEvent(createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY), {
+      event_type: "contract_data_refresh_refused", source_function: "contract-intel-refresh", severity: "error", signature: reason, details,
+    });
+  } catch (e) { console.error("refused event failed:", e.message); }
+}
+
 exports.handler = async (event) => {
   const killCheck = checkKillSwitch("contract-intel-refresh-background");
-  if (killCheck.blocked) return killCheck.response;
+  if (killCheck.blocked) {
+    await recordRefused("kill_switch", { mode: killCheck.mode });
+    return killCheck.response;
+  }
 
   const runStart = Date.now();
   console.log("Contract intel refresh triggered:", new Date().toISOString());
 
   if (!ANTHROPIC_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
     console.error("Missing required env vars (ANTHROPIC_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY)");
+    await recordRefused("missing_env", { missing: ["ANTHROPIC_API_KEY", "SUPABASE_URL", "SUPABASE_SERVICE_KEY"].filter((k) => !process.env[k]) });
+    return { statusCode: 500, body: "Missing env vars" };
+  }
+  if (!process.env.PERPLEXITY_API_KEY) {
+    // Every contract would fail the same way; say so once instead of logging
+    // a completion with rejected = roster size.
+    await recordRefused("missing_env", { missing: ["PERPLEXITY_API_KEY"] });
     return { statusCode: 500, body: "Missing env vars" };
   }
 
@@ -589,6 +628,7 @@ exports.handler = async (event) => {
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
   _supabaseRef = supabase;
+  await recordStart(supabase, { force_contract: forceContract, triggered_by: body.triggered_by || null });
 
   let successCount = 0;
   let errorCount = 0;
@@ -672,16 +712,8 @@ exports.handler = async (event) => {
 
   // Process contracts sequentially to avoid rate limits
   let truncatedForBudget = false;
+  let timeBoxed = 0;
   for (const contract of contractsToProcess) {
-    // Stop before the 15-min platform kill so the end-of-run completion log
-    // still fires. Remaining contracts are refreshed on the next scheduled
-    // run (the 20h-fresh skip above carries the continuation).
-    if (!forceContract && Date.now() - runStart > RUN_BUDGET_MS) {
-      truncatedForBudget = true;
-      console.log(`Run budget (${RUN_BUDGET_MS}ms) reached — stopping loop early; remaining contracts deferred to next run.`);
-      break;
-    }
-
     // Skip contracts that already have fresh data (unless force-refreshing)
     if (!forceContract && freshContracts.has(contract.name)) {
       console.log(`Skipping (fresh): ${contract.name}`);
@@ -689,9 +721,20 @@ exports.handler = async (event) => {
       continue;
     }
 
+    // Stop before the 15-min platform kill so the end-of-run completion log
+    // still fires. Remaining contracts are refreshed on the next scheduled
+    // run (the 20h-fresh skip above carries the continuation). A forced
+    // single contract gets the full box.
+    const slot = planSlot(forceContract ? 0 : Date.now() - runStart);
+    if (slot.stop) {
+      truncatedForBudget = true;
+      console.log(`Run budget reached (${slot.remainingMs}ms left before the wall) — stopping loop early; remaining contracts deferred to next run.`);
+      break;
+    }
+
     try {
-      console.log(`Researching: ${contract.name}...`);
-      const result = await researchContract(contract);
+      console.log(`Researching: ${contract.name} (time-box ${Math.round(slot.allowMs / 1000)}s)...`);
+      const result = await withDeadline(slot.allowMs, (signal) => researchContract(contract, { signal }), { label: contract.name });
 
       // --- Sprint 2: Validation layer ---
       const contractData = { name: contract.name, agency: contract.agency, status: "Active", ...result.intel };
@@ -854,12 +897,13 @@ exports.handler = async (event) => {
         successCount++;
       }
     } catch (err) {
+      if (err && err.code === "DEADLINE") timeBoxed++;
       console.error(`Error researching ${contract.name}:`, err.message, err.stack);
       errorCount++;
     }
   }
 
-  console.log(`Contract intel refresh complete: ${successCount} updated, ${errorCount} errors`);
+  console.log(`Contract intel refresh complete: ${successCount} updated, ${errorCount} errors (${timeBoxed} hit their time-box)`);
 
   // B2/B5: Adjust auto-publish threshold from accumulated accuracy data
   try {
@@ -929,6 +973,7 @@ exports.handler = async (event) => {
       rejected: errorCount,
       total: contractsToProcess.length,
       truncated_for_budget: truncatedForBudget,
+      time_boxed: timeBoxed,
       cost_estimate: costEstimate,
       api_calls: totalCalls,
       run_ms: Date.now() - runStart,
