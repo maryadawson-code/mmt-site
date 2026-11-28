@@ -186,13 +186,16 @@
       "active_through": "2027-01-28",
       "scope_note": "NAICS 541618. Tracked because DHA is migrating discrete, project-scoped work off the Workforce 3.0 IDIQ into this CSO and HT003825SC001. OCI mitigation is a defined Phase 1a proposal element rather than a bar to entry.",
       "aoi_watch_note": "Responses accepted through January 28, 2027. Individual Program Requirement notices issued under the CSO on SAM.gov: HT003826SC001-01 (February 6 2026, responses due February 19 2026), HT003826SC001-02 (posted March 11 2026; the SAM record lists a February 23 2026 due date, which is earlier than the posting, so the dates are inconsistent as listed), HT003826SC001-03 (published March 20 2026, proposals due April 16 2026, Q&A posted April 2 2026, notice archived September 1 2026). Awards under them are not recorded in this registry.",
-      "last_verified": "2026-10-19",
+      "last_verified": "2026-11-27",
       "source_urls": [
+        "https://sam.gov/workspace/contract/opp/9e88768f291941f2b1afae629472f02a/view",
         "https://sam.gov/opp/a52432b3db87417fa81b0888f57e562e/view",
         "https://sam.gov/opp/8ba02d41dc6148b9b126cabc4bdb79d5/view",
         "https://sam.gov/opp/b385e4eec10b40afb92c26e66803e07c/view"
       ],
-      "aois": []
+      "aois": [],
+      "verified_by": "sam:solnum",
+      "verification_detail": "SAM.gov notice 9e88768f291941f2b1afae629472f02a for HT003826SC001, response through 2027-01-28, active yes"
     }
   ]
 }
